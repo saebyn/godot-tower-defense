@@ -6,7 +6,10 @@ extends Node3D
 @export var camera_zoom_fast_multiplier: float = 3.0  # Fast zoom multiplier when Shift is held
 @export var camera_min_size: float = 5.0   # Minimum zoom (closest)
 @export var camera_max_size: float = 100.0 # Maximum zoom (farthest)
+@export var camera_zoom_duration: float = 0.2  # Duration for smooth zoom transitions
 @onready var camera: Camera3D = $Camera3D
+
+var zoom_tween: Tween
 
 func _process(delta: float) -> void:
   # Update camera position based on player input
@@ -31,7 +34,20 @@ func _process(delta: float) -> void:
     var zoom_multiplier = camera_zoom_fast_multiplier if Input.is_action_pressed("zoom_fast") else 1.0
     var actual_zoom_step = camera_zoom_step * zoom_multiplier
     
+    var target_size: float
     if zoom_in_pressed:
-      camera.size = max(camera.size - actual_zoom_step, camera_min_size)
+      target_size = max(camera.size - actual_zoom_step, camera_min_size)
     elif zoom_out_pressed:
-      camera.size = min(camera.size + actual_zoom_step, camera_max_size)
+      target_size = min(camera.size + actual_zoom_step, camera_max_size)
+    
+    # Create smooth zoom transition
+    if target_size != camera.size:
+      # Kill any existing zoom tween
+      if zoom_tween:
+        zoom_tween.kill()
+      
+      # Create new tween for smooth zoom
+      zoom_tween = create_tween()
+      zoom_tween.set_ease(Tween.EASE_OUT)
+      zoom_tween.set_trans(Tween.TRANS_QUART)
+      zoom_tween.tween_property(camera, "size", target_size, camera_zoom_duration)
