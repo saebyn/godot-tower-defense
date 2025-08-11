@@ -12,6 +12,15 @@ extends Node3D
 
 var zoom_tween: Tween
 
+func _ready():
+  # spawn 100 obstacles at random positions
+  for i in range(100):
+    create_random_obstacle()
+
+  # Rebake the navigation mesh
+  rebake_navigation_mesh()
+
+
 func _process(delta: float) -> void:
   # Update camera position based on player input
   var input_vector := Input.get_vector("camera_move_down", "camera_move_up", "camera_move_left", "camera_move_right")
@@ -59,12 +68,19 @@ func _process(delta: float) -> void:
 
 func spawn_debug_obstacle():
   # Create obstacle manually since we don't have a prefab
-  create_manual_obstacle()
+  create_random_obstacle()
   
   # Rebake the navigation mesh
   rebake_navigation_mesh()
 
-func create_manual_obstacle():
+func create_random_obstacle():
+  # Generate a random position within a defined range
+  var spawn_pos = Vector3(randf_range(-100, 100), 0, randf_range(-100, 100))
+  
+  # Create the obstacle at the random position
+  create_obstacle(spawn_pos)
+
+func create_obstacle(spawn_pos: Vector3):
   # Create obstacle manually
   var obstacle = NavigationObstacle3D.new()
   var mesh_instance = MeshInstance3D.new()
@@ -76,7 +92,6 @@ func create_manual_obstacle():
   var material = StandardMaterial3D.new()
   material.albedo_color = Color.RED
   mesh_instance.material_override = material
-  
   obstacle.add_child(mesh_instance)
   obstacle.height = 2.0
   obstacle.affect_navigation_mesh = true
@@ -91,15 +106,24 @@ func create_manual_obstacle():
     Vector3(-size.x, 0, size.z)
   ])
   
-  var spawn_pos = Vector3(randf_range(-20, 20), 0, randf_range(-20, 20))
   obstacle.global_position = spawn_pos
   navigation_region.add_child(obstacle)
-  
+
+  # create collision shape
+  var collision_shape = CollisionShape3D.new()
+  collision_shape.shape = box_mesh
+  collision_shape.global_position = spawn_pos
+  obstacle.add_child(collision_shape)
   print("Spawned debug obstacle at: ", spawn_pos)
 
 func rebake_navigation_mesh():
   print("Rebaking navigation mesh...")
   if navigation_region and navigation_region.navigation_mesh:
+    if navigation_region.is_baking():
+      # Wait and retry if already baking
+      print("Navigation mesh is already baking, waiting...")
+      await navigation_region.bake_finished
+
     navigation_region.bake_navigation_mesh()
     print("Navigation mesh rebaked!")
 
