@@ -26,6 +26,10 @@ func _process(delta: float) -> void:
   if Input.is_action_just_pressed("camera_rotate_right"):
     camera.rotate_y(PI / 2) # Rotate right by 90 degrees
 
+  # Handle obstacle spawning input
+  if Input.is_action_just_pressed("spawn_obstacle"):
+    spawn_debug_obstacle()
+
   # Handle discrete zoom events from mouse wheel and keyboard
   var zoom_in_pressed = Input.is_action_just_pressed("camera_zoom_in") or Input.is_action_just_pressed("camera_zoom_in_key")
   var zoom_out_pressed = Input.is_action_just_pressed("camera_zoom_out") or Input.is_action_just_pressed("camera_zoom_out_key")
@@ -54,16 +58,8 @@ func _process(delta: float) -> void:
       zoom_tween.tween_property(camera, "size", target_size, camera_zoom_duration)
 
 func spawn_debug_obstacle():
-  # Create a new obstacle at a random position
-  var obstacle_scene = preload("res://obstacle_prefab.tscn")
-  if not obstacle_scene:
-    # Create obstacle manually if prefab doesn't exist
-    create_manual_obstacle()
-  else:
-    var obstacle = obstacle_scene.instantiate()
-    var spawn_pos = Vector3(randf_range(-20, 20), 0, randf_range(-20, 20))
-    obstacle.global_position = spawn_pos
-    navigation_region.add_child(obstacle)
+  # Create obstacle manually since we don't have a prefab
+  create_manual_obstacle()
   
   # Rebake the navigation mesh
   rebake_navigation_mesh()
