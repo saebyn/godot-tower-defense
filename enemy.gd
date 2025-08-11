@@ -89,9 +89,6 @@ func _physics_process(_delta):
   # face towards the direction of movement
   look_at(next_path_position, Vector3.UP, true)
 
-  navigation_agent.velocity = direction * movement_speed
-
-
-func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
-  velocity = safe_velocity
+  # Move directly without avoidance
+  velocity = direction * movement_speed
   move_and_slide()

@@ -8,8 +8,18 @@ extends Node3D
 @export var camera_max_size: float = 100.0 # Maximum zoom (farthest)
 @export var camera_zoom_duration: float = 0.2 # Duration for smooth zoom transitions
 @onready var camera: Camera3D = $Camera3D
+@onready var navigation_region: NavigationRegion3D = $NavigationRegion3D
 
 var zoom_tween: Tween
+
+func _ready():
+  # spawn 100 obstacles at random positions
+  for i in range(100):
+    create_random_obstacle()
+
+  # Rebake the navigation mesh
+  rebake_navigation_mesh()
+
 
 func _process(delta: float) -> void:
   # Update camera position based on player input
@@ -24,6 +34,10 @@ func _process(delta: float) -> void:
 
   if Input.is_action_just_pressed("camera_rotate_right"):
     camera.rotate_y(PI / 2) # Rotate right by 90 degrees
+
+  # Handle obstacle spawning input
+  if Input.is_action_just_pressed("spawn_obstacle"):
+    spawn_debug_obstacle()
 
   # Handle discrete zoom events from mouse wheel and keyboard
   var zoom_in_pressed = Input.is_action_just_pressed("camera_zoom_in") or Input.is_action_just_pressed("camera_zoom_in_key")
@@ -51,3 +65,67 @@ func _process(delta: float) -> void:
       zoom_tween.set_ease(Tween.EASE_OUT)
       zoom_tween.set_trans(Tween.TRANS_QUART)
       zoom_tween.tween_property(camera, "size", target_size, camera_zoom_duration)
+
+func spawn_debug_obstacle():
+  # Create obstacle manually since we don't have a prefab
+  create_random_obstacle()
+  
+  # Rebake the navigation mesh
+  rebake_navigation_mesh()
+
+func create_random_obstacle():
+  # Generate a random position within a defined range
+  var spawn_pos = Vector3(randf_range(-100, 100), 0, randf_range(-100, 100))
+  
+  # Create the obstacle at the random position
+  create_obstacle(spawn_pos)
+
+func create_obstacle(spawn_pos: Vector3):
+  # Create obstacle manually
+  var obstacle = NavigationObstacle3D.new()
+  var mesh_instance = MeshInstance3D.new()
+  var box_mesh = BoxMesh.new()
+  box_mesh.size = Vector3(5, 2, 5)
+  mesh_instance.mesh = box_mesh
+  
+  # Create a simple red material
+  var material = StandardMaterial3D.new()
+  material.albedo_color = Color.RED
+  mesh_instance.material_override = material
+  obstacle.add_child(mesh_instance)
+  obstacle.height = 2.0
+  obstacle.affect_navigation_mesh = true
+  obstacle.avoidance_enabled = false
+  
+  # Set obstacle vertices (simple box)
+  var size = Vector3(2.5, 0, 2.5)
+  obstacle.vertices = PackedVector3Array([
+    Vector3(-size.x, 0, -size.z),
+    Vector3(size.x, 0, -size.z),
+    Vector3(size.x, 0, size.z),
+    Vector3(-size.x, 0, size.z)
+  ])
+  
+  obstacle.global_position = spawn_pos
+  navigation_region.add_child(obstacle)
+
+  # create collision shape
+  var collision_shape = CollisionShape3D.new()
+  collision_shape.shape = box_mesh
+  collision_shape.global_position = spawn_pos
+  obstacle.add_child(collision_shape)
+  print("Spawned debug obstacle at: ", spawn_pos)
+
+func rebake_navigation_mesh():
+  print("Rebaking navigation mesh...")
+  if navigation_region and navigation_region.navigation_mesh:
+    if navigation_region.is_baking():
+      # Wait and retry if already baking
+      print("Navigation mesh is already baking, waiting...")
+      await navigation_region.bake_finished
+
+    navigation_region.bake_navigation_mesh()
+    print("Navigation mesh rebaked!")
+
+func _on_spawn_obstacle_button_pressed():
+  spawn_debug_obstacle()
