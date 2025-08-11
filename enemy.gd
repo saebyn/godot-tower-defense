@@ -70,9 +70,14 @@ func attack_target():
       attacking = true
       attack_timer.start(damage_cooldown)
 
-func _physics_process(_delta):
+func _process(_delta: float) -> void:
   attack_target()
 
+
+func _physics_process(_delta):
+  # Do not query when the map has never synchronized and is empty.
+  if NavigationServer3D.map_get_iteration_id(navigation_agent.get_navigation_map()) == 0:
+    return
   if navigation_agent.is_navigation_finished():
     return
 
@@ -84,5 +89,9 @@ func _physics_process(_delta):
   # face towards the direction of movement
   look_at(next_path_position, Vector3.UP, true)
 
-  velocity = direction * movement_speed
+  navigation_agent.velocity = direction * movement_speed
+
+
+func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
+  velocity = safe_velocity
   move_and_slide()

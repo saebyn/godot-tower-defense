@@ -2,11 +2,11 @@ extends Node3D
 
 @export var camera_move_speed: float = 5.0
 @export var camera_zoom_speed: float = 50.0
-@export var camera_zoom_step: float = 2.0  # Fixed zoom amount per wheel tick
-@export var camera_zoom_fast_multiplier: float = 3.0  # Fast zoom multiplier when Shift is held
-@export var camera_min_size: float = 5.0   # Minimum zoom (closest)
+@export var camera_zoom_step: float = 2.0 # Fixed zoom amount per wheel tick
+@export var camera_zoom_fast_multiplier: float = 3.0 # Fast zoom multiplier when Shift is held
+@export var camera_min_size: float = 5.0 # Minimum zoom (closest)
 @export var camera_max_size: float = 100.0 # Maximum zoom (farthest)
-@export var camera_zoom_duration: float = 0.2  # Duration for smooth zoom transitions
+@export var camera_zoom_duration: float = 0.2 # Duration for smooth zoom transitions
 @onready var camera: Camera3D = $Camera3D
 
 var zoom_tween: Tween
@@ -20,10 +20,10 @@ func _process(delta: float) -> void:
     camera.global_position += move_direction * camera_move_speed * delta
 
   if Input.is_action_just_pressed("camera_rotate_left"):
-    rotate_y(-PI / 2) # Rotate left by 90 degrees
+    camera.rotate_y(-PI / 2) # Rotate left by 90 degrees
 
   if Input.is_action_just_pressed("camera_rotate_right"):
-    rotate_y(PI / 2) # Rotate right by 90 degrees
+    camera.rotate_y(PI / 2) # Rotate right by 90 degrees
 
   # Handle discrete zoom events from mouse wheel and keyboard
   var zoom_in_pressed = Input.is_action_just_pressed("camera_zoom_in") or Input.is_action_just_pressed("camera_zoom_in_key")

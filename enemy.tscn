@@ -8,15 +8,19 @@ points = PackedVector3Array(0.360568, 0.899282, -0.076726, 0.360604, 0.899374, -
 
 [node name="enemy" instance=ExtResource("1_7k104")]
 script = ExtResource("2_4gyqm")
+movement_speed = 20.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." index="1"]
 shape = SubResource("ConvexPolygonShape3D_4gyqm")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." index="2"]
 avoidance_enabled = true
-use_3d_avoidance = true
+time_horizon_agents = 30.0
+time_horizon_obstacles = 30.0
+max_speed = 100.0
 
 [node name="AttackTimer" type="Timer" parent="." index="3"]
 one_shot = true
 
+[connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]
 [connection signal="timeout" from="AttackTimer" to="." method="_on_AttackTimer_timeout"]
