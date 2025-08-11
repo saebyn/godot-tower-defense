@@ -8,6 +8,7 @@ extends Node3D
 @export var camera_max_size: float = 100.0 # Maximum zoom (farthest)
 @export var camera_zoom_duration: float = 0.2 # Duration for smooth zoom transitions
 @onready var camera: Camera3D = $Camera3D
+@onready var navigation_region: NavigationRegion3D = $NavigationRegion3D
 
 var zoom_tween: Tween
 
@@ -51,3 +52,60 @@ func _process(delta: float) -> void:
       zoom_tween.set_ease(Tween.EASE_OUT)
       zoom_tween.set_trans(Tween.TRANS_QUART)
       zoom_tween.tween_property(camera, "size", target_size, camera_zoom_duration)
+
+func spawn_debug_obstacle():
+  # Create a new obstacle at a random position
+  var obstacle_scene = preload("res://obstacle_prefab.tscn")
+  if not obstacle_scene:
+    # Create obstacle manually if prefab doesn't exist
+    create_manual_obstacle()
+  else:
+    var obstacle = obstacle_scene.instantiate()
+    var spawn_pos = Vector3(randf_range(-20, 20), 0, randf_range(-20, 20))
+    obstacle.global_position = spawn_pos
+    navigation_region.add_child(obstacle)
+  
+  # Rebake the navigation mesh
+  rebake_navigation_mesh()
+
+func create_manual_obstacle():
+  # Create obstacle manually
+  var obstacle = NavigationObstacle3D.new()
+  var mesh_instance = MeshInstance3D.new()
+  var box_mesh = BoxMesh.new()
+  box_mesh.size = Vector3(5, 2, 5)
+  mesh_instance.mesh = box_mesh
+  
+  # Create a simple red material
+  var material = StandardMaterial3D.new()
+  material.albedo_color = Color.RED
+  mesh_instance.material_override = material
+  
+  obstacle.add_child(mesh_instance)
+  obstacle.height = 2.0
+  obstacle.affect_navigation_mesh = true
+  obstacle.avoidance_enabled = false
+  
+  # Set obstacle vertices (simple box)
+  var size = Vector3(2.5, 0, 2.5)
+  obstacle.vertices = PackedVector3Array([
+    Vector3(-size.x, 0, -size.z),
+    Vector3(size.x, 0, -size.z),
+    Vector3(size.x, 0, size.z),
+    Vector3(-size.x, 0, size.z)
+  ])
+  
+  var spawn_pos = Vector3(randf_range(-20, 20), 0, randf_range(-20, 20))
+  obstacle.global_position = spawn_pos
+  navigation_region.add_child(obstacle)
+  
+  print("Spawned debug obstacle at: ", spawn_pos)
+
+func rebake_navigation_mesh():
+  print("Rebaking navigation mesh...")
+  if navigation_region and navigation_region.navigation_mesh:
+    navigation_region.bake_navigation_mesh()
+    print("Navigation mesh rebaked!")
+
+func _on_spawn_obstacle_button_pressed():
+  spawn_debug_obstacle()
