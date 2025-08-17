@@ -1,10 +1,15 @@
-[gd_scene load_steps=13 format=3 uid="uid://b3ntnuvrvys63"]
+[gd_scene load_steps=18 format=3 uid="uid://b3ntnuvrvys63"]
 
 [ext_resource type="Script" uid="uid://2x2o4sni7v6q" path="res://main.gd" id="1_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://enemy.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://ef5o7bdag8pq" path="res://target.gd" id="2_0xm2m"]
+[ext_resource type="Script" uid="uid://cfsjav35447gc" path="res://spawn_obstacle_button.gd" id="2_7mycd"]
 [ext_resource type="Environment" uid="uid://oc0251grk5l0" path="res://new_environment.tres" id="2_lquwl"]
+[ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://obstacle.tscn" id="3_272bh"]
 [ext_resource type="Script" uid="uid://du3d1fs80prdm" path="res://enemy_spawner.gd" id="5_lquwl"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lquwl"]
+size = Vector2(16, 16)
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_ig7tw"]
 vertices = PackedVector3Array(17.8745, 0.5, -345.732, -335.375, 0.5, 7.26849, 17.3745, 0.5, 360.268, 17.8745, 0.5, 360.268, 370.625, 0.5, 7.51849, 370.625, 0.5, 7.01849)
@@ -12,6 +17,9 @@ polygons = [PackedInt32Array(5, 4, 0), PackedInt32Array(0, 4, 3), PackedInt32Arr
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_0xm2m"]
 size = Vector2(500, 500)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_272bh"]
+size = Vector3(500, 1, 500)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1bvp3"]
 albedo_color = Color(1, 0, 1, 1)
@@ -82,6 +90,8 @@ shader_parameter/uv2_offset = Vector3(0, 0, 0)
 material = SubResource("ShaderMaterial_272bh")
 size = Vector2(10, 10)
 
+[sub_resource type="Environment" id="Environment_272bh"]
+
 [node name="Main" type="Node3D"]
 script = ExtResource("1_1bvp3")
 camera_move_speed = 25.0
@@ -94,17 +104,22 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="SpawnObstacleButton" type="Button" parent="UI"]
-layout_mode = 0
-anchor_left = 1.0
+[node name="HBoxContainer" type="HBoxContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -200.0
-offset_top = -50.0
-offset_right = -10.0
-offset_bottom = -10.0
-text = "Spawn Debug Obstacle (O)"
+offset_top = -31.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="SpawnObstacleButton" type="Button" parent="UI/HBoxContainer"]
+layout_mode = 2
+text = "Obstacle"
+icon = SubResource("PlaceholderTexture2D_lquwl")
+script = ExtResource("2_7mycd")
+spawnable = ExtResource("3_272bh")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0.707107, -0.707107, 0, 0.707107, 0.707107, 1, 3.09086e-08, -3.09086e-08, -7, 40, 7)
@@ -122,6 +137,13 @@ navigation_mesh = SubResource("NavigationMesh_ig7tw")
 [node name="Ground" type="MeshInstance3D" parent="NavigationRegion3D"]
 transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 17.678, 0, 7.322)
 mesh = SubResource("PlaneMesh_0xm2m")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Ground"]
+collision_layer = 17
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Ground/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("BoxShape3D_272bh")
 
 [node name="Target1" type="MeshInstance3D" parent="." groups=["targets"]]
 transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -15.5563, 2, 40.5564)
@@ -144,5 +166,14 @@ mesh = SubResource("PlaneMesh_7mycd")
 
 [node name="Timer" type="Timer" parent="EnemySpawner"]
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_272bh")
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+enabled = false
+collision_mask = 16
+
+[connection signal="obstacle_spawn_requested" from="UI/HBoxContainer/SpawnObstacleButton" to="." method="_on_obstacle_spawn_requested"]
+[connection signal="pressed" from="UI/HBoxContainer/SpawnObstacleButton" to="UI/HBoxContainer/SpawnObstacleButton" method="_on_pressed"]
 [connection signal="child_exiting_tree" from="EnemySpawner" to="EnemySpawner" method="_on_child_exiting_tree"]
 [connection signal="timeout" from="EnemySpawner/Timer" to="EnemySpawner" method="_on_Timer_timeout"]

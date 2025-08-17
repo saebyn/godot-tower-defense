@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://b27ylmcumxx2r"]
+
+[ext_resource type="Script" uid="uid://xilsmnlbxoyk" path="res://obstacle.gd" id="1_sl1jc"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sl1jc"]
+albedo_color = Color(0, 0.576471, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_lquwl"]
+material = SubResource("StandardMaterial3D_sl1jc")
+size = Vector3(10, 5, 2)
+
+[node name="Obstacle" type="Node3D"]
+script = ExtResource("1_sl1jc")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+mesh = SubResource("BoxMesh_lquwl")

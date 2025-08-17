@@ -9,6 +9,7 @@ extends Node3D
 @export var camera_zoom_duration: float = 0.2 # Duration for smooth zoom transitions
 @onready var camera: Camera3D = $Camera3D
 @onready var navigation_region: NavigationRegion3D = $NavigationRegion3D
+@onready var raycast: RayCast3D = $RayCast3D
 
 var zoom_tween: Tween
 
@@ -54,43 +55,14 @@ func _process(delta: float) -> void:
       zoom_tween.set_trans(Tween.TRANS_QUART)
       zoom_tween.tween_property(camera, "size", target_size, camera_zoom_duration)
 
+  # Handle obstacle placement confirmation
+  if Input.is_action_just_pressed("place_obstacle") and placeable_obstacle:
+    placeable_obstacle.place(navigation_region)
+    rebake_navigation_mesh()
+    placeable_obstacle = null
+  else:
+    project_placed_obstacle()
 
-func create_obstacle(spawn_pos: Vector3):
-  # Create obstacle manually
-  var obstacle = NavigationObstacle3D.new()
-  var mesh_instance = MeshInstance3D.new()
-  var box_mesh = BoxMesh.new()
-  box_mesh.size = Vector3(5, 2, 5)
-  mesh_instance.mesh = box_mesh
-  
-  # Create a simple red material
-  var material = StandardMaterial3D.new()
-  material.albedo_color = Color.RED
-  mesh_instance.material_override = material
-  obstacle.add_child(mesh_instance)
-  obstacle.height = 2.0
-  obstacle.affect_navigation_mesh = true
-  obstacle.avoidance_enabled = false
-  
-  # Set obstacle vertices (simple box)
-  var size = Vector3(2.5, 0, 2.5)
-  obstacle.vertices = PackedVector3Array([
-    Vector3(-size.x, 0, -size.z),
-    Vector3(size.x, 0, -size.z),
-    Vector3(size.x, 0, size.z),
-    Vector3(-size.x, 0, size.z)
-  ])
-  
-  obstacle.global_position = spawn_pos
-  navigation_region.add_child(obstacle)
-
-  # create collision shape
-  var collision_shape = CollisionShape3D.new()
-  collision_shape.shape = BoxShape3D.new()
-  collision_shape.shape.size = size
-  collision_shape.global_position = spawn_pos
-  obstacle.add_child(collision_shape)
-  print("Spawned debug obstacle at: ", spawn_pos)
 
 func rebake_navigation_mesh():
   print("Rebaking navigation mesh...")
@@ -104,5 +76,30 @@ func rebake_navigation_mesh():
     print("Navigation mesh rebaked!")
 
 
-func _on_spawn_obstacle_button_pressed() -> void:
+var placeable_obstacle: PlaceableObstacle = null
+var mouse_position: Vector2
+
+func project_placed_obstacle():
+  if placeable_obstacle:
+    var ray_origin = camera.project_ray_origin(mouse_position)
+    var ray_direction = camera.project_ray_normal(mouse_position)
+    raycast.enabled = true
+    raycast.target_position = ray_direction * 1000.0
+    raycast.position = ray_origin
+
+func _input(event: InputEvent) -> void:
+  if event is InputEventMouseMotion and placeable_obstacle:
+    mouse_position = event.position
+    project_placed_obstacle()
+
+
+func _physics_process(_delta: float) -> void:
+  if placeable_obstacle and raycast.is_colliding():
+    var collision_point = raycast.get_collision_point()
+    placeable_obstacle.global_position = collision_point
+
+
+func _on_obstacle_spawn_requested(obstacle_instance: Node3D) -> void:
   print("Spawn obstacle button pressed")
+  placeable_obstacle = obstacle_instance
+  add_child(placeable_obstacle)
