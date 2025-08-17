@@ -12,14 +12,6 @@ extends Node3D
 
 var zoom_tween: Tween
 
-func _ready():
-  # spawn 100 obstacles at random positions
-  for i in range(100):
-    create_random_obstacle()
-
-  # Rebake the navigation mesh
-  rebake_navigation_mesh()
-
 
 func _process(delta: float) -> void:
   # Update camera position based on player input
@@ -34,10 +26,6 @@ func _process(delta: float) -> void:
 
   if Input.is_action_just_pressed("camera_rotate_right"):
     camera.rotate_y(PI / 2) # Rotate right by 90 degrees
-
-  # Handle obstacle spawning input
-  if Input.is_action_just_pressed("spawn_obstacle"):
-    spawn_debug_obstacle()
 
   # Handle discrete zoom events from mouse wheel and keyboard
   var zoom_in_pressed = Input.is_action_just_pressed("camera_zoom_in") or Input.is_action_just_pressed("camera_zoom_in_key")
@@ -66,19 +54,6 @@ func _process(delta: float) -> void:
       zoom_tween.set_trans(Tween.TRANS_QUART)
       zoom_tween.tween_property(camera, "size", target_size, camera_zoom_duration)
 
-func spawn_debug_obstacle():
-  # Create obstacle manually since we don't have a prefab
-  create_random_obstacle()
-  
-  # Rebake the navigation mesh
-  rebake_navigation_mesh()
-
-func create_random_obstacle():
-  # Generate a random position within a defined range
-  var spawn_pos = Vector3(randf_range(-100, 100), 0, randf_range(-100, 100))
-  
-  # Create the obstacle at the random position
-  create_obstacle(spawn_pos)
 
 func create_obstacle(spawn_pos: Vector3):
   # Create obstacle manually
@@ -111,7 +86,8 @@ func create_obstacle(spawn_pos: Vector3):
 
   # create collision shape
   var collision_shape = CollisionShape3D.new()
-  collision_shape.shape = box_mesh
+  collision_shape.shape = BoxShape3D.new()
+  collision_shape.shape.size = size
   collision_shape.global_position = spawn_pos
   obstacle.add_child(collision_shape)
   print("Spawned debug obstacle at: ", spawn_pos)
@@ -127,5 +103,6 @@ func rebake_navigation_mesh():
     navigation_region.bake_navigation_mesh()
     print("Navigation mesh rebaked!")
 
-func _on_spawn_obstacle_button_pressed():
-  spawn_debug_obstacle()
+
+func _on_spawn_obstacle_button_pressed() -> void:
+  print("Spawn obstacle button pressed")

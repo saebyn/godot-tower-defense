@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://du3d1fs80prdm" path="res://enemy_spawner.gd" id="5_lquwl"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_ig7tw"]
-vertices = PackedVector3Array(17.8742, -2.5, -345.731, -335.376, -2.5, 7.26883, 17.3742, -2.5, 360.269, 17.8742, -2.5, 360.269, 370.624, -2.5, 7.51883, 370.624, -2.5, 7.01883)
+vertices = PackedVector3Array(17.8745, 0.5, -345.732, -335.375, 0.5, 7.26849, 17.3745, 0.5, 360.268, 17.8745, 0.5, 360.268, 370.625, 0.5, 7.51849, 370.625, 0.5, 7.01849)
 polygons = [PackedInt32Array(5, 4, 0), PackedInt32Array(0, 4, 3), PackedInt32Array(0, 3, 2), PackedInt32Array(0, 2, 1)]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_0xm2m"]
@@ -107,11 +107,11 @@ offset_bottom = -10.0
 text = "Spawn Debug Obstacle (O)"
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0.707107, -0.707107, 0, 0.707107, 0.707107, 1, 3.09086e-08, -3.09086e-08, -35.565, 40, 0)
+transform = Transform3D(-4.37114e-08, 0.707107, -0.707107, 0, 0.707107, 0.707107, 1, 3.09086e-08, -3.09086e-08, -7, 40, 7)
 environment = ExtResource("2_lquwl")
 projection = 1
 fov = 58.3
-size = 20.0
+size = 100.0
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.866025, -0.25, 0.433013, 2.18557e-08, 0.866025, 0.5, -0.5, -0.433013, 0.75, 3, 3, 4)
@@ -144,6 +144,5 @@ mesh = SubResource("PlaneMesh_7mycd")
 
 [node name="Timer" type="Timer" parent="EnemySpawner"]
 
-[connection signal="pressed" from="UI/SpawnObstacleButton" to="." method="_on_spawn_obstacle_button_pressed"]
 [connection signal="child_exiting_tree" from="EnemySpawner" to="EnemySpawner" method="_on_child_exiting_tree"]
 [connection signal="timeout" from="EnemySpawner/Timer" to="EnemySpawner" method="_on_Timer_timeout"]
