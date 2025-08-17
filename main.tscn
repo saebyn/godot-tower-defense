@@ -1,42 +1,23 @@
-[gd_scene load_steps=20 format=3 uid="uid://b3ntnuvrvys63"]
+[gd_scene load_steps=13 format=3 uid="uid://b3ntnuvrvys63"]
 
 [ext_resource type="Script" uid="uid://2x2o4sni7v6q" path="res://main.gd" id="1_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://enemy.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://ef5o7bdag8pq" path="res://target.gd" id="2_0xm2m"]
 [ext_resource type="Environment" uid="uid://oc0251grk5l0" path="res://new_environment.tres" id="2_lquwl"]
-[ext_resource type="Script" uid="uid://1x6qg2v0fl2c" path="res://avoidance_obstacle.gd" id="4_7mycd"]
 [ext_resource type="Script" uid="uid://du3d1fs80prdm" path="res://enemy_spawner.gd" id="5_lquwl"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_ig7tw"]
-vertices = PackedVector3Array(-8.37579, 0.5, 22.2688, -1.62579, 0.5, 19.2688, -6.62579, 0.5, 17.7688, -6.62579, 0.5, 16.2688, -138.626, 0.5, -189.231, -26.6258, 0.5, 26.2688, 8.87421, 0.5, 13.7688, 23.1242, 0.5, 24.2688, 30.3742, 0.5, 16.5188, 7.12421, 0.5, 13.5188, 101.874, 0.5, -261.481, 17.6242, 0.5, -345.731, 104.374, 0.5, -54.2312, 107.124, 0.5, -256.231, 108.124, 0.5, -58.2312, 111.624, 0.5, -251.731, 296.874, 0.5, -66.4812, -149.876, 0.5, 192.769, -26.6258, 0.5, 27.5188, -27.1258, 0.5, 27.2688, -27.1258, 0.5, 26.5188, -335.376, 0.5, 7.26883, 24.3742, 0.5, 25.7688, 31.8742, 0.5, 33.0188, 270.374, 0.5, 107.519, 370.624, 0.5, 7.51883, 370.624, 0.5, 7.01883, 22.6242, 0.5, 27.0188, 0.374207, 0.5, 36.7688, 17.3742, 0.5, 360.269, 17.8742, 0.5, 360.269, 105.624, 0.5, 272.269, -2.87579, 0.5, 36.2688)
-polygons = [PackedInt32Array(2, 1, 0), PackedInt32Array(2, 0, 3), PackedInt32Array(3, 0, 5), PackedInt32Array(3, 5, 4), PackedInt32Array(6, 8, 7), PackedInt32Array(9, 3, 4), PackedInt32Array(6, 9, 8), PackedInt32Array(8, 9, 4), PackedInt32Array(8, 4, 10), PackedInt32Array(10, 4, 11), PackedInt32Array(13, 12, 10), PackedInt32Array(10, 12, 8), PackedInt32Array(14, 12, 15), PackedInt32Array(15, 12, 13), PackedInt32Array(15, 16, 14), PackedInt32Array(19, 18, 17), PackedInt32Array(19, 17, 20), PackedInt32Array(20, 17, 21), PackedInt32Array(20, 21, 4), PackedInt32Array(4, 5, 20), PackedInt32Array(7, 8, 22), PackedInt32Array(22, 8, 23), PackedInt32Array(23, 8, 12), PackedInt32Array(12, 14, 23), PackedInt32Array(23, 14, 16), PackedInt32Array(23, 16, 24), PackedInt32Array(24, 16, 25), PackedInt32Array(16, 26, 25), PackedInt32Array(27, 22, 23), PackedInt32Array(28, 27, 23), PackedInt32Array(30, 29, 31), PackedInt32Array(31, 29, 17), PackedInt32Array(31, 17, 28), PackedInt32Array(31, 28, 23), PackedInt32Array(17, 18, 32), PackedInt32Array(17, 32, 28), PackedInt32Array(23, 24, 31)]
+vertices = PackedVector3Array(17.8745, 0.5, -345.732, -335.375, 0.5, 7.26849, 17.3745, 0.5, 360.268, 17.8745, 0.5, 360.268, 370.625, 0.5, 7.51849, 370.625, 0.5, 7.01849)
+polygons = [PackedInt32Array(5, 4, 0), PackedInt32Array(0, 4, 3), PackedInt32Array(0, 3, 2), PackedInt32Array(0, 2, 1)]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_0xm2m"]
 size = Vector2(500, 500)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7mycd"]
-albedo_color = Color(1, 1, 0.431373, 1)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_272bh"]
-material = SubResource("StandardMaterial3D_7mycd")
-size = Vector2(100, 100)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ig7tw"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_0xm2m"]
-material = SubResource("StandardMaterial3D_ig7tw")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1bvp3"]
 albedo_color = Color(1, 0, 1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ig7tw"]
 size = Vector3(1.39, 3.52, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lquwl"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_7mycd"]
-material = SubResource("StandardMaterial3D_lquwl")
-size = Vector3(100, 10, 20)
 
 [sub_resource type="Shader" id="Shader_7mycd"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.4.1.stable's StandardMaterial3D.
@@ -105,12 +86,32 @@ size = Vector2(10, 10)
 script = ExtResource("1_1bvp3")
 camera_move_speed = 25.0
 
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SpawnObstacleButton" type="Button" parent="UI"]
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -50.0
+offset_right = -10.0
+offset_bottom = -10.0
+text = "Spawn Debug Obstacle (O)"
+
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0.707107, -0.707107, 0, 0.707107, 0.707107, 1, 3.09086e-08, -3.09086e-08, -35.565, 40, 0)
+transform = Transform3D(-4.37114e-08, 0.707107, -0.707107, 0, 0.707107, 0.707107, 1, 3.09086e-08, -3.09086e-08, -7, 40, 7)
 environment = ExtResource("2_lquwl")
 projection = 1
 fov = 58.3
-size = 20.0
+size = 100.0
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.866025, -0.25, 0.433013, 2.18557e-08, 0.866025, 0.5, -0.5, -0.433013, 0.75, 3, 3, 4)
@@ -119,45 +120,23 @@ transform = Transform3D(0.866025, -0.25, 0.433013, 2.18557e-08, 0.866025, 0.5, -
 navigation_mesh = SubResource("NavigationMesh_ig7tw")
 
 [node name="Ground" type="MeshInstance3D" parent="NavigationRegion3D"]
-transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 17.6777, -3, 7.32233)
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 17.678, 0, 7.322)
 mesh = SubResource("PlaneMesh_0xm2m")
-
-[node name="NavigationObstacle3D" type="NavigationObstacle3D" parent="NavigationRegion3D"]
-height = 5.75
-vertices = PackedVector3Array(8, 0, 14, 24.0508, 0, 25.618, -0.509985, 0, 36.3692, -26.8318, 0, 26.9156, -9, 0, 23, 0, 0, 19, -7, 0, 17)
-affect_navigation_mesh = true
-avoidance_enabled = false
-
-[node name="NavigationObstacle3D2" type="NavigationObstacle3D" parent="NavigationRegion3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -9, 0)
-height = 26.15
-vertices = PackedVector3Array(68, 0, -14, 69, 0, -68, 168, 0, -68, 168, 0, 34, 69, 0, 34)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/NavigationObstacle3D2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 118, 7, -16)
-mesh = SubResource("PlaneMesh_272bh")
-
-[node name="TestObstacle" type="MeshInstance3D" parent="."]
-transform = Transform3D(33.8074, 0, 5.12461, 0, 12.19, 0, -9.05865, 0, 19.1253, 0.87868, 0, 24.1213)
-mesh = SubResource("BoxMesh_0xm2m")
 
 [node name="Target1" type="MeshInstance3D" parent="." groups=["targets"]]
 transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -15.5563, 2, 40.5564)
 material_override = SubResource("StandardMaterial3D_1bvp3")
 mesh = SubResource("BoxMesh_ig7tw")
 script = ExtResource("2_0xm2m")
-
-[node name="TestAvoidanceObstacle" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 23.8787, 0, -91.8787)
-mesh = SubResource("BoxMesh_7mycd")
-script = ExtResource("4_7mycd")
+hitpoints = 100000.0
 
 [node name="EnemySpawner" type="Node3D" parent="." node_paths=PackedStringArray("spawn_area")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 190, 0, -25)
 script = ExtResource("5_lquwl")
 spawn_area = NodePath("MeshInstance3D")
+spawn_interval = 4.0
 enemy_scene = ExtResource("1_ig7tw")
-max_enemies = 2
+max_enemies = 100
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="EnemySpawner"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
