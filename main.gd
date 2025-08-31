@@ -23,6 +23,7 @@ func _process(delta: float) -> void:
     var move_direction := Vector3(input_vector.x, 0, input_vector.y)
     camera.global_position += move_direction * camera_move_speed * delta
 
+  # Handle camera rotation
   if Input.is_action_just_pressed("camera_rotate_left"):
     camera.rotate_y(-PI / 2) # Rotate left by 90 degrees
 
@@ -56,11 +57,19 @@ func _process(delta: float) -> void:
       zoom_tween.set_trans(Tween.TRANS_QUART)
       zoom_tween.tween_property(camera, "size", target_size, camera_zoom_duration)
 
-  # Handle obstacle placement confirmation
-  if Input.is_action_just_pressed("place_obstacle") and placeable_obstacle:
-    _place_obstacle()
-  else:
-    _project_placed_obstacle()
+  if placeable_obstacle:
+    if Input.is_action_just_pressed("place_cancel"):
+      # Handle obstacle placement cancellation
+      _cancel_obstacle_placement()
+    elif Input.is_action_just_pressed("place_obstacle"):
+      # Handle obstacle placement confirmation
+      _place_obstacle()
+    elif Input.is_action_just_pressed("place_rotate_left"):
+      # Rotate the obstacle left
+      placeable_obstacle.rotate_y(-PI / 2) # Rotate left by 90 degrees
+    elif Input.is_action_just_pressed("place_rotate_right"):
+      # Rotate the obstacle right
+      placeable_obstacle.rotate_y(PI / 2) # Rotate right by 90 degrees
 
 
 func rebake_navigation_mesh():
@@ -109,9 +118,13 @@ func _place_obstacle() -> void:
   placeable_obstacle = null
   raycast.enabled = false
 
+func _cancel_obstacle_placement() -> void:
+  placeable_obstacle.queue_free()
+  placeable_obstacle = null
+  raycast.enabled = false
+
 func _project_placed_obstacle():
-  if placeable_obstacle:
-    var ray_origin = camera.project_ray_origin(mouse_position)
-    var ray_direction = camera.project_ray_normal(mouse_position)
-    raycast.target_position = ray_direction * raycast_length
-    raycast.position = ray_origin
+  var ray_origin = camera.project_ray_origin(mouse_position)
+  var ray_direction = camera.project_ray_normal(mouse_position)
+  raycast.target_position = ray_direction * raycast_length
+  raycast.position = ray_origin
