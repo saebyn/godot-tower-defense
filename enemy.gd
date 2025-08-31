@@ -5,6 +5,7 @@ extends CharacterBody3D
 @export var target_group: String = "targets"
 
 @onready var attack: Attack = $Attack
+@onready var health: Health = $Health
 
 var current_target: Node3D = null
 
@@ -15,6 +16,10 @@ func _ready():
   # and the navigation layout.
   navigation_agent.path_desired_distance = 0.5
   navigation_agent.target_desired_distance = target_desired_distance
+
+  # Connect the death signal from Health component
+  if health:
+    health.died.connect(_on_died)
 
   # Make sure to not await during _ready.
   actor_setup.call_deferred()
@@ -83,3 +88,8 @@ func _physics_process(_delta):
   # Move directly without avoidance
   velocity = direction * movement_speed
   move_and_slide()
+
+
+func _on_died():
+  print("Enemy died, removing from scene")
+  queue_free()

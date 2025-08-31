@@ -92,6 +92,9 @@ func _input(event: InputEvent) -> void:
   if event is InputEventMouseMotion and placeable_obstacle:
     mouse_position = event.position
     _project_placed_obstacle()
+  elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+    if not placeable_obstacle:  # Only handle enemy clicks when not placing obstacles
+      _handle_enemy_click(event.position)
 
 
 func _physics_process(_delta: float) -> void:
@@ -128,3 +131,36 @@ func _project_placed_obstacle():
   var ray_direction = camera.project_ray_normal(mouse_position)
   raycast.target_position = ray_direction * raycast_length
   raycast.position = ray_origin
+
+
+func _handle_enemy_click(click_position: Vector2):
+  # Create a raycast from the camera to detect what was clicked
+  var ray_origin = camera.project_ray_origin(click_position)
+  var ray_direction = camera.project_ray_normal(click_position)
+  
+  # Use the existing raycast but temporarily change its collision mask
+  var original_mask = raycast.collision_mask
+  var original_enabled = raycast.enabled
+  
+  raycast.enabled = true
+  raycast.collision_mask = 4  # Layer 3 for enemies (2^2 = 4)
+  raycast.position = ray_origin
+  raycast.target_position = ray_direction * raycast_length
+  
+  # Force the raycast to update
+  raycast.force_raycast_update()
+  
+  if raycast.is_colliding():
+    var collider = raycast.get_collider()
+    print("Clicked on: ", collider.name)
+    
+    # Check if the clicked object is an enemy (has Health component)
+    if collider.has_node("Health"):
+      var health = collider.get_node("Health")
+      if health is Health:
+        print("Dealing damage to enemy: ", collider.name)
+        health.take_damage(25)  # Deal 25 damage on click
+  
+  # Restore original raycast settings
+  raycast.collision_mask = original_mask
+  raycast.enabled = original_enabled
