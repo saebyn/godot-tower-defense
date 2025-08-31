@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://b3ntnuvrvys63"]
+[gd_scene load_steps=19 format=3 uid="uid://b3ntnuvrvys63"]
 
 [ext_resource type="Script" uid="uid://2x2o4sni7v6q" path="res://main.gd" id="1_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://enemy.tscn" id="1_ig7tw"]
@@ -7,6 +7,7 @@
 [ext_resource type="Environment" uid="uid://oc0251grk5l0" path="res://new_environment.tres" id="2_lquwl"]
 [ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://obstacle.tscn" id="3_272bh"]
 [ext_resource type="Script" uid="uid://du3d1fs80prdm" path="res://enemy_spawner.gd" id="5_lquwl"]
+[ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://health.tscn" id="6_5vw27"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lquwl"]
 size = Vector2(16, 16)
@@ -151,7 +152,8 @@ transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 
 material_override = SubResource("StandardMaterial3D_1bvp3")
 mesh = SubResource("BoxMesh_ig7tw")
 script = ExtResource("2_0xm2m")
-hitpoints = 100000.0
+
+[node name="Health" parent="Target1" instance=ExtResource("6_5vw27")]
 
 [node name="EnemySpawner" type="Node3D" parent="." node_paths=PackedStringArray("spawn_area")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 190, 0, -25)

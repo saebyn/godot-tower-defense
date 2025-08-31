@@ -2,15 +2,13 @@ extends CharacterBody3D
 
 @export var movement_speed: float = 2.0
 @export var target_desired_distance: float = 4.0
-@export var damage_amount: int = 10
-@export var damage_cooldown: float = 1.0
 @export var target_group: String = "targets"
 
+@onready var attack: Attack = $Attack
+
 var current_target: Node3D = null
-var attacking: bool = false
 
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
-@onready var attack_timer: Timer = $AttackTimer
 
 func _ready():
   # These values need to be adjusted for the actor's speed
@@ -26,6 +24,7 @@ func choose_target():
   var targets := get_tree().get_nodes_in_group(target_group)
   if targets.size() == 0:
     current_target = null
+    attack.cancel()
     # No targets available, stop the agent.
     navigation_agent.set_target_position(global_position)
     print("No targets available.")
@@ -42,11 +41,6 @@ func actor_setup():
   # Now that the navigation map is no longer empty, set the movement target.
   choose_target()
 
-func _on_AttackTimer_timeout():
-  print("Attack timer timed out, attacking target.")
-  if current_target:
-    current_target.hit(damage_amount)
-  attacking = false
 
 func attack_target():
   if not current_target:
@@ -64,11 +58,7 @@ func attack_target():
   # check if the target is in range
   var distance_to_target := global_position.distance_to(current_target.global_position)
   if distance_to_target <= target_desired_distance:
-    if not attacking:
-      print("Target is in range, attacking.")
-      # Attack the target
-      attacking = true
-      attack_timer.start(damage_cooldown)
+      attack.perform_attack(current_target)
 
 func _process(_delta: float) -> void:
   attack_target()
