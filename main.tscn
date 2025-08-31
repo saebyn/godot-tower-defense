@@ -14,6 +14,7 @@ size = Vector2(16, 16)
 [sub_resource type="NavigationMesh" id="NavigationMesh_ig7tw"]
 vertices = PackedVector3Array(17.8745, 0.5, -345.732, -335.375, 0.5, 7.26849, 17.3745, 0.5, 360.268, 17.8745, 0.5, 360.268, 370.625, 0.5, 7.51849, 370.625, 0.5, 7.01849)
 polygons = [PackedInt32Array(5, 4, 0), PackedInt32Array(0, 4, 3), PackedInt32Array(0, 3, 2), PackedInt32Array(0, 2, 1)]
+agent_radius = 2.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_0xm2m"]
 size = Vector2(500, 500)
@@ -158,7 +159,7 @@ script = ExtResource("5_lquwl")
 spawn_area = NodePath("MeshInstance3D")
 spawn_interval = 4.0
 enemy_scene = ExtResource("1_ig7tw")
-max_enemies = 100
+max_enemies = 3
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="EnemySpawner"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

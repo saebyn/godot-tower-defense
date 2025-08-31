@@ -7,6 +7,7 @@ extends Node3D
 @export var camera_min_size: float = 5.0 # Minimum zoom (closest)
 @export var camera_max_size: float = 100.0 # Maximum zoom (farthest)
 @export var camera_zoom_duration: float = 0.2 # Duration for smooth zoom transitions
+@export var raycast_length: float = 1000.0 # Length of the raycast for obstacle placement
 @onready var camera: Camera3D = $Camera3D
 @onready var navigation_region: NavigationRegion3D = $NavigationRegion3D
 @onready var raycast: RayCast3D = $RayCast3D
@@ -57,11 +58,9 @@ func _process(delta: float) -> void:
 
   # Handle obstacle placement confirmation
   if Input.is_action_just_pressed("place_obstacle") and placeable_obstacle:
-    placeable_obstacle.place(navigation_region)
-    rebake_navigation_mesh()
-    placeable_obstacle = null
+    _place_obstacle()
   else:
-    project_placed_obstacle()
+    _project_placed_obstacle()
 
 
 func rebake_navigation_mesh():
@@ -79,18 +78,11 @@ func rebake_navigation_mesh():
 var placeable_obstacle: PlaceableObstacle = null
 var mouse_position: Vector2
 
-func project_placed_obstacle():
-  if placeable_obstacle:
-    var ray_origin = camera.project_ray_origin(mouse_position)
-    var ray_direction = camera.project_ray_normal(mouse_position)
-    raycast.enabled = true
-    raycast.target_position = ray_direction * 1000.0
-    raycast.position = ray_origin
 
 func _input(event: InputEvent) -> void:
   if event is InputEventMouseMotion and placeable_obstacle:
     mouse_position = event.position
-    project_placed_obstacle()
+    _project_placed_obstacle()
 
 
 func _physics_process(_delta: float) -> void:
@@ -99,7 +91,27 @@ func _physics_process(_delta: float) -> void:
     placeable_obstacle.global_position = collision_point
 
 
+# TODO implement rules for object placement
+# - check for collisions with other obstacles
+# - ensure the obstacle is placed within the navigation region
+# - check for space availability
+# - check that obstacle is not placed on terrain that does not support it (e.g., water, roads)
+
 func _on_obstacle_spawn_requested(obstacle_instance: Node3D) -> void:
   print("Spawn obstacle button pressed")
   placeable_obstacle = obstacle_instance
+  raycast.enabled = true
   add_child(placeable_obstacle)
+
+func _place_obstacle() -> void:
+  placeable_obstacle.place(navigation_region)
+  rebake_navigation_mesh()
+  placeable_obstacle = null
+  raycast.enabled = false
+
+func _project_placed_obstacle():
+  if placeable_obstacle:
+    var ray_origin = camera.project_ray_origin(mouse_position)
+    var ray_direction = camera.project_ray_normal(mouse_position)
+    raycast.target_position = ray_direction * raycast_length
+    raycast.position = ray_origin

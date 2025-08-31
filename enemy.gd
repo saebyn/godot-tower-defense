@@ -77,6 +77,7 @@ func _process(_delta: float) -> void:
 func _physics_process(_delta):
   # Do not query when the map has never synchronized and is empty.
   if NavigationServer3D.map_get_iteration_id(navigation_agent.get_navigation_map()) == 0:
+    print("Navigation map is empty, cannot navigate.")
     return
   if navigation_agent.is_navigation_finished():
     return
