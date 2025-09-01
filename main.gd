@@ -1,5 +1,6 @@
 extends Node3D
 
+@export_group("Camera Settings")
 @export var camera_move_speed: float = 5.0
 @export var camera_zoom_speed: float = 50.0
 @export var camera_zoom_step: float = 2.0 # Fixed zoom amount per wheel tick
@@ -7,12 +8,16 @@ extends Node3D
 @export var camera_min_size: float = 5.0 # Minimum zoom (closest)
 @export var camera_max_size: float = 100.0 # Maximum zoom (farthest)
 @export var camera_zoom_duration: float = 0.2 # Duration for smooth zoom transitions
-@export var raycast_length: float = 1000.0 # Length of the raycast for obstacle placement
+
+@export_group("Attack Settings")
+@export var raycast_length: float = 1000.0
+
 @onready var camera: Camera3D = $Camera3D
 @onready var navigation_region: NavigationRegion3D = $NavigationRegion3D
-@onready var raycast: RayCast3D = $RayCast3D
 @onready var enemy_raycast: RayCast3D = $EnemyRayCast3D
 @onready var attack: Attack = $Attack
+
+@onready var obstacle_placement: ObstaclePlacement = $ObstaclePlacement
 
 var zoom_tween: Tween
 
@@ -59,20 +64,6 @@ func _process(delta: float) -> void:
       zoom_tween.set_trans(Tween.TRANS_QUART)
       zoom_tween.tween_property(camera, "size", target_size, camera_zoom_duration)
 
-  if placeable_obstacle:
-    if Input.is_action_just_pressed("place_cancel"):
-      # Handle obstacle placement cancellation
-      _cancel_obstacle_placement()
-    elif Input.is_action_just_pressed("place_obstacle"):
-      # Handle obstacle placement confirmation
-      _place_obstacle()
-    elif Input.is_action_just_pressed("place_rotate_left"):
-      # Rotate the obstacle left
-      placeable_obstacle.rotate_y(-PI / 2) # Rotate left by 90 degrees
-    elif Input.is_action_just_pressed("place_rotate_right"):
-      # Rotate the obstacle right
-      placeable_obstacle.rotate_y(PI / 2) # Rotate right by 90 degrees
-
 
 func rebake_navigation_mesh():
   print("Rebaking navigation mesh...")
@@ -86,53 +77,9 @@ func rebake_navigation_mesh():
     print("Navigation mesh rebaked!")
 
 
-var placeable_obstacle: PlaceableObstacle = null
-var mouse_position: Vector2
-
-
 func _input(event: InputEvent) -> void:
-  if event is InputEventMouseMotion and placeable_obstacle:
-    mouse_position = event.position
-    _project_placed_obstacle()
-  elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-    if not placeable_obstacle: # Only handle enemy clicks when not placing obstacles
+  if not obstacle_placement.busy and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
       _handle_enemy_click(event.position)
-
-
-func _physics_process(_delta: float) -> void:
-  if placeable_obstacle and raycast.is_colliding():
-    var collision_point = raycast.get_collision_point()
-    placeable_obstacle.global_position = collision_point
-
-
-# TODO implement rules for object placement
-# - check for collisions with other obstacles
-# - ensure the obstacle is placed within the navigation region
-# - check for space availability
-# - check that obstacle is not placed on terrain that does not support it (e.g., water, roads)
-
-func _on_obstacle_spawn_requested(obstacle_instance: Node3D) -> void:
-  print("Spawn obstacle button pressed")
-  placeable_obstacle = obstacle_instance
-  raycast.enabled = true
-  add_child(placeable_obstacle)
-
-func _place_obstacle() -> void:
-  placeable_obstacle.place(navigation_region)
-  rebake_navigation_mesh()
-  placeable_obstacle = null
-  raycast.enabled = false
-
-func _cancel_obstacle_placement() -> void:
-  placeable_obstacle.queue_free()
-  placeable_obstacle = null
-  raycast.enabled = false
-
-func _project_placed_obstacle():
-  var ray_origin = camera.project_ray_origin(mouse_position)
-  var ray_direction = camera.project_ray_normal(mouse_position)
-  raycast.target_position = ray_direction * raycast_length
-  raycast.position = ray_origin
 
 
 func _handle_enemy_click(click_position: Vector2):

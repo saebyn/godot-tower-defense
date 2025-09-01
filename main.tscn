@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://b3ntnuvrvys63"]
+[gd_scene load_steps=21 format=3 uid="uid://b3ntnuvrvys63"]
 
 [ext_resource type="Script" uid="uid://2x2o4sni7v6q" path="res://main.gd" id="1_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://enemy.tscn" id="1_ig7tw"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://obstacle.tscn" id="3_272bh"]
 [ext_resource type="Script" uid="uid://du3d1fs80prdm" path="res://enemy_spawner.gd" id="5_lquwl"]
 [ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://health.tscn" id="6_5vw27"]
+[ext_resource type="Script" uid="uid://mx50xvayo6d8" path="res://obstacle_placement.gd" id="10_4c57u"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lquwl"]
 size = Vector2(16, 16)
@@ -176,13 +177,18 @@ mesh = SubResource("PlaneMesh_7mycd")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_272bh")
 
-[node name="RayCast3D" type="RayCast3D" parent="."]
-enabled = false
-collision_mask = 16
-
 [node name="EnemyRayCast3D" type="RayCast3D" parent="."]
 enabled = false
 collision_mask = 4
+
+[node name="ObstaclePlacement" type="Node" parent="." node_paths=PackedStringArray("navigation_region", "camera")]
+script = ExtResource("10_4c57u")
+navigation_region = NodePath("../NavigationRegion3D")
+camera = NodePath("../Camera3D")
+
+[node name="RayCast3D" type="RayCast3D" parent="ObstaclePlacement"]
+enabled = false
+collision_mask = 16
 
 [connection signal="obstacle_spawn_requested" from="UI/HBoxContainer/SpawnObstacleButton" to="." method="_on_obstacle_spawn_requested"]
 [connection signal="pressed" from="UI/HBoxContainer/SpawnObstacleButton" to="UI/HBoxContainer/SpawnObstacleButton" method="_on_pressed"]
@@ -190,3 +196,4 @@ collision_mask = 4
 [connection signal="died" from="Target1/Health" to="Target1" method="_on_died"]
 [connection signal="child_exiting_tree" from="EnemySpawner" to="EnemySpawner" method="_on_child_exiting_tree"]
 [connection signal="timeout" from="EnemySpawner/Timer" to="EnemySpawner" method="_on_Timer_timeout"]
+[connection signal="rebake_navigation_mesh" from="ObstaclePlacement" to="." method="rebake_navigation_mesh"]
