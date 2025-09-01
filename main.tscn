@@ -1,9 +1,10 @@
-[gd_scene load_steps=19 format=3 uid="uid://b3ntnuvrvys63"]
+[gd_scene load_steps=20 format=3 uid="uid://b3ntnuvrvys63"]
 
 [ext_resource type="Script" uid="uid://2x2o4sni7v6q" path="res://main.gd" id="1_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://enemy.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://ef5o7bdag8pq" path="res://target.gd" id="2_0xm2m"]
 [ext_resource type="Script" uid="uid://cfsjav35447gc" path="res://spawn_obstacle_button.gd" id="2_7mycd"]
+[ext_resource type="PackedScene" uid="uid://d2nt6gtj5g3cm" path="res://attack.tscn" id="2_kek77"]
 [ext_resource type="Environment" uid="uid://oc0251grk5l0" path="res://new_environment.tres" id="2_lquwl"]
 [ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://obstacle.tscn" id="3_272bh"]
 [ext_resource type="Script" uid="uid://du3d1fs80prdm" path="res://enemy_spawner.gd" id="5_lquwl"]
@@ -97,6 +98,9 @@ size = Vector2(10, 10)
 [node name="Main" type="Node3D"]
 script = ExtResource("1_1bvp3")
 camera_move_speed = 25.0
+
+[node name="Attack" parent="." instance=ExtResource("2_kek77")]
+damage_amount = 1
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3

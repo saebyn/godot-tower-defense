@@ -12,6 +12,7 @@ extends Node3D
 @onready var navigation_region: NavigationRegion3D = $NavigationRegion3D
 @onready var raycast: RayCast3D = $RayCast3D
 @onready var enemy_raycast: RayCast3D = $EnemyRayCast3D
+@onready var attack: Attack = $Attack
 
 var zoom_tween: Tween
 
@@ -94,7 +95,7 @@ func _input(event: InputEvent) -> void:
     mouse_position = event.position
     _project_placed_obstacle()
   elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-    if not placeable_obstacle:  # Only handle enemy clicks when not placing obstacles
+    if not placeable_obstacle: # Only handle enemy clicks when not placing obstacles
       _handle_enemy_click(event.position)
 
 
@@ -150,13 +151,8 @@ func _handle_enemy_click(click_position: Vector2):
   if enemy_raycast.is_colliding():
     var collider = enemy_raycast.get_collider()
     print("Clicked on: ", collider.name)
-    
-    # Check if the clicked object is an enemy (has Health component)
-    if collider.has_node("Health"):
-      var health = collider.get_node("Health")
-      if health is Health:
-        print("Dealing damage to enemy: ", collider.name)
-        health.take_damage(25)  # Deal 25 damage on click
+    # If the collider is an enemy, perform an attack
+    attack.perform_attack(collider)
   
   # Disable the enemy raycast after use
   enemy_raycast.enabled = false
