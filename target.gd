@@ -5,5 +5,5 @@ func _on_died():
   queue_free() # Remove the enemy from the scene when it dies.
 
 
-func _on_health_damaged(amount: float, hitpoints: int) -> void:
+func _on_health_damaged(amount: int, hitpoints: int) -> void:
   print("Enemy took ", amount, " damage. Remaining HP: ", hitpoints)
