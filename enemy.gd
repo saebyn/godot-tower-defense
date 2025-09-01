@@ -97,6 +97,3 @@ func _on_died():
 
 func _on_health_damaged(amount: int, hitpoints: int) -> void:
   print("Enemy took ", amount, " damage. Remaining HP: ", hitpoints)
-
-func _on_health_damaged(amount: int, hitpoints: int) -> void:
-  print("Enemy took ", amount, " damage. Remaining HP: ", hitpoints)
