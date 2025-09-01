@@ -11,6 +11,7 @@ extends Node3D
 @onready var camera: Camera3D = $Camera3D
 @onready var navigation_region: NavigationRegion3D = $NavigationRegion3D
 @onready var raycast: RayCast3D = $RayCast3D
+@onready var enemy_raycast: RayCast3D = $EnemyRayCast3D
 
 var zoom_tween: Tween
 
@@ -138,20 +139,16 @@ func _handle_enemy_click(click_position: Vector2):
   var ray_origin = camera.project_ray_origin(click_position)
   var ray_direction = camera.project_ray_normal(click_position)
   
-  # Use the existing raycast but temporarily change its collision mask
-  var original_mask = raycast.collision_mask
-  var original_enabled = raycast.enabled
-  
-  raycast.enabled = true
-  raycast.collision_mask = 4  # Layer 3 for enemies (2^2 = 4)
-  raycast.position = ray_origin
-  raycast.target_position = ray_direction * raycast_length
+  # Use the dedicated enemy raycast
+  enemy_raycast.enabled = true
+  enemy_raycast.position = ray_origin
+  enemy_raycast.target_position = ray_direction * raycast_length
   
   # Force the raycast to update
-  raycast.force_raycast_update()
+  enemy_raycast.force_raycast_update()
   
-  if raycast.is_colliding():
-    var collider = raycast.get_collider()
+  if enemy_raycast.is_colliding():
+    var collider = enemy_raycast.get_collider()
     print("Clicked on: ", collider.name)
     
     # Check if the clicked object is an enemy (has Health component)
@@ -161,6 +158,5 @@ func _handle_enemy_click(click_position: Vector2):
         print("Dealing damage to enemy: ", collider.name)
         health.take_damage(25)  # Deal 25 damage on click
   
-  # Restore original raycast settings
-  raycast.collision_mask = original_mask
-  raycast.enabled = original_enabled
+  # Disable the enemy raycast after use
+  enemy_raycast.enabled = false

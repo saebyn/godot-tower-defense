@@ -176,6 +176,10 @@ environment = SubResource("Environment_272bh")
 enabled = false
 collision_mask = 16
 
+[node name="EnemyRayCast3D" type="RayCast3D" parent="."]
+enabled = false
+collision_mask = 4
+
 [connection signal="obstacle_spawn_requested" from="UI/HBoxContainer/SpawnObstacleButton" to="." method="_on_obstacle_spawn_requested"]
 [connection signal="pressed" from="UI/HBoxContainer/SpawnObstacleButton" to="UI/HBoxContainer/SpawnObstacleButton" method="_on_pressed"]
 [connection signal="child_exiting_tree" from="EnemySpawner" to="EnemySpawner" method="_on_child_exiting_tree"]
