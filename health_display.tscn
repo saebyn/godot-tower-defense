@@ -1,13 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://dgj6h7k8l5nap"]
+[gd_scene load_steps=2 format=3 uid="uid://dgj6h7k8l5nap"]
 
-[ext_resource type="Script" path="res://health_display.gd" id="1_health_display"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
-bg_color = Color(0.2, 0.2, 0.2, 0.8)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
+[ext_resource type="Script" uid="uid://cyuo8nwn3avyk" path="res://health_display.gd" id="1_health_display"]
 
 [node name="HealthDisplay" type="Control"]
 layout_mode = 3
@@ -38,7 +31,6 @@ grow_vertical = 2
 
 [node name="HealthBar" type="ProgressBar" parent="VBoxContainer"]
 layout_mode = 2
-max_value = 100.0
 value = 100.0
 show_percentage = false
 
