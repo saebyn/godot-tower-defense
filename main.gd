@@ -11,6 +11,8 @@ extends Node3D
 @onready var camera: Camera3D = $Camera3D
 @onready var navigation_region: NavigationRegion3D = $NavigationRegion3D
 @onready var raycast: RayCast3D = $RayCast3D
+@onready var enemy_raycast: RayCast3D = $EnemyRayCast3D
+@onready var attack: Attack = $Attack
 
 var zoom_tween: Tween
 
@@ -92,6 +94,9 @@ func _input(event: InputEvent) -> void:
   if event is InputEventMouseMotion and placeable_obstacle:
     mouse_position = event.position
     _project_placed_obstacle()
+  elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+    if not placeable_obstacle: # Only handle enemy clicks when not placing obstacles
+      _handle_enemy_click(event.position)
 
 
 func _physics_process(_delta: float) -> void:
@@ -128,3 +133,26 @@ func _project_placed_obstacle():
   var ray_direction = camera.project_ray_normal(mouse_position)
   raycast.target_position = ray_direction * raycast_length
   raycast.position = ray_origin
+
+
+func _handle_enemy_click(click_position: Vector2):
+  # Create a raycast from the camera to detect what was clicked
+  var ray_origin = camera.project_ray_origin(click_position)
+  var ray_direction = camera.project_ray_normal(click_position)
+  
+  # Use the dedicated enemy raycast
+  enemy_raycast.enabled = true
+  enemy_raycast.position = ray_origin
+  enemy_raycast.target_position = ray_direction * raycast_length
+  
+  # Force the raycast to update
+  enemy_raycast.force_raycast_update()
+  
+  if enemy_raycast.is_colliding():
+    var collider = enemy_raycast.get_collider()
+    print("Clicked on: ", collider.name)
+    # If the collider is an enemy, perform an attack
+    attack.perform_attack(collider)
+  
+  # Disable the enemy raycast after use
+  enemy_raycast.enabled = false
