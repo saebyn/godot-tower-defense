@@ -4,11 +4,6 @@ extends MeshInstance3D
 var health_display: HealthDisplay
 
 func _ready():
-  # Connect health signals  
-  if health:
-    health.died.connect(_on_died)
-    health.damaged.connect(_on_health_damaged)
-  
   # Set up health display (deferred to avoid await in _ready)
   _setup_health_display.call_deferred()
 
