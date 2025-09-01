@@ -1,12 +1,13 @@
 extends Node
 class_name Health
 
-@export var hitpoints: float = 100.0
+@export var hitpoints: int = 100
+var dead: bool = false
 
 signal died
-signal damaged(amount: float, hitpoints: int)
+signal damaged(amount: int, hitpoints: int)
 
-func take_damage(amount: float):
+func take_damage(amount: int):
   hitpoints -= amount
   damaged.emit(amount, hitpoints)
   if hitpoints <= 0:
@@ -14,5 +15,7 @@ func take_damage(amount: float):
 
 
 func die():
-  print("Entity has died.")
+  if dead:
+    return
+  dead = true
   died.emit()

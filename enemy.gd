@@ -20,6 +20,7 @@ func _ready():
   # Connect the death signal from Health component
   if health:
     health.died.connect(_on_died)
+    health.damaged.connect(_on_health_damaged)
 
   # Make sure to not await during _ready.
   actor_setup.call_deferred()
@@ -93,3 +94,6 @@ func _physics_process(_delta):
 func _on_died():
   print("Enemy died, removing from scene")
   queue_free()
+
+func _on_health_damaged(amount: int, hitpoints: int) -> void:
+  print("Enemy took ", amount, " damage. Remaining HP: ", hitpoints)

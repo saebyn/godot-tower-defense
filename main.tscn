@@ -186,5 +186,7 @@ collision_mask = 4
 
 [connection signal="obstacle_spawn_requested" from="UI/HBoxContainer/SpawnObstacleButton" to="." method="_on_obstacle_spawn_requested"]
 [connection signal="pressed" from="UI/HBoxContainer/SpawnObstacleButton" to="UI/HBoxContainer/SpawnObstacleButton" method="_on_pressed"]
+[connection signal="damaged" from="Target1/Health" to="Target1" method="_on_health_damaged"]
+[connection signal="died" from="Target1/Health" to="Target1" method="_on_died"]
 [connection signal="child_exiting_tree" from="EnemySpawner" to="EnemySpawner" method="_on_child_exiting_tree"]
 [connection signal="timeout" from="EnemySpawner/Timer" to="EnemySpawner" method="_on_Timer_timeout"]
