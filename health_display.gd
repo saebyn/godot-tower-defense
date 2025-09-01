@@ -7,8 +7,8 @@ This component automatically follows its parent's position and shows current HP.
 extends Control
 class_name HealthDisplay
 
-@onready var health_bar: ProgressBar = $HealthBar
-@onready var health_label: Label = $HealthLabel
+@onready var health_bar: ProgressBar = $VBoxContainer/HealthBar
+@onready var health_label: Label = $VBoxContainer/HealthLabel
 
 var target_health: Health
 var camera: Camera3D
