@@ -14,6 +14,7 @@ var target_health: Health
 var camera: Camera3D
 var target_entity: Node3D # The entity this health bar belongs to
 var world_offset: Vector3 = Vector3(0, 3, 0) # Offset above the entity
+var active_damage_numbers: Array[Node] = [] # Track active damage numbers for cleanup
 
 func setup(health_component: Health, main_camera: Camera3D, entity: Node3D = null):
   target_health = health_component
@@ -95,6 +96,13 @@ func _on_health_damaged(amount: int, _hitpoints: int):
 
 func _on_health_died():
   _update_display()
+  
+  # Clean up any active damage numbers
+  for damage_number in active_damage_numbers:
+    if is_instance_valid(damage_number):
+      damage_number.queue_free()
+  active_damage_numbers.clear()
+  
   # Could add death animation here
   # For now, just hide after a delay
   await get_tree().create_timer(1.0).timeout
@@ -110,6 +118,9 @@ func _show_damage_number(damage: int):
   # Add to the same UI parent as this health display
   get_parent().add_child(damage_label)
   
+  # Track this damage number for cleanup
+  active_damage_numbers.append(damage_label)
+  
   # Position near the health bar but offset
   damage_label.global_position = global_position + Vector2(20, -10)
   
@@ -119,6 +130,7 @@ func _show_damage_number(damage: int):
   tween.tween_property(damage_label, "global_position", damage_label.global_position + Vector2(0, -50), 1.0)
   tween.tween_property(damage_label, "modulate:a", 0.0, 1.0)
   
-  # Remove after animation
+  # Remove after animation and clean up from tracking array
   await tween.finished
+  active_damage_numbers.erase(damage_label)
   damage_label.queue_free()
