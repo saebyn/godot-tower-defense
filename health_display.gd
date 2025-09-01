@@ -12,29 +12,65 @@ class_name HealthDisplay
 
 var target_health: Health
 var camera: Camera3D
+var target_entity: Node3D  # The entity this health bar belongs to
 var world_offset: Vector3 = Vector3(0, 3, 0)  # Offset above the entity
 
-func setup(health_component: Health, main_camera: Camera3D):
+func setup(health_component: Health, main_camera: Camera3D, entity: Node3D = null):
 	target_health = health_component
 	camera = main_camera
+	target_entity = entity if entity else health_component.get_parent()
+	
+	# Validate setup
+	if not target_health:
+		print("Warning: HealthDisplay setup with null health component")
+		return
+	if not camera:
+		print("Warning: HealthDisplay setup with null camera")
+		return
+	if not target_entity:
+		print("Warning: HealthDisplay setup with null target entity")
+		return
 	
 	# Connect to health signals
-	if target_health:
-		target_health.damaged.connect(_on_health_damaged)
-		target_health.died.connect(_on_health_died)
-		_update_display()
+	target_health.damaged.connect(_on_health_damaged)
+	target_health.died.connect(_on_health_died)
+	_update_display()
 
 func _process(_delta: float):
-	if target_health and camera and is_inside_tree():
+	if target_entity and camera and is_inside_tree():
+		# Get position from entity (handle different node types)
+		var entity_pos = target_entity.global_position
+		
+		# For MeshInstance3D, try to get the AABB for better positioning
+		if target_entity is MeshInstance3D:
+			var mesh_instance = target_entity as MeshInstance3D
+			if mesh_instance.mesh:
+				var aabb = mesh_instance.get_aabb()
+				# Position above the top of the mesh
+				entity_pos.y += aabb.size.y + 1.0
+			else:
+				entity_pos += world_offset
+		else:
+			# For other node types, check if they have a MeshInstance3D child
+			var mesh_child = target_entity.get_node_or_null("MeshInstance3D")
+			if mesh_child and mesh_child is MeshInstance3D:
+				var mesh_instance = mesh_child as MeshInstance3D
+				if mesh_instance.mesh:
+					var aabb = mesh_instance.get_aabb()
+					entity_pos.y += aabb.size.y + 1.0
+				else:
+					entity_pos += world_offset
+			else:
+				entity_pos += world_offset
+		
 		# Convert world position to screen position
-		var world_pos = get_parent().global_position + world_offset
-		var screen_pos = camera.unproject_position(world_pos)
+		var screen_pos = camera.unproject_position(entity_pos)
 		
 		# Update position
 		global_position = screen_pos - size / 2
 		
 		# Hide if behind camera
-		var is_behind = camera.is_position_behind(world_pos)
+		var is_behind = camera.is_position_behind(entity_pos)
 		visible = not is_behind
 
 func _update_display():

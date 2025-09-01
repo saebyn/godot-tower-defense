@@ -23,14 +23,17 @@ func _ready():
     health.died.connect(_on_died)
     health.damaged.connect(_on_health_damaged)
 
-  # Set up health display
-  _setup_health_display()
+  # Set up health display (deferred to avoid await in _ready)
+  _setup_health_display.call_deferred()
 
   # Make sure to not await during _ready.
   actor_setup.call_deferred()
 
 
 func _setup_health_display():
+  # Wait a frame to ensure the scene tree is properly set up
+  await get_tree().process_frame
+  
   # Find the main camera from the scene
   var main_camera = get_viewport().get_camera_3d()
   if main_camera and health:
@@ -42,7 +45,9 @@ func _setup_health_display():
     var main_scene = get_tree().current_scene
     if main_scene.has_node("UI"):
       main_scene.get_node("UI").add_child(health_display)
-      health_display.setup(health, main_camera)
+      health_display.setup(health, main_camera, self)
+    else:
+      print("Warning: No UI node found in main scene for health display")
 
 
 func choose_target():
