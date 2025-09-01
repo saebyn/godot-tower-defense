@@ -6,6 +6,8 @@ class_name EnemySpawner
 @export var enemy_scene: PackedScene
 @export var max_enemies: int = 10 # Maximum number of enemies allowed at once
 
+var _spawned_enemies: int = 0
+
 @onready var timer = $Timer
 var current_enemies: Array[Node3D] = []
 
@@ -14,11 +16,12 @@ func _ready() -> void:
     timer.start()
 
 func _on_Timer_timeout() -> void:
-    if current_enemies.size() < max_enemies:
+    if _spawned_enemies < max_enemies:
         var enemy = enemy_scene.instantiate()
         enemy.global_position = find_random_spawn_position()
         add_child(enemy)
         current_enemies.append(enemy)
+        _spawned_enemies += 1
 
 
 func _on_child_exiting_tree(node: Node) -> void:
