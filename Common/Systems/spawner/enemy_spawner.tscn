@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://cyp50ln3gbmtt"]
 
-[ext_resource type="Script" uid="uid://du3d1fs80prdm" path="res://Entities/Enemies/Systems/spawner/enemy_spawner.gd" id="1_00s5r"]
+[ext_resource type="Script" uid="uid://du3d1fs80prdm" path="res://Common/Systems/spawner/enemy_spawner.gd" id="1_00s5r"]
 [ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://Entities/Enemies/Templates/base_enemy/enemy.tscn" id="2_63vqd"]
 
 [sub_resource type="Shader" id="Shader_7mycd"]

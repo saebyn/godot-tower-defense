@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://duje032qpuq2" path="res://Stages/UI/main_ui/ui.tscn" id="3_272bh"]
 [ext_resource type="PackedScene" uid="uid://b1yehhqyw2nfo" path="res://Entities/Targets/Templates/base_target/target.tscn" id="5_5vw27"]
 [ext_resource type="PackedScene" uid="uid://bpf2dmre1y8t0" path="res://Utilities/Placement/obstacle_placement/obstacle_placement.tscn" id="7_kek77"]
-[ext_resource type="PackedScene" uid="uid://cyp50ln3gbmtt" path="res://Entities/Enemies/Systems/spawner/enemy_spawner.tscn" id="8_kek77"]
+[ext_resource type="PackedScene" uid="uid://cyp50ln3gbmtt" path="res://Common/Systems/spawner/enemy_spawner.tscn" id="8_kek77"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_ig7tw"]
 vertices = PackedVector3Array(17.8745, 0.5, -345.732, -335.375, 0.5, 7.26849, 17.3745, 0.5, 360.268, 17.8745, 0.5, 360.268, 370.625, 0.5, 7.51849, 370.625, 0.5, 7.01849)
