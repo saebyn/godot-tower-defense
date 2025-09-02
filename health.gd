@@ -2,6 +2,8 @@ extends Node
 class_name Health
 
 @export var hitpoints: int = 100
+@export var ui_path: NodePath = NodePath("UI")
+
 var max_hitpoints: int
 var dead: bool = false
 var health_display: HealthDisplay
@@ -37,12 +39,9 @@ func _setup_health_display():
     
     # Add to the main scene's UI layer
     var main_scene = get_tree().current_scene
-    if main_scene.has_node("UI"):
-      main_scene.get_node("UI").add_child(health_display)
-      health_display.setup(self, main_camera, get_parent())
-    else:
-      print("Warning: No UI node found in main scene for health display")
-
+    var ui = main_scene.get_node(ui_path)
+    ui.add_child(health_display)
+    health_display.setup(self, main_camera, get_parent())
 
 func die():
   if dead:
@@ -52,5 +51,5 @@ func die():
   # Clean up health display
   if health_display:
     health_display.queue_free()
-    
+  
   died.emit()
