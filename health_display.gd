@@ -15,8 +15,6 @@ var camera: Camera3D
 var target_entity: Node3D # The entity this health bar belongs to
 var world_offset: Vector3 = Vector3(0, 3, 0) # Offset above the entity
 var active_damage_numbers: Array[Node] = [] # Track active damage numbers for cleanup
-var shake_tween: Tween # Tween for shake animation
-var shake_offset: Vector2 = Vector2.ZERO # Current shake offset
 
 func setup(health_component: Health, main_camera: Camera3D, entity: Node3D = null):
   target_health = health_component
@@ -70,7 +68,7 @@ func _process(_delta: float):
     var screen_pos = camera.unproject_position(entity_pos)
     
     # Update position (include shake offset)
-    global_position = screen_pos - size / 2 + shake_offset
+    global_position = screen_pos - size / 2
     
     # Hide if behind camera
     var is_behind = camera.is_position_behind(entity_pos)
@@ -95,38 +93,10 @@ func _on_health_damaged(amount: int, _hitpoints: int):
   
   # Create floating damage number
   _show_damage_number(amount)
-  
-  # Add shake effect
-  _shake_effect()
 
-func _shake_effect():
-  # Stop any existing shake animation
-  if shake_tween:
-    shake_tween.kill()
-  
-  # Create shake animation
-  shake_tween = create_tween()
-  
-  # Shake parameters
-  var shake_intensity = 4.0 # Pixels to shake
-  var shake_duration = 0.3 # Total duration of shake effect
-  
-  # Quick shake sequence
-  shake_tween.tween_method(_set_shake_offset, Vector2.ZERO, Vector2(shake_intensity, 0), 0.05)
-  shake_tween.tween_method(_set_shake_offset, Vector2(shake_intensity, 0), Vector2(-shake_intensity, shake_intensity), 0.05)
-  shake_tween.tween_method(_set_shake_offset, Vector2(-shake_intensity, shake_intensity), Vector2(shake_intensity, -shake_intensity), 0.05)
-  shake_tween.tween_method(_set_shake_offset, Vector2(shake_intensity, -shake_intensity), Vector2(-shake_intensity/2, shake_intensity/2), 0.05)
-  shake_tween.tween_method(_set_shake_offset, Vector2(-shake_intensity/2, shake_intensity/2), Vector2.ZERO, 0.1)
-
-func _set_shake_offset(offset: Vector2):
-  shake_offset = offset
 
 func _on_health_died():
   _update_display()
-  
-  # Stop any active shake animation
-  if shake_tween:
-    shake_tween.kill()
   
   # Clean up any active damage numbers
   for damage_number in active_damage_numbers:

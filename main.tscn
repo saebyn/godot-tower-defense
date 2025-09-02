@@ -102,7 +102,6 @@ camera_move_speed = 25.0
 
 [node name="Attack" parent="." instance=ExtResource("2_kek77")]
 damage_amount = 1
-damage_cooldown = 1.0
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
@@ -160,8 +159,6 @@ mesh = SubResource("BoxMesh_ig7tw")
 script = ExtResource("2_0xm2m")
 
 [node name="Health" parent="Target1" instance=ExtResource("6_5vw27")]
-hitpoints = 100
-ui_path = NodePath("UI")
 
 [node name="EnemySpawner" type="Node3D" parent="." node_paths=PackedStringArray("spawn_area")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 190, 0, -25)
