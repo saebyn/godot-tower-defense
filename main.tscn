@@ -1,18 +1,12 @@
-[gd_scene load_steps=21 format=3 uid="uid://b3ntnuvrvys63"]
+[gd_scene load_steps=12 format=3 uid="uid://b3ntnuvrvys63"]
 
 [ext_resource type="Script" uid="uid://2x2o4sni7v6q" path="res://main.gd" id="1_1bvp3"]
-[ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://enemy.tscn" id="1_ig7tw"]
-[ext_resource type="Script" uid="uid://ef5o7bdag8pq" path="res://target.gd" id="2_0xm2m"]
-[ext_resource type="Script" uid="uid://cfsjav35447gc" path="res://spawn_obstacle_button.gd" id="2_7mycd"]
 [ext_resource type="PackedScene" uid="uid://d2nt6gtj5g3cm" path="res://attack.tscn" id="2_kek77"]
 [ext_resource type="Environment" uid="uid://oc0251grk5l0" path="res://new_environment.tres" id="2_lquwl"]
-[ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://obstacle.tscn" id="3_272bh"]
-[ext_resource type="Script" uid="uid://du3d1fs80prdm" path="res://enemy_spawner.gd" id="5_lquwl"]
-[ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://health.tscn" id="6_5vw27"]
-[ext_resource type="Script" uid="uid://mx50xvayo6d8" path="res://obstacle_placement.gd" id="10_4c57u"]
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lquwl"]
-size = Vector2(16, 16)
+[ext_resource type="PackedScene" uid="uid://duje032qpuq2" path="res://ui.tscn" id="3_272bh"]
+[ext_resource type="PackedScene" uid="uid://b1yehhqyw2nfo" path="res://target.tscn" id="5_5vw27"]
+[ext_resource type="PackedScene" uid="uid://bpf2dmre1y8t0" path="res://obstacle_placement.tscn" id="7_kek77"]
+[ext_resource type="PackedScene" uid="uid://cyp50ln3gbmtt" path="res://enemy_spawner.tscn" id="8_kek77"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_ig7tw"]
 vertices = PackedVector3Array(17.8745, 0.5, -345.732, -335.375, 0.5, 7.26849, 17.3745, 0.5, 360.268, 17.8745, 0.5, 360.268, 370.625, 0.5, 7.51849, 370.625, 0.5, 7.01849)
@@ -25,75 +19,6 @@ size = Vector2(500, 500)
 [sub_resource type="BoxShape3D" id="BoxShape3D_272bh"]
 size = Vector3(500, 1, 500)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1bvp3"]
-albedo_color = Color(1, 0, 1, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_ig7tw"]
-size = Vector3(1.39, 3.52, 1)
-
-[sub_resource type="Shader" id="Shader_7mycd"]
-code = "// NOTE: Shader automatically converted from Godot Engine 4.4.1.stable's StandardMaterial3D.
-
-shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_schlick_ggx;
-
-uniform vec4 albedo : source_color;
-uniform sampler2D texture_albedo : source_color, filter_linear_mipmap, repeat_enable;
-uniform ivec2 albedo_texture_size;
-uniform float point_size : hint_range(0.1, 128.0, 0.1);
-
-uniform float roughness : hint_range(0.0, 1.0);
-uniform sampler2D texture_metallic : hint_default_white, filter_linear_mipmap, repeat_enable;
-uniform vec4 metallic_texture_channel;
-uniform sampler2D texture_roughness : hint_roughness_r, filter_linear_mipmap, repeat_enable;
-
-uniform float specular : hint_range(0.0, 1.0, 0.01);
-uniform float metallic : hint_range(0.0, 1.0, 0.01);
-
-uniform vec3 uv1_scale;
-uniform vec3 uv1_offset;
-uniform vec3 uv2_scale;
-uniform vec3 uv2_offset;
-
-void vertex() {
-	UV = UV * uv1_scale.xy + uv1_offset.xy;
-}
-
-void fragment() {
-	vec2 base_uv = UV;
-
-	vec4 albedo_tex = texture(texture_albedo, base_uv);
-	ALBEDO = albedo.rgb * albedo_tex.rgb;
-
-	float metallic_tex = dot(texture(texture_metallic, base_uv), metallic_texture_channel);
-	METALLIC = metallic_tex * metallic;
-	SPECULAR = specular;
-
-	vec4 roughness_texture_channel = vec4(1.0, 0.0, 0.0, 0.0);
-	float roughness_tex = dot(texture(texture_roughness, base_uv), roughness_texture_channel);
-	ROUGHNESS = roughness_tex * roughness;
-}
-"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_272bh"]
-render_priority = 0
-shader = SubResource("Shader_7mycd")
-shader_parameter/albedo = Color(0.94209, 0.164222, 0.416499, 1)
-shader_parameter/albedo_texture_size = Vector2i(0, 0)
-shader_parameter/point_size = 1.0
-shader_parameter/roughness = 1.0
-shader_parameter/metallic_texture_channel = Vector4(1, 0, 0, 0)
-shader_parameter/specular = 0.5
-shader_parameter/metallic = 0.0
-shader_parameter/uv1_scale = Vector3(1, 1, 1)
-shader_parameter/uv1_offset = Vector3(0, 0, 0)
-shader_parameter/uv2_scale = Vector3(1, 1, 1)
-shader_parameter/uv2_offset = Vector3(0, 0, 0)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_7mycd"]
-material = SubResource("ShaderMaterial_272bh")
-size = Vector2(10, 10)
-
 [sub_resource type="Environment" id="Environment_272bh"]
 
 [node name="Main" type="Node3D"]
@@ -103,30 +28,7 @@ camera_move_speed = 25.0
 [node name="Attack" parent="." instance=ExtResource("2_kek77")]
 damage_amount = 1
 
-[node name="UI" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UI"]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -31.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="SpawnObstacleButton" type="Button" parent="UI/HBoxContainer"]
-layout_mode = 2
-text = "Obstacle"
-icon = SubResource("PlaceholderTexture2D_lquwl")
-script = ExtResource("2_7mycd")
-spawnable = ExtResource("3_272bh")
+[node name="UI" parent="." instance=ExtResource("3_272bh")]
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0.707107, -0.707107, 0, 0.707107, 0.707107, 1, 3.09086e-08, -3.09086e-08, -7, 40, 7)
@@ -152,27 +54,11 @@ collision_layer = 17
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 shape = SubResource("BoxShape3D_272bh")
 
-[node name="Target1" type="MeshInstance3D" parent="." groups=["targets"]]
+[node name="Target" parent="." instance=ExtResource("5_5vw27")]
 transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -15.5563, 2, 40.5564)
-material_override = SubResource("StandardMaterial3D_1bvp3")
-mesh = SubResource("BoxMesh_ig7tw")
-script = ExtResource("2_0xm2m")
 
-[node name="Health" parent="Target1" instance=ExtResource("6_5vw27")]
-
-[node name="EnemySpawner" type="Node3D" parent="." node_paths=PackedStringArray("spawn_area")]
+[node name="EnemySpawner" parent="." instance=ExtResource("8_kek77")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 190, 0, -25)
-script = ExtResource("5_lquwl")
-spawn_area = NodePath("MeshInstance3D")
-spawn_interval = 4.0
-enemy_scene = ExtResource("1_ig7tw")
-max_enemies = 3
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="EnemySpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-mesh = SubResource("PlaneMesh_7mycd")
-
-[node name="Timer" type="Timer" parent="EnemySpawner"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_272bh")
@@ -181,19 +67,6 @@ environment = SubResource("Environment_272bh")
 enabled = false
 collision_mask = 4
 
-[node name="ObstaclePlacement" type="Node" parent="." node_paths=PackedStringArray("navigation_region", "camera")]
-script = ExtResource("10_4c57u")
-navigation_region = NodePath("../NavigationRegion3D")
-camera = NodePath("../Camera3D")
+[node name="ObstaclePlacement" parent="." instance=ExtResource("7_kek77")]
 
-[node name="RayCast3D" type="RayCast3D" parent="ObstaclePlacement"]
-enabled = false
-collision_mask = 16
-
-[connection signal="obstacle_spawn_requested" from="UI/HBoxContainer/SpawnObstacleButton" to="." method="_on_obstacle_spawn_requested"]
-[connection signal="pressed" from="UI/HBoxContainer/SpawnObstacleButton" to="UI/HBoxContainer/SpawnObstacleButton" method="_on_pressed"]
-[connection signal="damaged" from="Target1/Health" to="Target1" method="_on_health_damaged"]
-[connection signal="died" from="Target1/Health" to="Target1" method="_on_died"]
-[connection signal="child_exiting_tree" from="EnemySpawner" to="EnemySpawner" method="_on_child_exiting_tree"]
-[connection signal="timeout" from="EnemySpawner/Timer" to="EnemySpawner" method="_on_Timer_timeout"]
 [connection signal="rebake_navigation_mesh" from="ObstaclePlacement" to="." method="rebake_navigation_mesh"]

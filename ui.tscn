@@ -1,0 +1,34 @@
+[gd_scene load_steps=4 format=3 uid="uid://duje032qpuq2"]
+
+[ext_resource type="Script" uid="uid://cfsjav35447gc" path="res://spawn_obstacle_button.gd" id="1_m6e0p"]
+[ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://obstacle.tscn" id="2_27fn8"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lquwl"]
+size = Vector2(16, 16)
+
+[node name="UI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -31.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="SpawnObstacleButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+text = "Obstacle"
+icon = SubResource("PlaceholderTexture2D_lquwl")
+script = ExtResource("1_m6e0p")
+spawnable = ExtResource("2_27fn8")
+
+[connection signal="pressed" from="HBoxContainer/SpawnObstacleButton" to="HBoxContainer/SpawnObstacleButton" method="_on_pressed"]

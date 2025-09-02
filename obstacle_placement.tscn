@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://bpf2dmre1y8t0"]
+
+[ext_resource type="Script" uid="uid://mx50xvayo6d8" path="res://obstacle_placement.gd" id="1_6wyqd"]
+
+[node name="ObstaclePlacement" type="Node" node_paths=PackedStringArray("navigation_region", "camera")]
+script = ExtResource("1_6wyqd")
+navigation_region = NodePath("")
+camera = NodePath("")
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+enabled = false
+collision_mask = 16
