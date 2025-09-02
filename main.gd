@@ -103,3 +103,8 @@ func _handle_enemy_click(click_position: Vector2):
   
   # Disable the enemy raycast after use
   enemy_raycast.enabled = false
+
+
+func _on_obstacle_spawn_requested(obstacle_instance: Node3D) -> void:
+  # Forward the signal to the obstacle placement system
+  obstacle_placement._on_obstacle_spawn_requested(obstacle_instance)

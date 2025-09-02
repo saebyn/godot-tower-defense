@@ -190,6 +190,15 @@ func _place_obstacle() -> void:
   # Check if placement is valid
   if not _is_placement_valid(position):
     print("Cannot place obstacle: Invalid placement location")
+    # Debug information about why placement failed
+    if not _is_within_navigation_region(position):
+      print("  - Outside navigation region")
+    if _has_obstacle_collision(position):
+      print("  - Collision with existing obstacle")
+    if not _has_terrain_support(position):
+      print("  - Invalid terrain support")
+    if not _has_sufficient_clearance(position):
+      print("  - Insufficient clearance")
     return
   
   # Restore original material before placing
