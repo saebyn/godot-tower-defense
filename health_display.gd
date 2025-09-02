@@ -67,7 +67,7 @@ func _process(_delta: float):
     # Convert world position to screen position
     var screen_pos = camera.unproject_position(entity_pos)
     
-    # Update position
+    # Update position (include shake offset)
     global_position = screen_pos - size / 2
     
     # Hide if behind camera
@@ -93,6 +93,7 @@ func _on_health_damaged(amount: int, _hitpoints: int):
   
   # Create floating damage number
   _show_damage_number(amount)
+
 
 func _on_health_died():
   _update_display()
