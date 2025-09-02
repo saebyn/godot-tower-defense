@@ -38,12 +38,74 @@ This is a work-in-progress 3D tower defense game featuring:
 
 ## Project Structure
 
-- `main.gd` - Main scene controller with camera management
-- `enemy.gd` - Enemy AI behavior and navigation
-- `target.gd` - Destructible target objects
-- `main.tscn` - Main game scene
-- `enemy.tscn` - Enemy prefab
-- `suzanne.blend` - 3D model asset
+### Overview
+
+This project uses a feature-based folder structure that prioritizes intuitive organization and co-location of related files. The structure is designed to scale from prototype to full game with 15+ enemy types, 20+ obstacle types, multiple levels, and complex progression systems.
+
+### Top-Level Folders
+
+```
+Assets/         # Pure art and audio assets
+Common/         # Reusable components and shared UI elements
+Config/         # Data-driven configuration files (.tres resources)
+Entities/       # Game objects (enemies, obstacles, player systems)
+Localization/   # Translation files
+Stages/         # Scenes and levels (main game, menus, levels)
+Utilities/      # Systems, autoloads, and helper scripts
+```
+
+### Key Design Principles
+
+#### 1. **Co-location of Coupled Files**
+Related files stay together in their own folders:
+```
+Common/Effects/shake_effect/
+├── shake_effect.tscn
+└── shake_effect.gd
+```
+
+#### 2. **Template + Config Pattern**
+Game entities use a composition approach:
+- **Templates** (`Entities/*/Templates/`) - Reusable scene structure and behavior
+- **Configs** (`Config/*/`) - Data-driven parameters and stats
+- **Concrete** (`Entities/*/Concrete/`) - Specific instances combining templates with configs
+
+#### 3. **Clear Separation by Purpose**
+- `Assets/` - Art, audio, models (no code)
+- `Config/` - Pure data files for balancing and content
+- `Common/` - Truly reusable components across entities
+- `Utilities/` - Global systems and autoloads
+- `Entities/` - Game-specific objects with their logic
+- `Stages/` - Complete scenes and levels
+
+### Example Structure
+
+```
+Config/Enemies/
+├── grunt_config.tres      # Health: 100, Speed: 2.0, Damage: 15
+└── scout_config.tres      # Health: 50, Speed: 4.0, Damage: 10
+
+Entities/Enemies/
+├── Templates/
+│   └── base_enemy/
+│       ├── base_enemy.tscn    # Common enemy structure
+│       └── base_enemy.gd      # Common enemy behavior
+└── Concrete/
+    ├── grunt/
+    │   └── grunt.tscn         # base_enemy + grunt_config
+    └── scout/
+        └── scout.tscn         # base_enemy + scout_config
+```
+
+### Benefits
+
+- **Intuitive navigation** - Related files are always together
+- **Scalable** - Easy to add new enemy types, levels, and features
+- **Data-driven** - Non-programmers can create content via config files
+- **Team-friendly** - Clear separation of artist, designer, and programmer work areas
+- **Maintainable** - No hunting across multiple folders for related files
+
+This structure supports the planned features including multiple levels, wave-based enemies, tech trees, economy systems, and sandbox mode while keeping the codebase organized and approachable.
 
 ## Development
 
