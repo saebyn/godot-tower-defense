@@ -1,12 +1,20 @@
-extends Node
+extends Node3D
 class_name ObstaclePlacement
 
 signal rebake_navigation_mesh
 
+@export_group("Placement Settings")
+@export var placement_clearance: float = 3.0 # Minimum distance from other obstacles
+@export var border_margin: float = 2.0 # Minimum distance from navigation region border
+
+@export_group("Raycast Settings")
 @export var raycast_length: float = 1000.0 # Length of the raycast for obstacle placement
+@export var raycast_start: Vector3 = Vector3(0, 10, 0) # Start position offset for the raycast
+@export var raycast_down: Vector3 = Vector3(0, -20, 0) # Direction and length to cast downwards
+
+@export_group("Node References")
 @export var navigation_region: NavigationRegion3D
 @export var camera: Camera3D
-@export var placement_clearance: float = 3.0 # Minimum distance from other obstacles
 
 @onready var raycast: RayCast3D = $RayCast3D
 @onready var obstacle_detection_raycast: RayCast3D = RayCast3D.new()
@@ -35,7 +43,7 @@ func _ready():
   # Set up obstacle detection raycast
   add_child(obstacle_detection_raycast)
   obstacle_detection_raycast.enabled = false
-  obstacle_detection_raycast.collision_mask = 2  # Check for obstacles (layer 2)
+  obstacle_detection_raycast.collision_mask = 2 # Check for obstacles (layer 2)
 
 func _process(_delta: float) -> void:
   if _placeable_obstacle:
@@ -66,16 +74,16 @@ func _input(event: InputEvent) -> void:
     _project_placed_obstacle(event.position)
 
 # Placement validation functions
-func _is_placement_valid(position: Vector3) -> bool:
+func _is_placement_valid(target_position: Vector3) -> bool:
   if not _placeable_obstacle:
     return false
     
-  return (_is_within_navigation_region(position) and
-          not _has_obstacle_collision(position) and
-          _has_terrain_support(position) and
-          _has_sufficient_clearance(position))
+  return (_is_within_navigation_region(target_position) and
+          not _has_obstacle_collision(target_position) and
+          _has_terrain_support(target_position) and
+          _has_sufficient_clearance(target_position))
 
-func _is_within_navigation_region(position: Vector3) -> bool:
+func _is_within_navigation_region(target_position: Vector3) -> bool:
   if not navigation_region or not navigation_region.navigation_mesh:
     return false
   
@@ -96,25 +104,24 @@ func _is_within_navigation_region(position: Vector3) -> bool:
     min_bounds.z = min(min_bounds.z, vertex.z)
     max_bounds.x = max(max_bounds.x, vertex.x)
     max_bounds.z = max(max_bounds.z, vertex.z)
-  
-  # Transform position to navigation region local space
-  var local_pos = nav_region_transform.affine_inverse() * position
-  
-  # Check if within bounds (with some margin)
-  var margin = 2.0
-  return (local_pos.x >= min_bounds.x + margin and
-          local_pos.x <= max_bounds.x - margin and
-          local_pos.z >= min_bounds.z + margin and
-          local_pos.z <= max_bounds.z - margin)
 
-func _has_obstacle_collision(position: Vector3) -> bool:
+  # Transform position to navigation region local space
+  var local_pos = nav_region_transform.affine_inverse() * target_position
+
+  # Check if within bounds (with some margin)
+  return (local_pos.x >= min_bounds.x + border_margin and
+          local_pos.x <= max_bounds.x - border_margin and
+          local_pos.z >= min_bounds.z + border_margin and
+          local_pos.z <= max_bounds.z - border_margin)
+
+func _has_obstacle_collision(target_position: Vector3) -> bool:
   if not _placeable_obstacle:
     return false
   
   # Set up raycast to check for existing obstacles
   obstacle_detection_raycast.enabled = true
-  obstacle_detection_raycast.global_position = position + Vector3(0, 10, 0)  # Start from above
-  obstacle_detection_raycast.target_position = Vector3(0, -20, 0)  # Cast downward
+  obstacle_detection_raycast.global_position = target_position + raycast_start # Start from above
+  obstacle_detection_raycast.target_position = raycast_down # Cast downward
   
   # Force raycast update
   obstacle_detection_raycast.force_raycast_update()
@@ -130,7 +137,7 @@ func _has_obstacle_collision(position: Vector3) -> bool:
   obstacle_detection_raycast.enabled = false
   return false
 
-func _has_terrain_support(position: Vector3) -> bool:
+func _has_terrain_support(_position: Vector3) -> bool:
   # Use the main raycast to check if we're hitting valid ground
   if not raycast.is_colliding():
     return false
@@ -147,7 +154,7 @@ func _has_terrain_support(position: Vector3) -> bool:
   # Should be hitting ground (layer 17 = 16 + 1)
   return (collision_layer & 16) != 0
 
-func _has_sufficient_clearance(position: Vector3) -> bool:
+func _has_sufficient_clearance(target_position: Vector3) -> bool:
   # Check for clearance around the obstacle position
   var space_state = get_world_3d().direct_space_state
   var query = PhysicsShapeQueryParameters3D.new()
@@ -156,8 +163,8 @@ func _has_sufficient_clearance(position: Vector3) -> bool:
   var sphere = SphereShape3D.new()
   sphere.radius = placement_clearance
   query.shape = sphere
-  query.transform.origin = position
-  query.collision_mask = 2  # Check for obstacles
+  query.transform.origin = target_position
+  query.collision_mask = 2 # Check for obstacles
   
   var results = space_state.intersect_shape(query)
   
@@ -185,19 +192,19 @@ func _place_obstacle() -> void:
   if not _placeable_obstacle:
     return
   
-  var position = _placeable_obstacle.global_position
+  var target_position = _placeable_obstacle.global_position
   
   # Check if placement is valid
-  if not _is_placement_valid(position):
+  if not _is_placement_valid(target_position):
     print("Cannot place obstacle: Invalid placement location")
     # Debug information about why placement failed
-    if not _is_within_navigation_region(position):
+    if not _is_within_navigation_region(target_position):
       print("  - Outside navigation region")
-    if _has_obstacle_collision(position):
+    if _has_obstacle_collision(target_position):
       print("  - Collision with existing obstacle")
-    if not _has_terrain_support(position):
+    if not _has_terrain_support(target_position):
       print("  - Invalid terrain support")
-    if not _has_sufficient_clearance(position):
+    if not _has_sufficient_clearance(target_position):
       print("  - Insufficient clearance")
     return
   
@@ -226,15 +233,15 @@ func _cancel_obstacle_placement() -> void:
   _placeable_obstacle = null
   raycast.enabled = false
 
-func _update_visual_feedback(position: Vector3) -> void:
+func _update_visual_feedback(target_position: Vector3) -> void:
   if not _placeable_obstacle or not _placeable_obstacle.mesh_instance:
     return
-  
+
   # Only update if we have valid materials
   if not _valid_material or not _invalid_material:
     return
-  
-  var is_valid = _is_placement_valid(position)
+
+  var is_valid = _is_placement_valid(target_position)
   var material = _valid_material if is_valid else _invalid_material
   
   _placeable_obstacle.mesh_instance.set_surface_override_material(0, material)

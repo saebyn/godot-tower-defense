@@ -1,5 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://duje032qpuq2"]
+[gd_scene load_steps=5 format=3 uid="uid://duje032qpuq2"]
 
+[ext_resource type="Script" uid="uid://3yfu45cvudar" path="res://ui.gd" id="1_27fn8"]
 [ext_resource type="Script" uid="uid://cfsjav35447gc" path="res://spawn_obstacle_button.gd" id="1_m6e0p"]
 [ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://obstacle.tscn" id="2_27fn8"]
 
@@ -13,6 +14,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_27fn8")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 1

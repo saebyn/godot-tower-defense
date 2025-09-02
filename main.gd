@@ -78,7 +78,7 @@ func rebake_navigation_mesh():
 
 
 func _input(event: InputEvent) -> void:
-  if not obstacle_placement.busy and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+  if event is InputEventMouseButton and not obstacle_placement.busy and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
       _handle_enemy_click(event.position)
 
 

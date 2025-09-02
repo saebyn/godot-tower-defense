@@ -2,10 +2,8 @@
 
 [ext_resource type="Script" uid="uid://mx50xvayo6d8" path="res://obstacle_placement.gd" id="1_6wyqd"]
 
-[node name="ObstaclePlacement" type="Node" node_paths=PackedStringArray("navigation_region", "camera")]
+[node name="ObstaclePlacement" type="Node3D"]
 script = ExtResource("1_6wyqd")
-navigation_region = NodePath("")
-camera = NodePath("")
 
 [node name="RayCast3D" type="RayCast3D" parent="."]
 enabled = false
