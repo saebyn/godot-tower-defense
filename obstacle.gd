@@ -2,6 +2,20 @@ extends Node3D
 class_name PlaceableObstacle
 
 @onready var mesh_instance: MeshInstance3D = $MeshInstance3D
+@onready var health: Health = $Health
+
+func _ready():
+  # Connect health signals
+  if health:
+    health.died.connect(_on_died)
+    health.damaged.connect(_on_health_damaged)
+
+func _on_died():
+  print("Obstacle destroyed")
+  queue_free()
+
+func _on_health_damaged(amount: int, hitpoints: int) -> void:
+  print("Obstacle took ", amount, " damage. Remaining HP: ", hitpoints)
 
 
 func place(navigation_region: NavigationRegion3D) -> void:

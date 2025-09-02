@@ -22,6 +22,9 @@ debug_enabled = true
 debug_path_custom_color = Color(1, 0.0392157, 0.0352941, 1)
 
 [node name="Attack" parent="." index="3" instance=ExtResource("3_qi2p4")]
+damage_amount = 10
+damage_cooldown = 1.0
 
 [node name="Health" parent="." index="4" instance=ExtResource("4_iifgy")]
 hitpoints = 2
+ui_path = NodePath("UI")
