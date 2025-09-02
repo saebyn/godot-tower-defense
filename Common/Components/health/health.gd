@@ -34,7 +34,7 @@ func _setup_health_display():
   var main_camera = get_viewport().get_camera_3d()
   if main_camera:
     # Load and instantiate the health display
-    var health_display_scene = preload("res://health_display.tscn")
+    var health_display_scene = preload("res://Common/UI/health_display/health_display.tscn")
     health_display = health_display_scene.instantiate()
     
     # Add to the main scene's UI layer
