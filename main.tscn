@@ -67,6 +67,9 @@ environment = SubResource("Environment_272bh")
 enabled = false
 collision_mask = 4
 
-[node name="ObstaclePlacement" parent="." instance=ExtResource("7_kek77")]
+[node name="ObstaclePlacement" parent="." node_paths=PackedStringArray("navigation_region", "camera") instance=ExtResource("7_kek77")]
+navigation_region = NodePath("../NavigationRegion3D")
+camera = NodePath("../Camera3D")
 
+[connection signal="obstacle_spawn_requested" from="UI" to="." method="_on_obstacle_spawn_requested"]
 [connection signal="rebake_navigation_mesh" from="ObstaclePlacement" to="." method="rebake_navigation_mesh"]

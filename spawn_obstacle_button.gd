@@ -1,8 +1,7 @@
 extends Button
 
 @export var spawnable: PackedScene
-
-signal obstacle_spawn_requested(obstacle_instance: Node3D)
+@onready var ui: Node = $"../.."
 
 func _on_pressed() -> void:
-  obstacle_spawn_requested.emit(spawnable.instantiate())
+  ui.request_obstacle_spawn(spawnable.instantiate())

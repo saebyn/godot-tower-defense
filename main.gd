@@ -78,7 +78,7 @@ func rebake_navigation_mesh():
 
 
 func _input(event: InputEvent) -> void:
-  if not obstacle_placement.busy and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+  if event is InputEventMouseButton and not obstacle_placement.busy and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
       _handle_enemy_click(event.position)
 
 
@@ -103,3 +103,8 @@ func _handle_enemy_click(click_position: Vector2):
   
   # Disable the enemy raycast after use
   enemy_raycast.enabled = false
+
+
+func _on_obstacle_spawn_requested(obstacle_instance: Node3D) -> void:
+  # Forward the signal to the obstacle placement system
+  obstacle_placement._on_obstacle_spawn_requested(obstacle_instance)
