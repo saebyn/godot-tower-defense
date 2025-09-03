@@ -1,0 +1,13 @@
+[gd_resource type="AttackEffectResource" script_class="AttackEffectResource" load_steps=2 format=3]
+
+[ext_resource type="PackedScene" uid="uid://cdaivijdqbdrn" path="res://Common/Effects/attack_effects/magic_sparkles_attack_effect.tscn" id="1"]
+
+[resource]
+script = preload("res://Common/Effects/attack_effects/attack_effect_resource.gd")
+effect_name = "Magic Sparkles"
+effect_scene = ExtResource("1")
+effect_parameters = {
+"projectile_speed": 25.0,
+"sparkle_color": Color(0, 1, 1, 1)
+}
+description = "Cyan magical projectile with sparkle trail and arcing movement"

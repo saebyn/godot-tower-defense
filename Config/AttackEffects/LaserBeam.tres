@@ -1,0 +1,13 @@
+[gd_resource type="AttackEffectResource" script_class="AttackEffectResource" load_steps=2 format=3]
+
+[ext_resource type="PackedScene" uid="uid://bmmnbgkfe3r5w" path="res://Common/Effects/attack_effects/laser_beam_attack_effect.tscn" id="1"]
+
+[resource]
+script = preload("res://Common/Effects/attack_effects/attack_effect_resource.gd")
+effect_name = "Laser Beam"
+effect_scene = ExtResource("1")
+effect_parameters = {
+"beam_duration": 0.3,
+"laser_color": Color(1, 0, 0, 1)
+}
+description = "Instant red laser beam with impact particles"
