@@ -83,9 +83,14 @@ func _show_attack_effect(target: Node):
   var scene_root = get_tree().current_scene
   scene_root.add_child(effect_instance)
   
-  # Get positions
-  var from_position = global_position
-  var to_position = target.global_position
+  # Get positions - use parent's position as source since Attack is a Node, not Node3D
+  var from_position = Vector3.ZERO
+  if get_parent() and get_parent() is Node3D:
+    from_position = get_parent().global_position
+  
+  var to_position = Vector3.ZERO
+  if target is Node3D:
+    to_position = target.global_position
   
   # Play the effect
   if effect_instance.has_method("play_effect"):

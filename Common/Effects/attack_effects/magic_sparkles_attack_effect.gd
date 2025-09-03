@@ -69,6 +69,12 @@ func _setup_impact_particles():
 	impact_particles.emitting = false
 
 func _animate_effect(from_pos: Vector3, to_pos: Vector3) -> void:
+	# Store positions for arc calculation
+	_from_pos = from_pos
+	_to_pos = to_pos
+	_mid_pos = (_from_pos + _to_pos) / 2.0
+	_mid_pos.y += 1.0
+	
 	# Calculate travel time
 	var distance = from_pos.distance_to(to_pos)
 	var travel_time = distance / magic_speed
@@ -79,14 +85,8 @@ func _animate_effect(from_pos: Vector3, to_pos: Vector3) -> void:
 	
 	# Create tween for magic movement with slight arc
 	effect_tween = create_tween()
-	effect_tween.set_parallel(true)
 	
-	# Main movement
-	effect_tween.tween_property(self, "global_position", to_pos, travel_time)
-	
-	# Add slight upward arc for magical feel
-	var mid_point = (from_pos + to_pos) / 2.0
-	mid_point.y += 1.0
+	# Use the arc movement
 	effect_tween.tween_method(_set_arc_position, 0.0, 1.0, travel_time)
 	
 	# When magic reaches target, trigger impact
@@ -97,12 +97,6 @@ var _to_pos: Vector3
 var _mid_pos: Vector3
 
 func _set_arc_position(progress: float):
-	if not _from_pos or not _to_pos:
-		_from_pos = global_position
-		_to_pos = global_position
-		_mid_pos = (_from_pos + _to_pos) / 2.0
-		_mid_pos.y += 1.0
-	
 	# Quadratic bezier curve for arc movement
 	var pos = _from_pos.lerp(_mid_pos, progress).lerp(_mid_pos.lerp(_to_pos, progress), progress)
 	global_position = pos
