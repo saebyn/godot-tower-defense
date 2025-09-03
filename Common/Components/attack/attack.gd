@@ -4,6 +4,10 @@
 This script handles the attack logic for an enemy character.
 It checks if the target is valid and applies damage if possible.
 The attack has a cooldown to prevent continuous damage application.
+
+Attack effects are configured using AttackEffectResource files from Config/AttackEffects/.
+Each effect resource defines the visual effect scene and default parameters.
+Individual parameters can be overridden per Attack component instance.
 """
 extends Node
 class_name Attack
@@ -19,18 +23,17 @@ enum AttackResult {
 @export var damage_amount: int = 10
 @export var damage_cooldown: float = 1.0
 @export var show_attack_effects: bool = true
-@export var selected_effect_name: String = "Bullet"
+@export var selected_attack_effect: AttackEffectResource
 @export var effect_parameter_overrides: Dictionary = {}
-@export var attack_effects_database: AttackEffectDatabase
 
 var is_on_cooldown: bool = false
 var current_target: Node = null
 
-# Load default effects database if none specified
+# Load default effect if none specified
 func _ready():
-	if not attack_effects_database:
-		# Create the default database dynamically
-		attack_effects_database = preload("res://Common/Effects/attack_effects/default_attack_effects.gd").create_default_database()
+	if not selected_attack_effect:
+		# Load the default Bullet effect
+		selected_attack_effect = load("res://Config/AttackEffects/Bullet.tres")
 
 
 func perform_attack(target: Node) -> AttackResult:
@@ -42,7 +45,7 @@ func perform_attack(target: Node) -> AttackResult:
       var health = target.get_node("Health")
       if health is Health:
         # Show attack effect before applying damage
-        if show_attack_effects and selected_effect_name != "None":
+        if show_attack_effects and selected_attack_effect and selected_attack_effect.effect_name != "None":
           _show_attack_effect(target)
         
         health.take_damage(damage_amount)
@@ -60,14 +63,10 @@ func _show_attack_effect(target: Node):
   """
   Creates and plays the selected attack effect from this attack to the target.
   """
-  if not attack_effects_database:
+  if not selected_attack_effect or not selected_attack_effect.effect_scene:
     return
   
-  var effect_resource = attack_effects_database.get_effect_by_name(selected_effect_name)
-  if not effect_resource or not effect_resource.effect_scene:
-    return
-  
-  var effect_instance = effect_resource.effect_scene.instantiate()
+  var effect_instance = selected_attack_effect.effect_scene.instantiate()
   if not effect_instance:
     return
   
@@ -85,7 +84,7 @@ func _show_attack_effect(target: Node):
     to_position = target.global_position
   
   # Combine default parameters with instance overrides
-  var final_parameters = effect_resource.effect_parameters.duplicate()
+  var final_parameters = selected_attack_effect.effect_parameters.duplicate()
   for param_name in effect_parameter_overrides:
     final_parameters[param_name] = effect_parameter_overrides[param_name]
   
