@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://bg5wn4kp2x7rm"]
+
+[ext_resource type="Script" path="res://Common/Effects/attack_effects/fireball_attack_effect.gd" id="1_2qn4g"]
+
+[node name="FireballAttackEffect" type="Node3D"]
+script = ExtResource("1_2qn4g")
+
+[node name="FireballMesh" type="MeshInstance3D" parent="."]
+
+[node name="TrailParticles" type="GPUParticles3D" parent="."]
+
+[node name="ExplosionParticles" type="GPUParticles3D" parent="."]
