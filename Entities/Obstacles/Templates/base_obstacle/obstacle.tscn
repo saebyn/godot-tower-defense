@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://b27ylmcumxx2r"]
 
-[ext_resource type="Script" uid="uid://xilsmnlbxoyk" path="res://obstacle.gd" id="1_sl1jc"]
-[ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://health.tscn" id="2_aubd6"]
+[ext_resource type="Script" uid="uid://xilsmnlbxoyk" path="res://Entities/Obstacles/Templates/base_obstacle/obstacle.gd" id="1_sl1jc"]
+[ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="2_aubd6"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_sl1jc"]
 friction = 0.0

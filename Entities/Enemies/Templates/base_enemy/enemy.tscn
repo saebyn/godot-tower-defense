@@ -1,7 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://c62uq7kswrqkh"]
+[gd_scene load_steps=7 format=3 uid="uid://bwhean8gy2rcd"]
 
 [ext_resource type="PackedScene" uid="uid://cfcytus6a3t4g" path="res://Assets/Models/suzanne.blend" id="1_7k104"]
-[ext_resource type="Script" uid="uid://bllk3lva37p4k" path="res://Entities/Enemies/Templates/base_enemy/enemy.gd" id="2_epg4t"]
+[ext_resource type="Script" uid="uid://bllk3lva37p4k" path="res://Entities/Enemies/Templates/base_enemy/enemy.gd" id="2_4gyqm"]
 [ext_resource type="PackedScene" uid="uid://d2nt6gtj5g3cm" path="res://Common/Components/attack/attack.tscn" id="3_qi2p4"]
 [ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="4_iifgy"]
 [ext_resource type="PackedScene" uid="uid://cvycifrlk03bm" path="res://Common/Effects/shake_effect/shake_effect.tscn" id="5_epg4t"]
@@ -12,7 +12,7 @@ points = PackedVector3Array(0.360568, 0.899282, -0.076726, 0.360604, 0.899374, -
 [node name="enemy" instance=ExtResource("1_7k104")]
 collision_layer = 4
 collision_mask = 7
-script = ExtResource("2_epg4t")
+script = ExtResource("2_4gyqm")
 movement_speed = 20.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." index="1"]
