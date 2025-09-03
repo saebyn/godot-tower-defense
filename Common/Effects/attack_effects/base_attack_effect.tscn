@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b8kxmn7qj5f2t"]
+
+[ext_resource type="Script" path="res://Common/Effects/attack_effects/base_attack_effect.gd" id="1_x4r8v"]
+
+[node name="BaseAttackEffect" type="Node3D"]
+script = ExtResource("1_x4r8v")
