@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://cfcytus6a3t4g"
-path="res://.godot/imported/suzanne.blend-c0eed12c290f6e3c0dbae3a86e1aa8c2.scn"
+path="res://.godot/imported/suzanne.blend-64a75170078059ddc64462bff1572428.scn"
 
 [deps]
 
-source_file="res://suzanne.blend"
-dest_files=["res://.godot/imported/suzanne.blend-c0eed12c290f6e3c0dbae3a86e1aa8c2.scn"]
+source_file="res://Assets/Models/suzanne.blend"
+dest_files=["res://.godot/imported/suzanne.blend-64a75170078059ddc64462bff1572428.scn"]
 
 [params]
 
