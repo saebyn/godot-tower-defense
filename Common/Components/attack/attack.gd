@@ -14,31 +14,23 @@ enum AttackResult {
   INVALID_TARGET
 }
 
-enum AttackEffectType {
-  NONE,
-  BULLET,
-  FIREBALL,
-  MAGIC_SPARKLES,
-  LASER_BEAM
-}
-
 @onready var attack_timer: Timer = $AttackTimer
 
 @export var damage_amount: int = 10
 @export var damage_cooldown: float = 1.0
-@export var attack_effect_type: AttackEffectType = AttackEffectType.BULLET
 @export var show_attack_effects: bool = true
+@export var selected_effect_name: String = "Bullet"
+@export var effect_parameter_overrides: Dictionary = {}
+@export var attack_effects_database: AttackEffectDatabase
 
 var is_on_cooldown: bool = false
 var current_target: Node = null
 
-# Preload attack effect scenes
-var attack_effect_scenes = {
-  AttackEffectType.BULLET: preload("res://Common/Effects/attack_effects/bullet_attack_effect.tscn"),
-  AttackEffectType.FIREBALL: preload("res://Common/Effects/attack_effects/fireball_attack_effect.tscn"),
-  AttackEffectType.MAGIC_SPARKLES: preload("res://Common/Effects/attack_effects/magic_sparkles_attack_effect.tscn"),
-  AttackEffectType.LASER_BEAM: preload("res://Common/Effects/attack_effects/laser_beam_attack_effect.tscn")
-}
+# Load default effects database if none specified
+func _ready():
+	if not attack_effects_database:
+		# Create the default database dynamically
+		attack_effects_database = preload("res://Common/Effects/attack_effects/default_attack_effects.gd").create_default_database()
 
 
 func perform_attack(target: Node) -> AttackResult:
@@ -50,7 +42,7 @@ func perform_attack(target: Node) -> AttackResult:
       var health = target.get_node("Health")
       if health is Health:
         # Show attack effect before applying damage
-        if show_attack_effects and attack_effect_type != AttackEffectType.NONE:
+        if show_attack_effects and selected_effect_name != "None":
           _show_attack_effect(target)
         
         health.take_damage(damage_amount)
@@ -68,14 +60,14 @@ func _show_attack_effect(target: Node):
   """
   Creates and plays the selected attack effect from this attack to the target.
   """
-  if not attack_effect_scenes.has(attack_effect_type):
+  if not attack_effects_database:
     return
   
-  var effect_scene = attack_effect_scenes[attack_effect_type]
-  if not effect_scene:
+  var effect_resource = attack_effects_database.get_effect_by_name(selected_effect_name)
+  if not effect_resource or not effect_resource.effect_scene:
     return
   
-  var effect_instance = effect_scene.instantiate()
+  var effect_instance = effect_resource.effect_scene.instantiate()
   if not effect_instance:
     return
   
@@ -92,9 +84,14 @@ func _show_attack_effect(target: Node):
   if target is Node3D:
     to_position = target.global_position
   
-  # Play the effect
+  # Combine default parameters with instance overrides
+  var final_parameters = effect_resource.effect_parameters.duplicate()
+  for param_name in effect_parameter_overrides:
+    final_parameters[param_name] = effect_parameter_overrides[param_name]
+  
+  # Play the effect with combined parameters
   if effect_instance.has_method("play_effect"):
-    effect_instance.play_effect(from_position, to_position)
+    effect_instance.play_effect(from_position, to_position, final_parameters)
 
 func cancel():
   is_on_cooldown = false

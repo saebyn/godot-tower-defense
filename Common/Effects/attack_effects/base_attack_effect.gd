@@ -14,13 +14,25 @@ signal effect_finished
 
 var effect_tween: Tween
 
-func play_effect(from_position: Vector3, to_position: Vector3) -> void:
+func play_effect(from_position: Vector3, to_position: Vector3, parameters: Dictionary = {}) -> void:
 	"""
 	Play the attack effect from source to target position.
+	Parameters can override default effect settings.
 	Override this method in derived classes.
 	"""
 	global_position = from_position
+	_apply_parameters(parameters)
 	_animate_effect(from_position, to_position)
+
+func _apply_parameters(parameters: Dictionary) -> void:
+	"""
+	Apply parameter overrides to this effect instance.
+	Override this method in derived classes to handle specific parameters.
+	"""
+	# Apply any parameters that match exported properties
+	for param_name in parameters:
+		if param_name in self:
+			set(param_name, parameters[param_name])
 
 func _animate_effect(from_pos: Vector3, to_pos: Vector3) -> void:
 	"""
