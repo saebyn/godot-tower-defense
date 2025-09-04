@@ -91,6 +91,10 @@ func _build_spawn_queue() -> void:
 func _spawn_next_enemy() -> void:
 	if _enemies_to_spawn.is_empty() or not _is_active:
 		_spawn_timer.stop()
+		# Check if all enemies are spawned and end wave early if needed
+		if _enemies_to_spawn.is_empty() and _is_active:
+			# All enemies spawned before duration expired
+			_end_wave()
 		return
 	
 	var enemy_data = _enemies_to_spawn.pop_front()
