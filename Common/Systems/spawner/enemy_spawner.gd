@@ -23,16 +23,12 @@ signal all_waves_completed()
 signal enemy_spawned(enemy: Node3D)
 
 func _ready() -> void:
-    # Detect if we have Wave children (wave mode) or use legacy mode
-    _detect_mode()
-    
-    if _is_wave_mode:
-        _setup_wave_mode()
-    else:
-        _setup_legacy_mode()
+    # Defer mode detection to ensure all children are ready
+    _detect_mode.call_deferred()
 
 func _detect_mode() -> void:
     # Check for Wave child nodes
+    _waves.clear()  # Clear in case of multiple calls
     for child in get_children():
         if child is Wave:
             _waves.append(child)
@@ -41,8 +37,10 @@ func _detect_mode() -> void:
     
     if _is_wave_mode:
         print("EnemySpawner: Using wave mode with ", _waves.size(), " waves")
+        _setup_wave_mode()
     else:
         print("EnemySpawner: Using legacy mode")
+        _setup_legacy_mode()
 
 func _setup_wave_mode() -> void:
     # Connect wave signals
