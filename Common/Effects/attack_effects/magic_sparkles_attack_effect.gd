@@ -1,8 +1,6 @@
-"""
-# MagicSparklesAttackEffect.gd
-
-Magic sparkles attack effect with glittery particles and magical appearance.
-"""
+## MagicSparklesAttackEffect.gd
+##
+## Magic sparkles attack effect with glittery particles and magical appearance.
 extends BaseAttackEffect
 
 @export var sparkle_colors: Array[Color] = [Color.CYAN, Color.MAGENTA, Color.YELLOW, Color.WHITE]
@@ -13,14 +11,14 @@ extends BaseAttackEffect
 @onready var impact_particles: GPUParticles3D = $ImpactParticles
 
 func _ready():
-	# Create magic core visual
+	## Create magic core visual
 	if magic_core:
 		var sphere_mesh = SphereMesh.new()
 		sphere_mesh.radius = 0.08
 		sphere_mesh.height = 0.16
 		magic_core.mesh = sphere_mesh
 		
-		# Create shimmering material
+		## Create shimmering material
 		var material = StandardMaterial3D.new()
 		material.albedo_color = Color.WHITE
 		material.emission_enabled = true
@@ -29,11 +27,11 @@ func _ready():
 		material.roughness = 0.2
 		magic_core.set_surface_override_material(0, material)
 	
-	# Configure sparkle particles
+	## Configure sparkle particles
 	if sparkle_particles:
 		_setup_sparkle_particles()
 	
-	# Configure impact particles
+	## Configure impact particles
 	if impact_particles:
 		_setup_impact_particles()
 
@@ -69,27 +67,27 @@ func _setup_impact_particles():
 	impact_particles.emitting = false
 
 func _animate_effect(from_pos: Vector3, to_pos: Vector3) -> void:
-	# Store positions for arc calculation
+	## Store positions for arc calculation
 	_from_pos = from_pos
 	_to_pos = to_pos
 	_mid_pos = (_from_pos + _to_pos) / 2.0
 	_mid_pos.y += 1.0
 	
-	# Calculate travel time
+	## Calculate travel time
 	var distance = from_pos.distance_to(to_pos)
 	var travel_time = distance / magic_speed
 	
-	# Start sparkle trail
+	## Start sparkle trail
 	if sparkle_particles:
 		sparkle_particles.emitting = true
 	
-	# Create tween for magic movement with slight arc
+	## Create tween for magic movement with slight arc
 	effect_tween = create_tween()
 	
-	# Use the arc movement
+	## Use the arc movement
 	effect_tween.tween_method(_set_arc_position, 0.0, 1.0, travel_time)
 	
-	# When magic reaches target, trigger impact
+	## When magic reaches target, trigger impact
 	effect_tween.finished.connect(_trigger_impact)
 
 var _from_pos: Vector3
@@ -97,21 +95,21 @@ var _to_pos: Vector3
 var _mid_pos: Vector3
 
 func _set_arc_position(progress: float):
-	# Quadratic bezier curve for arc movement
+	## Quadratic bezier curve for arc movement
 	var pos = _from_pos.lerp(_mid_pos, progress).lerp(_mid_pos.lerp(_to_pos, progress), progress)
 	global_position = pos
 
 func _trigger_impact():
-	# Hide magic core and stop sparkles
+	## Hide magic core and stop sparkles
 	if magic_core:
 		magic_core.visible = false
 	if sparkle_particles:
 		sparkle_particles.emitting = false
 	
-	# Start impact particles
+	## Start impact particles
 	if impact_particles:
 		impact_particles.emitting = true
-		# Wait for impact to finish
+		## Wait for impact to finish
 		await get_tree().create_timer(impact_particles.lifetime).timeout
 	
 	_finish_effect()

@@ -1,8 +1,6 @@
-"""
-# LaserBeamAttackEffect.gd
-
-Instant laser beam attack effect.
-"""
+## LaserBeamAttackEffect.gd
+##
+## Instant laser beam attack effect.
 extends BaseAttackEffect
 
 @export var beam_color: Color = Color.RED
@@ -13,7 +11,7 @@ extends BaseAttackEffect
 @onready var impact_particles: GPUParticles3D = $ImpactParticles
 
 func _ready():
-	# Configure impact particles
+	## Configure impact particles
 	if impact_particles:
 		_setup_impact_particles()
 
@@ -33,49 +31,49 @@ func _setup_impact_particles():
 	impact_particles.emitting = false
 
 func _animate_effect(from_pos: Vector3, to_pos: Vector3) -> void:
-	# Create laser beam instantly
+	## Create laser beam instantly
 	_create_beam(from_pos, to_pos)
 	
-	# Start impact particles at target
+	## Start impact particles at target
 	if impact_particles:
 		impact_particles.global_position = to_pos
 		impact_particles.emitting = true
 	
-	# Create tween for beam fade out
+	## Create tween for beam fade out
 	effect_tween = create_tween()
 	effect_tween.set_parallel(true)
 	
-	# Fade out beam
+	## Fade out beam
 	if beam_mesh:
 		var material = beam_mesh.get_surface_override_material(0)
 		if material:
 			effect_tween.tween_property(material, "albedo_color:a", 0.0, beam_duration)
 			effect_tween.tween_property(material, "emission:a", 0.0, beam_duration)
 	
-	# Wait for beam duration then finish
+	## Wait for beam duration then finish
 	effect_tween.tween_callback(_finish_effect).set_delay(beam_duration)
 
 func _create_beam(from_pos: Vector3, to_pos: Vector3):
 	if not beam_mesh:
 		return
 	
-	# Calculate beam direction and distance
+	## Calculate beam direction and distance
 	var direction = (to_pos - from_pos).normalized()
 	var distance = from_pos.distance_to(to_pos)
 	
-	# Create cylinder mesh for beam
+	## Create cylinder mesh for beam
 	var cylinder_mesh = CylinderMesh.new()
 	cylinder_mesh.height = distance
 	cylinder_mesh.top_radius = beam_width
 	cylinder_mesh.bottom_radius = beam_width
 	beam_mesh.mesh = cylinder_mesh
 	
-	# Position beam
+	## Position beam
 	beam_mesh.global_position = (from_pos + to_pos) / 2.0
 	beam_mesh.look_at(to_pos, Vector3.UP)
 	beam_mesh.rotate_object_local(Vector3.RIGHT, PI / 2)
 	
-	# Create glowing material
+	## Create glowing material
 	var material = StandardMaterial3D.new()
 	material.albedo_color = beam_color
 	material.emission_enabled = true
