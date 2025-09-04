@@ -1,8 +1,6 @@
-"""
-# FireballAttackEffect.gd
-
-Fireball attack effect with particle trail and explosion.
-"""
+## FireballAttackEffect.gd
+##
+## Fireball attack effect with particle trail and explosion.
 extends BaseAttackEffect
 
 @export var fireball_speed: float = 15.0
@@ -13,25 +11,25 @@ extends BaseAttackEffect
 @onready var explosion_particles: GPUParticles3D = $ExplosionParticles
 
 func _ready():
-	# Create fireball visual
+	## Create fireball visual
 	if fireball_mesh:
 		var sphere_mesh = SphereMesh.new()
 		sphere_mesh.radius = 0.15
 		sphere_mesh.height = 0.3
 		fireball_mesh.mesh = sphere_mesh
 		
-		# Create glowing orange material
+		## Create glowing orange material
 		var material = StandardMaterial3D.new()
 		material.albedo_color = Color.ORANGE_RED
 		material.emission_enabled = true
 		material.emission = Color.ORANGE_RED * 0.8
 		fireball_mesh.set_surface_override_material(0, material)
 	
-	# Configure trail particles
+	## Configure trail particles
 	if trail_particles:
 		_setup_trail_particles()
 	
-	# Configure explosion particles
+	## Configure explosion particles
 	if explosion_particles:
 		_setup_explosion_particles()
 
@@ -65,32 +63,32 @@ func _setup_explosion_particles():
 	explosion_particles.emitting = false
 
 func _animate_effect(from_pos: Vector3, to_pos: Vector3) -> void:
-	# Calculate travel time
+	## Calculate travel time
 	var distance = from_pos.distance_to(to_pos)
 	var travel_time = distance / fireball_speed
 	
-	# Start trail particles
+	## Start trail particles
 	if trail_particles:
 		trail_particles.emitting = true
 	
-	# Create tween for fireball movement
+	## Create tween for fireball movement
 	effect_tween = create_tween()
 	effect_tween.tween_property(self, "global_position", to_pos, travel_time)
 	
-	# When fireball reaches target, trigger explosion
+	## When fireball reaches target, trigger explosion
 	effect_tween.finished.connect(_trigger_explosion)
 
 func _trigger_explosion():
-	# Hide fireball and stop trail
+	## Hide fireball and stop trail
 	if fireball_mesh:
 		fireball_mesh.visible = false
 	if trail_particles:
 		trail_particles.emitting = false
 	
-	# Start explosion particles
+	## Start explosion particles
 	if explosion_particles:
 		explosion_particles.emitting = true
-		# Wait for explosion to finish
+		## Wait for explosion to finish
 		await get_tree().create_timer(explosion_particles.lifetime).timeout
 	
 	_finish_effect()
