@@ -48,48 +48,6 @@ The system uses a child component approach:
 - **Parameters**: `beam_duration` (default: 0.3), `laser_color` (default: red)
 - **Best for**: High-tech weapons, instant-hit attacks
 
-## Usage
-
-### Basic Setup
-
-1. **In the Godot Editor**:
-   - Open an Attack component scene (e.g., `attack.tscn`)
-   - Right-click on the Attack node and select "Instance Child Scene"
-   - Choose an effect scene (e.g., `bullet_attack_effect.tscn`)
-   - The Attack component will automatically detect and use the child effect
-
-2. **Or by adding scenes as children**:
-   - Drag an effect scene into the Attack node as a child
-   - The effect will be automatically discovered and used
-
-### Parameter Customization
-
-Each Attack component can override effect parameters without modifying the effect scene:
-
-```gdscript
-# In the Attack component's Inspector or code
-attack.effect_parameter_overrides = {
-    "bullet_speed": 30.0,        # Faster bullet
-    "bullet_color": Color.RED    # Red bullet instead of yellow
-}
-```
-
-### In Code
-
-```gdscript
-# Basic usage - effect is automatically detected from child nodes
-@onready var attack: Attack = $Attack
-
-# Enable/disable effects
-attack.show_attack_effects = true
-
-# Override parameters per entity
-attack.effect_parameter_overrides = {
-    "projectile_speed": 10.0,  # Slower projectile
-    "fireball_color": Color.BLUE  # Blue fireball instead of orange
-}
-```
-
 ### Creating Custom Effects
 
 To create a new attack effect:
@@ -141,9 +99,8 @@ Common/Effects/attack_effects/
 
 1. Attack components scan their children for nodes extending `BaseAttackEffect`
 2. When `attack.perform_attack()` is called, it triggers the child effect
-3. Effect parameters can be overridden via `effect_parameter_overrides` dictionary
-4. Effects are persistent child components (no instantiation overhead)
-5. Effects reset their state for each attack
+3. Effects are persistent child components (no instantiation overhead)
+4. Effects reset their state for each attack
 
 ### Performance Considerations
 
@@ -151,21 +108,3 @@ Common/Effects/attack_effects/
 - Effects use `auto_cleanup = false` to remain available for reuse
 - Tween cleanup is handled automatically
 - Only one effect per Attack component is supported (first found child is used)
-
-## Migration
-
-This system replaces the previous resource-based approach:
-
-- **Before**: Used `.tres` files and `selected_attack_effect` export
-- **After**: Uses child components that extend `BaseAttackEffect`
-- **Default**: Attack components include a BulletAttackEffect child by default
-- **Backward compatible**: Existing attacks work without modification
-
-## Integration
-
-The attack effects system is fully integrated with the existing attack system:
-
-- **Enemies**: Automatically use effects when attacking targets
-- **Player attacks**: Work with click-to-attack system  
-- **All attack components**: Can have custom child effects
-- **Parameter overrides**: Work per-entity without modifying scenes
