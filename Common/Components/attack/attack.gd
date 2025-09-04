@@ -5,9 +5,8 @@ This script handles the attack logic for an enemy character.
 It checks if the target is valid and applies damage if possible.
 The attack has a cooldown to prevent continuous damage application.
 
-Attack effects are configured using AttackEffectResource files from Config/AttackEffects/.
-Each effect resource defines the visual effect scene and default parameters.
-Individual parameters can be overridden per Attack component instance.
+Attack effects are configured by adding a child node that extends BaseAttackEffect.
+The Attack component will automatically detect and use any child attack effect.
 """
 extends Node
 class_name Attack
@@ -23,17 +22,15 @@ enum AttackResult {
 @export var damage_amount: int = 10
 @export var damage_cooldown: float = 1.0
 @export var show_attack_effects: bool = true
-@export var selected_attack_effect: AttackEffectResource
 @export var effect_parameter_overrides: Dictionary = {}
 
 var is_on_cooldown: bool = false
 var current_target: Node = null
+var attack_effect: BaseAttackEffect = null
 
-# Load default effect if none specified
 func _ready():
-	if not selected_attack_effect:
-		# Load the default Bullet effect
-		selected_attack_effect = load("res://Config/AttackEffects/Bullet.tres")
+	# Find child attack effect
+	_find_attack_effect()
 
 
 func perform_attack(target: Node) -> AttackResult:
@@ -45,7 +42,7 @@ func perform_attack(target: Node) -> AttackResult:
       var health = target.get_node("Health")
       if health is Health:
         # Show attack effect before applying damage
-        if show_attack_effects and selected_attack_effect and selected_attack_effect.effect_name != "None":
+        if show_attack_effects and attack_effect:
           _show_attack_effect(target)
         
         health.take_damage(damage_amount)
@@ -59,20 +56,21 @@ func perform_attack(target: Node) -> AttackResult:
     return AttackResult.SUCCESS
   return AttackResult.ON_COOLDOWN
 
+func _find_attack_effect():
+  """
+  Find a child node that extends BaseAttackEffect to use as the attack effect.
+  """
+  for child in get_children():
+    if child is BaseAttackEffect:
+      attack_effect = child
+      break
+
 func _show_attack_effect(target: Node):
   """
-  Creates and plays the selected attack effect from this attack to the target.
+  Triggers the child attack effect to play from this attack to the target.
   """
-  if not selected_attack_effect or not selected_attack_effect.effect_scene:
+  if not attack_effect:
     return
-  
-  var effect_instance = selected_attack_effect.effect_scene.instantiate()
-  if not effect_instance:
-    return
-  
-  # Add effect to the scene tree (to the parent's parent to avoid it being a child of this attack)
-  var scene_root = get_tree().current_scene
-  scene_root.add_child(effect_instance)
   
   # Get positions - use parent's position as source since Attack is a Node, not Node3D
   var from_position = Vector3.ZERO
@@ -83,14 +81,12 @@ func _show_attack_effect(target: Node):
   if target is Node3D:
     to_position = target.global_position
   
-  # Combine default parameters with instance overrides
-  var final_parameters = selected_attack_effect.effect_parameters.duplicate()
-  for param_name in effect_parameter_overrides:
-    final_parameters[param_name] = effect_parameter_overrides[param_name]
+  # Apply parameter overrides to the attack effect
+  if not effect_parameter_overrides.is_empty():
+    attack_effect._apply_parameters(effect_parameter_overrides)
   
-  # Play the effect with combined parameters
-  if effect_instance.has_method("play_effect"):
-    effect_instance.play_effect(from_position, to_position, final_parameters)
+  # Play the effect
+  attack_effect.play_effect(from_position, to_position)
 
 func cancel():
   is_on_cooldown = false

@@ -1,8 +1,0 @@
-[gd_resource type="AttackEffectResource" script_class="AttackEffectResource" format=3]
-
-[resource]
-script = preload("res://Common/Effects/attack_effects/attack_effect_resource.gd")
-effect_name = "None"
-effect_scene = null
-effect_parameters = {}
-description = "No visual effect"

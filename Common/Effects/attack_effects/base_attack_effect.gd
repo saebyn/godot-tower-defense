@@ -10,7 +10,7 @@ class_name BaseAttackEffect
 signal effect_finished
 
 @export var effect_duration: float = 1.0
-@export var auto_cleanup: bool = true
+@export var auto_cleanup: bool = false  # Default to false since effects are now persistent child components
 
 var effect_tween: Tween
 

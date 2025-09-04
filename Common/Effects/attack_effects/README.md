@@ -2,23 +2,25 @@
 
 ## Overview
 
-The attack effects system provides visual feedback when attacks are performed in the game. It uses a flexible, resource-based architecture that allows for easy configuration and extension without modifying core components.
+The attack effects system provides visual feedback when attacks are performed in the game. It uses a simple child component architecture where attack effects are added as child nodes to Attack components.
 
 ## Architecture
 
-### Resource-Based Design
+### Child Component Design
 
-The system uses custom resources to define attack effects:
+The system uses a child component approach:
 
-- **AttackEffectResource**: Defines an individual effect with its scene, parameters, and metadata
-- **AttackEffectDatabase**: Contains all available attack effects in the project
+- **BaseAttackEffect**: Base class that all attack effects extend
+- **Attack Component**: Automatically detects and uses child attack effect components
+- **Effect Scenes**: Pre-built effect scenes that can be added as children
 
 ### Key Benefits
 
-1. **No hardcoded enums**: Attack types are defined in resources, not code
-2. **No hardcoded paths**: Effect scenes are referenced in the database resource
-3. **Configurable per entity**: Each Attack component can override effect parameters
-4. **Fully extensible**: Add new effects without modifying existing components
+1. **Simple setup**: Add effect as child node to Attack component
+2. **Per-entity customization**: Each Attack can have different effect parameters
+3. **No hardcoded references**: Effects are discovered at runtime
+4. **Fully extensible**: Create new effects by extending BaseAttackEffect
+5. **Designer-friendly**: Visual scene composition in Godot editor
 
 ## Available Effect Types
 
@@ -48,34 +50,42 @@ The system uses custom resources to define attack effects:
 
 ## Usage
 
-### Basic Configuration
+### Basic Setup
 
-In any Attack component, configure the effect using the exported parameters:
+1. **In the Godot Editor**:
+   - Open an Attack component scene (e.g., `attack.tscn`)
+   - Right-click on the Attack node and select "Instance Child Scene"
+   - Choose an effect scene (e.g., `bullet_attack_effect.tscn`)
+   - The Attack component will automatically detect and use the child effect
 
-1. **show_attack_effects**: Boolean to enable/disable visual effects
-2. **selected_effect_name**: Choose from available effects: "None", "Bullet", "Fireball", "Magic Sparkles", "Laser Beam"
-3. **effect_parameter_overrides**: Dictionary to override default effect parameters
-4. **attack_effects_database**: Optional custom database (uses default if not set)
+2. **Or by adding scenes as children**:
+   - Drag an effect scene into the Attack node as a child
+   - The effect will be automatically discovered and used
 
-### In the Godot Editor
+### Parameter Customization
 
-1. Select any node with an Attack component
-2. In the Inspector, find the Attack section
-3. Check "Show Attack Effects" to enable effects
-4. Set "Selected Effect Name" to your desired effect
-5. Use "Effect Parameter Overrides" dictionary to customize parameters
+Each Attack component can override effect parameters without modifying the effect scene:
+
+```gdscript
+# In the Attack component's Inspector or code
+attack.effect_parameter_overrides = {
+    "bullet_speed": 30.0,        # Faster bullet
+    "bullet_color": Color.RED    # Red bullet instead of yellow
+}
+```
 
 ### In Code
 
 ```gdscript
-# Basic usage
+# Basic usage - effect is automatically detected from child nodes
 @onready var attack: Attack = $Attack
-attack.show_attack_effects = true
-attack.selected_effect_name = "Fireball"
 
-# With parameter overrides
+# Enable/disable effects
+attack.show_attack_effects = true
+
+# Override parameters per entity
 attack.effect_parameter_overrides = {
-    "projectile_speed": 10.0,  # Slower fireball
+    "projectile_speed": 10.0,  # Slower projectile
     "fireball_color": Color.BLUE  # Blue fireball instead of orange
 }
 ```
@@ -84,30 +94,30 @@ attack.effect_parameter_overrides = {
 
 To create a new attack effect:
 
-1. Create a new scene extending `BaseAttackEffect`
-2. Override `_animate_effect(from_pos: Vector3, to_pos: Vector3)` method
-3. Add configurable parameters as `@export` variables
-4. Create an `AttackEffectResource` for your effect
-5. Add it to your project's attack effects database
+1. **Create a new scene**:
+   - Create a new 3D scene
+   - Change the root node type to extend `BaseAttackEffect`
+   - Add visual elements (MeshInstance3D, particles, etc.)
+   - Save as `.tscn` file
 
-### Custom Effect Database
+2. **Create the script**:
+   ```gdscript
+   extends BaseAttackEffect
+   
+   @export var my_speed: float = 20.0
+   @export var my_color: Color = Color.MAGENTA
+   
+   func _animate_effect(from_pos: Vector3, to_pos: Vector3) -> void:
+       # Implement your custom animation here
+       # Example: move from from_pos to to_pos over time
+       effect_tween = create_tween()
+       effect_tween.tween_property(self, "global_position", to_pos, 1.0)
+       effect_tween.finished.connect(_finish_effect)
+   ```
 
-You can create custom effect databases for different game modes or enemy types:
-
-```gdscript
-# Create custom database
-var custom_database = AttackEffectDatabase.new()
-
-# Add custom effect
-var my_effect = AttackEffectResource.new()
-my_effect.effect_name = "Lightning Bolt"
-my_effect.effect_scene = preload("res://effects/lightning_effect.tscn")
-my_effect.effect_parameters = {"bolt_color": Color.PURPLE}
-custom_database.add_effect(my_effect)
-
-# Use in attack component
-attack.attack_effects_database = custom_database
-```
+3. **Use the effect**:
+   - Add your custom effect scene as a child to any Attack component
+   - It will be automatically detected and used
 
 ## Technical Details
 
@@ -115,9 +125,6 @@ attack.attack_effects_database = custom_database
 
 ```
 Common/Effects/attack_effects/
-├── attack_effect_resource.gd       # Effect resource definition
-├── attack_effect_database.gd       # Effect database resource
-├── default_attack_effects.gd       # Default effects setup
 ├── base_attack_effect.gd           # Base class for all effects
 ├── base_attack_effect.tscn         # Base scene template
 ├── bullet_attack_effect.gd         # Bullet effect implementation
@@ -132,34 +139,33 @@ Common/Effects/attack_effects/
 
 ### How It Works
 
-1. Attack components reference an `AttackEffectDatabase` (default provided)
-2. When `attack.perform_attack()` is called, it looks up the selected effect by name
-3. Effect parameters are combined (defaults + overrides)
-4. The effect scene is instantiated and played with the final parameters
-5. Effects automatically clean themselves up when finished
+1. Attack components scan their children for nodes extending `BaseAttackEffect`
+2. When `attack.perform_attack()` is called, it triggers the child effect
+3. Effect parameters can be overridden via `effect_parameter_overrides` dictionary
+4. Effects are persistent child components (no instantiation overhead)
+5. Effects reset their state for each attack
 
 ### Performance Considerations
 
-- Effects are automatically cleaned up when finished
-- Particle systems are properly configured to avoid memory leaks
-- Only one effect instance is created per attack
-- Effects use efficient Godot built-in systems (Tween, GPUParticles3D)
-- Database resources can be shared across multiple attack components
+- Effects are persistent child components (no instantiation per attack)
+- Effects use `auto_cleanup = false` to remain available for reuse
+- Tween cleanup is handled automatically
+- Only one effect per Attack component is supported (first found child is used)
 
-## Migration from Enum System
+## Migration
 
-The new resource system is designed to be compatible with existing setups:
+This system replaces the previous resource-based approach:
 
-- Default effects are automatically available (Bullet, Fireball, Magic Sparkles, Laser Beam)
-- Attack components work without configuration (defaults to Bullet effect)
-- No breaking changes to existing attack functionality
+- **Before**: Used `.tres` files and `selected_attack_effect` export
+- **After**: Uses child components that extend `BaseAttackEffect`
+- **Default**: Attack components include a BulletAttackEffect child by default
+- **Backward compatible**: Existing attacks work without modification
 
 ## Integration
 
 The attack effects system is fully integrated with the existing attack system:
 
 - **Enemies**: Automatically use effects when attacking targets
-- **Player attacks**: Work with click-to-attack system
-- **All attack components**: Can be configured independently
-
-No existing code needs to be modified - effects are opt-in via the export parameters.
+- **Player attacks**: Work with click-to-attack system  
+- **All attack components**: Can have custom child effects
+- **Parameter overrides**: Work per-entity without modifying scenes
