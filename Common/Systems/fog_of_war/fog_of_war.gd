@@ -5,13 +5,18 @@ signal fog_updated(revealed_cells: Array[Vector2i])
 
 @export_group("Fog Settings")
 @export var grid_size: float = 2.0 # Size of each fog cell in world units
-@export var map_width: int = 250 # Map width in grid cells
-@export var map_height: int = 250 # Map height in grid cells
+@export var map_width: int = 125 # Map width in grid cells  
+@export var map_height: int = 125 # Map height in grid cells
+@export var map_center: Vector3 = Vector3(17.678, 0, 7.322) # Center of the map
 @export var default_vision_range: float = 10.0 # Default vision range for sources
 
 @export_group("Visual Settings")  
 @export var fog_color: Color = Color(0, 0, 0, 0.8)
 @export var explored_color: Color = Color(0, 0, 0, 0.4)
+
+@export_group("Debug Settings")
+@export var debug_enabled: bool = false
+@export var show_grid: bool = false
 
 # Fog state for each cell: 0 = unexplored, 1 = explored, 2 = visible
 var fog_grid: Array[Array] = []
@@ -38,11 +43,11 @@ func create_fog_overlay():
 	
 	fog_overlay.mesh = quad_mesh
 	
-	# Position the overlay to cover the map
+	# Position the overlay to match the ground
 	fog_overlay.position = Vector3(
-		(map_width * grid_size) / 2.0,
-		0.1, # Slightly above ground to avoid z-fighting
-		(map_height * grid_size) / 2.0
+		map_center.x,
+		map_center.y + 0.1, # Slightly above ground to avoid z-fighting
+		map_center.z
 	)
 	fog_overlay.rotation_degrees = Vector3(-90, 0, 0) # Rotate to be horizontal
 	
@@ -79,6 +84,9 @@ func update_fog():
 					fog_grid[cell.x][cell.y] = 2 # Mark as visible
 					newly_visible_cells.append(cell)
 	
+	if debug_enabled:
+		print("Fog update: ", vision_sources.size(), " sources, ", newly_visible_cells.size(), " newly visible cells")
+	
 	update_fog_visual()
 	fog_updated.emit(newly_visible_cells)
 
@@ -100,16 +108,21 @@ func calculate_vision_area(source: Node) -> Array[Vector2i]:
 	return visible_cells
 
 func world_to_grid(world_pos: Vector3) -> Vector2i:
+	# Convert world position to grid coordinates relative to map center
+	var relative_pos = world_pos - map_center
 	return Vector2i(
-		int(world_pos.x / grid_size),
-		int(world_pos.z / grid_size)
+		int((relative_pos.x + (map_width * grid_size / 2.0)) / grid_size),
+		int((relative_pos.z + (map_height * grid_size / 2.0)) / grid_size)
 	)
 
 func grid_to_world(grid_pos: Vector2i) -> Vector3:
+	# Convert grid coordinates back to world position
+	var relative_x = (grid_pos.x * grid_size) - (map_width * grid_size / 2.0) + grid_size / 2.0
+	var relative_z = (grid_pos.y * grid_size) - (map_height * grid_size / 2.0) + grid_size / 2.0
 	return Vector3(
-		grid_pos.x * grid_size + grid_size / 2.0,
-		0,
-		grid_pos.y * grid_size + grid_size / 2.0
+		map_center.x + relative_x,
+		map_center.y,
+		map_center.z + relative_z
 	)
 
 func is_valid_cell(cell: Vector2i) -> bool:
@@ -128,18 +141,31 @@ func is_cell_explored(world_pos: Vector3) -> bool:
 	return fog_grid[cell.x][cell.y] >= 1
 
 func update_fog_visual():
-	# For now, just update the overall fog opacity
-	# TODO: Implement more sophisticated shader-based fog rendering
+	# Create a more sophisticated fog overlay
+	var material = fog_overlay.get_surface_override_material(0) as StandardMaterial3D
+	if not material:
+		return
+	
+	# Calculate visibility statistics
+	var unexplored_count = 0
+	var explored_count = 0
 	var visible_count = 0
 	var total_count = map_width * map_height
 	
 	for x in range(map_width):
 		for y in range(map_height):
-			if fog_grid[x][y] == 2:
-				visible_count += 1
+			match fog_grid[x][y]:
+				0: unexplored_count += 1
+				1: explored_count += 1
+				2: visible_count += 1
 	
-	# Adjust fog opacity based on visibility
+	# Adjust fog based on overall exploration
+	var exploration_ratio = float(explored_count + visible_count) / float(total_count)
 	var visibility_ratio = float(visible_count) / float(total_count)
-	var material = fog_overlay.get_surface_override_material(0) as StandardMaterial3D
-	if material:
-		material.albedo_color.a = fog_color.a * (1.0 - visibility_ratio * 0.5)
+	
+	# Make fog less opaque as more areas are explored
+	material.albedo_color.a = fog_color.a * (1.0 - exploration_ratio * 0.3)
+	
+	# Add some visual feedback when vision sources are active
+	if vision_sources.size() > 0:
+		material.albedo_color = fog_color.lerp(explored_color, visibility_ratio)

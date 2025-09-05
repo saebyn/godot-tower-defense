@@ -75,6 +75,7 @@ navigation_region = NodePath("../NavigationRegion3D")
 camera = NodePath("../Camera3D")
 
 [node name="FogOfWar" parent="." groups=["fog_of_war"] instance=ExtResource("9_kek77")]
+debug_enabled = true
 
 [connection signal="obstacle_spawn_requested" from="UI" to="." method="_on_obstacle_spawn_requested"]
 [connection signal="rebake_navigation_mesh" from="ObstaclePlacement" to="." method="rebake_navigation_mesh"]
