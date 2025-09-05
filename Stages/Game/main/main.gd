@@ -80,6 +80,22 @@ func rebake_navigation_mesh():
 func _input(event: InputEvent) -> void:
   if event is InputEventMouseButton and not obstacle_placement.busy and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
       _handle_enemy_click(event.position)
+  
+  # Test key to spawn an enemy for currency testing
+  if event is InputEventKey and event.pressed and event.keycode == KEY_T:
+    _spawn_test_enemy()
+
+func _spawn_test_enemy():
+  # Load and spawn a test enemy
+  var enemy_scene = preload("res://enemy.tscn")
+  var enemy = enemy_scene.instantiate()
+  
+  # Spawn enemy at a fixed position in front of the camera
+  enemy.global_position = camera.global_position + Vector3(0, 0, 10)
+  
+  # Add to the scene
+  add_child(enemy)
+  print("Test enemy spawned! Press T to spawn more, click on enemies to damage them.")
 
 
 func _handle_enemy_click(click_position: Vector2):
