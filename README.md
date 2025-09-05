@@ -9,6 +9,7 @@ This is a work-in-progress 3D tower defense game featuring:
 - Enemy AI with pathfinding navigation
 - Destructible targets
 - Orthogonal camera view optimized for strategy gameplay
+- Fog of war system with strategic vision mechanics
 
 ## Controls
 
@@ -109,7 +110,7 @@ This structure supports the planned features including multiple levels, wave-bas
 
 ## Development
 
-This project is in early development. Current features include basic camera controls and enemy AI pathfinding. Future planned features may include:
+This project is in early development. Current features include basic camera controls, enemy AI pathfinding, and fog of war mechanics. Future planned features may include:
 - Tower placement and management
 - Multiple enemy types
 - Wave-based gameplay

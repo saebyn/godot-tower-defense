@@ -37,3 +37,4 @@ shape = SubResource("BoxShape3D_sl1jc")
 
 [node name="VisionSource" parent="." instance=ExtResource("3_kek77")]
 vision_range = 15.0
+show_debug_range = true
