@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://bpf2dmre1y8t0" path="res://Utilities/Placement/obstacle_placement/obstacle_placement.tscn" id="7_kek77"]
 [ext_resource type="PackedScene" uid="uid://c62uq7kswrqkh" path="res://enemy.tscn" id="7_wy7n0"]
 [ext_resource type="PackedScene" uid="uid://cyp50ln3gbmtt" path="res://Common/Systems/spawner/enemy_spawner.tscn" id="8_kek77"]
+[ext_resource type="PackedScene" uid="uid://bgrj8xbhav0lf" path="res://Common/Systems/fog_of_war/fog_of_war.tscn" id="9_kek77"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_ig7tw"]
 vertices = PackedVector3Array(17.8745, 0.5, -345.732, -335.375, 0.5, 7.26849, 17.3745, 0.5, 360.268, 17.8745, 0.5, 360.268, 370.625, 0.5, 7.51849, 370.625, 0.5, 7.01849)
@@ -72,6 +73,8 @@ collision_mask = 4
 [node name="ObstaclePlacement" parent="." node_paths=PackedStringArray("navigation_region", "camera") instance=ExtResource("7_kek77")]
 navigation_region = NodePath("../NavigationRegion3D")
 camera = NodePath("../Camera3D")
+
+[node name="FogOfWar" parent="." groups=["fog_of_war"] instance=ExtResource("9_kek77")]
 
 [connection signal="obstacle_spawn_requested" from="UI" to="." method="_on_obstacle_spawn_requested"]
 [connection signal="rebake_navigation_mesh" from="ObstaclePlacement" to="." method="rebake_navigation_mesh"]

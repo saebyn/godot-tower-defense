@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bgrj8xbhav0lf"]
+
+[ext_resource type="Script" path="res://Common/Systems/fog_of_war/fog_of_war.gd" id="1_0v8gd"]
+
+[node name="FogOfWar" type="Node3D"]
+script = ExtResource("1_0v8gd")
+
+[node name="FogOverlay" type="MeshInstance3D" parent="."]

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8nb0jcaay2nf"]
+
+[ext_resource type="Script" path="res://Common/Components/vision/vision_source.gd" id="1_q2ww2"]
+
+[node name="VisionSource" type="Node"]
+script = ExtResource("1_q2ww2")
