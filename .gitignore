@@ -1,3 +1,28 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Large asset files that should not be in version control
+*.blend
+*.blend1
+*.blend2
+*.fbx
+*.obj
+*.dae
+
+# Godot binaries
+godot
+godot.exe
+godot_*
+Godot*
+
+# Build artifacts and temporary files
+/build/
+/dist/
+*.tmp
+*.temp
+*.log
+
+# OS specific files
+.DS_Store
+Thumbs.db
