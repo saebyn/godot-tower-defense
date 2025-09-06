@@ -3,6 +3,7 @@ extends CharacterBody3D
 @export var movement_speed: float = 2.0
 @export var target_desired_distance: float = 4.0
 @export var target_group: String = "targets"
+@export var currency_reward: int = 10
 
 @onready var attack: Attack = $Attack
 @onready var health: Health = $Health
@@ -93,6 +94,8 @@ func _physics_process(_delta):
 
 func _on_died():
   print("Enemy died, removing from scene")
+  # Award currency to the player
+  CurrencyManager.earn_currency(currency_reward)
   queue_free()
 
 func _on_health_damaged(amount: int, hitpoints: int) -> void:
