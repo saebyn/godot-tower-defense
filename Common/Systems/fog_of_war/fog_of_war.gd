@@ -25,8 +25,10 @@ var vision_sources: Array[Node] = []
 @onready var fog_overlay: MeshInstance3D = $FogOverlay
 
 func _ready():
+  print("FogOfWar system initializing...")
   initialize_fog_grid()
   create_fog_overlay()
+  print("FogOfWar system ready. Grid size: ", map_width, "x", map_height, " Cell size: ", grid_size)
 
 func initialize_fog_grid():
   fog_grid.clear()
@@ -60,7 +62,10 @@ func add_vision_source(source: Node):
   await ready
   if source not in vision_sources:
     vision_sources.append(source)
+    print("Added vision source. Total sources: ", vision_sources.size())
     update_fog()
+  else:
+    print("Vision source already registered")
 
 func remove_vision_source(source: Node):
   if source in vision_sources:
