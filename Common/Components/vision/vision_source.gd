@@ -18,7 +18,7 @@ func _ready():
 
   # Create debug visualization if enabled
   if show_debug_range:
-    create_debug_visualization()
+    create_debug_visualization.call_deferred()
 
 func create_debug_visualization():
   var parent = get_parent()

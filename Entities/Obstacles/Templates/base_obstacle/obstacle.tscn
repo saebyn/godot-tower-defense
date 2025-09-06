@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://b27ylmcumxx2r"]
+[gd_scene load_steps=8 format=3 uid="uid://b27ylmcumxx2r"]
 
 [ext_resource type="Script" uid="uid://xilsmnlbxoyk" path="res://Entities/Obstacles/Templates/base_obstacle/obstacle.gd" id="1_sl1jc"]
 [ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="2_aubd6"]
@@ -24,8 +24,6 @@ physics_material_override = SubResource("PhysicsMaterial_sl1jc")
 script = ExtResource("1_sl1jc")
 
 [node name="Health" parent="." instance=ExtResource("2_aubd6")]
-hitpoints = 100
-ui_path = NodePath("UI")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
