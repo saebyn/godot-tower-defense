@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://d1s8y9k3m6n7p"]
+
+[ext_resource type="Script" path="res://Common/Effects/attack_effects/laser_beam_attack_effect.gd" id="1_7f2kg"]
+
+[node name="LaserBeamAttackEffect" type="Node3D"]
+script = ExtResource("1_7f2kg")
+
+[node name="BeamMesh" type="MeshInstance3D" parent="."]
+
+[node name="ImpactParticles" type="GPUParticles3D" parent="."]
