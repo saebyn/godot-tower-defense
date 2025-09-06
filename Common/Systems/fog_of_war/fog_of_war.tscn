@@ -1,8 +1,18 @@
-[gd_scene load_steps=2 format=3 uid="uid://bgrj8xbhav0lf"]
+[gd_scene load_steps=4 format=3 uid="uid://bgrj8xbhav0lf"]
 
-[ext_resource type="Script" path="res://Common/Systems/fog_of_war/fog_of_war.gd" id="1_0v8gd"]
+[ext_resource type="Script" uid="uid://dbore0slwnmld" path="res://Common/Systems/fog_of_war/fog_of_war.gd" id="1_0v8gd"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p1khj"]
+transparency = 1
+shading_mode = 0
+
+[sub_resource type="QuadMesh" id="QuadMesh_p1khj"]
+material = SubResource("StandardMaterial3D_p1khj")
+size = Vector2(0, 0)
 
 [node name="FogOfWar" type="Node3D"]
 script = ExtResource("1_0v8gd")
 
 [node name="FogOverlay" type="MeshInstance3D" parent="."]
+gi_mode = 0
+mesh = SubResource("QuadMesh_p1khj")
