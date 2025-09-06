@@ -95,8 +95,7 @@ func _physics_process(_delta):
 func _on_died():
   print("Enemy died, removing from scene")
   # Award currency to the player
-  if CurrencyManager:
-    CurrencyManager.earn_currency(currency_reward)
+  CurrencyManager.earn_currency(currency_reward)
   queue_free()
 
 func _on_health_damaged(amount: int, hitpoints: int) -> void:
