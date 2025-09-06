@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://c4r7bxkm8qg3d"]
+
+[ext_resource type="Script" path="res://Common/Effects/attack_effects/bullet_attack_effect.gd" id="1_h8f2p"]
+
+[node name="BulletAttackEffect" type="Node3D"]
+script = ExtResource("1_h8f2p")
+
+[node name="BulletMesh" type="MeshInstance3D" parent="."]

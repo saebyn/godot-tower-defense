@@ -1,11 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://d2nt6gtj5g3cm"]
+[gd_scene load_steps=3 format=3 uid="uid://d2nt6gtj5g3cm"]
 
 [ext_resource type="Script" uid="uid://dpxthod6qmfi0" path="res://Common/Components/attack/attack.gd" id="1_hvxpb"]
+[ext_resource type="PackedScene" uid="uid://c4r7bxkm8qg3d" path="res://Common/Effects/attack_effects/bullet_attack_effect.tscn" id="2_bullet"]
 
 [node name="Attack" type="Node"]
 script = ExtResource("1_hvxpb")
 
 [node name="AttackTimer" type="Timer" parent="."]
 one_shot = true
+
+[node name="BulletAttackEffect" parent="." instance=ExtResource("2_bullet")]
 
 [connection signal="timeout" from="AttackTimer" to="." method="_on_AttackTimer_timeout"]
