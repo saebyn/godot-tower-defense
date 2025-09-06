@@ -26,8 +26,8 @@ var current_target: Node = null
 var attack_effect: BaseAttackEffect = null
 
 func _ready():
-	## Find child attack effect
-	_find_attack_effect()
+  ## Find child attack effect
+  _find_attack_effect()
 
 
 func perform_attack(target: Node) -> AttackResult:
