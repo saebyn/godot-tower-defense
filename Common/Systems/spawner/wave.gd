@@ -8,17 +8,20 @@ class_name Wave
 @export var duration: float = 10.0 ## Duration of the wave in seconds
 @export var start_delay: float = 0.0 ## Optional delay before wave starts in seconds
 @export var max_enemies: int = 10 ## Maximum number of enemies allowed at once from this wave
+@export var allow_overlap: bool = false ## If true, allows this wave to overlap with the next wave
 
 @export_group("Enemy Configuration")
 @export var enemy_scenes: Array[PackedScene] = [] ## Enemy types to spawn in this wave
 @export var enemy_counts: Array[int] = [] ## Number of each enemy type to spawn
 @export var spawn_interval: float = 2.0 ## Time between individual enemy spawns in seconds
 
+## Configuration
+const WAVE_OVERLAP_RECHECK_TIME: float = 1.0 ## Time to wait before rechecking for overlap completion
+
 ## Internal state
 var _is_active: bool = false
 var _is_completed: bool = false
 var _enemies_to_spawn: Array[Dictionary] = [] ## Queue of enemies to spawn
-var _spawned_enemies: int = 0
 var _spawn_timer: Timer
 var _wave_timer: Timer
 
@@ -99,7 +102,7 @@ func _spawn_next_enemy() -> void:
       _end_wave()
     return
 
-  if _spawned_enemies >= max_enemies:
+  if get_parent().get_spawned_enemy_count() >= max_enemies:
     print("EnemySpawner: Max enemies reached, cannot spawn more right now")
     return
 
@@ -115,18 +118,18 @@ func _spawn_next_enemy() -> void:
   if spawner:
     var enemy = enemy_scene.instantiate()
     spawner.spawn_enemy(enemy)
-    _spawned_enemies += 1
     enemy_spawned.emit(enemy, self)
-    enemy.tree_exited.connect(_on_enemy_exited_tree)
-
-func _on_enemy_exited_tree(_node: Node) -> void:
-  if _spawned_enemies > 0:
-    _spawned_enemies -= 1
 
 func _end_wave() -> void:
   if not _is_active:
     return
-  
+
+  if not allow_overlap and get_parent().get_spawned_enemy_count() > 0:
+    print("Wave: Waiting for all spawned enemies to be cleared before completing wave")
+    # Wait until all spawned enemies are gone before completing the wave
+    _wave_timer.start(WAVE_OVERLAP_RECHECK_TIME)
+    return
+
   _is_active = false
   _is_completed = true
   _spawn_timer.stop()

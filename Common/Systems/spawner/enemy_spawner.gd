@@ -75,6 +75,10 @@ func spawn_enemy(enemy: Node3D) -> void:
     enemy_spawned.emit(enemy)
 
 
+func get_spawned_enemy_count() -> int:
+    return _spawned_enemies
+
+
 func _on_child_exiting_tree(node: Node) -> void:
     if node in current_enemies:
         print("EnemySpawner: Enemy exited tree")
