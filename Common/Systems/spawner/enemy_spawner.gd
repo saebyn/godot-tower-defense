@@ -2,19 +2,14 @@ extends Node3D
 class_name EnemySpawner
 
 @export var spawn_area: MeshInstance3D
-@export var spawn_interval: float = 2.0 # Time between spawns in seconds (legacy mode)
-@export var enemy_scene: PackedScene # Legacy single enemy scene
-@export var max_enemies: int = 10 # Maximum number of enemies allowed at once
 
 var _spawned_enemies: int = 0
 
-@onready var timer = $Timer
 var current_enemies: Array[Node3D] = []
 
 # Wave system
 var _waves: Array[Wave] = []
 var _current_wave_index: int = 0
-var _is_wave_mode: bool = false
 
 # Signals for wave system
 signal wave_started(wave: Wave)
@@ -28,19 +23,13 @@ func _ready() -> void:
 
 func _detect_mode() -> void:
     # Check for Wave child nodes
-    _waves.clear()  # Clear in case of multiple calls
+    _waves.clear() # Clear in case of multiple calls
     for child in get_children():
         if child is Wave:
             _waves.append(child)
     
-    _is_wave_mode = not _waves.is_empty()
-    
-    if _is_wave_mode:
-        print("EnemySpawner: Using wave mode with ", _waves.size(), " waves")
-        _setup_wave_mode()
-    else:
-        print("EnemySpawner: Using legacy mode")
-        _setup_legacy_mode()
+    print("EnemySpawner: Using wave mode with ", _waves.size(), " waves")
+    _setup_wave_mode()
 
 func _setup_wave_mode() -> void:
     # Connect wave signals
@@ -52,11 +41,6 @@ func _setup_wave_mode() -> void:
     # Start the first wave
     if not _waves.is_empty():
         _start_next_wave()
-
-func _setup_legacy_mode() -> void:
-    # Use the original timer-based system
-    timer.wait_time = spawn_interval
-    timer.start()
 
 func _start_next_wave() -> void:
     if _current_wave_index >= _waves.size():
@@ -79,22 +63,12 @@ func _on_wave_completed(wave: Wave) -> void:
     await get_tree().create_timer(1.0).timeout
     _start_next_wave()
 
-func _on_enemy_spawned_from_wave(enemy: Node3D, wave: Wave) -> void:
+func _on_enemy_spawned_from_wave(enemy: Node3D, _wave: Wave) -> void:
     enemy_spawned.emit(enemy)
 
-func _on_Timer_timeout() -> void:
-    # Legacy mode spawning
-    if not _is_wave_mode and _spawned_enemies < max_enemies:
-        var enemy = enemy_scene.instantiate()
-        spawn_enemy_at_position(enemy, find_random_spawn_position())
 
-# New method to handle enemy spawning (used by both legacy and wave modes)
-func spawn_enemy_at_position(enemy: Node3D, position: Vector3) -> void:
-    if _spawned_enemies >= max_enemies:
-        enemy.queue_free()
-        return
-    
-    enemy.global_position = position
+func spawn_enemy(enemy: Node3D) -> void:
+    enemy.global_position = find_random_spawn_position()
     add_child(enemy)
     current_enemies.append(enemy)
     _spawned_enemies += 1
@@ -103,6 +77,7 @@ func spawn_enemy_at_position(enemy: Node3D, position: Vector3) -> void:
 
 func _on_child_exiting_tree(node: Node) -> void:
     if node in current_enemies:
+        print("EnemySpawner: Enemy exited tree")
         current_enemies.erase(node)
         _spawned_enemies -= 1
 

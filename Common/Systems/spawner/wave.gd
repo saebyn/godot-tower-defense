@@ -7,6 +7,7 @@ class_name Wave
 @export_group("Wave Timing")
 @export var duration: float = 10.0 ## Duration of the wave in seconds
 @export var start_delay: float = 0.0 ## Optional delay before wave starts in seconds
+@export var max_enemies: int = 10 ## Maximum number of enemies allowed at once from this wave
 
 @export_group("Enemy Configuration")
 @export var enemy_scenes: Array[PackedScene] = [] ## Enemy types to spawn in this wave
@@ -17,6 +18,7 @@ class_name Wave
 var _is_active: bool = false
 var _is_completed: bool = false
 var _enemies_to_spawn: Array[Dictionary] = [] ## Queue of enemies to spawn
+var _spawned_enemies: int = 0
 var _spawn_timer: Timer
 var _wave_timer: Timer
 
@@ -96,7 +98,11 @@ func _spawn_next_enemy() -> void:
       # All enemies spawned before duration expired
       _end_wave()
     return
-  
+
+  if _spawned_enemies >= max_enemies:
+    print("EnemySpawner: Max enemies reached, cannot spawn more right now")
+    return
+
   var enemy_data = _enemies_to_spawn.pop_front()
   var enemy_scene = enemy_data.scene as PackedScene
   
@@ -108,8 +114,14 @@ func _spawn_next_enemy() -> void:
   var spawner = get_parent() as EnemySpawner
   if spawner:
     var enemy = enemy_scene.instantiate()
-    spawner.spawn_enemy_at_position(enemy, spawner.find_random_spawn_position())
+    spawner.spawn_enemy(enemy)
+    _spawned_enemies += 1
     enemy_spawned.emit(enemy, self)
+    enemy.tree_exited.connect(_on_enemy_exited_tree)
+
+func _on_enemy_exited_tree(_node: Node) -> void:
+  if _spawned_enemies > 0:
+    _spawned_enemies -= 1
 
 func _end_wave() -> void:
   if not _is_active:

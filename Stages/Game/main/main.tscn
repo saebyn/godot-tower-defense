@@ -1,12 +1,13 @@
-[gd_scene load_steps=13 format=3 uid="uid://b3ntnuvrvys63"]
+[gd_scene load_steps=14 format=3 uid="uid://b3ntnuvrvys63"]
 
 [ext_resource type="Script" uid="uid://2x2o4sni7v6q" path="res://Stages/Game/main/main.gd" id="1_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://d2nt6gtj5g3cm" path="res://Common/Components/attack/attack.tscn" id="2_kek77"]
 [ext_resource type="Environment" uid="uid://oc0251grk5l0" path="res://Config/Environments/new_environment.tres" id="2_lquwl"]
 [ext_resource type="PackedScene" uid="uid://duje032qpuq2" path="res://Stages/UI/main_ui/ui.tscn" id="3_272bh"]
 [ext_resource type="PackedScene" uid="uid://b1yehhqyw2nfo" path="res://Entities/Targets/Templates/base_target/target.tscn" id="5_5vw27"]
+[ext_resource type="Script" uid="uid://b7jdk6preu1s4" path="res://Common/Systems/spawner/wave.gd" id="7_i0vvu"]
 [ext_resource type="PackedScene" uid="uid://bpf2dmre1y8t0" path="res://Utilities/Placement/obstacle_placement/obstacle_placement.tscn" id="7_kek77"]
-[ext_resource type="PackedScene" uid="uid://c62uq7kswrqkh" path="res://enemy.tscn" id="7_wy7n0"]
+[ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://Entities/Enemies/Templates/base_enemy/enemy.tscn" id="7_wy7n0"]
 [ext_resource type="PackedScene" uid="uid://cyp50ln3gbmtt" path="res://Common/Systems/spawner/enemy_spawner.tscn" id="8_kek77"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_ig7tw"]
@@ -60,7 +61,20 @@ transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 
 
 [node name="EnemySpawner" parent="." instance=ExtResource("8_kek77")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 190, 0, -25)
-enemy_scene = ExtResource("7_wy7n0")
+
+[node name="Wave1" type="Node3D" parent="EnemySpawner"]
+script = ExtResource("7_i0vvu")
+enemy_scenes = Array[PackedScene]([ExtResource("7_wy7n0")])
+enemy_counts = Array[int]([1])
+metadata/_custom_type_script = "uid://b7jdk6preu1s4"
+
+[node name="Wave2" type="Node3D" parent="EnemySpawner"]
+script = ExtResource("7_i0vvu")
+duration = 30.0
+start_delay = 10.0
+enemy_scenes = Array[PackedScene]([ExtResource("7_wy7n0")])
+enemy_counts = Array[int]([5])
+metadata/_custom_type_script = "uid://b7jdk6preu1s4"
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_272bh")
