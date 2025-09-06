@@ -47,9 +47,12 @@ func create_fog_overlay():
   )
   fog_overlay.rotation_degrees = Vector3(-90, 0, 0) # Rotate to be horizontal
 
-  # Create material for fog rendering
+  # Create material for fog rendering - unshaded to avoid specular highlights
   var material = StandardMaterial3D.new()
   material.flags_transparent = true
+  material.flags_unshaded = true # Remove lighting effects
+  material.no_depth_test = false
+  material.cull_mode = BaseMaterial3D.CULL_DISABLED # Visible from both sides
   material.albedo_color = fog_color
   fog_overlay.set_surface_override_material(0, material)
 
@@ -138,7 +141,7 @@ func is_cell_explored(world_pos: Vector3) -> bool:
   return fog_grid[cell.x][cell.y] >= 1
 
 func update_fog_visual():
-  # Create a more sophisticated fog overlay
+  # Create a more sophisticated fog overlay with proper fog-like appearance
   var material = fog_overlay.get_surface_override_material(0) as StandardMaterial3D
   if not material:
     return
@@ -156,13 +159,18 @@ func update_fog_visual():
         1: explored_count += 1
         2: visible_count += 1
 
-  # Adjust fog based on overall exploration
-  var exploration_ratio = float(explored_count + visible_count) / float(total_count)
-  var visibility_ratio = float(visible_count) / float(total_count)
-
-  # Make fog less opaque as more areas are explored
-  material.albedo_color.a = fog_color.a * (1.0 - exploration_ratio * 0.3)
-
-  # Add some visual feedback when vision sources are active
-  if vision_sources.size() > 0:
-    material.albedo_color = fog_color.lerp(explored_color, visibility_ratio)
+  # Create proper fog appearance
+  if visible_count > 0:
+    # Areas are visible - make fog less opaque in visible regions
+    # For a simple implementation, we'll reduce overall opacity when vision sources are active
+    var visibility_ratio = float(visible_count) / float(total_count)
+    
+    # Use a darker, more fog-like color
+    var fog_base_color = Color(0.1, 0.1, 0.15, 0.9) # Dark blue-gray fog
+    var clear_areas_blend = Color(0.05, 0.05, 0.1, 0.3) # Much lighter for visible areas
+    
+    # Blend between full fog and clearer areas based on visibility
+    material.albedo_color = fog_base_color.lerp(clear_areas_blend, visibility_ratio * 2.0)
+  else:
+    # No vision sources - full fog coverage
+    material.albedo_color = Color(0.1, 0.1, 0.15, 0.95) # Nearly opaque dark fog

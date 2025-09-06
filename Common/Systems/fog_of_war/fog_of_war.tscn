@@ -5,6 +5,8 @@
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p1khj"]
 transparency = 1
 shading_mode = 0
+cull_mode = 0
+no_depth_test = false
 
 [sub_resource type="QuadMesh" id="QuadMesh_p1khj"]
 material = SubResource("StandardMaterial3D_p1khj")

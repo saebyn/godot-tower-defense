@@ -18,27 +18,37 @@ func _ready():
 
   # Create debug visualization if enabled
   if show_debug_range:
-    create_debug_visualization.call_deferred()
+    # Wait a bit for the parent to be fully set up
+    await get_tree().process_frame
+    create_debug_visualization()
 
 func create_debug_visualization():
   var parent = get_parent()
   if not parent is Node3D:
+    print("Warning: VisionSource parent is not Node3D, cannot create debug visualization")
     return
 
+  print("Creating debug visualization for VisionSource with range: ", vision_range)
+  
   # Create a simple ring to show vision range
   debug_mesh = MeshInstance3D.new()
   var ring_mesh = create_simple_ring()
   debug_mesh.mesh = ring_mesh
+  debug_mesh.name = "VisionRangeDebug"
 
-  # Create material
+  # Create bright green material for visibility
   var material = StandardMaterial3D.new()
   material.flags_transparent = true
-  material.albedo_color = Color(0, 1, 0, 0.3)
-  material.flags_unshaded = true
+  material.flags_unshaded = true # Make it always visible
+  material.albedo_color = Color(0, 1, 0, 0.6) # Bright green with good opacity
+  material.cull_mode = BaseMaterial3D.CULL_DISABLED # Visible from both sides
+  material.no_depth_test = true # Always render on top
   debug_mesh.set_surface_override_material(0, material)
 
   parent.add_child(debug_mesh)
-  debug_mesh.position.y = 0.1
+  debug_mesh.position = Vector3(0, 0.2, 0) # Slightly above ground
+  
+  print("Debug ring created successfully at position: ", debug_mesh.global_position)
 
 func create_simple_ring() -> ArrayMesh:
   # Create a simple ring mesh for vision range visualization
@@ -48,10 +58,11 @@ func create_simple_ring() -> ArrayMesh:
 
   var vertices = PackedVector3Array()
   var indices = PackedInt32Array()
+  var normals = PackedVector3Array()
 
   var segments = 32
-  var inner_radius = vision_range * 0.9
-  var outer_radius = vision_range
+  var inner_radius = vision_range * 0.95
+  var outer_radius = vision_range * 1.05
 
   # Create ring vertices
   for i in range(segments):
@@ -59,8 +70,13 @@ func create_simple_ring() -> ArrayMesh:
     var cos_a = cos(angle)
     var sin_a = sin(angle)
 
+    # Inner vertex
     vertices.append(Vector3(cos_a * inner_radius, 0, sin_a * inner_radius))
+    normals.append(Vector3(0, 1, 0))
+    
+    # Outer vertex
     vertices.append(Vector3(cos_a * outer_radius, 0, sin_a * outer_radius))
+    normals.append(Vector3(0, 1, 0))
 
   # Create indices for triangles
   for i in range(segments):
@@ -68,12 +84,13 @@ func create_simple_ring() -> ArrayMesh:
     var base = i * 2
     var next_base = next * 2
 
-    # Two triangles per segment
+    # Two triangles per segment to form the ring
     indices.append_array([base, next_base, base + 1])
     indices.append_array([base + 1, next_base, next_base + 1])
 
   arrays[Mesh.ARRAY_VERTEX] = vertices
   arrays[Mesh.ARRAY_INDEX] = indices
+  arrays[Mesh.ARRAY_NORMAL] = normals
 
   array_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
   return array_mesh
@@ -91,6 +108,7 @@ func set_active(value: bool):
 func register_with_fog_system():
   if active and fog_of_war:
     fog_of_war.add_vision_source(self)
+    print("VisionSource registered with fog system. Range: ", vision_range, " Debug enabled: ", show_debug_range)
 
 func unregister_from_fog_system():
   if fog_of_war:
