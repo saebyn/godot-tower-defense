@@ -36,17 +36,18 @@ func create_debug_visualization():
   debug_mesh.mesh = ring_mesh
   debug_mesh.name = "VisionRangeDebug"
 
-  # Create bright green material for visibility
+  # Create bright green material for visibility - but only on terrain
   var material = StandardMaterial3D.new()
   material.flags_transparent = true
   material.flags_unshaded = true # Make it always visible
-  material.albedo_color = Color(0, 1, 0, 0.6) # Bright green with good opacity
+  material.albedo_color = Color(0, 1, 0, 0.4) # Bright green with moderate opacity
   material.cull_mode = BaseMaterial3D.CULL_DISABLED # Visible from both sides
-  material.no_depth_test = true # Always render on top
+  material.no_depth_test = false # Use normal depth testing so it doesn't overlay obstacles
+  material.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_OPAQUE_ONLY # Proper depth handling
   debug_mesh.set_surface_override_material(0, material)
 
   parent.add_child(debug_mesh)
-  debug_mesh.position = Vector3(0, 0.2, 0) # Slightly above ground
+  debug_mesh.position = Vector3(0, 0.05, 0) # Very close to ground to avoid appearing on obstacles
   
   print("Debug ring created successfully at position: ", debug_mesh.global_position)
 
