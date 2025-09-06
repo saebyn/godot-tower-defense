@@ -9,6 +9,7 @@ extends CharacterBody3D
 @onready var health: Health = $Health
 
 var current_target: Node3D = null
+var fog_of_war: Node = null
 
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
 
@@ -22,6 +23,9 @@ func _ready():
   if health:
     health.died.connect(_on_died)
     health.damaged.connect(_on_health_damaged)
+
+  # Find fog of war system
+  fog_of_war = get_tree().get_first_node_in_group("fog_of_war")
 
   # Make sure to not await during _ready.
   actor_setup.call_deferred()
@@ -68,7 +72,16 @@ func attack_target():
       attack.perform_attack(current_target)
 
 func _process(_delta: float) -> void:
+  # Update visibility based on fog of war
+  update_visibility()
   attack_target()
+
+func update_visibility():
+  if fog_of_war and fog_of_war.has_method("is_cell_visible"):
+    var is_visible = fog_of_war.is_cell_visible(global_position)
+    visible = is_visible
+  else:
+    visible = true # Default to visible if no fog system
 
 
 func _physics_process(_delta):

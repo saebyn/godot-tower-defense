@@ -75,6 +75,12 @@ func rebake_navigation_mesh():
 
     navigation_region.bake_navigation_mesh()
     print("Navigation mesh rebaked!")
+    
+    # Update fog system when navigation mesh changes (obstacles placed)
+    var fog_of_war = get_tree().get_first_node_in_group("fog_of_war")
+    if fog_of_war:
+      print("Updating fog system after obstacle placement")
+      fog_of_war.update_fog()
 
 
 func _input(event: InputEvent) -> void:

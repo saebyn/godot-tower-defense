@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://b27ylmcumxx2r"]
+[gd_scene load_steps=8 format=3 uid="uid://b27ylmcumxx2r"]
 
 [ext_resource type="Script" uid="uid://xilsmnlbxoyk" path="res://Entities/Obstacles/Templates/base_obstacle/obstacle.gd" id="1_sl1jc"]
 [ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="2_aubd6"]
+[ext_resource type="PackedScene" uid="uid://c8nb0jcaay2nf" path="res://Common/Components/vision/vision_source.tscn" id="3_kek77"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_sl1jc"]
 friction = 0.0
@@ -31,3 +32,7 @@ mesh = SubResource("BoxMesh_lquwl")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 shape = SubResource("BoxShape3D_sl1jc")
+
+[node name="VisionSource" parent="." instance=ExtResource("3_kek77")]
+vision_range = 15.0
+show_debug_range = true

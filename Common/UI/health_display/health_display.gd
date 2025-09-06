@@ -15,11 +15,15 @@ var camera: Camera3D
 var target_entity: Node3D # The entity this health bar belongs to
 var world_offset: Vector3 = Vector3(0, 3, 0) # Offset above the entity
 var active_damage_numbers: Array[Node] = [] # Track active damage numbers for cleanup
+var fog_of_war: FogOfWar # Reference to fog system for visibility checks
 
 func setup(health_component: Health, main_camera: Camera3D, entity: Node3D = null):
   target_health = health_component
   camera = main_camera
   target_entity = entity if entity else health_component.get_parent()
+  
+  # Find fog of war system for visibility checks
+  fog_of_war = get_tree().get_first_node_in_group("fog_of_war")
   
   # Validate setup
   if not target_health:
@@ -41,6 +45,11 @@ func _process(_delta: float):
   if target_entity and camera and is_inside_tree():
     # Get position from entity (handle different node types)
     var entity_pos = target_entity.global_position
+    
+    # Check fog visibility first - hide health bar if entity is in fog
+    var is_visible_in_fog = true
+    if fog_of_war:
+      is_visible_in_fog = fog_of_war.is_cell_visible(entity_pos)
     
     # For MeshInstance3D, try to get the AABB for better positioning
     if target_entity is MeshInstance3D:
@@ -70,9 +79,9 @@ func _process(_delta: float):
     # Update position (include shake offset)
     global_position = screen_pos - size / 2
     
-    # Hide if behind camera
+    # Hide if behind camera OR hidden by fog
     var is_behind = camera.is_position_behind(entity_pos)
-    visible = not is_behind
+    visible = not is_behind and is_visible_in_fog
 
 func _update_display():
   if not target_health:
