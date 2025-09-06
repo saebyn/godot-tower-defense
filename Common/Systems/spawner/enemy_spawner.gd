@@ -2,31 +2,88 @@ extends Node3D
 class_name EnemySpawner
 
 @export var spawn_area: MeshInstance3D
-@export var spawn_interval: float = 2.0 # Time between spawns in seconds
-@export var enemy_scene: PackedScene
-@export var max_enemies: int = 10 # Maximum number of enemies allowed at once
 
 var _spawned_enemies: int = 0
 
-@onready var timer = $Timer
 var current_enemies: Array[Node3D] = []
 
-func _ready() -> void:
-    timer.wait_time = spawn_interval
-    timer.start()
+# Wave system
+var _waves: Array[Wave] = []
+var _current_wave_index: int = 0
 
-func _on_Timer_timeout() -> void:
-    if _spawned_enemies < max_enemies:
-        var enemy = enemy_scene.instantiate()
-        enemy.global_position = find_random_spawn_position()
-        add_child(enemy)
-        current_enemies.append(enemy)
-        _spawned_enemies += 1
+# Signals for wave system
+signal wave_started(wave: Wave)
+signal wave_completed(wave: Wave)
+signal all_waves_completed()
+signal enemy_spawned(enemy: Node3D)
+
+func _ready() -> void:
+    # Defer mode detection to ensure all children are ready
+    _detect_mode.call_deferred()
+
+func _detect_mode() -> void:
+    # Check for Wave child nodes
+    _waves.clear() # Clear in case of multiple calls
+    for child in get_children():
+        if child is Wave:
+            _waves.append(child)
+    
+    print("EnemySpawner: Using wave mode with ", _waves.size(), " waves")
+    _setup_wave_mode()
+
+func _setup_wave_mode() -> void:
+    # Connect wave signals
+    for wave in _waves:
+        wave.wave_started.connect(_on_wave_started)
+        wave.wave_completed.connect(_on_wave_completed)
+        wave.enemy_spawned.connect(_on_enemy_spawned_from_wave)
+    
+    # Start the first wave
+    if not _waves.is_empty():
+        _start_next_wave()
+
+func _start_next_wave() -> void:
+    if _current_wave_index >= _waves.size():
+        all_waves_completed.emit()
+        print("EnemySpawner: All waves completed")
+        return
+    
+    var wave = _waves[_current_wave_index]
+    print("EnemySpawner: Starting wave ", _current_wave_index + 1)
+    wave.start_wave()
+
+func _on_wave_started(wave: Wave) -> void:
+    wave_started.emit(wave)
+
+func _on_wave_completed(wave: Wave) -> void:
+    wave_completed.emit(wave)
+    _current_wave_index += 1
+    
+    # Start next wave after a brief delay
+    await get_tree().create_timer(1.0).timeout
+    _start_next_wave()
+
+func _on_enemy_spawned_from_wave(enemy: Node3D, _wave: Wave) -> void:
+    enemy_spawned.emit(enemy)
+
+
+func spawn_enemy(enemy: Node3D) -> void:
+    enemy.global_position = find_random_spawn_position()
+    add_child(enemy)
+    current_enemies.append(enemy)
+    _spawned_enemies += 1
+    enemy_spawned.emit(enemy)
+
+
+func get_spawned_enemy_count() -> int:
+    return _spawned_enemies
 
 
 func _on_child_exiting_tree(node: Node) -> void:
     if node in current_enemies:
+        print("EnemySpawner: Enemy exited tree")
         current_enemies.erase(node)
+        _spawned_enemies -= 1
 
 
 func find_random_spawn_position() -> Vector3:

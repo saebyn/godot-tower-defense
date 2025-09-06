@@ -1,7 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://cyp50ln3gbmtt"]
+[gd_scene load_steps=5 format=3 uid="uid://cyp50ln3gbmtt"]
 
 [ext_resource type="Script" uid="uid://du3d1fs80prdm" path="res://Common/Systems/spawner/enemy_spawner.gd" id="1_00s5r"]
-[ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://Entities/Enemies/Templates/base_enemy/enemy.tscn" id="2_63vqd"]
 
 [sub_resource type="Shader" id="Shader_7mycd"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.4.1.stable's StandardMaterial3D.
@@ -69,15 +68,9 @@ size = Vector2(10, 10)
 [node name="EnemySpawner" type="Node3D" node_paths=PackedStringArray("spawn_area")]
 script = ExtResource("1_00s5r")
 spawn_area = NodePath("MeshInstance3D")
-spawn_interval = 4.0
-enemy_scene = ExtResource("2_63vqd")
-max_enemies = 3
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("PlaneMesh_7mycd")
 
-[node name="Timer" type="Timer" parent="."]
-
 [connection signal="child_exiting_tree" from="." to="." method="_on_child_exiting_tree"]
-[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
