@@ -87,7 +87,7 @@ func _input(event: InputEvent) -> void:
 
 func _spawn_test_enemy():
   # Load and spawn a test enemy
-  var enemy_scene = preload("res://enemy.tscn")
+  var enemy_scene = preload("res://Entities/Enemies/Templates/base_enemy/enemy.tscn")
   var enemy = enemy_scene.instantiate()
   
   # Spawn enemy at a fixed position in front of the camera
