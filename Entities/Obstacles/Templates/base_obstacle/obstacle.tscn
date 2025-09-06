@@ -23,8 +23,6 @@ physics_material_override = SubResource("PhysicsMaterial_sl1jc")
 script = ExtResource("1_sl1jc")
 
 [node name="Health" parent="." instance=ExtResource("2_aubd6")]
-hitpoints = 100
-ui_path = NodePath("UI")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)

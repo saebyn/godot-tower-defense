@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://3yfu45cvudar" path="res://Stages/UI/main_ui/ui.gd" id="1_27fn8"]
 [ext_resource type="Script" uid="uid://cfsjav35447gc" path="res://Utilities/UI/spawn_obstacle_button.gd" id="1_m6e0p"]
 [ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://Entities/Obstacles/Templates/base_obstacle/obstacle.tscn" id="2_27fn8"]
-[ext_resource type="PackedScene" uid="uid://bhnpr8l9t2j5c" path="res://Common/UI/currency_display/currency_display.tscn" id="4_currency"]
+[ext_resource type="PackedScene" uid="uid://bhnpr8mat2j5c" path="res://Common/UI/currency_display/currency_display.tscn" id="4_currency"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lquwl"]
 size = Vector2(16, 16)
@@ -19,17 +19,10 @@ script = ExtResource("1_27fn8")
 
 [node name="CurrencyDisplay" parent="." instance=ExtResource("4_currency")]
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
 offset_left = 10.0
 offset_top = 10.0
 offset_right = 160.0
 offset_bottom = 40.0
-grow_horizontal = 1
-grow_vertical = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
