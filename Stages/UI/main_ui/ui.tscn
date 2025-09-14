@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://duje032qpuq2"]
+[gd_scene load_steps=7 format=3 uid="uid://duje032qpuq2"]
 
 [ext_resource type="Script" uid="uid://3yfu45cvudar" path="res://Stages/UI/main_ui/ui.gd" id="1_27fn8"]
 [ext_resource type="Script" uid="uid://cfsjav35447gc" path="res://Utilities/UI/spawn_obstacle_button.gd" id="1_m6e0p"]
 [ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://Entities/Obstacles/Templates/base_obstacle/obstacle.tscn" id="2_27fn8"]
 [ext_resource type="PackedScene" uid="uid://bhnpr8mat2j5c" path="res://Common/UI/currency_display/currency_display.tscn" id="4_currency"]
+[ext_resource type="PackedScene" uid="uid://dqn8xvlx7m8kb" path="res://Common/UI/spawn_indicator/spawn_indicator.tscn" id="5_spawn_indicator"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lquwl"]
 size = Vector2(16, 16)
@@ -40,5 +41,8 @@ text = "Obstacle"
 icon = SubResource("PlaceholderTexture2D_lquwl")
 script = ExtResource("1_m6e0p")
 spawnable = ExtResource("2_27fn8")
+
+[node name="SpawnIndicator" parent="." instance=ExtResource("5_spawn_indicator")]
+layout_mode = 1
 
 [connection signal="pressed" from="HBoxContainer/SpawnObstacleButton" to="HBoxContainer/SpawnObstacleButton" method="_on_pressed"]

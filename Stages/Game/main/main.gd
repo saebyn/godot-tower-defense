@@ -16,10 +16,17 @@ extends Node3D
 @onready var navigation_region: NavigationRegion3D = $NavigationRegion3D
 @onready var enemy_raycast: RayCast3D = $EnemyRayCast3D
 @onready var attack: Attack = $Attack
+@onready var ui: Control = $UI
+@onready var enemy_spawner: EnemySpawner = $EnemySpawner
 
 @onready var obstacle_placement: ObstaclePlacement = $ObstaclePlacement
 
 var zoom_tween: Tween
+
+func _ready() -> void:
+  # Connect enemy spawner signal to UI
+  if enemy_spawner and ui:
+    enemy_spawner.enemy_spawned.connect(ui._on_enemy_spawned)
 
 
 func _process(delta: float) -> void:
