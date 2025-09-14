@@ -66,15 +66,15 @@ func _process(delta: float) -> void:
 
 
 func rebake_navigation_mesh():
-  print("Rebaking navigation mesh...")
+  Logger.info("Navigation", "Rebaking navigation mesh...")
   if navigation_region and navigation_region.navigation_mesh:
     if navigation_region.is_baking():
       # Wait and retry if already baking
-      print("Navigation mesh is already baking, waiting...")
+      Logger.debug("Navigation", "Navigation mesh is already baking, waiting...")
       await navigation_region.bake_finished
 
     navigation_region.bake_navigation_mesh()
-    print("Navigation mesh rebaked!")
+    Logger.info("Navigation", "Navigation mesh rebaked!")
 
 
 func _input(event: InputEvent) -> void:
@@ -95,7 +95,7 @@ func _spawn_test_enemy():
   
   # Add to the scene
   add_child(enemy)
-  print("Test enemy spawned! Press T to spawn more, click on enemies to damage them.")
+  Logger.debug("Test", "Test enemy spawned! Press T to spawn more, click on enemies to damage them.")
 
 
 func _handle_enemy_click(click_position: Vector2):
@@ -113,7 +113,7 @@ func _handle_enemy_click(click_position: Vector2):
   
   if enemy_raycast.is_colliding():
     var collider = enemy_raycast.get_collider()
-    print("Clicked on: ", collider.name)
+    Logger.debug("Player", "Clicked on: %s" % collider.name)
     # If the collider is an enemy, perform an attack
     attack.perform_attack(collider)
   

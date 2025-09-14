@@ -21,7 +21,7 @@ func earn_currency(amount: int) -> void:
   current_currency += amount
   currency_earned.emit(amount)
   currency_changed.emit(current_currency)
-  print("Earned ", amount, " currency. Total: ", current_currency)
+  Logger.info("Economy", "Earned %d currency. Total: %d" % [amount, current_currency])
 
 ## Spend currency if player has enough
 func spend_currency(amount: int) -> bool:
@@ -31,10 +31,10 @@ func spend_currency(amount: int) -> bool:
   if current_currency >= amount:
     current_currency -= amount
     currency_changed.emit(current_currency)
-    print("Spent ", amount, " currency. Remaining: ", current_currency)
+    Logger.info("Economy", "Spent %d currency. Remaining: %d" % [amount, current_currency])
     return true
   else:
-    print("Not enough currency. Need ", amount, " but only have ", current_currency)
+    Logger.warn("Economy", "Not enough currency. Need %d but only have %d" % [amount, current_currency])
     return false
 
 ## Get current currency amount

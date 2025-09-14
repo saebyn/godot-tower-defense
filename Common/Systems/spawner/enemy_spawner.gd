@@ -28,7 +28,7 @@ func _detect_mode() -> void:
         if child is Wave:
             _waves.append(child)
     
-    print("EnemySpawner: Using wave mode with ", _waves.size(), " waves")
+    Logger.info("Spawner", "Using wave mode with %d waves" % _waves.size())
     _setup_wave_mode()
 
 func _setup_wave_mode() -> void:
@@ -45,11 +45,11 @@ func _setup_wave_mode() -> void:
 func _start_next_wave() -> void:
     if _current_wave_index >= _waves.size():
         all_waves_completed.emit()
-        print("EnemySpawner: All waves completed")
+        Logger.info("Spawner", "All waves completed")
         return
     
     var wave = _waves[_current_wave_index]
-    print("EnemySpawner: Starting wave ", _current_wave_index + 1)
+    Logger.info("Spawner", "Starting wave %d" % (_current_wave_index + 1))
     wave.start_wave()
 
 func _on_wave_started(wave: Wave) -> void:
@@ -81,7 +81,7 @@ func get_spawned_enemy_count() -> int:
 
 func _on_child_exiting_tree(node: Node) -> void:
     if node in current_enemies:
-        print("EnemySpawner: Enemy exited tree")
+        Logger.debug("Spawner", "Enemy exited tree")
         current_enemies.erase(node)
         _spawned_enemies -= 1
 

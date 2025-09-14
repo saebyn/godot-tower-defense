@@ -11,19 +11,19 @@ func _ready():
     health.damaged.connect(_on_health_damaged)
 
 func _on_died():
-  print("Obstacle destroyed")
+  Logger.info("Obstacle", "Obstacle destroyed")
   queue_free()
 
 func _on_health_damaged(amount: int, hitpoints: int) -> void:
-  print("Obstacle took ", amount, " damage. Remaining HP: ", hitpoints)
+  Logger.debug("Obstacle.Combat", "Obstacle took %d damage. Remaining HP: %d" % [amount, hitpoints])
 
 
 func place(navigation_region: NavigationRegion3D) -> void:
     if not is_inside_tree():
-        print("PlaceableObstacle must be added to the scene tree before placing.")
+        Logger.error("Obstacle", "PlaceableObstacle must be added to the scene tree before placing.")
         return
 
-    print("Placing obstacle at: ", global_position)
+    Logger.info("Obstacle", "Placing obstacle at: %s" % global_position)
     # Here you would implement the logic to finalize the placement of the obstacle
     var obstacle := NavigationObstacle3D.new()
 

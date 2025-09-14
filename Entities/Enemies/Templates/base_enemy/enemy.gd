@@ -35,7 +35,7 @@ func choose_target():
     attack.cancel()
     # No targets available, stop the agent.
     navigation_agent.set_target_position(global_position)
-    print("No targets available.")
+    Logger.debug("Enemy", "No targets available.")
   else:
     # TODO : Implement logic to choose a target based on some criteria.
     current_target = targets[0]
@@ -52,13 +52,13 @@ func actor_setup():
 
 func attack_target():
   if not current_target:
-    print("No current target to attack.")
+    Logger.debug("Enemy", "No current target to attack.")
     choose_target()
     if not current_target:
       return
   
   if not current_target.is_in_group(target_group):
-    print("Current target is not in the target group.")
+    Logger.warn("Enemy", "Current target is not in the target group.")
     choose_target()
     if not current_target:
       return
@@ -73,20 +73,20 @@ func _process(_delta: float) -> void:
 
   # play animation based on movement speed
   if velocity.length() > 0.1:
-    print("Playing Run animation")
+    Logger.debug("Enemy.Animation", "Playing Run animation")
     animation_player.play("Run")
   else:
-    print("Playing Idle animation")
+    Logger.debug("Enemy.Animation", "Playing Idle animation")
     animation_player.play("Idle")
 
 
 func _physics_process(_delta):
   # Do not query when the map has never synchronized and is empty.
   if NavigationServer3D.map_get_iteration_id(navigation_agent.get_navigation_map()) == 0:
-    print("Navigation map is empty, cannot navigate.")
+    Logger.debug("Enemy.Navigation", "Navigation map is empty, cannot navigate.")
     return
   if navigation_agent.is_navigation_finished():
-    print("Navigation finished.")
+    Logger.debug("Enemy.Navigation", "Navigation finished.")
     velocity = Vector3.ZERO
     move_and_slide()
     return
@@ -105,10 +105,10 @@ func _physics_process(_delta):
 
 
 func _on_died():
-  print("Enemy died, removing from scene")
+  Logger.info("Enemy", "Enemy died, removing from scene")
   # Award currency to the player
   CurrencyManager.earn_currency(currency_reward)
   queue_free()
 
 func _on_health_damaged(amount: int, hitpoints: int) -> void:
-  print("Enemy took ", amount, " damage. Remaining HP: ", hitpoints)
+  Logger.debug("Enemy.Combat", "Enemy took %d damage. Remaining HP: %d" % [amount, hitpoints])
