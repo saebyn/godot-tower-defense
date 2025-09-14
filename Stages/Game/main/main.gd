@@ -24,9 +24,13 @@ extends Node3D
 var zoom_tween: Tween
 
 func _ready() -> void:
-  # Connect enemy spawner signal to UI
+  # Connect enemy spawner signal to UI after all nodes are ready
+  call_deferred("_connect_signals")
+
+func _connect_signals() -> void:
   if enemy_spawner and ui:
     enemy_spawner.enemy_spawned.connect(ui._on_enemy_spawned)
+    print("Connected enemy_spawned signal to UI")
 
 
 func _process(delta: float) -> void:

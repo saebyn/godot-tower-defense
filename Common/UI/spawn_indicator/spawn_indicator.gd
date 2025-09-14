@@ -15,7 +15,7 @@ func _ready() -> void:
 func show_spawn_notification(enemy: Node3D) -> void:
 	"""Show a notification that an enemy has spawned"""
 	if label:
-		label.text = "Enemy Spawning!"
+		label.text = "⚠️ Enemy Spawning!"
 	
 	# Play fade in/out animation
 	if animation_player and animation_player.has_animation("spawn_notification"):
