@@ -176,7 +176,7 @@ func _has_sufficient_clearance(target_position: Vector3) -> bool:
   return true
 
 func _on_obstacle_spawn_requested(obstacle_instance: Node3D) -> void:
-  print("Spawn obstacle button pressed")
+  Logger.info("Placement", "Spawn obstacle button pressed")
   _placeable_obstacle = obstacle_instance
   raycast.enabled = true
   add_child(_placeable_obstacle)
@@ -196,16 +196,16 @@ func _place_obstacle() -> void:
   
   # Check if placement is valid
   if not _is_placement_valid(target_position):
-    print("Cannot place obstacle: Invalid placement location")
+    Logger.warn("Placement", "Cannot place obstacle: Invalid placement location")
     # Debug information about why placement failed
     if not _is_within_navigation_region(target_position):
-      print("  - Outside navigation region")
+      Logger.debug("Placement", "  - Outside navigation region")
     if _has_obstacle_collision(target_position):
-      print("  - Collision with existing obstacle")
+      Logger.debug("Placement", "  - Collision with existing obstacle")
     if not _has_terrain_support(target_position):
-      print("  - Invalid terrain support")
+      Logger.debug("Placement", "  - Invalid terrain support")
     if not _has_sufficient_clearance(target_position):
-      print("  - Insufficient clearance")
+      Logger.debug("Placement", "  - Insufficient clearance")
     return
   
   # Restore original material before placing

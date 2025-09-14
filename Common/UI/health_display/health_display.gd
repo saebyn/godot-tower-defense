@@ -23,13 +23,13 @@ func setup(health_component: Health, main_camera: Camera3D, entity: Node3D = nul
   
   # Validate setup
   if not target_health:
-    print("Warning: HealthDisplay setup with null health component")
+    Logger.warn("UI", "HealthDisplay setup with null health component")
     return
   if not camera:
-    print("Warning: HealthDisplay setup with null camera")
+    Logger.warn("UI", "HealthDisplay setup with null camera")
     return
   if not target_entity:
-    print("Warning: HealthDisplay setup with null target entity")
+    Logger.warn("UI", "HealthDisplay setup with null target entity")
     return
   
   # Connect to health signals
