@@ -7,6 +7,7 @@ extends CharacterBody3D
 
 @onready var attack: Attack = $Attack
 @onready var health: Health = $Health
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 var current_target: Node3D = null
 
@@ -70,6 +71,14 @@ func attack_target():
 func _process(_delta: float) -> void:
   attack_target()
 
+  # play animation based on movement speed
+  if velocity.length() > 0.1:
+    print("Playing Run animation")
+    animation_player.play("Run")
+  else:
+    print("Playing Idle animation")
+    animation_player.play("Idle")
+
 
 func _physics_process(_delta):
   # Do not query when the map has never synchronized and is empty.
@@ -77,6 +86,9 @@ func _physics_process(_delta):
     print("Navigation map is empty, cannot navigate.")
     return
   if navigation_agent.is_navigation_finished():
+    print("Navigation finished.")
+    velocity = Vector3.ZERO
+    move_and_slide()
     return
 
   var current_agent_position: Vector3 = global_position
