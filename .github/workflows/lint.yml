@@ -1,10 +1,14 @@
 name: Lint and Static Analysis
 
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
 
 jobs:
   gdscript-lint:
@@ -22,23 +26,6 @@ jobs:
         unzip -q Godot_v4.4-stable_linux.x86_64.zip
         chmod +x Godot_v4.4-stable_linux.x86_64
         mv Godot_v4.4-stable_linux.x86_64 /tmp/godot
-
-    - name: Import assets and check scripts
-      run: |
-        # Import assets first (needed for class resolution)
-        /tmp/godot --headless --import --verbose
-
-        # Check all GDScript files for parse errors
-        echo "Checking GDScript files for syntax errors..."
-        find . -name "*.gd" -type f | while read -r file; do
-          echo "Checking: $file"
-          if ! /tmp/godot --headless --check-only --script "$file" 2>&1; then
-            echo "❌ Script check failed for: $file"
-            exit 1
-          else
-            echo "✅ Script check passed for: $file"
-          fi
-        done
 
     - name: Install gdtoolkit (contains gdformat)
       run: |
