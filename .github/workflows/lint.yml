@@ -36,7 +36,7 @@ jobs:
         cd /tmp
         wget -q https://github.com/editorconfig-checker/editorconfig-checker/releases/latest/download/ec-linux-amd64.tar.gz
         tar -xzf ec-linux-amd64.tar.gz
-        chmod +x ec-linux-amd64
+        chmod +x bin/ec-linux-amd64
 
     - name: Check formatting
       run: |
