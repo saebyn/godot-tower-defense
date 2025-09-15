@@ -12,6 +12,7 @@ func _ready() -> void:
 	# Start hidden
 	modulate.a = 0.0
 
+### Show a notification that an enemy has spawned
 func show_spawn_notification(enemy: Node3D) -> void:
 	"""Show a notification that an enemy has spawned"""
 	if label:
