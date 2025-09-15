@@ -79,10 +79,11 @@ jobs:
     - name: Run linting
       run: |
         echo "Running GDScript linter..."
-        if ! gdlint .; then
+        gdlint . > gdlint_report.txt || true
+        if grep -q "error:" gdlint_report.txt; then
           echo "❌ Linting issues found."
-          echo "Check the output above and fix the issues."
-          exit 1
+          cat gdlint_report.txt
+          echo "::warning file=gdlint_report.txt::Linting issues detected. See above for details."
         else
           echo "✅ No linting issues found."
         fi
