@@ -14,7 +14,6 @@ func _ready() -> void:
 
 ### Show a notification that an enemy has spawned
 func show_spawn_notification(enemy: Node3D) -> void:
-	"""Show a notification that an enemy has spawned"""
 	if label:
 		label.text = "⚠️ Enemy Spawning!"
 	
