@@ -68,8 +68,10 @@ jobs:
         gdlint . 2> gdlint_report.txt || true
         if [ -s gdlint_report.txt ]; then
           echo "❌ Linting issues found."
-          cat gdlint_report.txt
-          echo "::warning file=gdlint_report.txt::Linting issues detected. See above for details."
+          # convert the lines of the report to warnings in the GitHub Actions UI
+          cat gdlint_report.txt | while read -r line; do
+            echo "::warning file=$(echo $line | cut -d: -f1) line=$(echo $line | cut -d: -f2)::$(echo $line | cut -d: -f3-)"
+          done
         else
           echo "✅ No linting issues found."
         fi
