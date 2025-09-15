@@ -38,29 +38,6 @@ jobs:
         tar -xzf ec-linux-amd64.tar.gz
         chmod +x bin/ec-linux-amd64
 
-    - name: Check formatting
-      run: |
-        echo "Checking GDScript file formatting..."
-        # Check if any files need formatting
-        if ! gdformat --check --diff .; then
-          echo "❌ Some files are not properly formatted."
-          echo "Run 'gdformat .' to fix formatting issues."
-          exit 1
-        else
-          echo "✅ All files are properly formatted."
-        fi
-
-    - name: Run linting
-      run: |
-        echo "Running GDScript linter..."
-        if ! gdlint .; then
-          echo "❌ Linting issues found."
-          echo "Check the output above and fix the issues."
-          exit 1
-        else
-          echo "✅ No linting issues found."
-        fi
-
     - name: Check EditorConfig compliance
       run: |
         echo "Checking EditorConfig compliance..."
@@ -85,4 +62,27 @@ jobs:
         else
           echo "❌ Main scene failed to load"
           exit 1
+        fi
+
+    - name: Check formatting
+      run: |
+        echo "Checking GDScript file formatting..."
+        # Check if any files need formatting
+        if ! gdformat --check --diff .; then
+          echo "❌ Some files are not properly formatted."
+          echo "Run 'gdformat .' to fix formatting issues."
+          exit 1
+        else
+          echo "✅ All files are properly formatted."
+        fi
+
+    - name: Run linting
+      run: |
+        echo "Running GDScript linter..."
+        if ! gdlint .; then
+          echo "❌ Linting issues found."
+          echo "Check the output above and fix the issues."
+          exit 1
+        else
+          echo "✅ No linting issues found."
         fi
