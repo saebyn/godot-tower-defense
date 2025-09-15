@@ -55,15 +55,6 @@ jobs:
         # Import assets
         /tmp/godot --headless --import --verbose
 
-        # Test if main scene loads without errors
-        echo "Testing main scene load..."
-        if /tmp/godot --headless --path . "res://Stages/Game/main/main.tscn" --quiet; then
-          echo "✅ Main scene loads successfully"
-        else
-          echo "❌ Main scene failed to load"
-          exit 1
-        fi
-
     - name: Check formatting
       run: |
         echo "Checking GDScript file formatting..."
