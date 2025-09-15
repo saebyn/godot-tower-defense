@@ -17,21 +17,22 @@ jobs:
       
     - name: Download Godot 4.4
       run: |
+        cd /tmp
         wget -q https://github.com/godotengine/godot/releases/download/4.4-stable/Godot_v4.4-stable_linux.x86_64.zip
         unzip -q Godot_v4.4-stable_linux.x86_64.zip
         chmod +x Godot_v4.4-stable_linux.x86_64
-        mv Godot_v4.4-stable_linux.x86_64 ./godot
+        mv Godot_v4.4-stable_linux.x86_64 /tmp/godot
     
     - name: Import assets and check scripts
       run: |
         # Import assets first (needed for class resolution)
-        ./godot --headless --import --verbose
+        /tmp/godot --headless --import --verbose
         
         # Check all GDScript files for parse errors
         echo "Checking GDScript files for syntax errors..."
         find . -name "*.gd" -type f | while read -r file; do
           echo "Checking: $file"
-          if ! ./godot --headless --check-only --script "$file" 2>&1; then
+          if ! /tmp/godot --headless --check-only --script "$file" 2>&1; then
             echo "❌ Script check failed for: $file"
             exit 1
           else
@@ -96,6 +97,7 @@ jobs:
       
     - name: Install editorconfig-checker
       run: |
+        cd /tmp
         wget -q https://github.com/editorconfig-checker/editorconfig-checker/releases/latest/download/ec-linux-amd64.tar.gz
         tar -xzf ec-linux-amd64.tar.gz
         chmod +x bin/ec-linux-amd64
@@ -104,7 +106,7 @@ jobs:
       run: |
         echo "Checking EditorConfig compliance..."
         # Exclude binary files, assets, and generated content
-        if ! ./bin/ec-linux-amd64 -exclude "\.godot|\.git|\.import|\.zip$|\.blend$|\.blend1$|\.fbx$|\.material$|\.tscn$|\.tres$|bin/"; then
+        if ! /tmp/bin/ec-linux-amd64 -exclude "\.godot|\.git|\.import|\.zip$|\.blend$|\.blend1$|\.fbx$|\.material$|\.tscn$|\.tres$|bin/"; then
           echo "❌ Some files do not comply with EditorConfig settings."
           echo "Note: This mainly affects GDScript files. Run 'gdformat .' to fix most issues."
           exit 1
@@ -122,19 +124,20 @@ jobs:
       
     - name: Download Godot 4.4
       run: |
+        cd /tmp
         wget -q https://github.com/godotengine/godot/releases/download/4.4-stable/Godot_v4.4-stable_linux.x86_64.zip
         unzip -q Godot_v4.4-stable_linux.x86_64.zip
         chmod +x Godot_v4.4-stable_linux.x86_64
-        mv Godot_v4.4-stable_linux.x86_64 ./godot
+        mv Godot_v4.4-stable_linux.x86_64 /tmp/godot
     
     - name: Validate project configuration
       run: |
         # Import assets
-        ./godot --headless --import --verbose
+        /tmp/godot --headless --import --verbose
         
         # Test if main scene loads without errors
         echo "Testing main scene load..."
-        if ./godot --headless --path . "res://Stages/Game/main/main.tscn" --quiet; then
+        if /tmp/godot --headless --path . "res://Stages/Game/main/main.tscn" --quiet; then
           echo "✅ Main scene loads successfully"
         else
           echo "❌ Main scene failed to load"
