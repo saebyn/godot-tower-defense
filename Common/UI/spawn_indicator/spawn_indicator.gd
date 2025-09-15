@@ -24,7 +24,9 @@ func show_spawn_notification(enemy: Node3D) -> void:
 		# Fallback: simple tween animation
 		_simple_fade_animation()
 
+### Simple fade in/out animation as fallback
 func _simple_fade_animation() -> void:
+	var tween = create_tween()
 	"""Simple fade in/out animation as fallback"""
 	var tween = create_tween()
 	tween.set_ease(Tween.EASE_OUT)
