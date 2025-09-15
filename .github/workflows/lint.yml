@@ -14,18 +14,12 @@ jobs:
   gdscript-lint:
     name: GDScript Linting
     runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.4.1
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Download Godot 4.4
-      run: |
-        cd /tmp
-        wget -q https://github.com/godotengine/godot/releases/download/4.4-stable/Godot_v4.4-stable_linux.x86_64.zip
-        unzip -q Godot_v4.4-stable_linux.x86_64.zip
-        chmod +x Godot_v4.4-stable_linux.x86_64
-        mv Godot_v4.4-stable_linux.x86_64 /tmp/godot
+      uses: actions/checkout@v5
 
     - name: Install gdtoolkit (contains gdformat)
       run: |
@@ -53,11 +47,11 @@ jobs:
     - name: Validate project configuration
       run: |
         # Import assets
-        /tmp/godot --headless --import --verbose
+        godot --headless --import --verbose
 
         # Test if main scene loads without errors
         echo "Testing main scene load..."
-        if /tmp/godot --headless --path . "res://Stages/Game/main/main.tscn" --quiet; then
+        if godot --headless --path . "res://Stages/Game/main/main.tscn" --quiet; then
           echo "✅ Main scene loads successfully"
         else
           echo "❌ Main scene failed to load"
