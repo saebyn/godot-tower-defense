@@ -3,3 +3,16 @@
 /android/
 godot
 Godot_v4.4-stable_linux.x86_64.zip
+
+# Development tools and binaries
+bin/
+test-lint.sh
+fix-formatting.sh
+
+# IDE files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db

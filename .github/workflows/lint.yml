@@ -103,8 +103,10 @@ jobs:
     - name: Check EditorConfig compliance
       run: |
         echo "Checking EditorConfig compliance..."
-        if ! ./bin/ec-linux-amd64 -exclude "\.godot|\.git|\.import|node_modules|\.zip$"; then
+        # Exclude binary files, assets, and generated content
+        if ! ./bin/ec-linux-amd64 -exclude "\.godot|\.git|\.import|\.zip$|\.blend$|\.blend1$|\.fbx$|\.material$|\.tscn$|\.tres$|bin/"; then
           echo "❌ Some files do not comply with EditorConfig settings."
+          echo "Note: This mainly affects GDScript files. Run 'gdformat .' to fix most issues."
           exit 1
         else
           echo "✅ All files comply with EditorConfig settings."

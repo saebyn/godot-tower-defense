@@ -1,33 +1,101 @@
-# editorconfig-checker
+# Godot Tower Defense
 
-<a href="https://www.buymeacoffee.com/mstruebing" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+A 3D tower defense game built with Godot 4.4.
 
-[![ci](https://github.com/editorconfig-checker/editorconfig-checker/actions/workflows/ci.yml/badge.svg)](https://github.com/editorconfig-checker/editorconfig-checker/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/editorconfig-checker/editorconfig-checker/branch/main/graph/badge.svg)](https://codecov.io/gh/editorconfig-checker/editorconfig-checker)
-[![Hits-of-Code](https://hitsofcode.com/github/editorconfig-checker/editorconfig-checker?branch=main&label=Hits-of-Code)](https://hitsofcode.com/github/editorconfig-checker/editorconfig-checker/view?branch=main&label=Hits-of-Code)
-[![Go Report Card](https://goreportcard.com/badge/github.com/editorconfig-checker/editorconfig-checker/v3)](https://goreportcard.com/report/github.com/editorconfig-checker/editorconfig-checker/v3)<!-- x-release-please-major -->
+## Features
 
-![Logo](docs/logo.png)
+- 3D graphics with dynamic camera controls
+- Enemy AI with pathfinding navigation
+- Tower/obstacle placement system
+- Health and attack components
+- Currency management system
+- Template + Config architecture for easy customization
 
-1. [What?](#what)
-2. [Quickstart](#quickstart)
-3. [Installation](#installation)
-4. [Usage](#usage)
-5. [Configuration](#configuration)
-6. [Excluding](#excluding)
-   1. [Excluding Lines](#excluding-lines)
-   2. [Excluding Blocks](#excluding-blocks)
-   3. [Excluding Paths](#excluding-paths)
-      1. [Inline](#inline)
-      2. [Default Excludes](#default-excludes)
-      3. [Ignoring Default Excludes](#ignoring-default-excludes)
-      4. [Manually Excluding](#manually-excluding)
-         1. [via configuration](#via-configuration)
-         2. [via arguments](#via-arguments)
-7. [Docker](#docker)
-8. [Continuous Integration](#continuous-integration)
-9. [Support](#support)
-10. [Contributing](#contributing)
+## Development
+
+### Prerequisites
+
+- Godot 4.4 (automatically downloaded by setup scripts)
+- Python 3.8+ (for linting tools)
+
+### Setup
+
+1. Clone the repository
+2. Install development tools:
+  ```bash
+  pip install gdtoolkit
+  ```
+3. Download Godot (if not already available):
+  ```bash
+  wget https://github.com/godotengine/godot/releases/download/4.4-stable/Godot_v4.4-stable_linux.x86_64.zip
+  unzip Godot_v4.4-stable_linux.x86_64.zip
+  chmod +x Godot_v4.4-stable_linux.x86_64
+  mv Godot_v4.4-stable_linux.x86_64 ./godot
+  ```
+
+### Code Quality
+
+This project uses automated linting and formatting to maintain code quality:
+
+#### Tools
+- **gdformat**: Automatic GDScript formatting
+- **gdlint**: GDScript linting for best practices
+- **editorconfig-checker**: File format validation
+- **Godot built-in checks**: Script syntax validation
+
+#### Local Development
+```bash
+# Format all GDScript files
+gdformat .
+
+# Check linting issues
+gdlint .
+
+# Run all quality checks
+./test-lint.sh  # (if available)
+```
+
+#### Code Standards
+- **Indentation**: 2 spaces (no tabs)
+- **Line Length**: Maximum 100 characters
+- **Naming**: snake_case for variables/functions, PascalCase for classes
+- **No trailing whitespace**
+- **UTF-8 encoding with LF line endings**
+
+### CI/CD
+
+All pushes and pull requests are automatically checked with:
+- GDScript syntax validation
+- Code formatting verification
+- Style and best practice linting
+- EditorConfig compliance
+- Project validation
+
+See `.github/workflows/lint.yml` for details.
+
+## Game Controls
+
+- **Mouse**: Camera movement and targeting
+- **Left Click**: Place obstacles/towers
+- **WASD**: Camera movement
+- **ESC**: Pause/menu
+- **T**: Spawn test enemy (debug)
+
+## Project Structure
+
+```
+├── Assets/           # Game assets (models, textures, sounds)
+├── Common/           # Shared components and systems
+├── Config/           # Configuration files
+├── Entities/         # Game entities (enemies, obstacles, targets)
+├── Localization/     # Internationalization
+├── Stages/           # Game scenes
+└── Utilities/        # Utility scripts and systems
+```
+
+## License
+
+See LICENSE file for details.
 11. [Semantic Versioning Policy](#semantic-versioning-policy)
 
 ## What?

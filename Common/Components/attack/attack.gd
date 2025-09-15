@@ -8,11 +8,7 @@ The attack has a cooldown to prevent continuous damage application.
 extends Node
 class_name Attack
 
-enum AttackResult {
-  SUCCESS,
-  ON_COOLDOWN,
-  INVALID_TARGET
-}
+enum AttackResult { SUCCESS, ON_COOLDOWN, INVALID_TARGET }
 
 @onready var attack_timer: Timer = $AttackTimer
 
@@ -41,10 +37,12 @@ func perform_attack(target: Node) -> AttackResult:
     return AttackResult.SUCCESS
   return AttackResult.ON_COOLDOWN
 
+
 func cancel():
   is_on_cooldown = false
   attack_timer.stop()
   current_target = null
+
 
 func _on_AttackTimer_timeout():
   is_on_cooldown = false

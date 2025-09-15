@@ -13,6 +13,7 @@ var current_target: Node3D = null
 
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
 
+
 func _ready():
   # These values need to be adjusted for the actor's speed
   # and the navigation layout.
@@ -56,7 +57,7 @@ func attack_target():
     choose_target()
     if not current_target:
       return
-  
+
   if not current_target.is_in_group(target_group):
     Logger.warn("Enemy", "Current target is not in the target group.")
     choose_target()
@@ -66,7 +67,8 @@ func attack_target():
   # check if the target is in range
   var distance_to_target := global_position.distance_to(current_target.global_position)
   if distance_to_target <= target_desired_distance:
-      attack.perform_attack(current_target)
+    attack.perform_attack(current_target)
+
 
 func _process(_delta: float) -> void:
   attack_target()
@@ -109,6 +111,7 @@ func _on_died():
   # Award currency to the player
   CurrencyManager.earn_currency(currency_reward)
   queue_free()
+
 
 func _on_health_damaged(amount: int, hitpoints: int) -> void:
   Logger.debug("Enemy.Combat", "Enemy took %d damage. Remaining HP: %d" % [amount, hitpoints])
