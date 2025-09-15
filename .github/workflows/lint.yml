@@ -1,0 +1,140 @@
+name: Lint and Static Analysis
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  gdscript-lint:
+    name: GDScript Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Download Godot 4.4
+      run: |
+        wget -q https://github.com/godotengine/godot/releases/download/4.4-stable/Godot_v4.4-stable_linux.x86_64.zip
+        unzip -q Godot_v4.4-stable_linux.x86_64.zip
+        chmod +x Godot_v4.4-stable_linux.x86_64
+        mv Godot_v4.4-stable_linux.x86_64 ./godot
+    
+    - name: Import assets and check scripts
+      run: |
+        # Import assets first (needed for class resolution)
+        ./godot --headless --import --verbose
+        
+        # Check all GDScript files for parse errors
+        echo "Checking GDScript files for syntax errors..."
+        find . -name "*.gd" -type f | while read -r file; do
+          echo "Checking: $file"
+          if ! ./godot --headless --check-only --script "$file" 2>&1; then
+            echo "❌ Script check failed for: $file"
+            exit 1
+          else
+            echo "✅ Script check passed for: $file"
+          fi
+        done
+
+  gdformat-check:
+    name: GDScript Formatting
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install gdtoolkit (contains gdformat)
+      run: |
+        pip install gdtoolkit
+        
+    - name: Check formatting
+      run: |
+        echo "Checking GDScript file formatting..."
+        # Check if any files need formatting
+        if ! gdformat --check --diff .; then
+          echo "❌ Some files are not properly formatted."
+          echo "Run 'gdformat .' to fix formatting issues."
+          exit 1
+        else
+          echo "✅ All files are properly formatted."
+        fi
+
+  gdlint-check:
+    name: GDScript Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install gdtoolkit (contains gdlint)
+      run: |
+        pip install gdtoolkit
+        
+    - name: Run linting
+      run: |
+        echo "Running GDScript linter..."
+        if ! gdlint .; then
+          echo "❌ Linting issues found."
+          echo "Check the output above and fix the issues."
+          exit 1
+        else
+          echo "✅ No linting issues found."
+        fi
+
+  editorconfig-check:
+    name: EditorConfig
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install editorconfig-checker
+      run: |
+        wget -q https://github.com/editorconfig-checker/editorconfig-checker/releases/latest/download/ec-linux-amd64.tar.gz
+        tar -xzf ec-linux-amd64.tar.gz
+        chmod +x bin/ec-linux-amd64
+        
+    - name: Check EditorConfig compliance
+      run: |
+        echo "Checking EditorConfig compliance..."
+        if ! ./bin/ec-linux-amd64 -exclude "\.godot|\.git|\.import|node_modules|\.zip$"; then
+          echo "❌ Some files do not comply with EditorConfig settings."
+          exit 1
+        else
+          echo "✅ All files comply with EditorConfig settings."
+        fi
+
+  project-validation:
+    name: Project Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Download Godot 4.4
+      run: |
+        wget -q https://github.com/godotengine/godot/releases/download/4.4-stable/Godot_v4.4-stable_linux.x86_64.zip
+        unzip -q Godot_v4.4-stable_linux.x86_64.zip
+        chmod +x Godot_v4.4-stable_linux.x86_64
+        mv Godot_v4.4-stable_linux.x86_64 ./godot
+    
+    - name: Validate project configuration
+      run: |
+        # Import assets
+        ./godot --headless --import --verbose
+        
+        # Test if main scene loads without errors
+        echo "Testing main scene load..."
+        if ./godot --headless --path . "res://Stages/Game/main/main.tscn" --quiet; then
+          echo "✅ Main scene loads successfully"
+        else
+          echo "❌ Main scene failed to load"
+          exit 1
+        fi

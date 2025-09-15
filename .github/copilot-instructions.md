@@ -124,6 +124,18 @@ The project uses a Template + Config architecture:
 - Registration happens during asset import
 - Restart Godot if class recognition issues occur
 
+### Coding Standards (Enforced by CI/CD)
+- **Indentation**: 2 spaces (no tabs)
+- **Line Length**: Maximum 100 characters
+- **Naming Conventions**:
+  - Variables/functions: `snake_case`
+  - Classes: `PascalCase`
+  - Constants: `UPPER_SNAKE_CASE`
+  - Signals: `snake_case`
+- **Class Organization**: Follow gdlint order (extends, exports, signals, etc.)
+- **No Trailing Whitespace**: Automatically enforced
+- **File Encoding**: UTF-8 with LF line endings
+
 ### Asset Management
 - **Large Assets**: Excluded from git (*.blend, *.blend1)
 - **Import Files**: Keep .import files for proper asset handling
@@ -170,11 +182,74 @@ The project uses a Template + Config architecture:
 
 ## CI/CD Notes
 
-**No existing CI/CD pipelines** - manual testing required.
+### Automated Quality Checks
 
-**No automated tests** - use manual validation scenarios above.
+The project now includes comprehensive CI/CD pipelines for code quality assurance:
 
-**No build scripts** - direct Godot execution only.
+#### Linting and Static Analysis Workflow
+- **Workflow File**: `.github/workflows/lint.yml`
+- **Triggers**: Push/PR to `main` or `develop` branches
+- **Jobs**:
+  1. **GDScript Syntax Check**: Uses Godot 4.4's built-in `--check-only` to validate script syntax
+  2. **GDScript Formatting**: Uses `gdformat` to ensure consistent code formatting
+  3. **GDScript Linting**: Uses `gdlint` for style and best practice enforcement
+  4. **EditorConfig Compliance**: Validates files follow `.editorconfig` rules
+  5. **Project Validation**: Tests that the main scene loads without errors
+
+#### Code Quality Tools
+
+1. **gdformat** (GDScript Formatter):
+   - Configuration: `gdformatrc`
+   - Enforces 2-space indentation, 100-character line length
+   - Removes trailing whitespace, ensures consistent spacing
+   - Run locally: `gdformat --check --diff .` or `gdformat .` to fix
+
+2. **gdlint** (GDScript Linter):
+   - Configuration: `gdlintrc`
+   - Validates naming conventions, class structure, complexity metrics
+   - Checks for code smells and best practices
+   - Run locally: `gdlint .`
+
+3. **EditorConfig**:
+   - Configuration: `.editorconfig`
+   - Enforces consistent indentation, encoding, line endings
+   - Supports GDScript, TSCN, TRES, and documentation files
+
+### Local Development Workflow
+
+1. **Setup Development Tools**:
+   ```bash
+   pip install gdtoolkit  # Installs gdformat and gdlint
+   ```
+
+2. **Pre-commit Checks** (recommended):
+   ```bash
+   # Format code
+   gdformat .
+   
+   # Check linting
+   gdlint .
+   
+   # Validate with Godot
+   ./godot --headless --check-only --script path/to/file.gd
+   ```
+
+3. **Fix Common Issues**:
+   - **Formatting**: Run `gdformat .` to auto-fix spacing and indentation
+   - **Trailing Whitespace**: Automatically handled by gdformat
+   - **Naming Conventions**: Follow snake_case for variables/functions, PascalCase for classes
+   - **Class Structure**: Organize class members in the order defined by gdlint
+
+### CI/CD Integration
+
+- **Status Checks**: All jobs must pass before merging
+- **Automated Asset Import**: CI handles Godot asset import for script validation
+- **Parallel Execution**: Multiple quality checks run simultaneously for faster feedback
+- **Detailed Reporting**: Clear error messages with suggestions for fixes
+
+**Manual testing still required** - use validation scenarios below for comprehensive testing.
+
+**Build and validation scripts** - use the CI workflow commands locally for testing.
 
 ## Important Reminders
 

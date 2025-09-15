@@ -2,3 +2,37 @@ root = true
 
 [*]
 charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# GDScript files
+[*.gd]
+indent_style = space
+indent_size = 2
+
+# Scene files
+[*.tscn]
+indent_style = space
+indent_size = 2
+
+# Resource files
+[*.tres]
+indent_style = space
+indent_size = 2
+
+# Configuration files
+[*.cfg]
+indent_style = space
+indent_size = 2
+
+# Project files
+[project.godot]
+indent_style = space
+indent_size = 2
+
+# Documentation
+[*.md]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = false
