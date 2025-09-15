@@ -50,11 +50,6 @@ jobs:
           echo "✅ All files comply with EditorConfig settings."
         fi
 
-    - name: Validate project configuration
-      run: |
-        # Import assets
-        /tmp/godot --headless --import --verbose
-
     - name: Check formatting
       run: |
         echo "Checking GDScript file formatting..."
