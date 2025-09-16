@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://b1yehhqyw2nfo"]
+[gd_scene load_steps=4 format=3 uid="uid://b1yehhqyw2nfo"]
 
 [ext_resource type="Script" uid="uid://ef5o7bdag8pq" path="res://Entities/Targets/Templates/base_target/target.gd" id="1_e1yvt"]
-[ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="2_5ebp1"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1bvp3"]
 albedo_color = Color(1, 0, 1, 1)
@@ -14,8 +13,3 @@ transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 
 material_override = SubResource("StandardMaterial3D_1bvp3")
 mesh = SubResource("BoxMesh_ig7tw")
 script = ExtResource("1_e1yvt")
-
-[node name="Health" parent="." instance=ExtResource("2_5ebp1")]
-
-[connection signal="damaged" from="Health" to="." method="_on_health_damaged"]
-[connection signal="died" from="Health" to="." method="_on_died"]

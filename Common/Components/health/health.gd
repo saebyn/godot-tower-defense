@@ -2,7 +2,7 @@ extends Node
 class_name Health
 
 @export var hitpoints: int = 100
-@export var ui_path: NodePath = NodePath("UI")
+@export var ui_path: String = "UI"
 
 var max_hitpoints: int
 var dead: bool = false

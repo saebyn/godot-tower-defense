@@ -1,7 +1,5 @@
 extends MeshInstance3D
 
-@onready var health: Health = $Health
-
 func _on_died():
   Logger.info("Target", "Target has died.")
   queue_free() # Remove the target from the scene when it dies.
