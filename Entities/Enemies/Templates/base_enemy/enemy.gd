@@ -82,17 +82,19 @@ func attack_target():
     if not current_target:
       return
 
-  # First, check for nearby obstacles to attack (higher priority)
+  # Attack primary target if in range (higher priority)
+  var distance_to_target := global_position.distance_to(current_target.global_position)
+  if distance_to_target <= target_desired_distance:
+      attack.perform_attack(current_target)
+      return
+
+  # If no targets in range, check for nearby obstacles to attack
   var nearby_obstacle = find_nearest_obstacle_in_range()
   if nearby_obstacle:
     Logger.debug("Enemy", "Attacking nearby obstacle at distance: %f" % global_position.distance_to(nearby_obstacle.global_position))
     attack.perform_attack(nearby_obstacle)
     return
 
-  # If no obstacles in range, attack primary target if in range
-  var distance_to_target := global_position.distance_to(current_target.global_position)
-  if distance_to_target <= target_desired_distance:
-      attack.perform_attack(current_target)
 
 func _process(_delta: float) -> void:
   attack_target()
