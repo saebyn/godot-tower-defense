@@ -30,7 +30,17 @@ func _ready() -> void:
 func _connect_signals() -> void:
   if enemy_spawner and ui:
     enemy_spawner.enemy_spawned.connect(ui._on_enemy_spawned)
-    print("Connected enemy_spawned signal to UI")
+    enemy_spawner.wave_started.connect(_on_wave_started)
+    enemy_spawner.wave_completed.connect(_on_wave_completed)
+    print("Connected enemy_spawned and wave signals to UI")
+
+func _on_wave_started(wave: Wave) -> void:
+  var wave_number = enemy_spawner.get_current_wave_number()
+  ui._on_wave_started(wave, wave_number)
+
+func _on_wave_completed(wave: Wave) -> void:
+  var wave_number = enemy_spawner.get_current_wave_number()
+  ui._on_wave_completed(wave, wave_number)
 
 
 func _process(delta: float) -> void:
