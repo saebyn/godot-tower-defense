@@ -24,8 +24,8 @@ extends Node3D
 var zoom_tween: Tween
 
 func _ready() -> void:
-  # Connect enemy spawner signal to UI after all nodes are ready
-  call_deferred("_connect_signals")
+  # Connect enemy spawner signal to UI immediately (not deferred)
+  _connect_signals()
 
 func _connect_signals() -> void:
   if enemy_spawner and ui:
@@ -33,6 +33,8 @@ func _connect_signals() -> void:
     enemy_spawner.wave_started.connect(_on_wave_started)
     enemy_spawner.wave_completed.connect(_on_wave_completed)
     print("Connected enemy_spawned and wave signals to UI")
+  else:
+    print("Warning: enemy_spawner or ui not available for signal connection")
 
 func _on_wave_started(wave: Wave) -> void:
   var wave_number = enemy_spawner.get_current_wave_number()
