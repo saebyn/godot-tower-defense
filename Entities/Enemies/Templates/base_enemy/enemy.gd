@@ -3,6 +3,8 @@ extends CharacterBody3D
 @export var movement_speed: float = 2.0
 @export var target_desired_distance: float = 4.0
 @export var target_group: String = "targets"
+@export var obstacle_group: String = "obstacles"
+@export var obstacle_attack_range: float = 6.0
 @export var currency_reward: int = 10
 
 @onready var attack: Attack = $Attack
@@ -42,6 +44,23 @@ func choose_target():
     navigation_agent.set_target_position(current_target.global_position)
 
 
+func find_nearest_obstacle_in_range() -> Node3D:
+  var obstacles := get_tree().get_nodes_in_group(obstacle_group)
+  var nearest_obstacle: Node3D = null
+  var nearest_distance: float = obstacle_attack_range + 1.0  # Start beyond max range
+  
+  for obstacle in obstacles:
+    if not obstacle or not is_instance_valid(obstacle):
+      continue
+      
+    var distance := global_position.distance_to(obstacle.global_position)
+    if distance <= obstacle_attack_range and distance < nearest_distance:
+      nearest_distance = distance
+      nearest_obstacle = obstacle
+  
+  return nearest_obstacle
+
+
 func actor_setup():
   # Wait for the first physics frame so the NavigationServer can sync.
   await get_tree().physics_frame
@@ -63,7 +82,14 @@ func attack_target():
     if not current_target:
       return
 
-  # check if the target is in range
+  # First, check for nearby obstacles to attack (higher priority)
+  var nearby_obstacle = find_nearest_obstacle_in_range()
+  if nearby_obstacle:
+    Logger.debug("Enemy", "Attacking nearby obstacle at distance: %f" % global_position.distance_to(nearby_obstacle.global_position))
+    attack.perform_attack(nearby_obstacle)
+    return
+
+  # If no obstacles in range, attack primary target if in range
   var distance_to_target := global_position.distance_to(current_target.global_position)
   if distance_to_target <= target_desired_distance:
       attack.perform_attack(current_target)
