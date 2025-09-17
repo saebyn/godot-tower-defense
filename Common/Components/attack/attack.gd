@@ -1,10 +1,7 @@
-"""
 # Attack.gd
-
-This script handles the attack logic for an enemy character.
-It checks if the target is valid and applies damage if possible.
-The attack has a cooldown to prevent continuous damage application.
-"""
+# This script handles the attack logic for an enemy character.
+# It checks if the target is valid and applies damage if possible.
+# The attack has a cooldown to prevent continuous damage application.
 extends Node
 class_name Attack
 
