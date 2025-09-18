@@ -181,6 +181,12 @@ func _on_obstacle_spawn_requested(obstacle_instance: Node3D) -> void:
   raycast.enabled = true
   add_child(_placeable_obstacle)
   
+  # Disable health display for preview mode
+  if _placeable_obstacle.has_method("get_node") and _placeable_obstacle.has_node("Health"):
+    var health_component = _placeable_obstacle.get_node("Health")
+    if health_component and health_component.has_property("disable_health_display"):
+      health_component.disable_health_display = true
+  
   # Store original material for restoration
   if _placeable_obstacle.mesh_instance:
     _original_material = _placeable_obstacle.mesh_instance.get_surface_override_material(0)
@@ -215,6 +221,15 @@ func _place_obstacle() -> void:
     else:
       # Clear any override material to use the default mesh material
       _placeable_obstacle.mesh_instance.set_surface_override_material(0, null)
+  
+  # Re-enable health display for the placed obstacle
+  if _placeable_obstacle.has_method("get_node") and _placeable_obstacle.has_node("Health"):
+    var health_component = _placeable_obstacle.get_node("Health")
+    if health_component and health_component.has_property("disable_health_display"):
+      health_component.disable_health_display = false
+      # Manually trigger health display setup now that it's enabled
+      if health_component.has_method("_setup_health_display"):
+        health_component._setup_health_display.call_deferred()
   
   _placeable_obstacle.place(navigation_region)
   rebake_navigation_mesh.emit()

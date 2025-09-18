@@ -3,6 +3,7 @@ class_name Health
 
 @export var hitpoints: int = 100
 @export var ui_path: NodePath = NodePath("UI")
+@export var disable_health_display: bool = false  # Disable health display for preview mode
 
 var max_hitpoints: int
 var dead: bool = false
@@ -27,6 +28,10 @@ func _ready():
 
 
 func _setup_health_display():
+  # Skip health display setup if disabled (for preview mode)
+  if disable_health_display:
+    return
+    
   # Wait a frame to ensure the scene tree is properly set up
   await get_tree().process_frame
   
