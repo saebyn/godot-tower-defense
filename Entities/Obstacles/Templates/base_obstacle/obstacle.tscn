@@ -16,7 +16,7 @@ size = Vector3(10, 5, 2)
 [sub_resource type="BoxShape3D" id="BoxShape3D_sl1jc"]
 size = Vector3(10, 5, 2)
 
-[node name="Obstacle" type="StaticBody3D"]
+[node name="Obstacle" type="StaticBody3D" groups=["obstacles"]]
 collision_layer = 2
 collision_mask = 0
 physics_material_override = SubResource("PhysicsMaterial_sl1jc")
