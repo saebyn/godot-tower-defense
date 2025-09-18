@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://cj8xy9dt0k2cd"]
+
+[ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://Entities/Obstacles/Templates/base_obstacle/obstacle.tscn" id="1_shooting"]
+[ext_resource type="Script" path="res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.gd" id="2_shooting"]
+[ext_resource type="PackedScene" uid="uid://d2nt6gtj5g3cm" path="res://Common/Components/attack/attack.tscn" id="3_shooting"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shooting"]
+albedo_color = Color(0.8, 0.2, 0.2, 1)
+
+[node name="ShootingObstacle" instance=ExtResource("1_shooting")]
+script = ExtResource("2_shooting")
+attack_range = 15.0
+detection_interval = 0.5
+
+[node name="MeshInstance3D" parent="." index="1"]
+material_override = SubResource("StandardMaterial3D_shooting")
+
+[node name="Attack" parent="." index="3" instance=ExtResource("3_shooting")]
+damage_amount = 15
+damage_cooldown = 2.0
+
+[node name="DetectionTimer" type="Timer" parent="." index="4"]
+wait_time = 0.5
