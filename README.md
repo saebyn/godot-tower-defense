@@ -78,6 +78,12 @@ Game entities use a composition approach:
 - `Entities/` - Game-specific objects with their logic
 - `Stages/` - Complete scenes and levels
 
+#### 4. **Centralized Game State Management**
+Game state and coordination is handled through autoloaded singletons:
+- **Logger** - Centralized logging with scope-based filtering
+- **CurrencyManager** - Player currency tracking and transactions
+- **GameManager** - Game state transitions and high-level coordination
+
 ### Example Structure
 
 ```
