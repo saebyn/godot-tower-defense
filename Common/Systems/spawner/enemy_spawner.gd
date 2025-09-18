@@ -95,3 +95,9 @@ func find_random_spawn_position() -> Vector3:
         randf_range(bounds.position.z, bounds.position.z + bounds.size.z)
     )
     return random_position
+
+func get_current_wave_number() -> int:
+    return _current_wave_index + 1
+
+func get_total_waves() -> int:
+    return _waves.size()

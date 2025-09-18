@@ -119,6 +119,55 @@ The project uses a Template + Config architecture:
 - **Configs**: Configuration resources in `Config/`
 - **Components**: Reusable components in `Common/Components/`
 
+### Autoloaded Systems
+The project uses several autoloaded singletons for global state management:
+- **Logger**: Comprehensive logging with scope-based filtering (`Utilities/Systems/logger.gd`)
+- **CurrencyManager**: Player currency tracking and transactions (`Utilities/Systems/currency_manager.gd`)
+- **GameManager**: Game state transitions and high-level coordination (`Utilities/Systems/game_manager.gd`)
+
+Access these systems from anywhere in the codebase:
+```gdscript
+Logger.info("System", "Message")
+CurrencyManager.earn_currency(10)
+GameManager.set_game_state(GameManager.GameState.PAUSED)
+```
+
+### GameManager Features
+The GameManager is currently in its initial implementation phase with basic game state management:
+
+**Current Features**:
+- Game state enumeration (MAIN_MENU, PLAYING, PAUSED, GAME_OVER, VICTORY)
+- State transition management with logging
+- Pause/resume game functionality
+- State change signal emission for UI and system coordination
+
+**Planned Expansions**:
+- Wave/spawning coordination (centralize logic currently in main.gd)
+- Scene management and level transitions
+- Global game event coordination
+- Cross-system communication hub
+
+**Usage Examples**:
+```gdscript
+# Check current game state
+if GameManager.current_state == GameManager.GameState.PLAYING:
+    # Game logic here
+    pass
+
+# Listen for state changes
+func _ready():
+    GameManager.game_state_changed.connect(_on_game_state_changed)
+
+func _on_game_state_changed(new_state: GameManager.GameState):
+    match new_state:
+        GameManager.GameState.PAUSED:
+            # Handle pause
+            pass
+        GameManager.GameState.PLAYING:
+            # Handle resume
+            pass
+```
+
 ### Script Class Registration
 - Scripts use proper class_name declarations
 - Registration happens during asset import
@@ -147,6 +196,11 @@ The project uses a Template + Config architecture:
    - Asset import: 15+ minutes (normal)
    - Game launch: 2-3 seconds (normal)
    - Scene loading: < 1 second (normal)
+
+4. **Autoload System Issues**:
+   - If Logger, CurrencyManager, or GameManager not found: Check project.godot autoload section
+   - Verify singleton scripts are properly accessible with their class names
+   - Restart Godot if autoload changes don't take effect
 
 ### Build and Test Commands
 

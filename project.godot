@@ -19,6 +19,7 @@ config/icon="res://Assets/Icons/icon.svg"
 
 Logger="*res://Utilities/Systems/logger.gd"
 CurrencyManager="*res://Utilities/Systems/currency_manager.gd"
+GameManager="*res://Utilities/Systems/game_manager.gd"
 
 [global_group]
 

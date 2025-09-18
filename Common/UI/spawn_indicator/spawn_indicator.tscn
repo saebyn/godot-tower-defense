@@ -28,10 +28,10 @@ layout_mode = 3
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -200.0
+offset_left = -250.0
 offset_top = 50.0
 offset_right = -20.0
-offset_bottom = 100.0
+offset_bottom = 150.0
 grow_horizontal = 0
 script = ExtResource("1_spawn_indicator")
 
@@ -54,9 +54,10 @@ offset_right = -8.0
 offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "⚠️ Enemy Spawning!"
+text = "🌊 Wave Info"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 2
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
