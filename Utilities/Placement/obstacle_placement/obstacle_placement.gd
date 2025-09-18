@@ -27,6 +27,7 @@ var _placeable_obstacle: PlaceableObstacle = null
 var _valid_material: StandardMaterial3D
 var _invalid_material: StandardMaterial3D
 var _original_material: Material
+var _original_collision_layer: int = 0
 
 func _ready():
   # Set up materials for visual feedback
@@ -187,6 +188,12 @@ func _on_obstacle_spawn_requested(obstacle_instance: Node3D) -> void:
     # If no override material exists, get the mesh material
     if not _original_material and _placeable_obstacle.mesh_instance.mesh:
       _original_material = _placeable_obstacle.mesh_instance.mesh.surface_get_material(0)
+  
+  # Disable collision for the preview obstacle to prevent physical collisions
+  # Store original collision layer for restoration when placed
+  if _placeable_obstacle.has_method("get_collision_layer"):
+    _original_collision_layer = _placeable_obstacle.get_collision_layer()
+    _placeable_obstacle.set_collision_layer(0) # Disable all collision layers for preview
 
 func _place_obstacle() -> void:
   if not _placeable_obstacle:
@@ -208,7 +215,7 @@ func _place_obstacle() -> void:
       Logger.debug("Placement", "  - Insufficient clearance")
     return
   
-  # Restore original material before placing
+  # Restore original material and collision layer before placing
   if _placeable_obstacle.mesh_instance:
     if _original_material:
       _placeable_obstacle.mesh_instance.set_surface_override_material(0, _original_material)
@@ -216,18 +223,26 @@ func _place_obstacle() -> void:
       # Clear any override material to use the default mesh material
       _placeable_obstacle.mesh_instance.set_surface_override_material(0, null)
   
+  # Restore collision layer for the placed obstacle
+  if _placeable_obstacle.has_method("set_collision_layer"):
+    _placeable_obstacle.set_collision_layer(_original_collision_layer)
+  
   _placeable_obstacle.place(navigation_region)
   rebake_navigation_mesh.emit()
   _placeable_obstacle = null
   raycast.enabled = false
 
 func _cancel_obstacle_placement() -> void:
-  # Restore original material before freeing if possible
+  # Restore original material and collision layer before freeing if possible
   if _placeable_obstacle and _placeable_obstacle.mesh_instance:
     if _original_material:
       _placeable_obstacle.mesh_instance.set_surface_override_material(0, _original_material)
     else:
       _placeable_obstacle.mesh_instance.set_surface_override_material(0, null)
+  
+  # Restore collision layer before freeing (good practice)
+  if _placeable_obstacle and _placeable_obstacle.has_method("set_collision_layer"):
+    _placeable_obstacle.set_collision_layer(_original_collision_layer)
   
   _placeable_obstacle.queue_free()
   _placeable_obstacle = null
