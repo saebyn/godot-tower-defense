@@ -46,6 +46,10 @@ func _on_wave_completed(wave: Wave) -> void:
 
 
 func _process(delta: float) -> void:
+  # Don't process camera controls when paused
+  if GameManager.current_state == GameManager.GameState.PAUSED:
+    return
+    
   # Update camera position based on player input
   var input_vector := Input.get_vector("camera_move_down", "camera_move_up", "camera_move_left", "camera_move_right")
 
@@ -101,6 +105,15 @@ func rebake_navigation_mesh():
 
 
 func _input(event: InputEvent) -> void:
+  # Handle pause toggle (ESC key)
+  if event is InputEventKey and event.pressed and Input.is_action_just_pressed("toggle_pause"):
+    _toggle_pause()
+    return
+  
+  # Only handle other inputs when not paused
+  if GameManager.current_state == GameManager.GameState.PAUSED:
+    return
+  
   if event is InputEventMouseButton and not obstacle_placement.busy and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
       _handle_enemy_click(event.position)
   
@@ -142,6 +155,13 @@ func _handle_enemy_click(click_position: Vector2):
   
   # Disable the enemy raycast after use
   enemy_raycast.enabled = false
+
+
+func _toggle_pause():
+  if GameManager.current_state == GameManager.GameState.PLAYING:
+    GameManager.pause_game()
+  elif GameManager.current_state == GameManager.GameState.PAUSED:
+    GameManager.resume_game()
 
 
 func _on_obstacle_spawn_requested(obstacle_instance: Node3D) -> void:
