@@ -182,9 +182,10 @@ func _on_obstacle_spawn_requested(obstacle_instance: Node3D) -> void:
   add_child(_placeable_obstacle)
   
   # Disable health display for preview mode
-  if _placeable_obstacle.has_method("get_node") and _placeable_obstacle.has_node("Health"):
+  if _placeable_obstacle.has_node("Health"):
     var health_component = _placeable_obstacle.get_node("Health")
-    if health_component and health_component.has_property("disable_health_display"):
+    if health_component:
+      # Use direct property access - this will work for exported properties
       health_component.disable_health_display = true
   
   # Store original material for restoration
@@ -223,9 +224,10 @@ func _place_obstacle() -> void:
       _placeable_obstacle.mesh_instance.set_surface_override_material(0, null)
   
   # Re-enable health display for the placed obstacle
-  if _placeable_obstacle.has_method("get_node") and _placeable_obstacle.has_node("Health"):
+  if _placeable_obstacle.has_node("Health"):
     var health_component = _placeable_obstacle.get_node("Health")
-    if health_component and health_component.has_property("disable_health_display"):
+    if health_component:
+      # Use direct property access - this will work for exported properties
       health_component.disable_health_display = false
       # Manually trigger health display setup now that it's enabled
       if health_component.has_method("_setup_health_display"):
