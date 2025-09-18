@@ -6,6 +6,9 @@ class_name PauseMenu
 @onready var quit_button: Button = $VBoxContainer/QuitButton
 
 func _ready():
+	# Set process mode to continue working when paused
+	process_mode = Node.PROCESS_MODE_WHEN_PAUSED
+	
 	# Connect button signals
 	resume_button.pressed.connect(_on_resume_pressed)
 	restart_button.pressed.connect(_on_restart_pressed)
