@@ -1,6 +1,9 @@
 extends Node3D
 class_name PlaceableObstacle
 
+@export_group("Cost Settings")
+@export var cost: int = 10 ## Currency cost to place this obstacle
+
 @onready var mesh_instance: MeshInstance3D = $MeshInstance3D
 @onready var health: Health = $Health
 

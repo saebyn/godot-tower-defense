@@ -81,7 +81,15 @@ func _is_placement_valid(target_position: Vector3) -> bool:
   return (_is_within_navigation_region(target_position) and
           not _has_obstacle_collision(target_position) and
           _has_terrain_support(target_position) and
-          _has_sufficient_clearance(target_position))
+          _has_sufficient_clearance(target_position) and
+          _has_sufficient_currency())
+
+func _has_sufficient_currency() -> bool:
+  if not _placeable_obstacle:
+    return false
+  
+  # Check if player has enough currency to place this obstacle
+  return CurrencyManager.get_currency() >= _placeable_obstacle.cost
 
 func _is_within_navigation_region(target_position: Vector3) -> bool:
   if not navigation_region or not navigation_region.navigation_mesh:
@@ -206,6 +214,14 @@ func _place_obstacle() -> void:
       Logger.debug("Placement", "  - Invalid terrain support")
     if not _has_sufficient_clearance(target_position):
       Logger.debug("Placement", "  - Insufficient clearance")
+    if not _has_sufficient_currency():
+      Logger.debug("Placement", "  - Insufficient currency (need %d, have %d)" % [_placeable_obstacle.cost, CurrencyManager.get_currency()])
+    return
+  
+  # Deduct the currency cost
+  var cost = _placeable_obstacle.cost
+  if not CurrencyManager.spend_currency(cost):
+    Logger.error("Placement", "Failed to deduct currency cost of %d" % cost)
     return
   
   # Restore original material before placing
