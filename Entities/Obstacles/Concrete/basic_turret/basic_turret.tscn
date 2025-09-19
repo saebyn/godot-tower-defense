@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://bl5g2v8n3jkph"]
+
+[ext_resource type="PackedScene" uid="uid://cj8xy9dt0k2cd" path="res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.tscn" id="1_turret"]
+
+[node name="BasicTurret" instance=ExtResource("1_turret")]
+attack_range = 12.0
+detection_interval = 0.3
+
+[node name="Attack" parent="." index="3"]
+damage_amount = 20
+damage_cooldown = 1.5

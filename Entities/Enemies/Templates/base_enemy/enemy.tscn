@@ -974,7 +974,7 @@ _data = {
 radius = 0.71866
 height = 4.10729
 
-[node name="enemy" type="CharacterBody3D"]
+[node name="enemy" type="CharacterBody3D" groups=["enemies"]]
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("2_4gyqm")
