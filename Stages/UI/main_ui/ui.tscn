@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bl5g2v8n3jkph" path="res://Entities/Obstacles/Concrete/basic_turret/basic_turret.tscn" id="3_turret"]
 [ext_resource type="PackedScene" uid="uid://bhnpr8mat2j5c" path="res://Common/UI/currency_display/currency_display.tscn" id="4_currency"]
 [ext_resource type="PackedScene" uid="uid://dqn8xvlx7m8kb" path="res://Common/UI/spawn_indicator/spawn_indicator.tscn" id="5_spawn_indicator"]
+[ext_resource type="PackedScene" uid="uid://djmk3m86x2pk1" path="res://Stages/UI/pause_menu/pause_menu.tscn" id="6_pause_menu"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lquwl"]
 size = Vector2(16, 16)
@@ -51,6 +52,9 @@ script = ExtResource("1_m6e0p")
 spawnable = ExtResource("3_turret")
 
 [node name="SpawnIndicator" parent="." instance=ExtResource("5_spawn_indicator")]
+layout_mode = 1
+
+[node name="PauseMenu" parent="." instance=ExtResource("6_pause_menu")]
 layout_mode = 1
 
 [connection signal="pressed" from="HBoxContainer/SpawnObstacleButton" to="HBoxContainer/SpawnObstacleButton" method="_on_pressed"]
