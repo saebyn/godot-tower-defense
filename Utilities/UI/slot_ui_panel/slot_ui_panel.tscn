@@ -1,0 +1,38 @@
+[gd_scene load_steps=2 format=3 uid="uid://dkdxm8n1xfqr4"]
+
+[ext_resource type="Script" uid="uid://dkrkvkr6u0rqu" path="res://Utilities/UI/slot_ui_panel/slot_ui_panel.gd" id="1_panel"]
+
+[node name="SlotUIPanel" type="Panel" node_paths=PackedStringArray("slot_id_label", "obstacle_type_label", "obstacle_buttons_container")]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -150.0
+offset_right = 200.0
+script = ExtResource("1_panel")
+slot_id_label = NodePath("VBoxContainer/SlotIdLabel")
+obstacle_type_label = NodePath("VBoxContainer/ObstacleTypeLabel")
+obstacle_buttons_container = NodePath("VBoxContainer/ObstacleButtonsContainer")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+
+[node name="SlotIdLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Slot: None"
+
+[node name="ObstacleTypeLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Type: Empty"
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="ObstacleButtonsContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2

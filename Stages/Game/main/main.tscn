@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://b3ntnuvrvys63"]
+[gd_scene load_steps=16 format=3 uid="uid://b3ntnuvrvys63"]
 
 [ext_resource type="Script" uid="uid://2x2o4sni7v6q" path="res://Stages/Game/main/main.gd" id="1_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://d2nt6gtj5g3cm" path="res://Common/Components/attack/attack.tscn" id="2_kek77"]
@@ -9,6 +9,8 @@
 [ext_resource type="PackedScene" uid="uid://bpf2dmre1y8t0" path="res://Utilities/Placement/obstacle_placement/obstacle_placement.tscn" id="7_kek77"]
 [ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://Entities/Enemies/Templates/base_enemy/enemy.tscn" id="7_wy7n0"]
 [ext_resource type="PackedScene" uid="uid://cyp50ln3gbmtt" path="res://Common/Systems/spawner/enemy_spawner.tscn" id="8_kek77"]
+[ext_resource type="PackedScene" uid="uid://cjdxm8n1xfqr3" path="res://Utilities/Slots/obstacle_slot_manager/obstacle_slot_manager.tscn" id="9_slot_manager"]
+[ext_resource type="PackedScene" uid="uid://bjdov8n1xfqr2" path="res://Utilities/Slots/obstacle_slot/obstacle_slot.tscn" id="10_obstacle_slot"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_ig7tw"]
 vertices = PackedVector3Array(17.8745, 0.5, -345.732, -335.375, 0.5, 7.26849, 17.3745, 0.5, 360.268, 17.8745, 0.5, 360.268, 370.625, 0.5, 7.51849, 370.625, 0.5, 7.01849)
@@ -87,6 +89,25 @@ collision_mask = 4
 [node name="ObstaclePlacement" parent="." node_paths=PackedStringArray("navigation_region", "camera") instance=ExtResource("7_kek77")]
 navigation_region = NodePath("../NavigationRegion3D")
 camera = NodePath("../Camera3D")
+
+[node name="ObstacleSlotManager" parent="." node_paths=PackedStringArray("navigation_region") instance=ExtResource("9_slot_manager")]
+navigation_region = NodePath("../NavigationRegion3D")
+
+[node name="Slot1" parent="ObstacleSlotManager" instance=ExtResource("10_obstacle_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0, 0)
+slot_id = "slot_1"
+
+[node name="Slot2" parent="ObstacleSlotManager" instance=ExtResource("10_obstacle_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, 25)
+slot_id = "slot_2"
+
+[node name="Slot3" parent="ObstacleSlotManager" instance=ExtResource("10_obstacle_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 50)
+slot_id = "slot_3"
+
+[node name="Slot4" parent="ObstacleSlotManager" instance=ExtResource("10_obstacle_slot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0, 25)
+slot_id = "slot_4"
 
 [connection signal="obstacle_spawn_requested" from="UI" to="." method="_on_obstacle_spawn_requested"]
 [connection signal="rebake_navigation_mesh" from="ObstaclePlacement" to="." method="rebake_navigation_mesh"]
