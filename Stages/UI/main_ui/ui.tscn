@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://duje032qpuq2"]
+[gd_scene load_steps=8 format=3 uid="uid://duje032qpuq2"]
 
 [ext_resource type="Script" uid="uid://3yfu45cvudar" path="res://Stages/UI/main_ui/ui.gd" id="1_27fn8"]
 [ext_resource type="Script" uid="uid://cfsjav35447gc" path="res://Utilities/UI/spawn_obstacle_button.gd" id="1_m6e0p"]
