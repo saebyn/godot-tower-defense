@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cjdxm8n1xfqr3"]
 
-[ext_resource type="Script" uid="uid://cjrkvkr6u0rqu" path="res://Utilities/Slots/obstacle_slot_manager/obstacle_slot_manager.gd" id="1_manager"]
+[ext_resource type="Script" uid="uid://ck455u8yan16g" path="res://Utilities/Slots/obstacle_slot_manager/obstacle_slot_manager.gd" id="1_manager"]
 
 [node name="ObstacleSlotManager" type="Node3D"]
 script = ExtResource("1_manager")

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dkdxm8n1xfqr4"]
 
-[ext_resource type="Script" uid="uid://dkrkvkr6u0rqu" path="res://Utilities/UI/slot_ui_panel/slot_ui_panel.gd" id="1_panel"]
+[ext_resource type="Script" uid="uid://4bgneqootvnm" path="res://Utilities/UI/slot_ui_panel/slot_ui_panel.gd" id="1_panel"]
 
 [node name="SlotUIPanel" type="Panel" node_paths=PackedStringArray("slot_id_label", "obstacle_type_label", "obstacle_buttons_container")]
 anchors_preset = 2

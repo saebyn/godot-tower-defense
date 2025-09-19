@@ -165,4 +165,7 @@ func remove_obstacle_type(type_name: String):
     Logger.info("ObstacleSlotManager", "Removed obstacle type '%s'" % type_name)
 
 func get_available_obstacle_types() -> Array[String]:
-  return available_obstacle_types.keys()
+  var types: Array[String] = []
+  for key in available_obstacle_types.keys():
+    types.append(key)
+  return types
