@@ -55,17 +55,17 @@ This is a **3D tower defense game** built with **Godot 4.4**. The project uses a
 
 ### Directory Organization
 ```
-├── Assets/                 # Asset files (models, icons)
-│   ├── Icons/             # UI icons (PNG or SVG files)
-│   ├── Textures/          # Textures (PNG, JPG files)
-│   ├── Sounds/            # Audio files (WAV, OGG files)
-│   ├── Animations/        # Animation files (if any)
-│   ├── Shaders/           # Shader files (if any)
-│   ├── Materials/         # Material files (if any)
-│   ├── Fonts/             # Font files (if any)
-│   └── Models/            # 3D models (*.blend files, etc)
-├── Common/                # Shared components and systems
-│   ├── Components/        # Reusable components (attack, health)
+├── Assets/               # Asset files (models, icons)
+│   ├── Icons/            # UI icons (PNG or SVG files)
+│   ├── Textures/         # Textures (PNG, JPG files)
+│   ├── Sounds/           # Audio files (WAV, OGG files)
+│   ├── Animations/       # Animation files (if any)
+│   ├── Shaders/          # Shader files (if any)
+│   ├── Materials/        # Material files (if any)
+│   ├── Fonts/            # Font files (if any)
+│   └── Models/           # 3D models (*.blend files, etc)
+├── Common/               # Shared components and systems
+│   ├── Components/       # Reusable components (attack, health)
 │   ├── Effects/          # Visual/audio effects (shake_effect)
 │   ├── Systems/          # Game systems (spawner)
 │   └── UI/               # Common UI components (health_display)
@@ -113,6 +113,12 @@ This is a **3D tower defense game** built with **Godot 4.4**. The project uses a
 
 ## Development Guidelines
 
+### Coding Standards
+- Follow Godot GDScript style guide
+- Always use 2 spaces for indentation
+- Comment complex logic
+- Use meaningful variable and function names
+
 ### Template + Config Pattern
 The project uses a Template + Config architecture:
 - **Templates**: Base entity scenes in `Entities/*/Templates/`
@@ -151,21 +157,21 @@ The GameManager is currently in its initial implementation phase with basic game
 ```gdscript
 # Check current game state
 if GameManager.current_state == GameManager.GameState.PLAYING:
-    # Game logic here
-    pass
+  # Game logic here
+  pass
 
 # Listen for state changes
 func _ready():
-    GameManager.game_state_changed.connect(_on_game_state_changed)
+  GameManager.game_state_changed.connect(_on_game_state_changed)
 
 func _on_game_state_changed(new_state: GameManager.GameState):
-    match new_state:
-        GameManager.GameState.PAUSED:
-            # Handle pause
-            pass
-        GameManager.GameState.PLAYING:
-            # Handle resume
-            pass
+  match new_state:
+    GameManager.GameState.PAUSED:
+      # Handle pause
+      pass
+    GameManager.GameState.PLAYING:
+      # Handle resume
+      pass
 ```
 
 ### Script Class Registration
