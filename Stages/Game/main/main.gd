@@ -106,7 +106,7 @@ func rebake_navigation_mesh():
 
 func _input(event: InputEvent) -> void:
   # Handle pause toggle (ESC key)
-  if event is InputEventKey and event.pressed and Input.is_action_just_pressed("toggle_pause"):
+  if Input.is_action_just_pressed("toggle_pause"):
     _toggle_pause()
     return
   
@@ -115,11 +115,8 @@ func _input(event: InputEvent) -> void:
     return
   
   if event is InputEventMouseButton and not obstacle_placement.busy and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-      _handle_enemy_click(event.position)
-  
-  # Test key to spawn an enemy for currency testing
-  if event is InputEventKey and event.pressed and event.keycode == KEY_T:
-    _spawn_test_enemy()
+    _handle_enemy_click(event.position)
+
 
 func _spawn_test_enemy():
   # Load and spawn a test enemy
