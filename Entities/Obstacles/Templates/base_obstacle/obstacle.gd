@@ -22,6 +22,7 @@ func _on_health_damaged(amount: int, hitpoints: int) -> void:
 
 
 func place(navigation_region: NavigationRegion3D) -> void:
+    Logger.debug("Obstacle", "place() called. obstacle_type: %s" % ("null" if not obstacle_type else obstacle_type.name))
     if not is_inside_tree():
         Logger.error("Obstacle", "PlaceableObstacle must be added to the scene tree before placing.")
         return
@@ -48,6 +49,7 @@ func place(navigation_region: NavigationRegion3D) -> void:
 
 ## Remove this obstacle and return currency based on remaining health
 func remove() -> int:
+  Logger.debug("Obstacle", "Attempting to remove obstacle. obstacle_type: %s" % ("null" if not obstacle_type else obstacle_type.name))
   if not obstacle_type:
     Logger.warn("Obstacle", "Cannot remove obstacle: No obstacle type data")
     return 0

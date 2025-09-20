@@ -196,7 +196,7 @@ func _has_sufficient_clearance(target_position: Vector3) -> bool:
   return true
 
 func _on_obstacle_spawn_requested(obstacle: ObstacleTypeResource) -> void:
-  Logger.debug("Placement", "Spawn obstacle button pressed")
+  Logger.info("Placement", "Spawn obstacle button pressed for: %s" % obstacle.name)
 
   if busy:
     Logger.info("Placement", "Already placing an obstacle, cancelling previous placement")
@@ -204,6 +204,7 @@ func _on_obstacle_spawn_requested(obstacle: ObstacleTypeResource) -> void:
 
   _place_obstacle_type = obstacle
   _placeable_obstacle = obstacle.scene.instantiate()
+  Logger.debug("Placement", "Instantiated obstacle: %s" % _placeable_obstacle.name)
   raycast.enabled = true
   add_child(_placeable_obstacle)
   
@@ -250,6 +251,8 @@ func _place_obstacle() -> void:
   
   # Store obstacle type reference for potential removal
   _placeable_obstacle.obstacle_type = _place_obstacle_type
+  Logger.debug("Placement", "Setting obstacle_type to: %s (cost: %d)" % [_place_obstacle_type.name, _place_obstacle_type.cost])
+  Logger.debug("Placement", "Obstacle now has obstacle_type: %s" % ("null" if not _placeable_obstacle.obstacle_type else _placeable_obstacle.obstacle_type.name))
   
   _placeable_obstacle.place(navigation_region)
   rebake_navigation_mesh.emit()
