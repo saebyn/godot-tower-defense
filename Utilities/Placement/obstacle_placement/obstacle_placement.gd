@@ -175,9 +175,9 @@ func _has_sufficient_clearance(target_position: Vector3) -> bool:
   
   return true
 
-func _on_obstacle_spawn_requested(obstacle_instance: Node3D) -> void:
+func _on_obstacle_spawn_requested(obstacle: ObstacleTypeResource) -> void:
   Logger.info("Placement", "Spawn obstacle button pressed")
-  _placeable_obstacle = obstacle_instance
+  _placeable_obstacle = obstacle.scene.instantiate()
   raycast.enabled = true
   add_child(_placeable_obstacle)
   

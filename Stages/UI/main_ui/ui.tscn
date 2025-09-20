@@ -1,10 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://duje032qpuq2"]
+[gd_scene load_steps=9 format=3 uid="uid://duje032qpuq2"]
 
 [ext_resource type="Script" uid="uid://3yfu45cvudar" path="res://Stages/UI/main_ui/ui.gd" id="1_27fn8"]
 [ext_resource type="Script" uid="uid://cfsjav35447gc" path="res://Utilities/UI/spawn_obstacle_button.gd" id="1_m6e0p"]
-[ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://Entities/Obstacles/Templates/base_obstacle/obstacle.tscn" id="2_27fn8"]
-[ext_resource type="PackedScene" uid="uid://bl5g2v8n3jkph" path="res://Entities/Obstacles/Concrete/basic_turret/basic_turret.tscn" id="3_turret"]
 [ext_resource type="PackedScene" uid="uid://bhnpr8mat2j5c" path="res://Common/UI/currency_display/currency_display.tscn" id="4_currency"]
+[ext_resource type="Resource" uid="uid://dw6tfvlsi8cup" path="res://Config/Obstacles/wall.tres" id="4_scflv"]
+[ext_resource type="Resource" uid="uid://2hi70emk0ayo" path="res://Config/Obstacles/turret.tres" id="5_b3t5h"]
 [ext_resource type="PackedScene" uid="uid://dqn8xvlx7m8kb" path="res://Common/UI/spawn_indicator/spawn_indicator.tscn" id="5_spawn_indicator"]
 [ext_resource type="PackedScene" uid="uid://djmk3m86x2pk1" path="res://Stages/UI/pause_menu/pause_menu.tscn" id="6_pause_menu"]
 
@@ -42,20 +42,22 @@ layout_mode = 2
 text = "Obstacle"
 icon = SubResource("PlaceholderTexture2D_lquwl")
 script = ExtResource("1_m6e0p")
-spawnable = ExtResource("2_27fn8")
+spawnable = ExtResource("4_scflv")
 
 [node name="SpawnTurretButton" type="Button" parent="HBoxContainer"]
 layout_mode = 2
 text = "Turret"
 icon = SubResource("PlaceholderTexture2D_lquwl")
 script = ExtResource("1_m6e0p")
-spawnable = ExtResource("3_turret")
+spawnable = ExtResource("5_b3t5h")
 
 [node name="SpawnIndicator" parent="." instance=ExtResource("5_spawn_indicator")]
 layout_mode = 1
 
 [node name="PauseMenu" parent="." instance=ExtResource("6_pause_menu")]
 layout_mode = 1
+grow_horizontal = 2
+grow_vertical = 2
 
 [connection signal="pressed" from="HBoxContainer/SpawnObstacleButton" to="HBoxContainer/SpawnObstacleButton" method="_on_pressed"]
 [connection signal="pressed" from="HBoxContainer/SpawnTurretButton" to="HBoxContainer/SpawnTurretButton" method="_on_pressed"]

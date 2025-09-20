@@ -161,6 +161,6 @@ func _toggle_pause():
     GameManager.resume_game()
 
 
-func _on_obstacle_spawn_requested(obstacle_instance: Node3D) -> void:
+func _on_obstacle_spawn_requested(obstacle: ObstacleTypeResource) -> void:
   # Forward the signal to the obstacle placement system
-  obstacle_placement._on_obstacle_spawn_requested(obstacle_instance)
+  obstacle_placement._on_obstacle_spawn_requested(obstacle)
