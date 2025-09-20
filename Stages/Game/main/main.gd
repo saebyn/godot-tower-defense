@@ -21,9 +21,16 @@ extends Node3D
 
 @onready var obstacle_placement: ObstaclePlacement = $ObstaclePlacement
 
+var obstacle_raycast: RayCast3D
 var zoom_tween: Tween
 
 func _ready() -> void:
+  # Create obstacle detection raycast
+  obstacle_raycast = RayCast3D.new()
+  obstacle_raycast.enabled = false
+  obstacle_raycast.collision_mask = 2  # Only detect obstacles (layer 2)
+  add_child(obstacle_raycast)
+  
   # Connect enemy spawner signal to UI immediately (not deferred)
   _connect_signals()
 
@@ -114,8 +121,11 @@ func _input(event: InputEvent) -> void:
   if GameManager.current_state == GameManager.GameState.PAUSED:
     return
   
-  if event is InputEventMouseButton and not obstacle_placement.busy and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-    _handle_enemy_click(event.position)
+  if event is InputEventMouseButton and not obstacle_placement.busy and event.pressed:
+    if event.button_index == MOUSE_BUTTON_LEFT:
+      _handle_enemy_click(event.position)
+    elif event.button_index == MOUSE_BUTTON_RIGHT:
+      _handle_obstacle_remove_click(event.position)
 
 
 func _spawn_test_enemy():
@@ -159,6 +169,46 @@ func _toggle_pause():
     GameManager.pause_game()
   elif GameManager.current_state == GameManager.GameState.PAUSED:
     GameManager.resume_game()
+
+
+func _handle_obstacle_remove_click(click_position: Vector2):
+  # Create a raycast from the camera to detect what was clicked
+  var ray_origin = camera.project_ray_origin(click_position)
+  var ray_direction = camera.project_ray_normal(click_position)
+  
+  # Use the dedicated obstacle raycast (layer 2 for obstacles)
+  obstacle_raycast.enabled = true
+  obstacle_raycast.collision_mask = 2  # Only detect obstacles
+  obstacle_raycast.position = ray_origin
+  obstacle_raycast.target_position = ray_direction * raycast_length
+  
+  # Force the raycast to update
+  obstacle_raycast.force_raycast_update()
+  
+  if obstacle_raycast.is_colliding():
+    var collider = obstacle_raycast.get_collider()
+    Logger.info("Player", "Right-clicked on: %s (type: %s)" % [collider.name, collider.get_class()])
+    
+    # Check if the collider is a PlaceableObstacle
+    if collider is PlaceableObstacle:
+      var obstacle = collider as PlaceableObstacle
+      Logger.info("Player", "Confirmed PlaceableObstacle, calling remove()")
+      var refund = obstacle.remove()
+      Logger.info("Player", "Removed obstacle and recovered %d currency" % refund)
+      
+      # Show UI feedback
+      if ui and ui.has_method("show_obstacle_removed"):
+        ui.show_obstacle_removed(refund)
+      
+      # Rebake navigation mesh after removal
+      rebake_navigation_mesh()
+    else:
+      Logger.info("Player", "Clicked object is not a removable obstacle")
+  else:
+    Logger.info("Player", "Right-click raycast did not hit anything")
+  
+  # Disable the obstacle raycast after use
+  obstacle_raycast.enabled = false
 
 
 func _on_obstacle_spawn_requested(obstacle: ObstacleTypeResource) -> void:

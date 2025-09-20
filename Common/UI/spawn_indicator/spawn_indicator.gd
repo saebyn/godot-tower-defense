@@ -92,3 +92,15 @@ func _simple_fade_animation() -> void:
   tween.tween_interval(notification_duration - 0.6)
   # Fade out
   tween.tween_property(self, "modulate:a", 0.0, 0.3)
+
+### Show a notification that an obstacle was removed
+func show_obstacle_removed(refund_amount: int) -> void:
+  if label:
+    label.text = "🗑️ Obstacle Removed!\n💰 Refund: %d currency" % refund_amount
+  
+  # Play fade in/out animation
+  if animation_player and animation_player.has_animation("spawn_notification"):
+    animation_player.play("spawn_notification")
+  else:
+    # Fallback: simple tween animation
+    _simple_fade_animation()

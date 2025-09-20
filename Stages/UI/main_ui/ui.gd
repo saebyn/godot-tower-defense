@@ -27,3 +27,8 @@ func _on_wave_started(wave: Wave, wave_number: int) -> void:
 func _on_wave_completed(wave: Wave, wave_number: int) -> void:
   if spawn_indicator and spawn_indicator.has_method("show_wave_completed"):
     spawn_indicator.show_wave_completed(wave, wave_number)
+
+## Called when an obstacle is removed to show removal feedback
+func show_obstacle_removed(refund_amount: int) -> void:
+  if spawn_indicator and spawn_indicator.has_method("show_obstacle_removed"):
+    spawn_indicator.show_obstacle_removed(refund_amount)
