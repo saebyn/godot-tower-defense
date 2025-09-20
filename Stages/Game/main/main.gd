@@ -114,8 +114,32 @@ func _input(event: InputEvent) -> void:
   if GameManager.current_state == GameManager.GameState.PAUSED:
     return
   
+  # Handle obstacle placement hotkeys
+  _handle_obstacle_hotkeys()
+  
   if event is InputEventMouseButton and not obstacle_placement.busy and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
     _handle_enemy_click(event.position)
+
+
+func _handle_obstacle_hotkeys() -> void:
+  # Check if obstacle hotkeys are enabled
+  if not ProjectSettings.get_setting("obstacle_hotkeys/enabled", true):
+    return
+  
+  # Get max hotkeys from settings
+  var max_hotkeys = ProjectSettings.get_setting("obstacle_hotkeys/max_hotkeys", 5)
+  
+  # Get available obstacles from the registry
+  var available_obstacles = ObstacleRegistry.available_obstacle_types
+  
+  # Check each hotkey
+  for i in range(min(max_hotkeys, available_obstacles.size())):
+    var hotkey_action = "place_obstacle_hotkey_%d" % (i + 1)
+    if Input.is_action_just_pressed(hotkey_action):
+      var obstacle_type = available_obstacles[i]
+      Logger.info("Input", "Hotkey %d pressed for obstacle: %s" % [i + 1, obstacle_type.name])
+      _on_obstacle_spawn_requested(obstacle_type)
+      break
 
 
 func _spawn_test_enemy():
