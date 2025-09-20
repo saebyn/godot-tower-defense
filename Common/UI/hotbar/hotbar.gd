@@ -15,9 +15,11 @@ signal obstacle_selected(obstacle: ObstacleTypeResource)
 @export var spacing: int = 8  # Spacing between slots
 
 @onready var slots_container: HBoxContainer = $SlotsContainer
+@onready var obstacle_selection_menu: PopupMenu = $ObstacleSelectionMenu
 
 var slot_obstacle_ids: Array[String] = []  # Obstacle IDs for each slot
 var slot_buttons: Array[Button] = []  # Button references for each slot
+var current_configuring_slot: int = -1  # Track which slot is being configured
 
 func _ready() -> void:
   _setup_ui()
@@ -110,7 +112,7 @@ func _update_slot_visual(slot_index: int) -> void:
   if obstacle:
     # Set button icon and tooltip
     button.icon = obstacle.icon if obstacle.icon else null
-    button.tooltip_text = "%s\nCost: %d\n%s\n\nLeft click: Select\nRight click: Change" % [obstacle.name, obstacle.cost, obstacle.description]
+    button.tooltip_text = "%s\nCost: %d\n%s\n\nLeft click: Select\nRight click: Choose different obstacle" % [obstacle.name, obstacle.cost, obstacle.description]
     button.disabled = false
     
     # Show cost and slot number on button
@@ -118,7 +120,7 @@ func _update_slot_visual(slot_index: int) -> void:
   else:
     # Empty slot
     button.icon = null
-    button.tooltip_text = "Empty slot %d\n\nRight click to assign obstacle" % (slot_index + 1)
+    button.tooltip_text = "Empty slot %d\n\nRight click to choose an obstacle" % (slot_index + 1)
     button.disabled = true
     button.text = str(slot_index + 1)
 
@@ -135,33 +137,73 @@ func _on_slot_gui_input(event: InputEvent, slot_index: int) -> void:
   """Handle GUI input for advanced slot interactions"""
   if event is InputEventMouseButton and event.pressed:
     if event.button_index == MOUSE_BUTTON_RIGHT:
-      _cycle_slot_obstacle(slot_index)
+      _show_obstacle_selection_menu(slot_index)
 
-func _cycle_slot_obstacle(slot_index: int) -> void:
-  """Cycle through available obstacles for a slot"""
-  if not ObstacleRegistry:
+func _show_obstacle_selection_menu(slot_index: int) -> void:
+  """Show popup menu with available obstacles for slot assignment"""
+  if not ObstacleRegistry or not obstacle_selection_menu:
     return
   
   var available = ObstacleRegistry.available_obstacle_types
   if available.is_empty():
     return
   
+  # Remember which slot we're configuring
+  current_configuring_slot = slot_index
+  
+  # Clear existing menu items
+  obstacle_selection_menu.clear()
+  
+  # Add "Clear Slot" option for non-empty slots
   var current_obstacle_id = slot_obstacle_ids[slot_index] if slot_index < slot_obstacle_ids.size() else ""
-  var current_index = -1
+  if not current_obstacle_id.is_empty():
+    obstacle_selection_menu.add_item("Clear Slot", -1)
+    obstacle_selection_menu.add_separator()
   
-  # Find current obstacle index in available list
+  # Add available obstacles to menu
   for i in range(available.size()):
-    if available[i].id == current_obstacle_id:
-      current_index = i
-      break
+    var obstacle = available[i]
+    var item_text = "%s ($%d)" % [obstacle.name, obstacle.cost]
+    obstacle_selection_menu.add_item(item_text, i)
+    
+    # Set icon if available
+    if obstacle.icon:
+      obstacle_selection_menu.set_item_icon(obstacle_selection_menu.get_item_count() - 1, obstacle.icon)
+    
+    # Highlight current selection
+    if obstacle.id == current_obstacle_id:
+      obstacle_selection_menu.set_item_disabled(obstacle_selection_menu.get_item_count() - 1, false)
+      # Mark as current selection in some way - could add checkmark or different styling
   
-  # Cycle to next obstacle
-  var next_index = (current_index + 1) % available.size()
-  var new_obstacle = available[next_index]
+  # Position menu near the clicked slot button
+  var button = slot_buttons[slot_index]
+  var button_global_rect = button.get_global_rect()
+  var menu_position = Vector2i(button_global_rect.position.x, button_global_rect.position.y + button_global_rect.size.y)
   
-  # Update slot
-  set_slot_obstacle(slot_index, new_obstacle)
-  Logger.info("Hotbar", "Changed slot %d to %s" % [slot_index + 1, new_obstacle.name])
+  # Show the popup menu
+  obstacle_selection_menu.popup_on_parent(Rect2i(menu_position, Vector2i(200, 0)))
+  
+  Logger.info("Hotbar", "Showing obstacle selection menu for slot %d" % (slot_index + 1))
+
+func _on_obstacle_menu_item_selected(id: int) -> void:
+  """Handle selection from the obstacle popup menu"""
+  if current_configuring_slot < 0:
+    return
+  
+  if id == -1:
+    # Clear slot option selected
+    set_slot_obstacle(current_configuring_slot, null)
+    Logger.info("Hotbar", "Cleared slot %d" % (current_configuring_slot + 1))
+  else:
+    # Obstacle selected
+    var available = ObstacleRegistry.available_obstacle_types
+    if id >= 0 and id < available.size():
+      var selected_obstacle = available[id]
+      set_slot_obstacle(current_configuring_slot, selected_obstacle)
+      Logger.info("Hotbar", "Assigned %s to slot %d" % [selected_obstacle.name, current_configuring_slot + 1])
+  
+  # Reset the configuring slot
+  current_configuring_slot = -1
 
 func set_slot_obstacle(slot_index: int, obstacle: ObstacleTypeResource) -> void:
   """Set an obstacle for a specific slot"""

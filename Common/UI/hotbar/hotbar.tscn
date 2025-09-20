@@ -10,3 +10,7 @@ script = ExtResource("1_hotbar")
 [node name="SlotsContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 0
+
+[node name="ObstacleSelectionMenu" type="PopupMenu" parent="."]
+
+[connection signal="id_pressed" from="ObstacleSelectionMenu" to="." method="_on_obstacle_menu_item_selected"]
