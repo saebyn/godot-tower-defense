@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://beq4rqyqagfx"]
+
+[ext_resource type="Script" path="res://Common/UI/hotbar/hotbar.gd" id="1_hotbar"]
+
+[node name="Hotbar" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_hotbar")
+
+[node name="SlotsContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 0
+
+[node name="ObstacleSelectionMenu" type="PopupMenu" parent="."]
+
+[connection signal="id_pressed" from="ObstacleSelectionMenu" to="." method="_on_obstacle_menu_item_selected"]
