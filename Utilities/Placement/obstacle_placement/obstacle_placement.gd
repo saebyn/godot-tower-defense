@@ -247,6 +247,10 @@ func _place_obstacle() -> void:
     # This should not happen due to prior validation, but just in case
     Logger.error("Placement", "Cannot place obstacle: Insufficient funds")
     return
+  
+  # Store obstacle type reference for potential removal
+  _placeable_obstacle.obstacle_type = _place_obstacle_type
+  
   _placeable_obstacle.place(navigation_region)
   rebake_navigation_mesh.emit()
   

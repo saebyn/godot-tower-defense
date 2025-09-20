@@ -4,6 +4,9 @@ class_name PlaceableObstacle
 @onready var mesh_instance: MeshInstance3D = $MeshInstance3D
 @onready var health: Health = $Health
 
+var obstacle_type: ObstacleTypeResource
+var navigation_obstacle: NavigationObstacle3D
+
 func _ready():
   # Connect health signals
   if health:
@@ -41,3 +44,34 @@ func place(navigation_region: NavigationRegion3D) -> void:
     ])
 
     navigation_region.add_child(obstacle)
+    navigation_obstacle = obstacle
+
+## Remove this obstacle and return currency based on remaining health
+func remove() -> int:
+  if not obstacle_type:
+    Logger.warn("Obstacle", "Cannot remove obstacle: No obstacle type data")
+    return 0
+  
+  # Calculate refund based on remaining health percentage
+  var health_percentage = 1.0
+  if health:
+    health_percentage = float(health.hitpoints) / float(health.max_hitpoints)
+  
+  # Refund is based on remaining health (damaged obstacles give less refund)
+  var refund_amount = int(obstacle_type.cost * health_percentage)
+  
+  Logger.info("Obstacle", "Removing obstacle. Health: %d%%, Refund: %d/%d" % [
+    health_percentage * 100, refund_amount, obstacle_type.cost
+  ])
+  
+  # Clean up navigation obstacle
+  if navigation_obstacle and is_instance_valid(navigation_obstacle):
+    navigation_obstacle.queue_free()
+  
+  # Return currency
+  CurrencyManager.earn_currency(refund_amount)
+  
+  # Remove from scene
+  queue_free()
+  
+  return refund_amount
