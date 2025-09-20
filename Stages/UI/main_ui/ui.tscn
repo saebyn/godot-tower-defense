@@ -43,5 +43,3 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [connection signal="obstacle_selected" from="Hotbar" to="." method="_on_hotbar_obstacle_selected"]
-
-

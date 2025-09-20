@@ -53,3 +53,9 @@ func die():
     health_display.queue_free()
   
   died.emit()
+
+
+func _exit_tree() -> void:
+  # Clean up health display if still present
+  if health_display and is_instance_valid(health_display):
+    health_display.queue_free()
