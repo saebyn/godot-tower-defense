@@ -23,6 +23,7 @@ var busy: bool:
   get:
     return _placeable_obstacle != null
 
+var _place_obstacle_type: ObstacleTypeResource = null
 var _placeable_obstacle: PlaceableObstacle = null
 var _valid_material: StandardMaterial3D
 var _invalid_material: StandardMaterial3D
@@ -73,15 +74,34 @@ func _input(event: InputEvent) -> void:
   if event is InputEventMouseMotion and busy:
     _project_placed_obstacle(event.position)
 
-# Placement validation functions
-func _is_placement_valid(target_position: Vector3) -> bool:
+
+func _validate_placement(target_position: Vector3) -> PlacementResult:
   if not _placeable_obstacle:
-    return false
-    
-  return (_is_within_navigation_region(target_position) and
-          not _has_obstacle_collision(target_position) and
-          _has_terrain_support(target_position) and
-          _has_sufficient_clearance(target_position))
+    return PlacementResult.new(false, PlacementResult.ValidationError.NO_PLACEABLE_OBSTACLE, "No obstacle selected for placement")
+  
+  if not _is_within_navigation_region(target_position):
+    return PlacementResult.new(false, PlacementResult.ValidationError.OUTSIDE_NAVIGATION_REGION, "Position outside navigation bounds")
+  
+  if _has_obstacle_collision(target_position):
+    return PlacementResult.new(false, PlacementResult.ValidationError.OBSTACLE_COLLISION, "Collision with existing obstacle")
+  
+  if not _has_terrain_support(target_position):
+    return PlacementResult.new(false, PlacementResult.ValidationError.NO_TERRAIN_SUPPORT, "No valid terrain support")
+  
+  if not _has_sufficient_clearance(target_position):
+    return PlacementResult.new(false, PlacementResult.ValidationError.INSUFFICIENT_CLEARANCE, "Insufficient clearance from other obstacles")
+
+  if CurrencyManager.get_currency() < _place_obstacle_type.cost:
+    return PlacementResult.new(false, PlacementResult.ValidationError.INSUFFICIENT_FUNDS, "Insufficient funds to place obstacle")
+  
+  return PlacementResult.new(true)
+
+func _is_placement_valid(target_position: Vector3) -> bool:
+  var result = _validate_placement(target_position)
+  # TODO enhance feedback to user
+  if not result.is_valid:
+    Logger.debug("Placement", "Invalid placement: %s" % result.error_message)
+  return result.is_valid
 
 func _is_within_navigation_region(target_position: Vector3) -> bool:
   if not navigation_region or not navigation_region.navigation_mesh:
@@ -177,6 +197,7 @@ func _has_sufficient_clearance(target_position: Vector3) -> bool:
 
 func _on_obstacle_spawn_requested(obstacle: ObstacleTypeResource) -> void:
   Logger.info("Placement", "Spawn obstacle button pressed")
+  _place_obstacle_type = obstacle
   _placeable_obstacle = obstacle.scene.instantiate()
   raycast.enabled = true
   add_child(_placeable_obstacle)
@@ -215,11 +236,16 @@ func _place_obstacle() -> void:
     else:
       # Clear any override material to use the default mesh material
       _placeable_obstacle.mesh_instance.set_surface_override_material(0, null)
-  
+
+  # Deduct cost
+  if not CurrencyManager.spend_currency(_place_obstacle_type.cost):
+    # This should not happen due to prior validation, but just in case
+    Logger.error("Placement", "Cannot place obstacle: Insufficient funds")
+    return
   _placeable_obstacle.place(navigation_region)
   rebake_navigation_mesh.emit()
-  _placeable_obstacle = null
-  raycast.enabled = false
+  
+  _clear_obstacle_placement()
 
 func _cancel_obstacle_placement() -> void:
   # Restore original material before freeing if possible
@@ -228,9 +254,13 @@ func _cancel_obstacle_placement() -> void:
       _placeable_obstacle.mesh_instance.set_surface_override_material(0, _original_material)
     else:
       _placeable_obstacle.mesh_instance.set_surface_override_material(0, null)
-  
+
   _placeable_obstacle.queue_free()
+  _clear_obstacle_placement()
+  
+func _clear_obstacle_placement() -> void:
   _placeable_obstacle = null
+  _place_obstacle_type = null
   raycast.enabled = false
 
 func _update_visual_feedback(target_position: Vector3) -> void:
