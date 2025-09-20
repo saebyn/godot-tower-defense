@@ -9,8 +9,10 @@ enum GameState {
 }
 
 var current_state: GameState = GameState.PLAYING
+var current_speed_multiplier: float = 1.0
 
 signal game_state_changed(new_state: GameState)
+signal speed_changed(new_speed: float)
 
 func set_game_state(new_state: GameState):
     if current_state != new_state:
@@ -25,3 +27,13 @@ func pause_game():
 func resume_game():
     set_game_state(GameState.PLAYING)
     get_tree().paused = false
+
+func set_game_speed(speed_multiplier: float):
+    if speed_multiplier != current_speed_multiplier:
+        current_speed_multiplier = speed_multiplier
+        Engine.time_scale = speed_multiplier
+        speed_changed.emit(speed_multiplier)
+        Logger.info("GameManager", "Game speed changed to: %.1fx" % speed_multiplier)
+
+func get_game_speed() -> float:
+    return current_speed_multiplier
