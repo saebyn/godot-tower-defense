@@ -195,6 +195,10 @@ func _handle_obstacle_remove_click(click_position: Vector2):
       var refund = obstacle.remove()
       Logger.info("Player", "Removed obstacle and recovered %d currency" % refund)
       
+      # Show UI feedback
+      if ui and ui.has_method("show_obstacle_removed"):
+        ui.show_obstacle_removed(refund)
+      
       # Rebake navigation mesh after removal
       rebake_navigation_mesh()
     else:
