@@ -1,39 +1,46 @@
-extends Node3D
-class_name ObstacleSlotManager
+extends Node
+# Global obstacle slot manager singleton
 
 signal slot_selection_changed(selected_slot: ObstacleSlot)
 signal navigation_mesh_update_requested
-
-@export_group("Slot Management")
-@export var auto_detect_slots: bool = true
-@export var slot_scenes: Array[PackedScene] = []
-
-@export_group("Obstacle Types")
-@export var available_obstacle_types: Dictionary = {}
 
 @export_group("Node References")
 @export var navigation_region: NavigationRegion3D
 
 var obstacle_slots: Array[ObstacleSlot] = []
 var selected_slot: ObstacleSlot = null
+var obstacle_registry: ObstacleRegistry = null
 
 func _ready():
-  if auto_detect_slots:
-    _detect_slots()
+  # Create obstacle registry
+  obstacle_registry = ObstacleRegistry.new()
+  add_child(obstacle_registry)
   
-  # Connect to all slot signals
-  for slot in obstacle_slots:
-    _connect_slot_signals(slot)
+  # Connect to registry signals
+  obstacle_registry.obstacle_types_loaded.connect(_on_obstacle_types_loaded)
+  
+  Logger.info("ObstacleSlotManager", "Autoload slot manager initialized")
 
-func _detect_slots():
-  obstacle_slots.clear()
+func _on_obstacle_types_loaded():
+  Logger.info("ObstacleSlotManager", "Obstacle types loaded: %d types available" % obstacle_registry.get_obstacle_count())
+
+func register_slot_container(container: Node3D):
+  """Register a container node that contains obstacle slots"""
+  if not container:
+    Logger.error("ObstacleSlotManager", "Cannot register null container")
+    return
   
-  # Find all ObstacleSlot children
-  for child in get_children():
+  # Find all ObstacleSlot children in the container
+  _detect_slots_in_container(container)
+  Logger.info("ObstacleSlotManager", "Registered slot container with %d slots" % obstacle_slots.size())
+
+func _detect_slots_in_container(container: Node):
+  # Find all ObstacleSlot children recursively
+  for child in container.get_children():
     if child is ObstacleSlot:
-      obstacle_slots.append(child)
-  
-  Logger.info("ObstacleSlotManager", "Detected %d obstacle slots" % obstacle_slots.size())
+      add_slot(child)
+    else:
+      _detect_slots_in_container(child)
 
 func _connect_slot_signals(slot: ObstacleSlot):
   if not slot.slot_clicked.is_connected(_on_slot_clicked):
@@ -78,12 +85,12 @@ func set_obstacle_in_slot(slot_id: String, obstacle_type: String) -> bool:
     slot.clear_obstacle()
     return true
   
-  if obstacle_type not in available_obstacle_types:
+  if not obstacle_registry.has_obstacle_type(obstacle_type):
     Logger.error("ObstacleSlotManager", "Obstacle type '%s' not available" % obstacle_type)
     return false
   
-  var obstacle_scene = available_obstacle_types[obstacle_type] as PackedScene
-  return slot.set_obstacle_type(obstacle_type, obstacle_scene)
+  var obstacle_resource = obstacle_registry.get_obstacle_type(obstacle_type)
+  return slot.set_obstacle_type(obstacle_type, obstacle_resource.scene)
 
 func clear_all_slots():
   for slot in obstacle_slots:
@@ -156,16 +163,15 @@ func _rebake_navigation_mesh():
   navigation_region.bake_navigation_mesh()
 
 func add_obstacle_type(type_name: String, scene: PackedScene):
-  available_obstacle_types[type_name] = scene
-  Logger.info("ObstacleSlotManager", "Added obstacle type '%s'" % type_name)
+  Logger.warn("ObstacleSlotManager", "add_obstacle_type is deprecated. Use ObstacleRegistry resources instead.")
 
 func remove_obstacle_type(type_name: String):
-  if type_name in available_obstacle_types:
-    available_obstacle_types.erase(type_name)
-    Logger.info("ObstacleSlotManager", "Removed obstacle type '%s'" % type_name)
+  Logger.warn("ObstacleSlotManager", "remove_obstacle_type is deprecated. Use ObstacleRegistry resources instead.")
 
 func get_available_obstacle_types() -> Array[String]:
-  var types: Array[String] = []
-  for key in available_obstacle_types.keys():
-    types.append(key)
-  return types
+  if obstacle_registry:
+    return obstacle_registry.get_available_obstacle_ids()
+  return []
+
+func get_obstacle_registry() -> ObstacleRegistry:
+  return obstacle_registry

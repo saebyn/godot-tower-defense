@@ -1,0 +1,14 @@
+[gd_resource type="ObstacleTypeResource" script_class="ObstacleTypeResource" load_steps=3 format=3 uid="uid://b0c9krl77p2nr"]
+
+[ext_resource type="Script" path="res://Config/Obstacles/obstacle_type_resource.gd" id="1_basic"]
+[ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://Entities/Obstacles/Templates/base_obstacle/obstacle.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_basic")
+id = "basic"
+display_name = "Basic Obstacle"
+description = "A simple wall obstacle that blocks enemy movement."
+scene = ExtResource("2_scene")
+cost = 10
+category = "defensive"
+unlock_level = 1

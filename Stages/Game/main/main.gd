@@ -20,7 +20,7 @@ extends Node3D
 @onready var enemy_spawner: EnemySpawner = $EnemySpawner
 
 @onready var obstacle_placement: ObstaclePlacement = $ObstaclePlacement
-@onready var obstacle_slot_manager: ObstacleSlotManager = $ObstacleSlotManager
+@onready var slots_container: Node3D = $ObstacleSlots
 
 var zoom_tween: Tween
 
@@ -30,22 +30,16 @@ func _ready() -> void:
   _setup_obstacle_slot_manager()
 
 func _setup_obstacle_slot_manager():
-  if not obstacle_slot_manager:
-    return
+  # Set navigation region reference on the autoloaded slot manager
+  ObstacleSlotManager.navigation_region = navigation_region
   
-  # Set navigation region reference
-  obstacle_slot_manager.navigation_region = navigation_region
-  
-  # Add available obstacle types
-  var base_obstacle_scene = preload("res://Entities/Obstacles/Templates/base_obstacle/obstacle.tscn")
-  var shooting_obstacle_scene = preload("res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.tscn")
-  
-  obstacle_slot_manager.add_obstacle_type("basic", base_obstacle_scene)
-  obstacle_slot_manager.add_obstacle_type("turret", shooting_obstacle_scene)
+  # Register our slots container with the slot manager
+  if slots_container:
+    ObstacleSlotManager.register_slot_container(slots_container)
   
   # Connect the UI to the slot manager
   if ui and ui.has_method("setup_slot_ui"):
-    ui.setup_slot_ui(obstacle_slot_manager)
+    ui.setup_slot_ui(ObstacleSlotManager)
   
   Logger.info("Main", "Obstacle slot manager setup complete")
 
@@ -59,8 +53,8 @@ func _connect_signals() -> void:
     print("Warning: enemy_spawner or ui not available for signal connection")
   
   # Connect obstacle slot manager signals
-  if obstacle_slot_manager:
-    obstacle_slot_manager.navigation_mesh_update_requested.connect(rebake_navigation_mesh)
+  if ObstacleSlotManager:
+    ObstacleSlotManager.navigation_mesh_update_requested.connect(rebake_navigation_mesh)
     print("Connected obstacle slot manager signals")
 
 func _on_wave_started(wave: Wave) -> void:

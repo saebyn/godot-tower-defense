@@ -47,12 +47,19 @@ func _update_obstacle_buttons():
   clear_button.pressed.connect(_on_clear_pressed)
   obstacle_buttons_container.add_child(clear_button)
   
+  # Get obstacle registry from slot manager
+  var registry = slot_manager.get_obstacle_registry()
+  if not registry:
+    return
+  
   # Create buttons for each available obstacle type
-  for obstacle_type in slot_manager.get_available_obstacle_types():
+  for obstacle_resource in registry.get_all_obstacle_types():
     var button = Button.new()
-    button.text = obstacle_type.capitalize()
-    button.pressed.connect(_on_obstacle_button_pressed.bind(obstacle_type))
-    obstacle_buttons[obstacle_type] = button
+    button.text = obstacle_resource.display_name
+    if obstacle_resource.cost > 0:
+      button.text += " ($%d)" % obstacle_resource.cost
+    button.pressed.connect(_on_obstacle_button_pressed.bind(obstacle_resource.id))
+    obstacle_buttons[obstacle_resource.id] = button
     obstacle_buttons_container.add_child(button)
 
 func _on_slot_selection_changed(selected_slot: ObstacleSlot):
@@ -77,7 +84,16 @@ func _update_slot_info():
     if obstacle_type.is_empty():
       obstacle_type_label.text = "Type: Empty"
     else:
-      obstacle_type_label.text = "Type: " + obstacle_type.capitalize()
+      # Get display name from registry
+      var registry = slot_manager.get_obstacle_registry()
+      if registry:
+        var resource = registry.get_obstacle_type(obstacle_type)
+        if resource:
+          obstacle_type_label.text = "Type: " + resource.display_name
+        else:
+          obstacle_type_label.text = "Type: " + obstacle_type.capitalize()
+      else:
+        obstacle_type_label.text = "Type: " + obstacle_type.capitalize()
 
 func _update_button_states():
   if not current_slot:

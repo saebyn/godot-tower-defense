@@ -1,0 +1,14 @@
+[gd_resource type="ObstacleTypeResource" script_class="ObstacleTypeResource" load_steps=3 format=3 uid="uid://c1d9krl77p2ns"]
+
+[ext_resource type="Script" path="res://Config/Obstacles/obstacle_type_resource.gd" id="1_turret"]
+[ext_resource type="PackedScene" uid="uid://bv0wqhjwkqy1f" path="res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_turret")
+id = "turret"
+display_name = "Turret"
+description = "An automated turret that attacks nearby enemies."
+scene = ExtResource("2_scene")
+cost = 25
+category = "offensive"
+unlock_level = 2
