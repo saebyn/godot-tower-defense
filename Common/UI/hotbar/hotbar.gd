@@ -3,6 +3,7 @@ Hotbar.gd
 
 A dynamic hotbar component that displays available obstacle types and allows quick access.
 Supports both mouse clicks and keyboard shortcuts for obstacle selection.
+Includes configuration capabilities to change which obstacles are in which slots.
 """
 extends Control
 class_name Hotbar
@@ -15,7 +16,7 @@ signal obstacle_selected(obstacle: ObstacleTypeResource)
 
 @onready var slots_container: HBoxContainer = $SlotsContainer
 
-var hotbar_slots: Array[ObstacleTypeResource] = []  # Current obstacles in hotbar
+var slot_obstacle_ids: Array[String] = []  # Obstacle IDs for each slot
 var slot_buttons: Array[Button] = []  # Button references for each slot
 
 func _ready() -> void:
@@ -50,11 +51,9 @@ func _create_slots() -> void:
     slot_button.expand_icon = true
     slot_button.flat = false
     
-    # Add slot number as text overlay
-    slot_button.text = str(i + 1)
-    
-    # Connect button signal
+    # Connect button signals for both left and right click
     slot_button.pressed.connect(_on_slot_pressed.bind(i))
+    slot_button.gui_input.connect(_on_slot_gui_input.bind(i))
     
     slots_container.add_child(slot_button)
     slot_buttons.append(slot_button)
@@ -65,57 +64,121 @@ func _connect_signals() -> void:
     ObstacleRegistry.obstacle_types_updated.connect(_on_obstacle_types_updated)
 
 func _populate_default_hotbar() -> void:
-  # Populate with available obstacles from registry
+  """Populate hotbar with default obstacles from registry"""
+  Logger.info("Hotbar", "Populating hotbar with default obstacles")
+  
+  # Initialize the slot_obstacle_ids array
+  slot_obstacle_ids.clear()
+  
   if ObstacleRegistry:
     var available = ObstacleRegistry.available_obstacle_types
-    for i in range(min(available.size(), max_slots)):
-      set_slot_obstacle(i, available[i])
+    for i in range(max_slots):
+      if i < available.size():
+        slot_obstacle_ids.append(available[i].id)
+        Logger.info("Hotbar", "Setting slot %d to %s" % [i, available[i].name])
+      else:
+        slot_obstacle_ids.append("")  # Empty slot
+  else:
+    # Fill with empty slots if registry not available
+    for i in range(max_slots):
+      slot_obstacle_ids.append("")
+  
+  # Update all slot visuals
+  for i in range(max_slots):
+    _update_slot_visual(i)
 
-func set_slot_obstacle(slot_index: int, obstacle: ObstacleTypeResource) -> void:
-  if slot_index < 0 or slot_index >= max_slots:
-    Logger.warn("Hotbar", "Invalid slot index: %d" % slot_index)
-    return
+func _get_obstacle_by_id(obstacle_id: String) -> ObstacleTypeResource:
+  """Get obstacle resource by ID from the registry"""
+  if obstacle_id.is_empty() or not ObstacleRegistry:
+    return null
   
-  # Ensure hotbar_slots array is large enough
-  while hotbar_slots.size() <= slot_index:
-    hotbar_slots.append(null)
+  for obstacle in ObstacleRegistry.available_obstacle_types:
+    if obstacle.id == obstacle_id:
+      return obstacle
   
-  # Set the obstacle in the slot
-  hotbar_slots[slot_index] = obstacle
-  
-  # Update the visual representation
-  _update_slot_visual(slot_index)
+  return null
 
 func _update_slot_visual(slot_index: int) -> void:
-  if slot_index >= slot_buttons.size():
+  """Update the visual representation of a slot"""
+  if slot_index >= slot_buttons.size() or slot_index >= slot_obstacle_ids.size():
     return
   
   var button = slot_buttons[slot_index]
-  var obstacle = hotbar_slots[slot_index] if slot_index < hotbar_slots.size() else null
+  var obstacle_id = slot_obstacle_ids[slot_index]
+  var obstacle = _get_obstacle_by_id(obstacle_id)
   
   if obstacle:
     # Set button icon and tooltip
     button.icon = obstacle.icon if obstacle.icon else null
-    button.tooltip_text = "%s\nCost: %d\n%s" % [obstacle.name, obstacle.cost, obstacle.description]
+    button.tooltip_text = "%s\nCost: %d\n%s\n\nLeft click: Select\nRight click: Change" % [obstacle.name, obstacle.cost, obstacle.description]
     button.disabled = false
     
-    # Show cost on button
+    # Show cost and slot number on button
     button.text = "%d\n$%d" % [slot_index + 1, obstacle.cost]
   else:
     # Empty slot
     button.icon = null
-    button.tooltip_text = "Empty slot %d" % (slot_index + 1)
+    button.tooltip_text = "Empty slot %d\n\nRight click to assign obstacle" % (slot_index + 1)
     button.disabled = true
     button.text = str(slot_index + 1)
 
 func _on_slot_pressed(slot_index: int) -> void:
-  if slot_index >= hotbar_slots.size():
-    return
+  """Handle left click on slot - select obstacle for placement"""
+  var obstacle_id = slot_obstacle_ids[slot_index] if slot_index < slot_obstacle_ids.size() else ""
+  var obstacle = _get_obstacle_by_id(obstacle_id)
   
-  var obstacle = hotbar_slots[slot_index]
   if obstacle:
     Logger.info("Hotbar", "Selected obstacle: %s from slot %d" % [obstacle.name, slot_index + 1])
     obstacle_selected.emit(obstacle)
+
+func _on_slot_gui_input(event: InputEvent, slot_index: int) -> void:
+  """Handle GUI input for advanced slot interactions"""
+  if event is InputEventMouseButton and event.pressed:
+    if event.button_index == MOUSE_BUTTON_RIGHT:
+      _cycle_slot_obstacle(slot_index)
+
+func _cycle_slot_obstacle(slot_index: int) -> void:
+  """Cycle through available obstacles for a slot"""
+  if not ObstacleRegistry:
+    return
+  
+  var available = ObstacleRegistry.available_obstacle_types
+  if available.is_empty():
+    return
+  
+  var current_obstacle_id = slot_obstacle_ids[slot_index] if slot_index < slot_obstacle_ids.size() else ""
+  var current_index = -1
+  
+  # Find current obstacle index in available list
+  for i in range(available.size()):
+    if available[i].id == current_obstacle_id:
+      current_index = i
+      break
+  
+  # Cycle to next obstacle
+  var next_index = (current_index + 1) % available.size()
+  var new_obstacle = available[next_index]
+  
+  # Update slot
+  set_slot_obstacle(slot_index, new_obstacle)
+  Logger.info("Hotbar", "Changed slot %d to %s" % [slot_index + 1, new_obstacle.name])
+
+func set_slot_obstacle(slot_index: int, obstacle: ObstacleTypeResource) -> void:
+  """Set an obstacle for a specific slot"""
+  if slot_index < 0 or slot_index >= max_slots:
+    Logger.warn("Hotbar", "Invalid slot index: %d" % slot_index)
+    return
+  
+  # Ensure array is large enough
+  while slot_obstacle_ids.size() <= slot_index:
+    slot_obstacle_ids.append("")
+  
+  # Set the obstacle ID
+  var obstacle_id = obstacle.id if obstacle else ""
+  slot_obstacle_ids[slot_index] = obstacle_id
+  
+  # Update visual
+  _update_slot_visual(slot_index)
 
 func _input(event: InputEvent) -> void:
   # Handle keyboard shortcuts for hotbar slots (1-6)
@@ -136,23 +199,24 @@ func _input(event: InputEvent) -> void:
     elif Input.is_action_just_pressed("hotbar_slot_6"):
       slot_index = 5
     
-    if slot_index >= 0 and slot_index < hotbar_slots.size():
+    if slot_index >= 0:
       _on_slot_pressed(slot_index)
 
 func _on_obstacle_types_updated(added_types: Array[ObstacleTypeResource], removed_types: Array[ObstacleTypeResource]) -> void:
   Logger.info("Hotbar", "Obstacle types updated. Added: %d, Removed: %d" % [added_types.size(), removed_types.size()])
   
-  # For now, just repopulate the hotbar with available types
-  # In the future, this could be smarter about preserving user configuration
-  _populate_default_hotbar()
+  # Update visuals for all slots to reflect changes
+  for i in range(max_slots):
+    _update_slot_visual(i)
 
 func get_slot_obstacle(slot_index: int) -> ObstacleTypeResource:
-  if slot_index >= 0 and slot_index < hotbar_slots.size():
-    return hotbar_slots[slot_index]
-  return null
+  """Get the obstacle for a specific slot"""
+  if slot_index < 0 or slot_index >= slot_obstacle_ids.size():
+    return null
+  
+  var obstacle_id = slot_obstacle_ids[slot_index]
+  return _get_obstacle_by_id(obstacle_id)
 
 func clear_slot(slot_index: int) -> void:
+  """Clear a specific slot"""
   set_slot_obstacle(slot_index, null)
-
-func get_all_slots() -> Array[ObstacleTypeResource]:
-  return hotbar_slots.duplicate()
