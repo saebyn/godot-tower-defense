@@ -187,11 +187,12 @@ func _handle_obstacle_remove_click(click_position: Vector2):
   
   if obstacle_raycast.is_colliding():
     var collider = obstacle_raycast.get_collider()
-    Logger.debug("Player", "Right-clicked on: %s" % collider.name)
+    Logger.info("Player", "Right-clicked on: %s (type: %s)" % [collider.name, collider.get_class()])
     
     # Check if the collider is a PlaceableObstacle
     if collider is PlaceableObstacle:
       var obstacle = collider as PlaceableObstacle
+      Logger.info("Player", "Confirmed PlaceableObstacle, calling remove()")
       var refund = obstacle.remove()
       Logger.info("Player", "Removed obstacle and recovered %d currency" % refund)
       
@@ -202,7 +203,9 @@ func _handle_obstacle_remove_click(click_position: Vector2):
       # Rebake navigation mesh after removal
       rebake_navigation_mesh()
     else:
-      Logger.debug("Player", "Clicked object is not a removable obstacle")
+      Logger.info("Player", "Clicked object is not a removable obstacle")
+  else:
+    Logger.info("Player", "Right-click raycast did not hit anything")
   
   # Disable the obstacle raycast after use
   obstacle_raycast.enabled = false
