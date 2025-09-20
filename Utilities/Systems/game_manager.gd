@@ -29,16 +29,13 @@ func pause_game():
 func resume_game():
     set_game_state(GameState.PLAYING)
     get_tree().paused = false
-    # Restore the current speed when resuming
-    Engine.time_scale = current_speed_multiplier
+    set_game_speed(1.0) # Resume to normal speed
 
 func set_game_speed(speed_multiplier: float):
     if speed_multiplier != current_speed_multiplier:
         current_speed_multiplier = speed_multiplier
-        # Only apply speed change if not paused
-        if current_state != GameState.PAUSED:
-            Engine.time_scale = speed_multiplier
         speed_changed.emit(speed_multiplier)
+        Engine.time_scale = speed_multiplier
         Logger.info("GameManager", "Game speed changed to: %.1fx" % speed_multiplier)
 
 func get_game_speed() -> float:
