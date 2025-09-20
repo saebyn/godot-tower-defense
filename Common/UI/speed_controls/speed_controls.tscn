@@ -1,0 +1,41 @@
+[gd_scene load_steps=2 format=3 uid="uid://cn0m5y7tgw2pe"]
+
+[ext_resource type="Script" path="res://Common/UI/speed_controls/speed_controls.gd" id="1_speed_controls"]
+
+[node name="SpeedControls" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_speed_controls")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PauseButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+text = "⏸️"
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="Speed1xButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = null
+text = "1x"
+
+[node name="Speed2xButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = null
+text = "2x"
+
+[node name="Speed4xButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = null
+text = "4x"
