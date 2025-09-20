@@ -50,6 +50,17 @@ func place(navigation_region: NavigationRegion3D) -> void:
 ## Remove this obstacle and return currency based on remaining health
 func remove() -> int:
   Logger.info("Obstacle", "Attempting to remove obstacle. obstacle_type: %s" % ("null" if not obstacle_type else obstacle_type.name))
+  
+  # If obstacle_type is null, try to find it by matching the scene
+  if not obstacle_type and ObstacleRegistry:
+    Logger.info("Obstacle", "obstacle_type is null, attempting to find it in registry...")
+    var scene_path = scene_file_path
+    for obstacle_resource in ObstacleRegistry.available_obstacle_types:
+      if obstacle_resource.scene and obstacle_resource.scene.resource_path == scene_path:
+        obstacle_type = obstacle_resource
+        Logger.info("Obstacle", "Found matching obstacle_type: %s" % obstacle_type.name)
+        break
+  
   if not obstacle_type:
     Logger.warn("Obstacle", "Cannot remove obstacle: No obstacle type data")
     return 0
