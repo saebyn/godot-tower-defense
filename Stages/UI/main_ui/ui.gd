@@ -5,12 +5,9 @@ signal obstacle_spawn_requested(obstacle: ObstacleTypeResource)
 @onready var spawn_indicator: Control = $SpawnIndicator
 @onready var hotbar: Control = $Hotbar
 
-func _on_hotbar_obstacle_selected(obstacle: ObstacleTypeResource) -> void:
-  """Handle obstacle selection from hotbar"""
-  Logger.info("UI", "Hotbar obstacle selected: %s" % obstacle.name)
-  obstacle_spawn_requested.emit(obstacle)
 
 func request_obstacle_spawn(obstacle: ObstacleTypeResource) -> void:
+  Logger.info("UI", "Requesting obstacle spawn: %s" % obstacle.name)
   obstacle_spawn_requested.emit(obstacle)
 
 ## Called when an enemy spawns to show the spawn indicator (legacy)

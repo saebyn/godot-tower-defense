@@ -196,7 +196,12 @@ func _has_sufficient_clearance(target_position: Vector3) -> bool:
   return true
 
 func _on_obstacle_spawn_requested(obstacle: ObstacleTypeResource) -> void:
-  Logger.info("Placement", "Spawn obstacle button pressed")
+  Logger.debug("Placement", "Spawn obstacle button pressed")
+
+  if busy:
+    Logger.info("Placement", "Already placing an obstacle, cancelling previous placement")
+    _cancel_obstacle_placement()
+
   _place_obstacle_type = obstacle
   _placeable_obstacle = obstacle.scene.instantiate()
   raycast.enabled = true
@@ -248,13 +253,6 @@ func _place_obstacle() -> void:
   _clear_obstacle_placement()
 
 func _cancel_obstacle_placement() -> void:
-  # Restore original material before freeing if possible
-  if _placeable_obstacle and _placeable_obstacle.mesh_instance:
-    if _original_material:
-      _placeable_obstacle.mesh_instance.set_surface_override_material(0, _original_material)
-    else:
-      _placeable_obstacle.mesh_instance.set_surface_override_material(0, null)
-
   _placeable_obstacle.queue_free()
   _clear_obstacle_placement()
   
