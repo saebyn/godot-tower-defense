@@ -135,14 +135,14 @@ Access these systems from anywhere in the codebase:
 ```gdscript
 Logger.info("System", "Message")
 CurrencyManager.earn_currency(10)
-GameManager.set_game_state(GameManager.GameState.PAUSED)
+GameManager.set_game_state(GameManager.GameState.IN_GAME_MENU)
 ```
 
 ### GameManager Features
 The GameManager is currently in its initial implementation phase with basic game state management:
 
 **Current Features**:
-- Game state enumeration (MAIN_MENU, PLAYING, PAUSED, GAME_OVER, VICTORY)
+- Game state enumeration (MAIN_MENU, PLAYING, IN_GAME_MENU, GAME_OVER, VICTORY)
 - State transition management with logging
 - Pause/resume game functionality
 - State change signal emission for UI and system coordination
@@ -166,7 +166,7 @@ func _ready():
 
 func _on_game_state_changed(new_state: GameManager.GameState):
   match new_state:
-    GameManager.GameState.PAUSED:
+    GameManager.GameState.IN_GAME_MENU:
       # Handle pause
       pass
     GameManager.GameState.PLAYING:

@@ -19,7 +19,7 @@ func _ready():
 
 func _on_game_state_changed(new_state: GameManager.GameState):
   match new_state:
-    GameManager.GameState.PAUSED:
+    GameManager.GameState.IN_GAME_MENU:
       show_menu()
     GameManager.GameState.PLAYING:
       hide_menu()

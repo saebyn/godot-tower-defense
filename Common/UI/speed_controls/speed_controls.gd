@@ -63,7 +63,7 @@ func _update_button_states() -> void:
   # Update speed button states
   var current_speed = GameManager.get_game_speed()
   if pause_button:
-    if current_speed == 0.0:
+    if GameManager.is_paused():
       pause_button.text = "▶️"
       pause_button.tooltip_text = "Resume Game"
     else:
@@ -75,7 +75,7 @@ func _update_button_states() -> void:
       button.button_pressed = false
   
   # Highlight the current speed button
-  if current_speed == 0.0 and pause_button:
+  if pause_button and GameManager.is_paused():
     pause_button.button_pressed = true
   elif current_speed == 1.0 and speed_1x_button:
     speed_1x_button.button_pressed = true
@@ -85,10 +85,7 @@ func _update_button_states() -> void:
     speed_4x_button.button_pressed = true
 
 func _on_pause_pressed() -> void:
-  if GameManager.get_game_speed() > 0.0:
-    GameManager.set_game_speed(0.0)
-  else:
-    GameManager.set_game_speed(1.0)
+  GameManager.toggle_pause()
 
 func _on_speed_1x_pressed() -> void:
   GameManager.set_game_speed(1.0)

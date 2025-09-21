@@ -47,7 +47,7 @@ func choose_target():
 func find_nearest_obstacle_in_range() -> Node3D:
   var obstacles := get_tree().get_nodes_in_group(obstacle_group)
   var nearest_obstacle: Node3D = null
-  var nearest_distance: float = obstacle_attack_range + 1.0  # Start beyond max range
+  var nearest_distance: float = obstacle_attack_range + 1.0 # Start beyond max range
   
   for obstacle in obstacles:
     if not obstacle or not is_instance_valid(obstacle):
@@ -101,10 +101,8 @@ func _process(_delta: float) -> void:
 
   # play animation based on movement speed
   if velocity.length() > 0.1:
-    Logger.debug("Enemy.Animation", "Playing Run animation")
     animation_player.play("Run")
   else:
-    Logger.debug("Enemy.Animation", "Playing Idle animation")
     animation_player.play("Idle")
 
 

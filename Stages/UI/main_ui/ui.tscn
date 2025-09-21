@@ -35,6 +35,7 @@ offset_bottom = 40.0
 grow_horizontal = 0
 
 [node name="Hotbar" parent="." instance=ExtResource("7_hotbar")]
+process_mode = 1
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0

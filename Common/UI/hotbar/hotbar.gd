@@ -114,6 +114,7 @@ func _update_slot_visual(slot_index: int) -> void:
     button.icon = obstacle.icon if obstacle.icon else null
     button.tooltip_text = "%s\nCost: %d\n%s\n\nLeft click: Select\nRight click: Choose different obstacle" % [obstacle.name, obstacle.cost, obstacle.description]
     button.disabled = false
+    button.focus_mode = Control.FOCUS_NONE
     
     # Show cost and slot number on button
     button.text = "%d\n$%d" % [slot_index + 1, obstacle.cost]
