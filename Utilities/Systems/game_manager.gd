@@ -58,4 +58,5 @@ func toggle_in_game_menu():
     if current_state == GameState.IN_GAME_MENU:
         set_game_state(GameState.PLAYING)
     elif current_state == GameState.PLAYING:
+        pause_game()
         set_game_state(GameState.IN_GAME_MENU)

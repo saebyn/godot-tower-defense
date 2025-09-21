@@ -1400,6 +1400,6 @@ libraries = {
 }
 autoplay = "Idle"
 
-[connection signal="damaged" from="Health" to="ShakeEffect" method="damage_taken"]
 [connection signal="damaged" from="Health" to="." method="_on_health_damaged"]
+[connection signal="damaged" from="Health" to="ShakeEffect" method="damage_taken"]
 [connection signal="died" from="Health" to="." method="_on_died"]

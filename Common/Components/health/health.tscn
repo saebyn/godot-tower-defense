@@ -1,6 +1,55 @@
-[gd_scene load_steps=2 format=3 uid="uid://cxtvhj0yxxp2n"]
+[gd_scene load_steps=3 format=3 uid="uid://cxtvhj0yxxp2n"]
 
 [ext_resource type="Script" uid="uid://8vy5ppuqviln" path="res://Common/Components/health/health.gd" id="1_ledv5"]
 
-[node name="Health" type="Node"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_1e8io"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
+
+[node name="Health" type="Node3D"]
 script = ExtResource("1_ledv5")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.86329, 0)
+billboard = 1
+texture_filter = 0
+texture = SubResource("ViewportTexture_1e8io")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+visible = false
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+canvas_cull_mask = 4293918721
+size = Vector2i(200, 100)
+render_target_update_mode = 4
+
+[node name="Background" type="NinePatchRect" parent="SubViewportContainer/SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewportContainer/SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HealthBar" type="ProgressBar" parent="SubViewportContainer/SubViewport/VBoxContainer"]
+layout_mode = 2
+step = 1.0
+value = 100.0
+show_percentage = false
+
+[node name="HealthLabel" type="Label" parent="SubViewportContainer/SubViewport/VBoxContainer"]
+layout_mode = 2
+text = "xxx/xxx"
+horizontal_alignment = 1
+vertical_alignment = 1
