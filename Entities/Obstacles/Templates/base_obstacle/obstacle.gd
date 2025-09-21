@@ -42,12 +42,16 @@ func _update_collision_state() -> void:
     # Disable collisions during placement
     collision_layer = 0
     collision_mask = 0
-    Logger.debug("Obstacle", "Disabled collisions for placement mode")
+    # Remove from obstacles group so enemies won't target this obstacle during placement
+    remove_from_group("obstacles")
+    Logger.debug("Obstacle", "Disabled collisions and enemy targeting for placement mode")
   else:
     # Restore original collision settings
     collision_layer = _original_collision_layer
     collision_mask = _original_collision_mask
-    Logger.debug("Obstacle", "Restored collisions after placement")
+    # Add back to obstacles group so enemies can target this obstacle
+    add_to_group("obstacles")
+    Logger.debug("Obstacle", "Restored collisions and enemy targeting after placement")
 
 # Set the obstacle to placement mode (disables collisions)
 func enter_placement_mode() -> void:
