@@ -208,6 +208,10 @@ func _on_obstacle_spawn_requested(obstacle: ObstacleTypeResource) -> void:
   raycast.enabled = true
   add_child(_placeable_obstacle)
   
+  # Enable placement mode to disable collisions
+  _placeable_obstacle.enter_placement_mode()
+  Logger.info("Placement", "Enabled placement mode - collisions disabled")
+  
   # Store original material for restoration
   if _placeable_obstacle.mesh_instance:
     _original_material = _placeable_obstacle.mesh_instance.get_surface_override_material(0)
