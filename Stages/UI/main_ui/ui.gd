@@ -10,11 +10,9 @@ func _process(_delta: float) -> void:
   # Handle pause toggle (ESC key)
   if Input.is_action_just_pressed("toggle_pause"):
     GameManager.toggle_pause()
-    return
-
-  if Input.is_action_just_pressed("toggle_in_game_menu"):
+  elif Input.is_action_just_pressed("toggle_in_game_menu"):
     GameManager.toggle_in_game_menu()
-    return
+
 
 func request_obstacle_spawn(obstacle: ObstacleTypeResource) -> void:
   Logger.info("UI", "Requesting obstacle spawn: %s" % obstacle.name)

@@ -19,6 +19,28 @@ func _ready() -> void:
   _connect_signals()
   _update_button_states()
 
+func _process(_delta: float) -> void:
+  if Input.is_action_just_pressed("game_speed_increase"):
+    var current_speed = GameManager.get_game_speed()
+    if GameManager.is_paused():
+      GameManager.resume_game()
+    elif current_speed == 1.0:
+      GameManager.set_game_speed(2.0)
+    elif current_speed == 2.0:
+      GameManager.set_game_speed(4.0)
+    elif current_speed == 4.0:
+      pass
+  elif Input.is_action_just_pressed("game_speed_decrease"):
+    var current_speed = GameManager.get_game_speed()
+    if GameManager.is_paused():
+      pass
+    elif current_speed == 1.0:
+      GameManager.pause_game()
+    elif current_speed == 2.0:
+      GameManager.set_game_speed(1.0)
+    elif current_speed == 4.0:
+      GameManager.set_game_speed(2.0)
+
 func _setup_buttons() -> void:
   # Configure pause button
   if pause_button:
