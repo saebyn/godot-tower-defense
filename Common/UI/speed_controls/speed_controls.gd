@@ -85,7 +85,10 @@ func _update_button_states() -> void:
     speed_4x_button.button_pressed = true
 
 func _on_pause_pressed() -> void:
-  GameManager.set_game_speed(0.0)
+  if GameManager.get_game_speed() > 0.0:
+    GameManager.set_game_speed(0.0)
+  else:
+    GameManager.set_game_speed(1.0)
 
 func _on_speed_1x_pressed() -> void:
   GameManager.set_game_speed(1.0)
