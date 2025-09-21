@@ -1,13 +1,35 @@
+"""
+OffscreenIndicator.gd
+
+A UI component that displays directional indicators for enemies outside the camera viewport.
+Shows arrow direction and enemy count at screen edges to help players track offscreen threats.
+
+Features:
+- Real-time tracking of all enemies from EnemySpawner
+- Dynamic positioning on screen edges (top, bottom, left, right)
+- Enemy count display with customizable styling
+- Efficient pooling system for performance
+- Automatic show/hide based on enemy visibility
+- Subtle pulsing animation for visibility
+
+Usage:
+- Add as child to main UI scene
+- Automatically finds camera and enemy spawner in scene tree
+- Configurable through exported properties
+"""
 extends Control
 class_name OffscreenIndicator
 
 ## UI component that displays indicators for enemies outside the viewport
 ## Shows direction and count of offscreen enemies at screen edges
 
-@export var indicator_margin: float = 20.0 ## Distance from screen edge to place indicators
-@export var indicator_size: Vector2 = Vector2(40, 40) ## Size of individual indicators
+@export var indicator_margin: float = 30.0 ## Distance from screen edge to place indicators
+@export var indicator_size: Vector2 = Vector2(50, 50) ## Size of individual indicators
 @export var update_interval: float = 0.1 ## How often to update indicator positions
 @export var max_indicators_per_edge: int = 5 ## Maximum indicators per screen edge
+@export var indicator_color: Color = Color.RED ## Background color for indicators
+@export var arrow_color: Color = Color.WHITE ## Color for direction arrows
+@export var count_color: Color = Color.YELLOW ## Color for enemy count text
 
 @onready var camera: Camera3D
 @onready var enemy_spawner: EnemySpawner
@@ -78,6 +100,11 @@ func _update_indicators() -> void:
   if not camera or not enemy_spawner:
     return
   
+  # Check if we're in a valid state (viewport exists)
+  var viewport = get_viewport()
+  if not viewport:
+    return
+  
   # Clear previous indicators
   _clear_active_indicators()
   
@@ -86,8 +113,6 @@ func _update_indicators() -> void:
   if enemies.is_empty():
     return
   
-  Logger.debug("OffscreenIndicator", "Checking %d enemies for offscreen indicators" % enemies.size())
-  
   # Group enemies by screen edge direction
   var edge_groups = _group_enemies_by_edge(enemies)
   
@@ -95,7 +120,6 @@ func _update_indicators() -> void:
   for edge in edge_groups:
     var enemy_group = edge_groups[edge]
     if enemy_group.size() > 0:
-      Logger.debug("OffscreenIndicator", "Creating indicator for %s edge with %d enemies" % [edge, enemy_group.size()])
       _create_edge_indicator(edge, enemy_group)
 
 func _group_enemies_by_edge(enemies: Array[Node3D]) -> Dictionary:
@@ -107,7 +131,6 @@ func _group_enemies_by_edge(enemies: Array[Node3D]) -> Dictionary:
   }
   
   var viewport_size = get_viewport().get_visible_rect().size
-  Logger.debug("OffscreenIndicator", "Viewport size: %s" % viewport_size)
   
   for enemy in enemies:
     if not enemy or not is_instance_valid(enemy):
@@ -115,7 +138,6 @@ func _group_enemies_by_edge(enemies: Array[Node3D]) -> Dictionary:
     
     # Convert enemy world position to screen position
     var screen_pos = camera.unproject_position(enemy.global_position)
-    Logger.debug("OffscreenIndicator", "Enemy at world %s -> screen %s" % [enemy.global_position, screen_pos])
     
     # Check if enemy is offscreen and determine which edge
     var is_offscreen = false
@@ -135,7 +157,6 @@ func _group_enemies_by_edge(enemies: Array[Node3D]) -> Dictionary:
       is_offscreen = true
     
     if is_offscreen:
-      Logger.debug("OffscreenIndicator", "Enemy offscreen on %s edge" % edge)
       edge_groups[edge].append(enemy)
   
   return edge_groups
@@ -158,6 +179,9 @@ func _create_edge_indicator(edge: String, enemies: Array) -> void:
   # Add to active indicators
   active_indicators.append(indicator)
   indicator.visible = true
+  
+  # Add a subtle pulsing animation
+  _animate_indicator(indicator)
 
 func _get_indicator_from_pool(edge: String) -> Control:
   var pool = indicator_pools[edge]
@@ -169,32 +193,49 @@ func _create_new_indicator(edge: String) -> Control:
   var indicator = Control.new()
   indicator.set_size(indicator_size)
   
-  # Add background panel
+  # Add background panel with styling
   var panel = Panel.new()
   panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+  panel.modulate = indicator_color
   indicator.add_child(panel)
   
-  # Add arrow label
+  # Add arrow label with larger, bold text
   var arrow_label = Label.new()
   arrow_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
   arrow_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
   arrow_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
   arrow_label.name = "ArrowLabel"
   arrow_label.text = _get_arrow_for_edge(edge)
+  arrow_label.modulate = arrow_color
+  # Make arrow larger and bold
+  arrow_label.add_theme_font_size_override("font_size", 24)
   indicator.add_child(arrow_label)
   
-  # Add count label
+  # Add count label with better positioning
   var count_label = Label.new()
   count_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-  count_label.offset_left = -15
+  count_label.offset_left = -20
   count_label.offset_top = -5
-  count_label.offset_right = 0
-  count_label.offset_bottom = 15
+  count_label.offset_right = 5
+  count_label.offset_bottom = 20
   count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
   count_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
   count_label.name = "CountLabel"
-  count_label.modulate = Color.YELLOW
+  count_label.modulate = count_color
+  # Make count text bold and larger
+  count_label.add_theme_font_size_override("font_size", 14)
   indicator.add_child(count_label)
+  
+  # Add a subtle glow effect
+  var glow_effect = Panel.new()
+  glow_effect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+  glow_effect.offset_left = -2
+  glow_effect.offset_top = -2
+  glow_effect.offset_right = 2
+  glow_effect.offset_bottom = 2
+  glow_effect.modulate = Color(indicator_color.r, indicator_color.g, indicator_color.b, 0.3)
+  glow_effect.z_index = -1
+  indicator.add_child(glow_effect)
   
   add_child(indicator)
   return indicator
@@ -271,3 +312,10 @@ func _determine_indicator_edge(indicator: Control) -> String:
     return "right"
   
   return ""
+
+func _animate_indicator(indicator: Control) -> void:
+  # Create a subtle pulsing animation
+  var tween = create_tween()
+  tween.set_loops()
+  tween.tween_property(indicator, "modulate:a", 0.7, 0.5)
+  tween.tween_property(indicator, "modulate:a", 1.0, 0.5)
