@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://b1yehhqyw2nfo"]
+[gd_scene load_steps=6 format=3 uid="uid://b1yehhqyw2nfo"]
 
 [ext_resource type="Script" uid="uid://ef5o7bdag8pq" path="res://Entities/Targets/Templates/base_target/target.gd" id="1_e1yvt"]
 [ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="2_5ebp1"]
+[ext_resource type="Script" uid="uid://1es12v0p8gvh" path="res://Common/Effects/shake_effect/shake_effect.gd" id="3_n2scg"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1bvp3"]
 albedo_color = Color(1, 0, 1, 1)
@@ -17,5 +18,10 @@ script = ExtResource("1_e1yvt")
 
 [node name="Health" parent="." instance=ExtResource("2_5ebp1")]
 
+[node name="ShakeEffect" type="Node" parent="."]
+script = ExtResource("3_n2scg")
+metadata/_custom_type_script = "uid://1es12v0p8gvh"
+
 [connection signal="damaged" from="Health" to="." method="_on_health_damaged"]
+[connection signal="damaged" from="Health" to="ShakeEffect" method="damage_taken"]
 [connection signal="died" from="Health" to="." method="_on_died"]
