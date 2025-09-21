@@ -16,11 +16,13 @@ var placement_mode: bool = false:
 # Store original collision settings
 var _original_collision_layer: int
 var _original_collision_mask: int
+var _collision_settings_stored: bool = false
 
 func _ready():
   # Store original collision settings
   _original_collision_layer = collision_layer
   _original_collision_mask = collision_mask
+  _collision_settings_stored = true
   
   # Connect health signals
   if health:
@@ -50,9 +52,10 @@ func _update_collision_state() -> void:
 # Set the obstacle to placement mode (disables collisions)
 func enter_placement_mode() -> void:
   # Ensure we have stored the original collision settings first
-  if _original_collision_layer == 0 and _original_collision_mask == 0:
+  if not _collision_settings_stored:
     _original_collision_layer = collision_layer
     _original_collision_mask = collision_mask
+    _collision_settings_stored = true
   placement_mode = true
 
 # Exit placement mode and restore normal collision behavior
