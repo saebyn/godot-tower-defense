@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://beq4rqyqagfx" path="res://Common/UI/hotbar/hotbar.tscn" id="7_hotbar"]
 [ext_resource type="PackedScene" uid="uid://cn0m5y7tgw2pe" path="res://Common/UI/speed_controls/speed_controls.tscn" id="8_speed_controls"]
 [ext_resource type="PackedScene" uid="uid://bw8h4n3xvg7rs" path="res://Common/UI/offscreen_indicator/offscreen_indicator.tscn" id="9_offscreen_indicator"]
+[ext_resource type="PackedScene" uid="uid://bx8f5m9vg2rs" path="res://Common/UI/minimap/minimap.tscn" id="10_minimap"]
 
 [node name="UI" type="Control"]
 layout_mode = 3
@@ -52,6 +53,9 @@ grow_vertical = 0
 layout_mode = 1
 
 [node name="OffscreenIndicator" parent="." instance=ExtResource("9_offscreen_indicator")]
+layout_mode = 1
+
+[node name="Minimap" parent="." instance=ExtResource("10_minimap")]
 layout_mode = 1
 
 [node name="PauseMenu" parent="." instance=ExtResource("6_pause_menu")]
