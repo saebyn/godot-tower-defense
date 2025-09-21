@@ -10,16 +10,16 @@ class_name Hotbar
 
 signal obstacle_selected(obstacle: ObstacleTypeResource)
 
-@export var max_slots: int = 6  # Maximum number of hotbar slots
-@export var slot_size: Vector2 = Vector2(64, 64)  # Size of each hotbar slot
-@export var spacing: int = 8  # Spacing between slots
+@export var max_slots: int = 6 # Maximum number of hotbar slots
+@export var slot_size: Vector2 = Vector2(64, 64) # Size of each hotbar slot
+@export var spacing: int = 8 # Spacing between slots
 
 @onready var slots_container: HBoxContainer = $SlotsContainer
 @onready var obstacle_selection_menu: PopupMenu = $ObstacleSelectionMenu
 
-var slot_obstacle_ids: Array[String] = []  # Obstacle IDs for each slot
-var slot_buttons: Array[Button] = []  # Button references for each slot
-var current_configuring_slot: int = -1  # Track which slot is being configured
+var slot_obstacle_ids: Array[String] = [] ## Obstacle IDs for each slot
+var slot_buttons: Array[Button] = [] ## Button references for each slot
+var current_configuring_slot: int = -1 ## Track which slot was last right-clicked for configuration (-1 if none, may not be valid index or current if no menu open)
 
 func _ready() -> void:
   _setup_ui()
@@ -79,7 +79,7 @@ func _populate_default_hotbar() -> void:
         slot_obstacle_ids.append(available[i].id)
         Logger.info("Hotbar", "Setting slot %d to %s" % [i, available[i].name])
       else:
-        slot_obstacle_ids.append("")  # Empty slot
+        slot_obstacle_ids.append("") # Empty slot
   else:
     # Fill with empty slots if registry not available
     for i in range(max_slots):
@@ -157,14 +157,14 @@ func _show_obstacle_selection_menu(slot_index: int) -> void:
   # Add "Clear Slot" option for non-empty slots
   var current_obstacle_id = slot_obstacle_ids[slot_index] if slot_index < slot_obstacle_ids.size() else ""
   if not current_obstacle_id.is_empty():
-    obstacle_selection_menu.add_item("Clear Slot", -1)
+    obstacle_selection_menu.add_item("Clear Slot", 0)
     obstacle_selection_menu.add_separator()
   
   # Add available obstacles to menu
   for i in range(available.size()):
     var obstacle = available[i]
     var item_text = "%s ($%d)" % [obstacle.name, obstacle.cost]
-    obstacle_selection_menu.add_item(item_text, i)
+    obstacle_selection_menu.add_item(item_text, i + 1) # +1 to account for "Clear Slot" at index 0
     
     # Set icon if available
     if obstacle.icon:
@@ -188,17 +188,18 @@ func _show_obstacle_selection_menu(slot_index: int) -> void:
 func _on_obstacle_menu_item_selected(id: int) -> void:
   """Handle selection from the obstacle popup menu"""
   if current_configuring_slot < 0:
+    Logger.warn("Hotbar", "No slot is currently being configured")
     return
   
-  if id == -1:
+  if id == 0:
     # Clear slot option selected
     set_slot_obstacle(current_configuring_slot, null)
     Logger.info("Hotbar", "Cleared slot %d" % (current_configuring_slot + 1))
   else:
     # Obstacle selected
     var available = ObstacleRegistry.available_obstacle_types
-    if id >= 0 and id < available.size():
-      var selected_obstacle = available[id]
+    if id <= available.size():
+      var selected_obstacle = available[id - 1] # -1 to account for "Clear Slot" at index 0
       set_slot_obstacle(current_configuring_slot, selected_obstacle)
       Logger.info("Hotbar", "Assigned %s to slot %d" % [selected_obstacle.name, current_configuring_slot + 1])
   
