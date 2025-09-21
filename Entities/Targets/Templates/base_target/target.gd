@@ -1,4 +1,4 @@
-extends MeshInstance3D
+extends Node3D
 
 @onready var health: Health = $Health
 
