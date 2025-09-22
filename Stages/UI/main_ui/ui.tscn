@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://duje032qpuq2"]
+[gd_scene load_steps=10 format=3 uid="uid://duje032qpuq2"]
 
 [ext_resource type="Script" uid="uid://3yfu45cvudar" path="res://Stages/UI/main_ui/ui.gd" id="1_27fn8"]
 [ext_resource type="PackedScene" uid="uid://bhnpr8mat2j5c" path="res://Common/UI/currency_display/currency_display.tscn" id="4_currency"]
@@ -6,6 +6,11 @@
 [ext_resource type="PackedScene" uid="uid://djmk3m86x2pk1" path="res://Stages/UI/pause_menu/pause_menu.tscn" id="6_pause_menu"]
 [ext_resource type="PackedScene" uid="uid://beq4rqyqagfx" path="res://Common/UI/hotbar/hotbar.tscn" id="7_hotbar"]
 [ext_resource type="PackedScene" uid="uid://cn0m5y7tgw2pe" path="res://Common/UI/speed_controls/speed_controls.tscn" id="8_speed_controls"]
+[ext_resource type="PackedScene" uid="uid://bw8h4n3xvg7rs" path="res://Common/UI/offscreen_indicator/offscreen_indicator.tscn" id="9_offscreen_indicator"]
+[ext_resource type="PackedScene" uid="uid://bx8f5navg2rs" path="res://Common/UI/minimap/minimap.tscn" id="10_minimap"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_b3t5h"]
+size = Vector2(16, 16)
 
 [node name="UI" type="Control"]
 layout_mode = 3
@@ -49,6 +54,15 @@ grow_vertical = 0
 
 [node name="SpawnIndicator" parent="." instance=ExtResource("5_spawn_indicator")]
 layout_mode = 1
+
+[node name="OffscreenIndicator" parent="." instance=ExtResource("9_offscreen_indicator")]
+layout_mode = 1
+indicator_texture = SubResource("PlaceholderTexture2D_b3t5h")
+
+[node name="Minimap" parent="." instance=ExtResource("10_minimap")]
+visible = false
+layout_mode = 1
+anchors_preset = 0
 
 [node name="PauseMenu" parent="." instance=ExtResource("6_pause_menu")]
 layout_mode = 1

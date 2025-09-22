@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://bx8f5m9vg2rs"]
+
+[ext_resource type="Script" path="res://Common/UI/minimap/minimap.gd" id="1_minimap"]
+
+[node name="Minimap" type="Control"]
+layout_mode = 0
+offset_right = 150.0
+offset_bottom = 150.0
+script = ExtResource("1_minimap")
+minimap_size = Vector2(150, 150)
+minimap_position = Vector2(10, 10)
+background_color = Color(0.1, 0.1, 0.1, 0.8)
+enemy_color = Color(0.8, 0.2, 0.2, 1)
+obstacle_color = Color(0.5, 0.5, 0.5, 1)
+target_color = Color(0.2, 0.8, 0.2, 1)
+camera_view_color = Color(1, 1, 1, 0.3)
+enemy_dot_size = 3.0
+update_interval = 0.2
