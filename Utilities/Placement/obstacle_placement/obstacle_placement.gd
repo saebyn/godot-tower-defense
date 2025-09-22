@@ -151,8 +151,7 @@ func _has_obstacle_collision(target_position: Vector3) -> bool:
   var has_collision = obstacle_detection_raycast.is_colliding()
   if has_collision:
     var collider = obstacle_detection_raycast.get_collider()
-    # Don't count collision with self (preview doesn't have colliders anyway)
-    if collider and collider != _preview:
+    if collider:
       obstacle_detection_raycast.enabled = false
       return true
   
@@ -187,15 +186,8 @@ func _has_sufficient_clearance(target_position: Vector3) -> bool:
   query.shape = sphere
   query.transform.origin = target_position
   query.collision_mask = 2 # Check for obstacles
-  
-  var results = space_state.intersect_shape(query)
-  
-  # Filter out self from results (preview doesn't have physics body anyway)
-  for result in results:
-    if result.collider != _preview:
-      return false
-  
-  return true
+
+  return space_state.intersect_shape(query).size() == 0
 
 func _on_obstacle_spawn_requested(obstacle: ObstacleTypeResource) -> void:
   Logger.info("Placement", "Spawn obstacle button pressed for: %s" % obstacle.name)
