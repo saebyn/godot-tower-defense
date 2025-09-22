@@ -67,7 +67,11 @@ func _process(_delta: float) -> void:
 func _physics_process(_delta: float) -> void:
   if _preview and raycast.is_colliding():
     var collision_point = raycast.get_collision_point()
-    _preview.global_position = collision_point
+    
+    # Position preview properly above ground based on its bounds
+    var bounds = _preview.get_bounds()
+    var height_offset = - bounds.position.y # Offset to put bottom of mesh at ground level
+    _preview.global_position = collision_point + Vector3(0, height_offset, 0)
     
     # Update visual feedback based on placement validity
     _update_visual_feedback(collision_point)
@@ -235,10 +239,18 @@ func _place_obstacle() -> void:
     Logger.error("Placement", "Cannot place obstacle: Insufficient funds")
     return
   
+  # Store preview position and rotation before cleanup
+  var preview_position = _preview.global_position
+  var preview_rotation = _preview.rotation
+  
+  # Clean up preview BEFORE adding real obstacle
+  _preview.queue_free()
+  _preview = null
+  
   # Now instantiate the real obstacle
   var real_obstacle = _place_obstacle_type.scene.instantiate() as PlaceableObstacle
-  real_obstacle.global_position = _preview.global_position
-  real_obstacle.rotation = _preview.rotation
+  real_obstacle.global_position = preview_position
+  real_obstacle.rotation = preview_rotation
   real_obstacle.obstacle_type = _place_obstacle_type
   
   Logger.info("Placement", "Setting obstacle_type to: %s (cost: %d)" % [_place_obstacle_type.name, _place_obstacle_type.cost])
@@ -252,11 +264,14 @@ func _place_obstacle() -> void:
   _clear_obstacle_placement()
 
 func _cancel_obstacle_placement() -> void:
-  _preview.queue_free()
+  if _preview:
+    _preview.queue_free()
+    _preview = null
   _clear_obstacle_placement()
 
 func _clear_obstacle_placement() -> void:
-  _preview = null
+  if _preview:
+    _preview = null
   _place_obstacle_type = null
   raycast.enabled = false
 
