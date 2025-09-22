@@ -1,6 +1,8 @@
 extends Node3D
 class_name ObstaclePlacement
 
+const ObstaclePreviewScene = preload("res://Utilities/Placement/obstacle_preview.gd")
+
 signal rebake_navigation_mesh
 
 @export_group("Placement Settings")
@@ -21,10 +23,10 @@ signal rebake_navigation_mesh
 
 var busy: bool:
   get:
-    return _placeable_obstacle != null
+    return _preview != null
 
 var _place_obstacle_type: ObstacleTypeResource = null
-var _placeable_obstacle: PlaceableObstacle = null
+var _preview: ObstaclePreview = null
 var _valid_material: StandardMaterial3D
 var _invalid_material: StandardMaterial3D
 var _original_material: Material
@@ -47,7 +49,7 @@ func _ready():
   obstacle_detection_raycast.collision_mask = 2 # Check for obstacles (layer 2)
 
 func _process(_delta: float) -> void:
-  if _placeable_obstacle:
+  if _preview:
     if Input.is_action_just_pressed("place_cancel"):
       # Handle obstacle placement cancellation
       _cancel_obstacle_placement()
@@ -56,16 +58,20 @@ func _process(_delta: float) -> void:
       _place_obstacle()
     elif Input.is_action_just_pressed("place_rotate_left"):
       # Rotate the obstacle left
-      _placeable_obstacle.rotate_y(-PI / 2) # Rotate left by 90 degrees
+      _preview.rotate_y(-PI / 2) # Rotate left by 90 degrees
     elif Input.is_action_just_pressed("place_rotate_right"):
       # Rotate the obstacle right
-      _placeable_obstacle.rotate_y(PI / 2) # Rotate right by 90 degrees
+      _preview.rotate_y(PI / 2) # Rotate right by 90 degrees
 
 
 func _physics_process(_delta: float) -> void:
-  if _placeable_obstacle and raycast.is_colliding():
+  if _preview and raycast.is_colliding():
     var collision_point = raycast.get_collision_point()
-    _placeable_obstacle.global_position = collision_point
+    
+    # Position preview properly above ground based on its bounds
+    var bounds = _preview.get_bounds()
+    var height_offset = - bounds.position.y # Offset to put bottom of mesh at ground level
+    _preview.global_position = collision_point + Vector3(0, height_offset, 0)
     
     # Update visual feedback based on placement validity
     _update_visual_feedback(collision_point)
@@ -76,7 +82,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _validate_placement(target_position: Vector3) -> PlacementResult:
-  if not _placeable_obstacle:
+  if not _preview:
     return PlacementResult.new(false, PlacementResult.ValidationError.NO_PLACEABLE_OBSTACLE, "No obstacle selected for placement")
   
   if not _is_within_navigation_region(target_position):
@@ -135,7 +141,7 @@ func _is_within_navigation_region(target_position: Vector3) -> bool:
           local_pos.z <= max_bounds.z - border_margin)
 
 func _has_obstacle_collision(target_position: Vector3) -> bool:
-  if not _placeable_obstacle:
+  if not _preview:
     return false
   
   # Set up raycast to check for existing obstacles
@@ -149,8 +155,7 @@ func _has_obstacle_collision(target_position: Vector3) -> bool:
   var has_collision = obstacle_detection_raycast.is_colliding()
   if has_collision:
     var collider = obstacle_detection_raycast.get_collider()
-    # Don't count collision with self
-    if collider and collider != _placeable_obstacle:
+    if collider:
       obstacle_detection_raycast.enabled = false
       return true
   
@@ -185,15 +190,8 @@ func _has_sufficient_clearance(target_position: Vector3) -> bool:
   query.shape = sphere
   query.transform.origin = target_position
   query.collision_mask = 2 # Check for obstacles
-  
-  var results = space_state.intersect_shape(query)
-  
-  # Filter out self from results
-  for result in results:
-    if result.collider != _placeable_obstacle:
-      return false
-  
-  return true
+
+  return space_state.intersect_shape(query).size() == 0
 
 func _on_obstacle_spawn_requested(obstacle: ObstacleTypeResource) -> void:
   Logger.info("Placement", "Spawn obstacle button pressed for: %s" % obstacle.name)
@@ -203,23 +201,23 @@ func _on_obstacle_spawn_requested(obstacle: ObstacleTypeResource) -> void:
     _cancel_obstacle_placement()
 
   _place_obstacle_type = obstacle
-  _placeable_obstacle = obstacle.scene.instantiate()
-  Logger.info("Placement", "Instantiated obstacle: %s" % _placeable_obstacle.name)
+  _preview = ObstaclePreviewScene.new(obstacle)
+  Logger.info("Placement", "Created preview for obstacle: %s" % obstacle.name)
   raycast.enabled = true
-  add_child(_placeable_obstacle)
+  add_child(_preview)
   
   # Store original material for restoration
-  if _placeable_obstacle.mesh_instance:
-    _original_material = _placeable_obstacle.mesh_instance.get_surface_override_material(0)
+  if _preview.mesh_instance:
+    _original_material = _preview.mesh_instance.get_surface_override_material(0)
     # If no override material exists, get the mesh material
-    if not _original_material and _placeable_obstacle.mesh_instance.mesh:
-      _original_material = _placeable_obstacle.mesh_instance.mesh.surface_get_material(0)
+    if not _original_material and _preview.mesh_instance.mesh:
+      _original_material = _preview.mesh_instance.mesh.surface_get_material(0)
 
 func _place_obstacle() -> void:
-  if not _placeable_obstacle:
+  if not _preview:
     return
   
-  var target_position = _placeable_obstacle.global_position
+  var target_position = _preview.global_position
   
   # Check if placement is valid
   if not _is_placement_valid(target_position):
@@ -234,14 +232,6 @@ func _place_obstacle() -> void:
     if not _has_sufficient_clearance(target_position):
       Logger.debug("Placement", "  - Insufficient clearance")
     return
-  
-  # Restore original material before placing
-  if _placeable_obstacle.mesh_instance:
-    if _original_material:
-      _placeable_obstacle.mesh_instance.set_surface_override_material(0, _original_material)
-    else:
-      # Clear any override material to use the default mesh material
-      _placeable_obstacle.mesh_instance.set_surface_override_material(0, null)
 
   # Deduct cost
   if not CurrencyManager.spend_currency(_place_obstacle_type.cost):
@@ -249,27 +239,44 @@ func _place_obstacle() -> void:
     Logger.error("Placement", "Cannot place obstacle: Insufficient funds")
     return
   
-  # Store obstacle type reference for potential removal
-  _placeable_obstacle.obstacle_type = _place_obstacle_type
-  Logger.info("Placement", "Setting obstacle_type to: %s (cost: %d)" % [_place_obstacle_type.name, _place_obstacle_type.cost])
-  Logger.info("Placement", "Obstacle now has obstacle_type: %s" % ("null" if not _placeable_obstacle.obstacle_type else _placeable_obstacle.obstacle_type.name))
+  # Store preview position and rotation before cleanup
+  var preview_position = _preview.global_position
+  var preview_rotation = _preview.rotation
   
-  _placeable_obstacle.place(navigation_region)
+  # Clean up preview BEFORE adding real obstacle
+  _preview.queue_free()
+  _preview = null
+  
+  # Now instantiate the real obstacle
+  var real_obstacle = _place_obstacle_type.scene.instantiate() as PlaceableObstacle
+  real_obstacle.global_position = preview_position
+  real_obstacle.rotation = preview_rotation
+  real_obstacle.obstacle_type = _place_obstacle_type
+  
+  Logger.info("Placement", "Setting obstacle_type to: %s (cost: %d)" % [_place_obstacle_type.name, _place_obstacle_type.cost])
+  Logger.info("Placement", "Obstacle now has obstacle_type: %s" % ("null" if not real_obstacle.obstacle_type else real_obstacle.obstacle_type.name))
+  
+  # Add to scene and place
+  get_parent().add_child(real_obstacle)
+  real_obstacle.place(navigation_region)
   rebake_navigation_mesh.emit()
   
   _clear_obstacle_placement()
 
 func _cancel_obstacle_placement() -> void:
-  _placeable_obstacle.queue_free()
+  if _preview:
+    _preview.queue_free()
+    _preview = null
   _clear_obstacle_placement()
-  
+
 func _clear_obstacle_placement() -> void:
-  _placeable_obstacle = null
+  if _preview:
+    _preview = null
   _place_obstacle_type = null
   raycast.enabled = false
 
 func _update_visual_feedback(target_position: Vector3) -> void:
-  if not _placeable_obstacle or not _placeable_obstacle.mesh_instance:
+  if not _preview or not _preview.mesh_instance:
     return
 
   # Only update if we have valid materials
@@ -279,7 +286,7 @@ func _update_visual_feedback(target_position: Vector3) -> void:
   var is_valid = _is_placement_valid(target_position)
   var material = _valid_material if is_valid else _invalid_material
   
-  _placeable_obstacle.mesh_instance.set_surface_override_material(0, material)
+  _preview.set_preview_material(material)
 
 func _project_placed_obstacle(mouse_position: Vector2) -> void:
   var ray_origin = camera.project_ray_origin(mouse_position)

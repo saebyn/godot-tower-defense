@@ -20,7 +20,6 @@ func _on_died():
 func _on_health_damaged(amount: int, hitpoints: int) -> void:
   Logger.debug("Obstacle.Combat", "Obstacle took %d damage. Remaining HP: %d" % [amount, hitpoints])
 
-
 func place(navigation_region: NavigationRegion3D) -> void:
     Logger.info("Obstacle", "place() called. obstacle_type: %s" % ("null" if not obstacle_type else obstacle_type.name))
     if not is_inside_tree():
