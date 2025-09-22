@@ -1,22 +1,22 @@
-"""
-Minimap.gd
-
-A minimap UI component that shows an overhead view of the game area.
-Displays enemy positions, obstacles, and the player's camera view area.
-
-Features:
-- Top-down view of the entire game area
-- Real-time enemy position tracking
-- Camera viewport visualization
-- Obstacle and target display
-- Configurable size and position
-- Click-to-move camera functionality
-
-Usage:
-- Add as child to main UI scene
-- Automatically finds game components
-- Configurable through exported properties
-"""
+## Minimap
+## 
+## TODO currently broken because of camera orientation
+## 
+## A minimap UI component that shows an overhead view of the game area.
+## Displays enemy positions, obstacles, and the player's camera view area.
+## 
+## Features:
+## - Top-down view of the entire game area
+## - Real-time enemy position tracking
+## - Camera viewport visualization
+## - Obstacle and target display
+## - Configurable size and position
+## - Click-to-move camera functionality
+## 
+## Usage:
+## - Add as child to main UI scene
+## - Automatically finds game components
+## - Configurable through exported properties
 extends Control
 class_name Minimap
 
@@ -167,7 +167,7 @@ func _draw_enemies() -> void:
     # Create enemy dot
     var enemy_dot = Panel.new()
     enemy_dot.set_size(Vector2(enemy_dot_size, enemy_dot_size))
-    enemy_dot.position = minimap_pos - Vector2(enemy_dot_size/2, enemy_dot_size/2)
+    enemy_dot.position = minimap_pos - Vector2(enemy_dot_size / 2, enemy_dot_size / 2)
     enemy_dot.modulate = enemy_color
     minimap_canvas.add_child(enemy_dot)
 
