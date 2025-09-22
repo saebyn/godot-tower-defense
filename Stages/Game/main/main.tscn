@@ -90,6 +90,11 @@ enabled = false
 collision_mask = 4
 
 [node name="ObstaclePlacement" parent="." node_paths=PackedStringArray("navigation_region", "camera") instance=ExtResource("7_kek77")]
+placement_clearance = null
+border_margin = null
+raycast_length = null
+raycast_start = null
+raycast_down = null
 navigation_region = NodePath("../NavigationRegion3D")
 camera = NodePath("../Camera3D")
 

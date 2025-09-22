@@ -7,23 +7,7 @@ class_name PlaceableObstacle
 var obstacle_type: ObstacleTypeResource
 var navigation_obstacle: NavigationObstacle3D
 
-# Placement mode state - when true, collisions are disabled
-var placement_mode: bool = false:
-  set(value):
-    placement_mode = value
-    _update_collision_state()
-
-# Store original collision settings
-var _original_collision_layer: int
-var _original_collision_mask: int
-var _collision_settings_stored: bool = false
-
 func _ready():
-  # Store original collision settings
-  _original_collision_layer = collision_layer
-  _original_collision_mask = collision_mask
-  _collision_settings_stored = true
-  
   # Connect health signals
   if health:
     health.died.connect(_on_died)
@@ -36,45 +20,11 @@ func _on_died():
 func _on_health_damaged(amount: int, hitpoints: int) -> void:
   Logger.debug("Obstacle.Combat", "Obstacle took %d damage. Remaining HP: %d" % [amount, hitpoints])
 
-# Update collision state based on placement mode
-func _update_collision_state() -> void:
-  if placement_mode:
-    # Disable collisions during placement
-    collision_layer = 0
-    collision_mask = 0
-    # Remove from obstacles group so enemies won't target this obstacle during placement
-    remove_from_group("obstacles")
-    Logger.debug("Obstacle", "Disabled collisions and enemy targeting for placement mode")
-  else:
-    # Restore original collision settings
-    collision_layer = _original_collision_layer
-    collision_mask = _original_collision_mask
-    # Add back to obstacles group so enemies can target this obstacle
-    add_to_group("obstacles")
-    Logger.debug("Obstacle", "Restored collisions and enemy targeting after placement")
-
-# Set the obstacle to placement mode (disables collisions)
-func enter_placement_mode() -> void:
-  # Ensure we have stored the original collision settings first
-  if not _collision_settings_stored:
-    _original_collision_layer = collision_layer
-    _original_collision_mask = collision_mask
-    _collision_settings_stored = true
-  placement_mode = true
-
-# Exit placement mode and restore normal collision behavior
-func exit_placement_mode() -> void:
-  placement_mode = false
-
-
 func place(navigation_region: NavigationRegion3D) -> void:
     Logger.info("Obstacle", "place() called. obstacle_type: %s" % ("null" if not obstacle_type else obstacle_type.name))
     if not is_inside_tree():
         Logger.error("Obstacle", "PlaceableObstacle must be added to the scene tree before placing.")
         return
-
-    # Exit placement mode to restore collisions
-    exit_placement_mode()
 
     Logger.info("Obstacle", "Placing obstacle at: %s" % global_position)
     # Here you would implement the logic to finalize the placement of the obstacle

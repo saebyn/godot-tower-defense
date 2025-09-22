@@ -16,9 +16,7 @@ func _ready():
   if detection_timer:
     detection_timer.wait_time = detection_interval
     detection_timer.timeout.connect(_detect_and_attack_enemies)
-    # Only start timer if not in placement mode
-    if not placement_mode:
-      detection_timer.start()
+    detection_timer.start()
   
   Logger.info("ShootingObstacle", "Shooting obstacle initialized with attack range: %f" % attack_range)
 
@@ -27,21 +25,6 @@ func _detect_and_attack_enemies():
   if nearest_enemy:
     Logger.debug("ShootingObstacle", "Attacking enemy at distance: %f" % global_position.distance_to(nearest_enemy.global_position))
     attack.perform_attack(nearest_enemy)
-
-# Override placement mode methods to control detection timer
-func enter_placement_mode() -> void:
-  super.enter_placement_mode()
-  # Stop detection timer during placement
-  if detection_timer and detection_timer.is_connected("timeout", _detect_and_attack_enemies):
-    detection_timer.stop()
-    Logger.debug("ShootingObstacle", "Stopped detection timer for placement mode")
-
-func exit_placement_mode() -> void:
-  super.exit_placement_mode()
-  # Resume detection timer after placement
-  if detection_timer and detection_timer.is_connected("timeout", _detect_and_attack_enemies):
-    detection_timer.start()
-    Logger.debug("ShootingObstacle", "Resumed detection timer after placement")
 
 func find_nearest_enemy_in_range() -> Node3D:
   var enemies := get_tree().get_nodes_in_group(enemy_group)
