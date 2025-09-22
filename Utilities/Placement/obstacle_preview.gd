@@ -15,7 +15,7 @@ func _create_mesh_from_obstacle_type() -> void:
   var temp_mesh = temp_obstacle.get_node("MeshInstance3D")
   
   if not temp_mesh:
-    Logger.error("ObstaclePreviewScene", "Could not find MeshInstance3D in obstacle scene: %s" % obstacle_type.name)
+    Logger.error("ObstaclePreview", "Could not find MeshInstance3D in obstacle scene: %s" % obstacle_type.name)
     temp_obstacle.queue_free()
     return
   
