@@ -236,9 +236,6 @@ func _place_obstacle() -> void:
     if not _has_sufficient_clearance(target_position):
       Logger.debug("Placement", "  - Insufficient clearance")
     return
-  
-  # Restore original material to preview before creating real obstacle
-  _preview.restore_original_material()
 
   # Deduct cost
   if not CurrencyManager.spend_currency(_place_obstacle_type.cost):
