@@ -189,6 +189,7 @@ func _create_new_dot_indicator() -> Control:
   indicator.add_child(panel)
   
   add_child(indicator)
+  _animate_indicator(indicator)
   return indicator
 
 func _clear_active_indicators() -> void:
