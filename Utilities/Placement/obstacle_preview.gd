@@ -33,7 +33,7 @@ func _create_mesh_from_obstacle_type() -> void:
   # Clean up temporary obstacle
   temp_obstacle.queue_free()
   
-  Logger.debug("ObstaclePreviewScene", "Created preview for obstacle: %s" % obstacle_type.name)
+  Logger.debug("ObstaclePreview", "Created preview for obstacle: %s" % obstacle_type.name)
 
 func set_preview_material(material: Material) -> void:
   if mesh_instance:
