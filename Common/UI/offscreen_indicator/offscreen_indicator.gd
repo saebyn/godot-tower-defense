@@ -1,22 +1,20 @@
-"""
-OffscreenIndicator.gd
-
-A UI component that displays individual dot indicators for enemies outside the camera viewport.
-Shows one dot per enemy positioned at screen edges to indicate direction relative to current view.
-
-Features:
-- Real-time tracking of all enemies from EnemySpawner
-- Individual dot indicators for each offscreen enemy
-- Dynamic positioning on screen edges based on enemy direction
-- Efficient pooling system for performance
-- Automatic show/hide based on enemy visibility
-- Subtle pulsing animation for visibility
-
-Usage:
-- Add as child to main UI scene
-- Automatically finds camera and enemy spawner in scene tree
-- Configurable through exported properties
-"""
+## OffscreenIndicator
+## 
+## A UI component that displays individual dot indicators for enemies outside the camera viewport.
+## Shows one dot per enemy positioned at screen edges to indicate direction relative to current view.
+## 
+## Features:
+## - Real-time tracking of all enemies from EnemySpawner
+## - Individual dot indicators for each offscreen enemy
+## - Dynamic positioning on screen edges based on enemy direction
+## - Efficient pooling system for performance
+## - Automatic show/hide based on enemy visibility
+## - Subtle pulsing animation for visibility
+## 
+## Usage:
+## - Add as child to main UI scene
+## - Automatically finds camera and enemy spawner in scene tree
+## - Configurable through exported properties
 extends Control
 class_name OffscreenIndicator
 
@@ -26,8 +24,7 @@ class_name OffscreenIndicator
 @export var indicator_margin: float = 30.0 ## Distance from screen edge to place indicators
 @export var indicator_size: Vector2 = Vector2(12, 12) ## Size of individual dot indicators
 @export var update_interval: float = 0.1 ## How often to update indicator positions
-@export var indicator_color: Color = Color.RED ## Color for dot indicators
-@export var indicator_alpha: float = 0.8 ## Alpha transparency for indicators
+@export var indicator_texture: Texture2D ## Texture for the indicator dots
 
 @onready var camera: Camera3D
 @onready var enemy_spawner: EnemySpawner
@@ -121,10 +118,10 @@ func _update_indicators() -> void:
       _create_individual_indicator(enemy, screen_pos, viewport_size)
 
 func _is_enemy_offscreen(screen_pos: Vector2, viewport_size: Vector2) -> bool:
-  return (screen_pos.x < 0 or screen_pos.x > viewport_size.x or 
+  return (screen_pos.x < 0 or screen_pos.x > viewport_size.x or
           screen_pos.y < 0 or screen_pos.y > viewport_size.y)
 
-func _create_individual_indicator(enemy: Node3D, screen_pos: Vector2, viewport_size: Vector2) -> void:
+func _create_individual_indicator(_enemy: Node3D, screen_pos: Vector2, viewport_size: Vector2) -> void:
   # Get or create indicator
   var indicator = _get_indicator_from_pool()
   if not indicator:
@@ -151,24 +148,24 @@ func _calculate_edge_position(screen_pos: Vector2, viewport_size: Vector2) -> Ve
     if direction.x > 0:
       # Right edge
       edge_pos.x = viewport_size.x - indicator_margin
-      edge_pos.y = clamp(center.y + direction.y * (viewport_size.x * 0.5), 
+      edge_pos.y = clamp(center.y + direction.y * (viewport_size.x * 0.5),
                          indicator_margin, viewport_size.y - indicator_margin)
     else:
       # Left edge
       edge_pos.x = indicator_margin
-      edge_pos.y = clamp(center.y + direction.y * (viewport_size.x * 0.5), 
+      edge_pos.y = clamp(center.y + direction.y * (viewport_size.x * 0.5),
                          indicator_margin, viewport_size.y - indicator_margin)
   else:
     # Enemy is more to the top/bottom
     if direction.y > 0:
       # Bottom edge
       edge_pos.y = viewport_size.y - indicator_margin
-      edge_pos.x = clamp(center.x + direction.x * (viewport_size.y * 0.5), 
+      edge_pos.x = clamp(center.x + direction.x * (viewport_size.y * 0.5),
                          indicator_margin, viewport_size.x - indicator_margin)
     else:
       # Top edge
       edge_pos.y = indicator_margin
-      edge_pos.x = clamp(center.x + direction.x * (viewport_size.y * 0.5), 
+      edge_pos.x = clamp(center.x + direction.x * (viewport_size.y * 0.5),
                          indicator_margin, viewport_size.x - indicator_margin)
   
   return edge_pos
@@ -183,9 +180,10 @@ func _create_new_dot_indicator() -> Control:
   indicator.set_size(indicator_size)
   
   # Create circular dot panel
-  var panel = Panel.new()
+  var panel = TextureRect.new()
+  panel.texture = indicator_texture
+  panel.set_size(indicator_size)
   panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-  panel.modulate = Color(indicator_color.r, indicator_color.g, indicator_color.b, indicator_alpha)
   
   # Make it circular by setting border radius (if supported) or use a simple colored rectangle
   indicator.add_child(panel)
@@ -205,5 +203,5 @@ func _animate_indicator(indicator: Control) -> void:
   # Create a subtle pulsing animation
   var tween = create_tween()
   tween.set_loops()
-  tween.tween_property(indicator, "modulate:a", 0.6, 0.5)
-  tween.tween_property(indicator, "modulate:a", indicator_alpha, 0.5)
+  tween.tween_property(indicator, "modulate:a", 1, 0.5)
+  tween.tween_property(indicator, "modulate:a", 0.5, 0.5)
