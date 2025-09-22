@@ -13,5 +13,3 @@ mouse_filter = 2
 script = ExtResource("1_offscreen_indicator")
 indicator_margin = 30.0
 indicator_size = Vector2(12, 12)
-indicator_color = Color(0.8, 0.2, 0.2, 1)
-indicator_alpha = 0.8
