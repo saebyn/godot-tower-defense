@@ -15,6 +15,7 @@ enum AttackResult {
 
 @export var damage_amount: int = 10
 @export var damage_cooldown: float = 1.0
+@export var damage_source: String = "unknown" ## Source identifier for damage tracking
 var is_on_cooldown: bool = false
 var current_target: Node = null
 
@@ -27,7 +28,7 @@ func perform_attack(target: Node) -> AttackResult:
     if target.has_node("Health"):
       var health = target.get_node("Health")
       if health is Health:
-        health.take_damage(damage_amount)
+        health.take_damage(damage_amount, damage_source)
       else:
         return AttackResult.INVALID_TARGET
     else:

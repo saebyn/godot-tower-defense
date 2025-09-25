@@ -4,6 +4,7 @@ signal obstacle_spawn_requested(obstacle: ObstacleTypeResource)
 
 @onready var spawn_indicator: Control = $SpawnIndicator
 @onready var hotbar: Control = $Hotbar
+@onready var stats_display: Control = $StatsDisplay
 
 
 func _process(_delta: float) -> void:
@@ -12,6 +13,8 @@ func _process(_delta: float) -> void:
     GameManager.toggle_pause()
   elif Input.is_action_just_pressed("toggle_in_game_menu"):
     GameManager.toggle_in_game_menu()
+  elif Input.is_action_just_pressed("toggle_stats"):
+    _toggle_stats_display()
 
 
 func request_obstacle_spawn(obstacle: ObstacleTypeResource) -> void:
@@ -40,3 +43,9 @@ func _on_wave_completed(wave: Wave, wave_number: int) -> void:
 func show_obstacle_removed(refund_amount: int) -> void:
   if spawn_indicator and spawn_indicator.has_method("show_obstacle_removed"):
     spawn_indicator.show_obstacle_removed(refund_amount)
+
+## Toggle the stats display visibility
+func _toggle_stats_display() -> void:
+  if stats_display:
+    stats_display.toggle_visibility()
+    Logger.info("UI", "Stats display toggled: %s" % ("visible" if stats_display.visible else "hidden"))

@@ -21,6 +21,10 @@ func _ready() -> void:
   obstacle_raycast.collision_mask = 2 # Only detect obstacles (layer 2)
   add_child(obstacle_raycast)
   
+  # Set player attack damage source
+  if attack:
+    attack.damage_source = "player"
+  
   # Connect enemy spawner signal to UI immediately (not deferred)
   _connect_signals()
 

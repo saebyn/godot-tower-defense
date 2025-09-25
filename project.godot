@@ -21,6 +21,7 @@ Logger="*res://Utilities/Systems/logger.gd"
 CurrencyManager="*res://Utilities/Systems/currency_manager.gd"
 GameManager="*res://Utilities/Systems/game_manager.gd"
 ObstacleRegistry="*res://Utilities/Systems/obstacle_registry.gd"
+StatsManager="*res://Utilities/Systems/stats_manager.gd"
 
 [global_group]
 
@@ -157,6 +158,11 @@ game_speed_increase={
 game_speed_decrease={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":true,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":44,"key_label":0,"unicode":60,"location":0,"echo":false,"script":null)
+]
+}
+toggle_stats={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":84,"key_label":0,"unicode":116,"location":0,"echo":false,"script":null)
 ]
 }
 

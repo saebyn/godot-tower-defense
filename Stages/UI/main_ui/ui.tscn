@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://cn0m5y7tgw2pe" path="res://Common/UI/speed_controls/speed_controls.tscn" id="8_speed_controls"]
 [ext_resource type="PackedScene" uid="uid://bw8h4n3xvg7rs" path="res://Common/UI/offscreen_indicator/offscreen_indicator.tscn" id="9_offscreen_indicator"]
 [ext_resource type="PackedScene" uid="uid://bx8f5navg2rs" path="res://Common/UI/minimap/minimap.tscn" id="10_minimap"]
+[ext_resource type="PackedScene" uid="uid://b2jcxh0e7r1tv" path="res://Common/UI/stats_display/stats_display.tscn" id="11_stats_display"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_b3t5h"]
 size = Vector2(16, 16)
@@ -68,5 +69,9 @@ anchors_preset = 0
 layout_mode = 1
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="StatsDisplay" parent="." instance=ExtResource("11_stats_display")]
+visible = false
+layout_mode = 1
 
 [connection signal="obstacle_selected" from="Hotbar" to="." method="request_obstacle_spawn"]

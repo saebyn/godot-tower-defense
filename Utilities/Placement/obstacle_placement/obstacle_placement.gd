@@ -261,6 +261,10 @@ func _place_obstacle() -> void:
   real_obstacle.place(navigation_region)
   rebake_navigation_mesh.emit()
   
+  # Track obstacle placement in stats system
+  if StatsManager and _place_obstacle_type:
+    StatsManager.track_obstacle_placed(_place_obstacle_type.id)
+  
   _clear_obstacle_placement()
 
 func _cancel_obstacle_placement() -> void:

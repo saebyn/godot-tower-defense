@@ -6,6 +6,7 @@ extends CharacterBody3D
 @export var obstacle_group: String = "obstacles"
 @export var obstacle_attack_range: float = 6.0
 @export var currency_reward: int = 10
+@export var enemy_type: String = "base_enemy" ## Type identifier for stats tracking
 
 @onready var attack: Attack = $Attack
 @onready var health: Health = $Health
@@ -130,11 +131,17 @@ func _physics_process(_delta):
   move_and_slide()
 
 
-func _on_died():
-  Logger.info("Enemy", "Enemy died, removing from scene")
+func _on_died(damage_source: String = "unknown"):
+  Logger.info("Enemy", "Enemy (%s) died from %s, removing from scene" % [enemy_type, damage_source])
+  
+  # Track the defeat in stats system
+  if StatsManager:
+    var defeated_by_hand = (damage_source == "player")
+    StatsManager.track_enemy_defeated(enemy_type, defeated_by_hand)
+  
   # Award currency to the player
   CurrencyManager.earn_currency(currency_reward)
   queue_free()
 
-func _on_health_damaged(amount: int, hitpoints: int) -> void:
-  Logger.debug("Enemy.Combat", "Enemy took %d damage. Remaining HP: %d" % [amount, hitpoints])
+func _on_health_damaged(amount: int, hitpoints: int, damage_source: String = "unknown") -> void:
+  Logger.debug("Enemy.Combat", "Enemy (%s) took %d damage from %s. Remaining HP: %d" % [enemy_type, amount, damage_source, hitpoints])
