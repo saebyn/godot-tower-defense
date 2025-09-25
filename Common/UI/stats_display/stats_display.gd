@@ -17,6 +17,11 @@ func _ready():
 
 func _update_display():
   if not stats_label:
+    Logger.warn("StatsDisplay", "Stats label not found, cannot update display")
+    return
+  
+  if not StatsManager:
+    stats_label.text = "[color=red]StatsManager not available[/color]"
     return
   
   var stats = StatsManager.get_stats_summary()
