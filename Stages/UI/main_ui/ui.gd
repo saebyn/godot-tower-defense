@@ -8,10 +8,7 @@ signal obstacle_spawn_requested(obstacle: ObstacleTypeResource)
 
 
 func _process(_delta: float) -> void:
-  # Handle pause toggle (ESC key)
-  if Input.is_action_just_pressed("toggle_pause"):
-    GameManager.toggle_pause()
-  elif Input.is_action_just_pressed("toggle_in_game_menu"):
+  if Input.is_action_just_pressed("toggle_in_game_menu"):
     GameManager.toggle_in_game_menu()
   elif Input.is_action_just_pressed("toggle_stats"):
     _toggle_stats_display()
