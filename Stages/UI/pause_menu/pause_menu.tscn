@@ -43,6 +43,10 @@ text = "Resume"
 layout_mode = 2
 text = "Restart"
 
+[node name="MainMenuButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Main Menu"
+
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Quit"

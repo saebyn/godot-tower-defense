@@ -8,7 +8,7 @@ enum GameState {
   VICTORY
 }
 
-var current_state: GameState = GameState.PLAYING
+var current_state: GameState = GameState.MAIN_MENU
 var current_speed_multiplier: float = 1.0
 
 signal game_state_changed(new_state: GameState)
@@ -60,3 +60,15 @@ func toggle_in_game_menu():
     elif current_state == GameState.PLAYING:
         pause_game()
         set_game_state(GameState.IN_GAME_MENU)
+
+## Returns to the main menu from any game state
+func return_to_main_menu():
+    Logger.info("GameManager", "Returning to main menu")
+    resume_game() # Ensure the game is unpaused
+    set_game_state(GameState.MAIN_MENU)
+    
+    # Load the main menu scene
+    var main_menu_path = "res://Stages/UI/main_menu/main_menu.tscn"
+    var error = get_tree().change_scene_to_file(main_menu_path)
+    if error != OK:
+        Logger.error("GameManager", "Failed to load main menu scene: %s (Error: %d)" % [main_menu_path, error])

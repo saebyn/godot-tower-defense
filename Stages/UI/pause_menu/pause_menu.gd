@@ -3,12 +3,14 @@ class_name PauseMenu
 
 @onready var resume_button: Button = $VBoxContainer/ResumeButton
 @onready var restart_button: Button = $VBoxContainer/RestartButton
+@onready var main_menu_button: Button = $VBoxContainer/MainMenuButton
 @onready var quit_button: Button = $VBoxContainer/QuitButton
 
 func _ready():
   # Connect button signals
   resume_button.pressed.connect(_on_resume_pressed)
   restart_button.pressed.connect(_on_restart_pressed)
+  main_menu_button.pressed.connect(_on_main_menu_pressed)
   quit_button.pressed.connect(_on_quit_pressed)
   
   # Initially hide the pause menu
@@ -39,6 +41,9 @@ func _on_restart_pressed():
   GameManager.resume_game() # Unpause first
   # Reload the current scene
   get_tree().reload_current_scene()
+
+func _on_main_menu_pressed():
+  GameManager.return_to_main_menu()
 
 func _on_quit_pressed():
   # Quit the game

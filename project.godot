@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Tower Defense"
-run/main_scene="uid://b3ntnuvrvys63"
+run/main_scene="res://Stages/UI/main_menu/main_menu.tscn"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://Assets/Icons/icon.svg"
 

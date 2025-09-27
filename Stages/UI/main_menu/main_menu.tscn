@@ -1,0 +1,106 @@
+[gd_scene load_steps=4 format=3 uid="uid://dcw0hfnkb8jpt"]
+
+[ext_resource type="Script" path="res://Stages/UI/main_menu/main_menu.gd" id="1_j5t8x"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_2hxkw"]
+font_size = 32
+font_color = Color(0.922, 0.843, 0.702, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1xkzw"]
+bg_color = Color(0.427, 0.412, 0.298, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.922, 0.843, 0.702, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_j5t8x")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.235, 0.259, 0.231, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MenuPanel" type="Panel" parent="CenterContainer"]
+custom_minimum_size = Vector2(400, 500)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1xkzw")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MenuPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+anchor_left = 0.05
+anchor_top = 0.1
+anchor_right = 0.95
+anchor_bottom = 0.9
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/MenuPanel/VBoxContainer"]
+layout_mode = 2
+text = "TOWER DEFENSE"
+label_settings = SubResource("LabelSettings_2hxkw")
+horizontal_alignment = 1
+
+[node name="Spacer1" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="StartButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "START GAME"
+flat = true
+
+[node name="Spacer2" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="SettingsButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "SETTINGS"
+flat = true
+
+[node name="Spacer3" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="ExitButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "EXIT"
+flat = true
+
+[node name="Spacer4" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/ExitButton" to="." method="_on_exit_button_pressed"]
