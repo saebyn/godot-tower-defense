@@ -1,0 +1,17 @@
+[gd_resource type="ColorPalette" format=3 uid="uid://bphtutg5ewobh"]
+
+[resource]
+colors = PackedColorArray(
+    0.427, 0.412, 0.298, 1.0, ; dusty_olive
+    0.306, 0.314, 0.192, 1.0, ; fatigued_green
+    0.486, 0.310, 0.161, 1.0, ; burnt_orange
+    0.290, 0.204, 0.137, 1.0, ; decayed_wood
+    0.235, 0.259, 0.231, 1.0, ; urban_asphalt
+    0.369, 0.357, 0.259, 1.0, ; survival_gear
+    0.922, 0.843, 0.702, 1.0, ; canvas_highlight
+    0.694, 0.298, 0.122, 1.0, ; danger_red
+    0.290, 0.486, 0.431, 1.0, ; healing_mist
+    0.349, 0.431, 0.286, 1.0, ; zombie_flesh
+    0.239, 0.184, 0.251, 1.0, ; shadow_purple
+    0.239, 0.761, 0.757, 1.0 ; glow_teal
+)
