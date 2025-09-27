@@ -1,6 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://duje032qpuq2"]
+[gd_scene load_steps=12 format=3 uid="uid://duje032qpuq2"]
 
 [ext_resource type="Script" uid="uid://3yfu45cvudar" path="res://Stages/UI/main_ui/ui.gd" id="1_27fn8"]
+[ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
 [ext_resource type="PackedScene" uid="uid://bhnpr8mat2j5c" path="res://Common/UI/currency_display/currency_display.tscn" id="4_currency"]
 [ext_resource type="PackedScene" uid="uid://dqn8xvlx7m8kb" path="res://Common/UI/spawn_indicator/spawn_indicator.tscn" id="5_spawn_indicator"]
 [ext_resource type="PackedScene" uid="uid://djmk3m86x2pk1" path="res://Stages/UI/pause_menu/pause_menu.tscn" id="6_pause_menu"]
@@ -20,6 +21,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_theme")
 script = ExtResource("1_27fn8")
 
 [node name="CurrencyDisplay" parent="." instance=ExtResource("4_currency")]

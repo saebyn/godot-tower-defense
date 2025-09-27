@@ -1,22 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://dcw0hfnkb8jpt"]
+[gd_scene load_steps=3 format=3 uid="uid://dcw0hfnkb8jpt"]
 
 [ext_resource type="Script" path="res://Stages/UI/main_menu/main_menu.gd" id="1_j5t8x"]
+[ext_resource type="Theme" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_2hxkw"]
-font_size = 32
-font_color = Color(0.922, 0.843, 0.702, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1xkzw"]
-bg_color = Color(0.427, 0.412, 0.298, 0.9)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.922, 0.843, 0.702, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font_size = 36
+font_color = Color(0.239, 0.761, 0.757, 1)
+outline_size = 2
+outline_color = Color(0.239, 0.184, 0.251, 0.8)
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -25,6 +16,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_theme")
 script = ExtResource("1_j5t8x")
 
 [node name="Background" type="ColorRect" parent="."]
@@ -47,7 +39,6 @@ grow_vertical = 2
 [node name="MenuPanel" type="Panel" parent="CenterContainer"]
 custom_minimum_size = Vector2(400, 500)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_1xkzw")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MenuPanel"]
 layout_mode = 1
@@ -64,7 +55,7 @@ grow_vertical = 2
 [node name="TitleLabel" type="Label" parent="CenterContainer/MenuPanel/VBoxContainer"]
 layout_mode = 2
 text = "TOWER DEFENSE"
-label_settings = SubResource("LabelSettings_2hxkw")
+label_settings = SubResource("LabelSettings_title")
 horizontal_alignment = 1
 
 [node name="Spacer1" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
@@ -75,7 +66,6 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "START GAME"
-flat = true
 
 [node name="Spacer2" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
@@ -85,7 +75,6 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "SETTINGS"
-flat = true
 
 [node name="Spacer3" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
@@ -95,7 +84,6 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "EXIT"
-flat = true
 
 [node name="Spacer4" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
 layout_mode = 2

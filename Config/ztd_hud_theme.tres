@@ -1,0 +1,47 @@
+[gd_resource type="Theme" load_steps=4 format=3 uid="uid://cqkwb5x7h8joa"]
+
+[ext_resource type="Theme" path="res://Config/ztd_ui_theme.tres" id="1_base_theme"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hud_panel"]
+content_margin_left = 6.0
+content_margin_top = 4.0
+content_margin_right = 6.0
+content_margin_bottom = 4.0
+bg_color = Color(0.239, 0.184, 0.251, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.290, 0.486, 0.431, 0.9)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hud_button"]
+content_margin_left = 6.0
+content_margin_top = 4.0
+content_margin_right = 6.0
+content_margin_bottom = 4.0
+bg_color = Color(0.369, 0.357, 0.259, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.239, 0.761, 0.757, 0.8)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[resource]
+base_theme = ExtResource("1_base_theme")
+default_font_size = 12
+Button/colors/font_color = Color(0.239, 0.761, 0.757, 1)
+Button/colors/font_hover_color = Color(0.922, 0.843, 0.702, 1)
+Button/font_sizes/font_size = 12
+Button/styles/normal = SubResource("StyleBoxFlat_hud_button")
+Label/colors/font_color = Color(0.239, 0.761, 0.757, 1)
+Label/font_sizes/font_size = 12
+Panel/styles/panel = SubResource("StyleBoxFlat_hud_panel")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_hud_panel")
