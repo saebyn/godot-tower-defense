@@ -71,7 +71,7 @@ func _update_display():
   text += "Total Earned: %d\n" % stats.total_currency_earned
   text += "Max Held: %d\n" % stats.max_currency_held
   
-  text += "\n[center][color=gray][i]Press R to reset all stats[/i][/color][/center]"
+  text += "\n[center][color=gray][i]Press R twice to reset all stats[/i][/color][/center]"
   
   stats_label.text = text
 
