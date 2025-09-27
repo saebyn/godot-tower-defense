@@ -12,6 +12,10 @@ func _ready():
   # Call parent _ready first
   super._ready()
   
+  # Set damage source for obstacle attacks
+  if attack:
+    attack.damage_source = "obstacle"
+  
   # Set up detection timer
   if detection_timer:
     detection_timer.wait_time = detection_interval

@@ -10,15 +10,15 @@ class_name Health
 var max_hitpoints: int
 var dead: bool = false
 
-signal died
-signal damaged(amount: int, hitpoints: int)
+signal died(damage_source: String)
+signal damaged(amount: int, hitpoints: int, damage_source: String)
 
-func take_damage(amount: int):
+func take_damage(amount: int, damage_source: String = "unknown"):
   hitpoints -= amount
-  damaged.emit(amount, hitpoints)
+  damaged.emit(amount, hitpoints, damage_source)
   _update_display()
   if hitpoints <= 0:
-    die()
+    die(damage_source)
 
 
 func _ready():
@@ -33,10 +33,10 @@ func _update_display():
   health_bar.value = hitpoints
   health_label.text = str(hitpoints) + " / " + str(max_hitpoints)
 
-func die():
+func die(damage_source: String = "unknown"):
   if dead:
     return
 
   dead = true
   hitpoints = 0
-  died.emit()
+  died.emit(damage_source)
