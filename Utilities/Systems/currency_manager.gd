@@ -3,7 +3,7 @@ extends Node
 ## Manages the player's currency system
 ## Handles earning and spending currency throughout the game
 
-@export var starting_currency: int = 0
+@export var starting_currency: int = 100
 var current_currency: int = 0
 
 signal currency_changed(new_amount: int)

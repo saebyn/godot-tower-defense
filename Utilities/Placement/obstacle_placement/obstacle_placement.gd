@@ -85,9 +85,6 @@ func _validate_placement(target_position: Vector3) -> PlacementResult:
   if not _preview:
     return PlacementResult.new(false, PlacementResult.ValidationError.NO_PLACEABLE_OBSTACLE, "No obstacle selected for placement")
   
-  if not _is_within_navigation_region(target_position):
-    return PlacementResult.new(false, PlacementResult.ValidationError.OUTSIDE_NAVIGATION_REGION, "Position outside navigation bounds")
-  
   if _has_obstacle_collision(target_position):
     return PlacementResult.new(false, PlacementResult.ValidationError.OBSTACLE_COLLISION, "Collision with existing obstacle")
   
@@ -107,6 +104,21 @@ func _is_placement_valid(target_position: Vector3) -> bool:
   # TODO enhance feedback to user
   if not result.is_valid:
     Logger.debug("Placement", "Invalid placement: %s" % result.error_message)
+    # Debug information about why placement failed
+    match result.error:
+      PlacementResult.ValidationError.NO_PLACEABLE_OBSTACLE:
+        Logger.debug("Placement", "  - No placeable obstacle selected")
+      PlacementResult.ValidationError.OUTSIDE_NAVIGATION_REGION:
+        Logger.debug("Placement", "  - Outside navigation region")
+      PlacementResult.ValidationError.OBSTACLE_COLLISION:
+        Logger.debug("Placement", "  - Collision with existing obstacle")
+      PlacementResult.ValidationError.NO_TERRAIN_SUPPORT:
+        Logger.debug("Placement", "  - Invalid terrain support")
+      PlacementResult.ValidationError.INSUFFICIENT_CLEARANCE:
+        Logger.debug("Placement", "  - Insufficient clearance")
+      PlacementResult.ValidationError.INSUFFICIENT_FUNDS:
+        Logger.debug("Placement", "  - Insufficient funds")
+
   return result.is_valid
 
 func _is_within_navigation_region(target_position: Vector3) -> bool:
@@ -114,8 +126,8 @@ func _is_within_navigation_region(target_position: Vector3) -> bool:
     return false
   
   # Check if position is within the navigation region bounds
-  var nav_mesh = navigation_region.navigation_mesh
-  var nav_region_transform = navigation_region.global_transform
+  var nav_mesh := navigation_region.navigation_mesh
+  var nav_region_transform := navigation_region.global_transform
   
   # Get the navigation mesh AABB
   var vertices = nav_mesh.vertices
@@ -221,16 +233,6 @@ func _place_obstacle() -> void:
   
   # Check if placement is valid
   if not _is_placement_valid(target_position):
-    Logger.warn("Placement", "Cannot place obstacle: Invalid placement location")
-    # Debug information about why placement failed
-    if not _is_within_navigation_region(target_position):
-      Logger.debug("Placement", "  - Outside navigation region")
-    if _has_obstacle_collision(target_position):
-      Logger.debug("Placement", "  - Collision with existing obstacle")
-    if not _has_terrain_support(target_position):
-      Logger.debug("Placement", "  - Invalid terrain support")
-    if not _has_sufficient_clearance(target_position):
-      Logger.debug("Placement", "  - Insufficient clearance")
     return
 
   # Deduct cost

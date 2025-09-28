@@ -1396,6 +1396,8 @@ bones/57/rotation = Quaternion(-0.0598794, 0.997998, 0.0200427, 0.00359886)
 bones/57/scale = Vector3(1, 1, 1)
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+navigation_layers = 3
+debug_enabled = true
 debug_path_custom_color = Color(1, 0.0392157, 0.0352941, 1)
 
 [node name="Attack" parent="." instance=ExtResource("3_qi2p4")]

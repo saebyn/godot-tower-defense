@@ -113,7 +113,7 @@ func _physics_process(_delta):
     Logger.debug("Enemy.Navigation", "Navigation map is empty, cannot navigate.")
     return
   if navigation_agent.is_navigation_finished():
-    Logger.debug("Enemy.Navigation", "Navigation finished.")
+    Logger.trace("Enemy.Navigation", "Navigation finished.")
     velocity = Vector3.ZERO
     move_and_slide()
     return

@@ -1,27 +1,15 @@
-[gd_scene load_steps=15 format=3 uid="uid://b3ntnuvrvys63"]
+[gd_scene load_steps=10 format=3 uid="uid://b3ntnuvrvys63"]
 
 [ext_resource type="Script" uid="uid://2x2o4sni7v6q" path="res://Stages/Game/main/main.gd" id="1_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://d2nt6gtj5g3cm" path="res://Common/Components/attack/attack.tscn" id="2_kek77"]
 [ext_resource type="Environment" uid="uid://oc0251grk5l0" path="res://Config/Environments/new_environment.tres" id="2_lquwl"]
 [ext_resource type="PackedScene" uid="uid://duje032qpuq2" path="res://Stages/UI/main_ui/ui.tscn" id="3_272bh"]
-[ext_resource type="PackedScene" uid="uid://b1yehhqyw2nfo" path="res://Entities/Targets/Templates/base_target/target.tscn" id="5_5vw27"]
 [ext_resource type="Script" uid="uid://c474c2uw4525n" path="res://Stages/Game/main/camera.gd" id="5_hjeu7"]
-[ext_resource type="Script" uid="uid://b7jdk6preu1s4" path="res://Common/Systems/spawner/wave.gd" id="7_i0vvu"]
+[ext_resource type="PackedScene" uid="uid://o24bc34g5fea" path="res://Stages/Levels/level_1.tscn" id="6_pcgyj"]
 [ext_resource type="PackedScene" uid="uid://bpf2dmre1y8t0" path="res://Utilities/Placement/obstacle_placement/obstacle_placement.tscn" id="7_kek77"]
-[ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://Entities/Enemies/Templates/base_enemy/enemy.tscn" id="7_wy7n0"]
-[ext_resource type="PackedScene" uid="uid://cyp50ln3gbmtt" path="res://Common/Systems/spawner/enemy_spawner.tscn" id="8_kek77"]
 
-[sub_resource type="NavigationMesh" id="NavigationMesh_ig7tw"]
-vertices = PackedVector3Array(17.8745, 0.5, -345.732, -335.375, 0.5, 7.26849, 17.3745, 0.5, 360.268, 17.8745, 0.5, 360.268, 370.625, 0.5, 7.51849, 370.625, 0.5, 7.01849)
-polygons = [PackedInt32Array(5, 4, 0), PackedInt32Array(0, 4, 3), PackedInt32Array(0, 3, 2), PackedInt32Array(0, 2, 1)]
+[sub_resource type="NavigationMesh" id="NavigationMesh_pcgyj"]
 geometry_parsed_geometry_type = 1
-agent_radius = 2.0
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_0xm2m"]
-size = Vector2(500, 500)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_272bh"]
-size = Vector3(500, 1, 500)
 
 [sub_resource type="Environment" id="Environment_272bh"]
 
@@ -36,51 +24,23 @@ process_mode = 3
 
 [node name="Camera3D" type="Camera3D" parent="."]
 process_mode = 3
-transform = Transform3D(-4.37114e-08, 0.707107, -0.707107, 0, 0.707107, 0.707107, 1, 3.09086e-08, -3.09086e-08, -7, 40, 7)
+transform = Transform3D(-4.37114e-08, 0.707107, -0.707107, 0, 0.707107, 0.707107, 1, 3.09086e-08, -3.09086e-08, -248.376, 113.256, -24.6237)
 environment = ExtResource("2_lquwl")
 projection = 1
 fov = 58.3
-size = 100.0
+size = 19.269
 script = ExtResource("5_hjeu7")
 camera_move_speed = 30.0
 camera_zoom_fast_multiplier = 5.0
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.866025, -0.25, 0.433013, 2.18557e-08, 0.866025, 0.5, -0.5, -0.433013, 0.75, 3, 3, 4)
+camera_max_size = 300.0
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
-navigation_mesh = SubResource("NavigationMesh_ig7tw")
+navigation_mesh = SubResource("NavigationMesh_pcgyj")
+use_edge_connections = false
 
-[node name="Ground" type="MeshInstance3D" parent="NavigationRegion3D"]
-transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 17.678, 0, 7.322)
-mesh = SubResource("PlaneMesh_0xm2m")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Ground"]
-collision_layer = 17
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Ground/StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
-shape = SubResource("BoxShape3D_272bh")
-
-[node name="Target" parent="." instance=ExtResource("5_5vw27")]
-transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -15.5563, 2, 40.5564)
-
-[node name="EnemySpawner" parent="." instance=ExtResource("8_kek77")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 190, 0, -25)
-
-[node name="Wave1" type="Node3D" parent="EnemySpawner"]
-script = ExtResource("7_i0vvu")
-enemy_scenes = Array[PackedScene]([ExtResource("7_wy7n0")])
-enemy_counts = Array[int]([1])
-metadata/_custom_type_script = "uid://b7jdk6preu1s4"
-
-[node name="Wave2" type="Node3D" parent="EnemySpawner"]
-script = ExtResource("7_i0vvu")
-duration = 30.0
-start_delay = 10.0
-enemy_scenes = Array[PackedScene]([ExtResource("7_wy7n0")])
-enemy_counts = Array[int]([5])
-metadata/_custom_type_script = "uid://b7jdk6preu1s4"
+[node name="Level1" parent="." node_paths=PackedStringArray("ui") instance=ExtResource("6_pcgyj")]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0, 0, 0)
+ui = NodePath("../UI")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_272bh")
