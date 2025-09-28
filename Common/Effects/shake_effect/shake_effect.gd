@@ -8,7 +8,7 @@ extends Node
 
 var shake_tween: Tween # Tween for shake animation
 
-func damage_taken(_amount: int, _current_hp: int) -> void:
+func damage_taken(_amount: int, _current_hp: int, _source: String) -> void:
   _shake_effect()
 
 func _shake_effect():
