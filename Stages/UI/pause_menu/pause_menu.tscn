@@ -1,14 +1,16 @@
 [gd_scene load_steps=3 format=3 uid="uid://djmk3m86x2pk1"]
 
-[ext_resource type="Script" path="res://Stages/UI/pause_menu/pause_menu.gd" id="1_rho3q"]
-[ext_resource type="Theme" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
+[ext_resource type="Script" uid="uid://bw84cn2yavr76" path="res://Stages/UI/pause_menu/pause_menu.gd" id="1_rho3q"]
+[ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
 
 [node name="PauseMenu" type="Control"]
+process_mode = 2
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-process_mode = 2
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("2_theme")
 script = ExtResource("1_rho3q")
@@ -18,6 +20,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0, 0, 0, 0.5)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -31,6 +35,8 @@ offset_left = -100.0
 offset_top = -80.0
 offset_right = 100.0
 offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="PauseLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
@@ -52,3 +58,8 @@ text = "Main Menu"
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Quit"
+
+[connection signal="pressed" from="VBoxContainer/ResumeButton" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="VBoxContainer/RestartButton" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="VBoxContainer/MainMenuButton" to="." method="_on_main_menu_pressed"]
+[connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_pressed"]

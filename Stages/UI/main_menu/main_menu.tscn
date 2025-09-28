@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://dcw0hfnkb8jpt"]
+[gd_scene load_steps=4 format=3 uid="uid://dcw0hfnkb8jpt"]
 
-[ext_resource type="Script" path="res://Stages/UI/main_menu/main_menu.gd" id="1_j5t8x"]
-[ext_resource type="Theme" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
+[ext_resource type="Script" uid="uid://bor5bken0xt0" path="res://Stages/UI/main_menu/main_menu.gd" id="1_j5t8x"]
+[ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_title"]
 font_size = 36
@@ -42,9 +42,7 @@ layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MenuPanel"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = -1
 anchor_left = 0.05
 anchor_top = 0.1
 anchor_right = 0.95
