@@ -10,11 +10,12 @@ extends Node
 ##   Logger.error("System", "Failed to load enemy config: %s" % config_path)
 
 enum LogLevel {
-  DEBUG = 0,
-  INFO = 1,
-  WARN = 2,
-  ERROR = 3,
-  NONE = 4 # Disables all logging
+  TRACE,
+  DEBUG,
+  INFO,
+  WARN,
+  ERROR,
+  NONE # Disables all logging
 }
 
 # Current global log level - can be overridden in project settings
@@ -25,8 +26,8 @@ var current_log_level: LogLevel = LogLevel.INFO
 var enabled_scopes: PackedStringArray = ["*"]
 
 # Internal settings
-var _log_level_names: PackedStringArray = ["DEBUG", "INFO", "WARN", "ERROR"]
-var _log_level_colors: PackedStringArray = ["[color=gray]", "[color=lightblue]", "[color=yellow]", "[color=red]"]
+var _log_level_names: PackedStringArray = ["TRACE", "DEBUG", "INFO", "WARN", "ERROR"]
+var _log_level_colors: PackedStringArray = ["[color=gray]", "[color=lightblue]", "[color=green]", "[color=orange]", "[color=red]"]
 
 # Console commands for runtime control
 var _console_commands: Dictionary = {}
@@ -119,6 +120,9 @@ func _is_scope_enabled(scope: String) -> bool:
 
 ## Public logging methods for each level
 
+func trace(scope: String, message: String) -> void:
+  _log(LogLevel.TRACE, scope, message)
+
 func debug(scope: String, message: String) -> void:
   _log(LogLevel.DEBUG, scope, message)
 
@@ -192,7 +196,7 @@ func _cmd_show_info(_args: PackedStringArray) -> void:
   print("Current Log Level: %s" % _log_level_names[current_log_level])
   print("Enabled Scopes: %s" % ", ".join(enabled_scopes))
   print("Available Commands:")
-  print("  log_level <DEBUG|INFO|WARN|ERROR|NONE> - Set log level")
+  print("  log_level <TRACE|DEBUG|INFO|WARN|ERROR|NONE> - Set log level")
   print("  log_scopes <scope1,scope2,...> - Set enabled scopes")
   print("  log_info - Show this information")
 
