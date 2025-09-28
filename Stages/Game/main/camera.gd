@@ -32,7 +32,7 @@ func _process(delta: float) -> void:
   
   if zoom_in_pressed or zoom_out_pressed:
     # Check if Shift is held for fast zoom
-    var zoom_multiplier = camera_zoom_fast_multiplier if Input.is_action_pressed("zoom_fast") else 1.0
+    var zoom_multiplier = camera_zoom_fast_multiplier if not Input.is_action_pressed("zoom_slow") else 1.0
     var actual_zoom_step = camera_zoom_step * zoom_multiplier
     
     var target_size: float
