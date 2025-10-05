@@ -9,6 +9,7 @@ This is a work-in-progress 3D tower defense game featuring:
 - Enemy AI with pathfinding navigation
 - Destructible targets
 - Orthogonal camera view optimized for strategy gameplay
+- Obstacle/tower placement system with buildable area restrictions
 
 ## Controls
 
@@ -115,12 +116,20 @@ This structure supports the planned features including multiple levels, wave-bas
 
 ## Development
 
-This project is in early development. Current features include basic camera controls and enemy AI pathfinding. Future planned features may include:
-- Tower placement and management
+This project is in early development. Current features include:
+- Basic camera controls
+- Enemy AI pathfinding
+- Obstacle/tower placement with buildable area validation
+- Visual feedback for valid/invalid placement
+
+Future planned features may include:
+- Tower upgrading and management
 - Multiple enemy types
 - Wave-based gameplay
 - Resource management
 - Level progression
+
+See [docs/BUILDABLE_AREA.md](docs/BUILDABLE_AREA.md) for information about the buildable area system.
 
 ## License
 
