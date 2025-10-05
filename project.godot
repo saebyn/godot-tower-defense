@@ -26,6 +26,7 @@ StatsManager="*res://Utilities/Systems/stats_manager.gd"
 [global_group]
 
 targets=""
+navigation_mesh_source_group=""
 
 [input]
 
@@ -174,6 +175,7 @@ zoom_slow={
 [layer_names]
 
 3d_physics/layer_5="Ground"
+3d_physics/layer_6="obstacles"
 
 [logging]
 

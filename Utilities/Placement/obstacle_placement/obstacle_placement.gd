@@ -6,13 +6,14 @@ const ObstaclePreviewScene = preload("res://Utilities/Placement/obstacle_preview
 signal rebake_navigation_mesh
 
 @export_group("Placement Settings")
-@export var placement_clearance: float = 3.0 # Minimum distance from other obstacles
-@export var border_margin: float = 2.0 # Minimum distance from navigation region border
+@export var placement_clearance: float = 3.0 ## Minimum distance from other obstacles
+@export var border_margin: float = 2.0 ## Minimum distance from navigation region border
+@export var obstacle_group: String = "navigation_mesh_source_group" ## Group to indicate the obstacle should affect navigation
 
 @export_group("Raycast Settings")
-@export var raycast_length: float = 1000.0 # Length of the raycast for obstacle placement
-@export var raycast_start: Vector3 = Vector3(0, 10, 0) # Start position offset for the raycast
-@export var raycast_down: Vector3 = Vector3(0, -20, 0) # Direction and length to cast downwards
+@export var raycast_length: float = 1000.0 ## Length of the raycast for obstacle placement
+@export var raycast_start: Vector3 = Vector3(0, 10, 0) ## Start position offset for the raycast
+@export var raycast_down: Vector3 = Vector3(0, -20, 0) ## Direction and length to cast downwards
 
 @export_group("Node References")
 @export var navigation_region: NavigationRegion3D
@@ -261,6 +262,10 @@ func _place_obstacle() -> void:
   # Add to scene and place
   get_parent().add_child(real_obstacle)
   real_obstacle.place(navigation_region)
+
+  # Ensure the obstacle is in the correct group for navigation
+  real_obstacle.add_to_group(obstacle_group)
+
   rebake_navigation_mesh.emit()
   
   # Track obstacle placement in stats system

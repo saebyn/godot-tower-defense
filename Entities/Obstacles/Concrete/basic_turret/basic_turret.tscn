@@ -1,8 +1,10 @@
 [gd_scene load_steps=2 format=3 uid="uid://bl5g2v8n3jkph"]
 
-[ext_resource type="PackedScene" uid="uid://cj8xy9dt0k2cd" path="res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.tscn" id="1_turret"]
+[ext_resource type="PackedScene" uid="uid://cj8x0adt0k2cd" path="res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.tscn" id="1_turret"]
 
 [node name="BasicTurret" instance=ExtResource("1_turret")]
+collision_layer = 34
+enemy_group = "enemies"
 attack_range = 12.0
 detection_interval = 0.3
 
