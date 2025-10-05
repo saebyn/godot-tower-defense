@@ -24,26 +24,6 @@ func _ready() -> void:
   # Set player attack damage source
   if attack:
     attack.damage_source = "player"
-  
-  # Connect enemy spawner signal to UI immediately (not deferred)
-  _connect_signals()
-
-func _connect_signals() -> void:
-  if enemy_spawner and ui:
-    enemy_spawner.enemy_spawned.connect(ui._on_enemy_spawned)
-    enemy_spawner.wave_started.connect(_on_wave_started)
-    enemy_spawner.wave_completed.connect(_on_wave_completed)
-    print("Connected enemy_spawned and wave signals to UI")
-  else:
-    print("Warning: enemy_spawner or ui not available for signal connection")
-
-func _on_wave_started(wave: Wave) -> void:
-  var wave_number = enemy_spawner.get_current_wave_number()
-  ui._on_wave_started(wave, wave_number)
-
-func _on_wave_completed(wave: Wave) -> void:
-  var wave_number = enemy_spawner.get_current_wave_number()
-  ui._on_wave_completed(wave, wave_number)
 
 
 func rebake_navigation_mesh():

@@ -17,7 +17,7 @@ func _on_died():
   Logger.info("Obstacle", "Obstacle destroyed")
   queue_free()
 
-func _on_health_damaged(amount: int, hitpoints: int) -> void:
+func _on_health_damaged(amount: int, hitpoints: int, _source: String) -> void:
   Logger.debug("Obstacle.Combat", "Obstacle took %d damage. Remaining HP: %d" % [amount, hitpoints])
 
 func place(navigation_region: NavigationRegion3D) -> void:
