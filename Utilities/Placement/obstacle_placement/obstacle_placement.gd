@@ -86,6 +86,9 @@ func _validate_placement(target_position: Vector3) -> PlacementResult:
   if not _preview:
     return PlacementResult.new(false, PlacementResult.ValidationError.NO_PLACEABLE_OBSTACLE, "No obstacle selected for placement")
   
+  if not _is_within_navigation_region(target_position):
+    return PlacementResult.new(false, PlacementResult.ValidationError.OUTSIDE_NAVIGATION_REGION, "Outside buildable area")
+  
   if _has_obstacle_collision(target_position):
     return PlacementResult.new(false, PlacementResult.ValidationError.OBSTACLE_COLLISION, "Collision with existing obstacle")
   
