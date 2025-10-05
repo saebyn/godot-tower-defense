@@ -16,9 +16,16 @@ enum AttackResult {
 
 @onready var attack_timer: Timer = $AttackTimer
 
+@export_group("Damage Settings")
 @export var damage_amount: int = 10
 @export var damage_cooldown: float = 1.0
 @export var damage_source: String = "unknown" ## Source identifier for damage tracking
+
+@export_group("Effects")
+@export var hit_sound: AudioManager.SoundEffect = AudioManager.SoundEffect.PLAYER_ATTACK_HIT
+@export var audio_player: AudioStreamPlayer
+
+
 var is_on_cooldown: bool = false
 
 func perform_attack(target: Node) -> AttackResult:
@@ -29,15 +36,18 @@ func perform_attack(target: Node) -> AttackResult:
       var health = target.get_node("Health")
       if health is Health:
         health.take_damage(damage_amount, damage_source)
+        if audio_player:
+          AudioManager.play_sound(audio_player, hit_sound)
+        # Start cooldown
+        is_on_cooldown = true
+        attack_timer.start(damage_cooldown)
+        cooldown_started.emit()
+        return AttackResult.SUCCESS
       else:
         return AttackResult.INVALID_TARGET
     else:
       return AttackResult.INVALID_TARGET
-    # Start cooldown
-    is_on_cooldown = true
-    attack_timer.start(damage_cooldown)
-    cooldown_started.emit()
-    return AttackResult.SUCCESS
+   
   return AttackResult.ON_COOLDOWN
 
 func cancel():
