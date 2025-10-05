@@ -5,6 +5,9 @@
 extends Node
 class_name Attack
 
+signal cooldown_started
+signal cooldown_ended
+
 enum AttackResult {
   SUCCESS,
   ON_COOLDOWN,
@@ -17,11 +20,8 @@ enum AttackResult {
 @export var damage_cooldown: float = 1.0
 @export var damage_source: String = "unknown" ## Source identifier for damage tracking
 var is_on_cooldown: bool = false
-var current_target: Node = null
-
 
 func perform_attack(target: Node) -> AttackResult:
-  current_target = target
   if not is_on_cooldown:
     # check to see if the target has a child node named "Health"
     # TODO consider finding the node using metadata
@@ -36,13 +36,14 @@ func perform_attack(target: Node) -> AttackResult:
     # Start cooldown
     is_on_cooldown = true
     attack_timer.start(damage_cooldown)
+    cooldown_started.emit()
     return AttackResult.SUCCESS
   return AttackResult.ON_COOLDOWN
 
 func cancel():
-  is_on_cooldown = false
   attack_timer.stop()
-  current_target = null
+  _on_AttackTimer_timeout()
 
 func _on_AttackTimer_timeout():
   is_on_cooldown = false
+  cooldown_ended.emit()
