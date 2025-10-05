@@ -18,6 +18,7 @@ signal rebake_navigation_mesh
 @export_group("Node References")
 @export var navigation_region: NavigationRegion3D
 @export var camera: Camera3D
+@export var buildable_area: Area3D ## Optional: Defines the buildable area (smaller than navigation region)
 
 @onready var raycast: RayCast3D = $RayCast3D
 @onready var obstacle_detection_raycast: RayCast3D = RayCast3D.new()
@@ -86,7 +87,7 @@ func _validate_placement(target_position: Vector3) -> PlacementResult:
   if not _preview:
     return PlacementResult.new(false, PlacementResult.ValidationError.NO_PLACEABLE_OBSTACLE, "No obstacle selected for placement")
   
-  if not _is_within_navigation_region(target_position):
+  if not _is_within_buildable_area(target_position):
     return PlacementResult.new(false, PlacementResult.ValidationError.OUTSIDE_NAVIGATION_REGION, "Outside buildable area")
   
   if _has_obstacle_collision(target_position):
@@ -125,36 +126,25 @@ func _is_placement_valid(target_position: Vector3) -> bool:
 
   return result.is_valid
 
-func _is_within_navigation_region(target_position: Vector3) -> bool:
-  if not navigation_region or not navigation_region.navigation_mesh:
-    return false
+func _is_within_buildable_area(target_position: Vector3) -> bool:
+  # If no buildable area is defined, allow placement anywhere (legacy behavior)
+  if not buildable_area:
+    return true
   
-  # Check if position is within the navigation region bounds
-  var nav_mesh := navigation_region.navigation_mesh
-  var nav_region_transform := navigation_region.global_transform
+  # Use physics point query to check if position is within the buildable area
+  var space_state = get_world_3d().direct_space_state
+  var query = PhysicsPointQueryParameters3D.new()
+  query.position = target_position
+  query.collision_mask = buildable_area.collision_layer
   
-  # Get the navigation mesh AABB
-  var vertices = nav_mesh.vertices
-  if vertices.size() == 0:
-    return false
+  var results = space_state.intersect_point(query)
   
-  var min_bounds = vertices[0]
-  var max_bounds = vertices[0]
+  # Check if any of the results is our buildable area
+  for result in results:
+    if result.collider == buildable_area:
+      return true
   
-  for vertex in vertices:
-    min_bounds.x = min(min_bounds.x, vertex.x)
-    min_bounds.z = min(min_bounds.z, vertex.z)
-    max_bounds.x = max(max_bounds.x, vertex.x)
-    max_bounds.z = max(max_bounds.z, vertex.z)
-
-  # Transform position to navigation region local space
-  var local_pos = nav_region_transform.affine_inverse() * target_position
-
-  # Check if within bounds (with some margin)
-  return (local_pos.x >= min_bounds.x + border_margin and
-          local_pos.x <= max_bounds.x - border_margin and
-          local_pos.z >= min_bounds.z + border_margin and
-          local_pos.z <= max_bounds.z - border_margin)
+  return false
 
 func _has_obstacle_collision(target_position: Vector3) -> bool:
   if not _preview:
