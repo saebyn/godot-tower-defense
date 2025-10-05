@@ -8,8 +8,9 @@ extends CharacterBody3D
 @export var currency_reward: int = 10
 @export var enemy_type: String = "base_enemy" ## Type identifier for stats tracking
 
-@onready var attack: Attack = $Attack
-@onready var health: Health = $Health
+var attack: Attack
+var health: Health
+
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 var current_target: Node3D = null
@@ -17,6 +18,12 @@ var current_target: Node3D = null
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
 
 func _ready():
+  # Find components via metadata
+  if has_meta("attack_component"):
+    attack = get_meta("attack_component")
+  if has_meta("health_component"):
+    health = get_meta("health_component")
+  
   # These values need to be adjusted for the actor's speed
   # and the navigation layout.
   navigation_agent.path_desired_distance = 0.5

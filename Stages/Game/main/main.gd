@@ -7,7 +7,7 @@ extends Node3D
 @onready var camera: Camera3D = $Camera3D
 @onready var navigation_region: NavigationRegion3D = $NavigationRegion3D
 @onready var enemy_raycast: RayCast3D = $EnemyRayCast3D
-@onready var attack: Attack = $Attack
+var attack: Attack
 @onready var ui: Control = $UI
 @onready var enemy_spawner: EnemySpawner = $EnemySpawner
 
@@ -16,6 +16,10 @@ extends Node3D
 var obstacle_raycast: RayCast3D
 
 func _ready() -> void:
+  # Find Attack component via metadata
+  if has_meta("attack_component"):
+    attack = get_meta("attack_component")
+  
   # Create obstacle detection raycast
   obstacle_raycast = RayCast3D.new()
   obstacle_raycast.enabled = false

@@ -26,6 +26,10 @@ func _ready():
   max_hitpoints = hitpoints
   _update_display()
   subviewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+  
+  # Register this component in parent's metadata for discovery
+  if get_parent():
+    get_parent().set_meta("health_component", self)
 
 func _update_display():
   # Set up health display UI
