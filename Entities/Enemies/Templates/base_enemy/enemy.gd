@@ -118,16 +118,16 @@ func _physics_process(_delta):
     move_and_slide()
     return
 
-  var current_agent_position: Vector3 = global_position
   var next_path_position: Vector3 = navigation_agent.get_next_path_position()
 
-  var direction := current_agent_position.direction_to(next_path_position)
-
-  # face towards the direction of movement
-  look_at(next_path_position, Vector3.UP, true)
-
   # Move directly without avoidance
+  var direction := global_position.direction_to(next_path_position)
   velocity = direction * movement_speed
+
+  # if we are moving, face the direction we are moving
+  if velocity.length() > 0.01:
+    look_at(next_path_position, Vector3.UP, true)
+
   move_and_slide()
 
 

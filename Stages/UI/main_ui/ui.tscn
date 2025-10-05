@@ -69,8 +69,6 @@ anchors_preset = 0
 
 [node name="PauseMenu" parent="." instance=ExtResource("6_pause_menu")]
 layout_mode = 1
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="StatsDisplay" parent="." instance=ExtResource("11_stats_display")]
 layout_mode = 1
