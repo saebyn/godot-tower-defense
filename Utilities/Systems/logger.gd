@@ -35,6 +35,9 @@ var _console_commands: Dictionary = {}
 signal log_message_emitted(level: LogLevel, scope: String, message: String, timestamp: String)
 
 func _ready() -> void:
+  # Initialize random number generator seed
+  randomize()
+  
   # Load settings from project settings
   _load_project_settings()
   
@@ -46,6 +49,7 @@ func _ready() -> void:
     _log_level_names[current_log_level],
     ", ".join(enabled_scopes)
   ])
+  info("Logger", "Random number generator initialized")
 
 ## Load logging configuration from project settings
 func _load_project_settings() -> void:
