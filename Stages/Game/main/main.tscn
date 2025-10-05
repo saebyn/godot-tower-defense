@@ -24,6 +24,7 @@ script = ExtResource("1_1bvp3")
 
 [node name="Attack" parent="." instance=ExtResource("2_kek77")]
 damage_amount = 1
+damage_source = "player"
 
 [node name="UI" parent="." instance=ExtResource("3_272bh")]
 process_mode = 3
