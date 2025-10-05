@@ -5,7 +5,9 @@
 extends Node
 class_name Attack
 
+# Emitted immediately after a successful attack when cooldown begins.
 signal cooldown_started
+# Emitted when the attack cooldown completes or is canceled early.
 signal cooldown_ended
 
 enum AttackResult {
