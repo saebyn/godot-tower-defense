@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://b3ntnuvrvys63"]
+[gd_scene load_steps=11 format=3 uid="uid://b3ntnuvrvys63"]
 
 [ext_resource type="Script" uid="uid://2x2o4sni7v6q" path="res://Stages/Game/main/main.gd" id="1_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://d2nt6gtj5g3cm" path="res://Common/Components/attack/attack.tscn" id="2_kek77"]
 [ext_resource type="Environment" uid="uid://oc0251grk5l0" path="res://Config/Environments/new_environment.tres" id="2_lquwl"]
+[ext_resource type="Texture2D" uid="uid://cfwritmlpver8" path="res://Assets/Icons/red_x.png" id="2_wy7n0"]
 [ext_resource type="PackedScene" uid="uid://duje032qpuq2" path="res://Stages/UI/main_ui/ui.tscn" id="3_272bh"]
 [ext_resource type="Script" uid="uid://c474c2uw4525n" path="res://Stages/Game/main/camera.gd" id="5_hjeu7"]
 [ext_resource type="PackedScene" uid="uid://o24bc34g5fea" path="res://Stages/Levels/level_1.tscn" id="6_pcgyj"]
@@ -21,9 +22,13 @@ agent_radius = 1.0
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_1bvp3")
+attack_waiting_cursor_image = ExtResource("2_wy7n0")
 
-[node name="Attack" parent="." instance=ExtResource("2_kek77")]
+[node name="Attack" parent="." node_paths=PackedStringArray("audio_player") instance=ExtResource("2_kek77")]
 damage_amount = 1
+damage_cooldown = 0.1
+damage_source = "player"
+audio_player = NodePath("../AudioStreamPlayer")
 
 [node name="UI" parent="." instance=ExtResource("3_272bh")]
 process_mode = 3
@@ -58,5 +63,10 @@ camera = NodePath("../Camera3D")
 transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0, 0, 0)
 ui = NodePath("../UI")
 
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+bus = &"Sound Effects"
+
+[connection signal="cooldown_ended" from="Attack" to="." method="_on_attack_cooldown_ended"]
+[connection signal="cooldown_started" from="Attack" to="." method="_on_attack_cooldown_started"]
 [connection signal="obstacle_spawn_requested" from="UI" to="." method="_on_obstacle_spawn_requested"]
 [connection signal="rebake_navigation_mesh" from="ObstaclePlacement" to="." method="rebake_navigation_mesh"]

@@ -5,6 +5,11 @@
 extends Node
 class_name Attack
 
+# Emitted immediately after a successful attack when cooldown begins.
+signal cooldown_started
+# Emitted when the attack cooldown completes or is canceled early.
+signal cooldown_ended
+
 enum AttackResult {
   SUCCESS,
   ON_COOLDOWN,
@@ -13,15 +18,19 @@ enum AttackResult {
 
 @onready var attack_timer: Timer = $AttackTimer
 
+@export_group("Damage Settings")
 @export var damage_amount: int = 10
 @export var damage_cooldown: float = 1.0
 @export var damage_source: String = "unknown" ## Source identifier for damage tracking
-var is_on_cooldown: bool = false
-var current_target: Node = null
 
+@export_group("Effects")
+@export var hit_sound: AudioManager.SoundEffect = AudioManager.SoundEffect.PLAYER_ATTACK_HIT
+@export var audio_player: AudioStreamPlayer
+
+
+var is_on_cooldown: bool = false
 
 func perform_attack(target: Node) -> AttackResult:
-  current_target = target
   if not is_on_cooldown:
     # check to see if the target has a child node named "Health"
     # TODO consider finding the node using metadata
@@ -29,20 +38,24 @@ func perform_attack(target: Node) -> AttackResult:
       var health = target.get_node("Health")
       if health is Health:
         health.take_damage(damage_amount, damage_source)
+        if audio_player:
+          AudioManager.play_sound(audio_player, hit_sound)
+        # Start cooldown
+        is_on_cooldown = true
+        attack_timer.start(damage_cooldown)
+        cooldown_started.emit()
+        return AttackResult.SUCCESS
       else:
         return AttackResult.INVALID_TARGET
     else:
       return AttackResult.INVALID_TARGET
-    # Start cooldown
-    is_on_cooldown = true
-    attack_timer.start(damage_cooldown)
-    return AttackResult.SUCCESS
+   
   return AttackResult.ON_COOLDOWN
 
 func cancel():
-  is_on_cooldown = false
   attack_timer.stop()
-  current_target = null
+  _on_AttackTimer_timeout()
 
 func _on_AttackTimer_timeout():
   is_on_cooldown = false
+  cooldown_ended.emit()

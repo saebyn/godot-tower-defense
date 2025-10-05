@@ -2,6 +2,7 @@ extends Node3D
 
 @export_group("Attack Settings")
 @export var raycast_length: float = 1000.0
+@export var attack_waiting_cursor_image: Texture2D
 
 @onready var camera: Camera3D = $Camera3D
 @onready var navigation_region: NavigationRegion3D = $NavigationRegion3D
@@ -112,3 +113,10 @@ func _handle_obstacle_remove_click(click_position: Vector2):
 func _on_obstacle_spawn_requested(obstacle: ObstacleTypeResource) -> void:
   # Forward the signal to the obstacle placement system
   obstacle_placement._on_obstacle_spawn_requested(obstacle)
+
+func _on_attack_cooldown_started():
+  if attack_waiting_cursor_image:
+    Input.set_custom_mouse_cursor(attack_waiting_cursor_image)
+
+func _on_attack_cooldown_ended():
+  Input.set_custom_mouse_cursor(null)
