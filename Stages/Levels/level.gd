@@ -3,6 +3,7 @@ extends Node3D
 
 @export var enemy_spawner: EnemySpawner
 @export var ui: Control
+@export var buildable_area: Area3D ## Optional: Defines the buildable area for obstacle placement
 
 
 func _ready() -> void:

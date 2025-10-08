@@ -18,7 +18,9 @@ signal rebake_navigation_mesh
 @export_group("Node References")
 @export var navigation_region: NavigationRegion3D
 @export var camera: Camera3D
-@export var buildable_area: Area3D ## Optional: Defines the buildable area (smaller than navigation region)
+## Optional: Defines the buildable area (smaller than navigation region)
+## If not set, will automatically search for buildable_area in parent Level node
+@export var buildable_area: Area3D
 
 @onready var raycast: RayCast3D = $RayCast3D
 @onready var obstacle_detection_raycast: RayCast3D = RayCast3D.new()
@@ -34,6 +36,14 @@ var _invalid_material: StandardMaterial3D
 var _original_material: Material
 
 func _ready():
+  # Auto-discover buildable area from parent Level if not explicitly set
+  if not buildable_area:
+    var level_node = _find_level_parent()
+    if level_node and level_node.has("buildable_area"):
+      buildable_area = level_node.buildable_area
+      if buildable_area:
+        Logger.info("Placement", "Auto-discovered buildable area from Level node")
+  
   # Set up materials for visual feedback
   _valid_material = StandardMaterial3D.new()
   _valid_material.albedo_color = Color.GREEN
@@ -125,6 +135,15 @@ func _is_placement_valid(target_position: Vector3) -> bool:
         Logger.debug("Placement", "  - Insufficient funds")
 
   return result.is_valid
+
+func _find_level_parent() -> Node:
+  # Walk up the scene tree to find a Level node
+  var current = get_parent()
+  while current:
+    if current is Level:
+      return current
+    current = current.get_parent()
+  return null
 
 func _is_within_buildable_area(target_position: Vector3) -> bool:
   # If no buildable area is defined, allow placement anywhere (legacy behavior)
