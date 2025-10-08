@@ -16,9 +16,18 @@ func _process(delta: float) -> void:
   var input_vector := Input.get_vector("camera_move_down", "camera_move_up", "camera_move_left", "camera_move_right")
 
   if input_vector != Vector2.ZERO:
-    # Transform movement direction based on camera rotation
+    # Create movement direction in local input space
     var move_direction := Vector3(input_vector.x, 0, input_vector.y)
-    move_direction = transform.basis * move_direction
+    
+    # Rotate the movement direction by the camera's Y-axis rotation only
+    # We extract the Y rotation angle from the camera's transform
+    # This is done by projecting the camera's forward vector onto the XZ plane
+    var forward_xz := Vector3(transform.basis.z.x, 0, transform.basis.z.z).normalized()
+    var right_xz := Vector3(transform.basis.x.x, 0, transform.basis.x.z).normalized()
+    
+    # Apply the rotation by transforming via the horizontal basis vectors
+    move_direction = right_xz * move_direction.x + forward_xz * move_direction.z
+    
     global_position += move_direction * camera_move_speed * delta
 
   # Handle camera rotation
