@@ -17,8 +17,8 @@ func _ready():
     health.died.connect(_on_died)
     health.damaged.connect(_on_health_damaged)
 
-func _on_died():
-  Logger.info("Obstacle", "Obstacle destroyed")
+func _on_died(damage_source: String = "unknown") -> void:
+  Logger.info("Obstacle", "Obstacle destroyed by: %s" % damage_source)
   queue_free()
 
 func _on_health_damaged(amount: int, hitpoints: int, _source: String) -> void:

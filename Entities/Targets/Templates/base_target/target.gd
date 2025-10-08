@@ -12,8 +12,8 @@ func _ready():
     health.died.connect(_on_died)
     health.damaged.connect(_on_health_damaged)
 
-func _on_died():
-  Logger.info("Target", "Target has died.")
+func _on_died(damage_source: String = "unknown") -> void:
+  Logger.info("Target", "Target has died. Source: %s" % damage_source)
   queue_free() # Remove the target from the scene when it dies.
 
 

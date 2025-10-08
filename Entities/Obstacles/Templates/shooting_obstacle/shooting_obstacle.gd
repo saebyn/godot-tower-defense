@@ -50,8 +50,8 @@ func find_nearest_enemy_in_range() -> Node3D:
   
   return nearest_enemy
 
-func _on_died():
-  Logger.info("ShootingObstacle", "Shooting obstacle destroyed")
+func _on_died(damage_source: String = "unknown") -> void:
+  Logger.info("ShootingObstacle", "Shooting obstacle destroyed by: %s" % damage_source)
   # Stop detection timer before destruction
   if detection_timer:
     detection_timer.stop()
