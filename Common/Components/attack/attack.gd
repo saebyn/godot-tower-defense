@@ -30,23 +30,27 @@ enum AttackResult {
 
 var is_on_cooldown: bool = false
 
+func _ready():
+  # Register this component in parent's metadata for discovery
+  if get_parent():
+    get_parent().set_meta("attack_component", self)
+
 func perform_attack(target: Node) -> AttackResult:
   if not is_on_cooldown:
-    # check to see if the target has a child node named "Health"
-    # TODO consider finding the node using metadata
-    if target.has_node("Health"):
-      var health = target.get_node("Health")
-      if health is Health:
-        health.take_damage(damage_amount, damage_source)
-        if audio_player:
-          AudioManager.play_sound(audio_player, hit_sound)
-        # Start cooldown
-        is_on_cooldown = true
-        attack_timer.start(damage_cooldown)
-        cooldown_started.emit()
-        return AttackResult.SUCCESS
-      else:
-        return AttackResult.INVALID_TARGET
+    # Find Health component via metadata
+    var health = null
+    if target.has_meta("health_component"):
+      health = target.get_meta("health_component")
+    
+    if health and health is Health:
+      health.take_damage(damage_amount, damage_source)
+      if audio_player:
+        AudioManager.play_sound(audio_player, hit_sound)
+      # Start cooldown
+      is_on_cooldown = true
+      attack_timer.start(damage_cooldown)
+      cooldown_started.emit()
+      return AttackResult.SUCCESS
     else:
       return AttackResult.INVALID_TARGET
    

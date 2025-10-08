@@ -5,12 +5,16 @@ class_name ShootingObstacle
 @export var attack_range: float = 15.0
 @export var detection_interval: float = 0.5
 
-@onready var attack: Attack = $Attack
+var attack: Attack
 @onready var detection_timer: Timer = $DetectionTimer
 
 func _ready():
   # Call parent _ready first
   super._ready()
+  
+  # Find Attack component via metadata
+  if has_meta("attack_component"):
+    attack = get_meta("attack_component")
   
   # Set damage source for obstacle attacks
   if attack:
@@ -46,8 +50,8 @@ func find_nearest_enemy_in_range() -> Node3D:
   
   return nearest_enemy
 
-func _on_died():
-  Logger.info("ShootingObstacle", "Shooting obstacle destroyed")
+func _on_died(damage_source: String = "unknown") -> void:
+  Logger.info("ShootingObstacle", "Shooting obstacle destroyed by: %s" % damage_source)
   # Stop detection timer before destruction
   if detection_timer:
     detection_timer.stop()

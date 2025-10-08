@@ -2,19 +2,23 @@ extends Node3D
 class_name PlaceableObstacle
 
 @onready var mesh_instance: MeshInstance3D = $MeshInstance3D
-@onready var health: Health = $Health
+var health: Health
 
 var obstacle_type: ObstacleTypeResource
 var navigation_obstacle: NavigationObstacle3D
 
 func _ready():
+  # Find Health component via metadata
+  if has_meta("health_component"):
+    health = get_meta("health_component")
+  
   # Connect health signals
   if health:
     health.died.connect(_on_died)
     health.damaged.connect(_on_health_damaged)
 
-func _on_died():
-  Logger.info("Obstacle", "Obstacle destroyed")
+func _on_died(damage_source: String = "unknown") -> void:
+  Logger.info("Obstacle", "Obstacle destroyed by: %s" % damage_source)
   queue_free()
 
 func _on_health_damaged(amount: int, hitpoints: int, _source: String) -> void:
