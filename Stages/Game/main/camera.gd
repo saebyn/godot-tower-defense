@@ -9,6 +9,7 @@ extends Camera3D
 @export var camera_zoom_duration: float = 0.2 # Duration for smooth zoom transitions
 
 var zoom_tween: Tween
+var cumulative_y_rotation: float = 0.0
 
 
 func _process(delta: float) -> void:
@@ -16,26 +17,22 @@ func _process(delta: float) -> void:
   var input_vector := Input.get_vector("camera_move_down", "camera_move_up", "camera_move_left", "camera_move_right")
 
   if input_vector != Vector2.ZERO:
-    # Create movement direction in local input space
+    # Create movement direction in world space (as original code did)
     var move_direction := Vector3(input_vector.x, 0, input_vector.y)
     
-    # Rotate the movement direction by the camera's Y-axis rotation only
-    # We extract the Y rotation angle from the camera's transform
-    # This is done by projecting the camera's forward vector onto the XZ plane
-    var forward_xz := Vector3(transform.basis.z.x, 0, transform.basis.z.z).normalized()
-    var right_xz := Vector3(transform.basis.x.x, 0, transform.basis.x.z).normalized()
-    
-    # Apply the rotation by transforming via the horizontal basis vectors
-    move_direction = right_xz * move_direction.x + forward_xz * move_direction.z
+    # Rotate the movement direction by the cumulative Y-axis rotation
+    move_direction = move_direction.rotated(Vector3.UP, cumulative_y_rotation)
     
     global_position += move_direction * camera_move_speed * delta
 
   # Handle camera rotation
   if Input.is_action_just_pressed("camera_rotate_left"):
     rotate_y(-PI / 2) # Rotate left by 90 degrees
+    cumulative_y_rotation -= PI / 2
 
   if Input.is_action_just_pressed("camera_rotate_right"):
     rotate_y(PI / 2) # Rotate right by 90 degrees
+    cumulative_y_rotation += PI / 2
 
   # Handle discrete zoom events from mouse wheel and keyboard
   var zoom_in_pressed = Input.is_action_just_pressed("camera_zoom_in") or Input.is_action_just_pressed("camera_zoom_in_key")
