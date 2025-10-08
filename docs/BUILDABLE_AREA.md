@@ -22,12 +22,17 @@ Using Area3D for the buildable area has several advantages:
 
 ### Setting Up a Buildable Area
 
-1. **Add an Area3D** to your level scene
+The buildable area is now **automatically configured per-level** through the `Level` base class. Each level can define its own buildable area without manual configuration in ObstaclePlacement.
+
+**Simple Setup (Recommended):**
+
+1. **Add an Area3D** to your level scene as a child of the Level node
    ```
-   Level
+   Level (Level.gd)
    ├── BuildableArea (Area3D)
    │   └── CollisionShape3D (BoxShape3D, or any shape)
-   ├── ObstaclePlacement
+   ├── NavigationRegion3D
+   ├── EnemySpawner
    └── ... other level components
    ```
 
@@ -38,21 +43,34 @@ Using Area3D for the buildable area has several advantages:
    - Position and scale the shape to define your buildable zone
    - **Important**: Make this area **smaller** than the NavigationRegion3D to keep spawners and edges clear
 
-3. **Connect to ObstaclePlacement**: 
-   - Select the ObstaclePlacement node
-   - In the inspector, find the "Node References" section
-   - Assign the BuildableArea node to the `buildable_area` export variable
+3. **Assign to Level**: 
+   - Select the Level node
+   - In the inspector, find the `buildable_area` export variable
+   - Assign your BuildableArea node
+
+4. **That's it!** ObstaclePlacement will automatically discover and use the buildable area from the Level
+
+**Advanced Setup (Manual Override):**
+
+If you need to override the buildable area for a specific ObstaclePlacement instance, you can still manually assign it:
+- Select the ObstaclePlacement node
+- In the inspector, assign a different Area3D to its `buildable_area` property
 
 Example scene structure:
 ```
-Level
+Level (Level.gd with buildable_area export)
 ├── NavigationRegion3D (defines enemy pathfinding area - larger)
 ├── BuildableArea (Area3D - smaller, inset from edges)
 │   └── CollisionShape3D (BoxShape3D)
-├── ObstaclePlacement (buildable_area = ../BuildableArea)
 ├── EnemySpawner (outside buildable area)
 └── ... other level components
 ```
+
+**How Auto-Discovery Works:**
+1. ObstaclePlacement checks if it has a buildable_area assigned
+2. If not, it searches up the scene tree for a parent Level node
+3. If found, it uses the Level's buildable_area property
+4. This means each level automatically gets its own buildable area configuration!
 
 ### Design Guidelines
 
@@ -83,22 +101,51 @@ When a player attempts to place an obstacle:
 
 ### Optional Feature
 
-If no buildable area is defined (`buildable_area` is null), the system allows placement anywhere for backward compatibility. This means:
+The buildable area system is **automatically configured per-level** but remains optional:
+
+**If a Level has buildable_area set:**
+- ObstaclePlacement automatically discovers and uses it
+- Placement restricted to the defined area
+- Green preview inside, red preview outside
+
+**If no buildable area is defined:**
+- System allows placement anywhere (backward compatible)
 - Existing levels without Area3D continue to work
-- New levels can opt-in to buildable area restrictions by adding an Area3D
+- New levels can opt-in by adding an Area3D and assigning it to the Level's buildable_area property
 
 ## For Programmers
 
 ### Validation Flow
 
-The buildable area check is part of the placement validation pipeline:
+The buildable area check is part of the placement validation pipeline and is **automatically configured per-level**:
 
+```gdscript
+func _ready():
+  # Auto-discover buildable area from parent Level if not explicitly set
+  if not buildable_area:
+    var level_node = _find_level_parent()
+    if level_node and level_node.has("buildable_area"):
+      buildable_area = level_node.buildable_area
+      if buildable_area:
+        Logger.info("Placement", "Auto-discovered buildable area from Level node")
+
+func _find_level_parent() -> Node:
+  # Walk up the scene tree to find a Level node
+  var current = get_parent()
+  while current:
+    if current is Level:
+      return current
+    current = current.get_parent()
+  return null
+```
+
+The validation then checks:
 ```gdscript
 func _validate_placement(target_position: Vector3) -> PlacementResult:
   if not _preview:
     return PlacementResult.new(false, ValidationError.NO_PLACEABLE_OBSTACLE, ...)
   
-  # ✓ Buildable area check (uses Area3D)
+  # ✓ Buildable area check (auto-discovered from Level or manually set)
   if not _is_within_buildable_area(target_position):
     return PlacementResult.new(false, ValidationError.OUTSIDE_NAVIGATION_REGION, "Outside buildable area")
   
@@ -139,9 +186,11 @@ func _is_within_buildable_area(target_position: Vector3) -> bool:
 
 **Key Points:**
 1. Returns `true` if no buildable area is set (backward compatible)
-2. Uses `PhysicsPointQueryParameters3D` for efficient point-in-area check
-3. Checks collision layer match to ensure correct area is detected
-4. Works with any collision shape (box, sphere, polygon, compound)
+2. Auto-discovers buildable area from parent Level node on `_ready()`
+3. Uses `PhysicsPointQueryParameters3D` for efficient point-in-area check
+4. Checks collision layer match to ensure correct area is detected
+5. Works with any collision shape (box, sphere, polygon, compound)
+6. Can be manually overridden per-ObstaclePlacement instance if needed
 
 ### Extending the System
 
@@ -154,14 +203,15 @@ To implement more advanced buildable areas:
 
 ### Error Handling
 
-If buildable area is set but placement is outside:
+If buildable area is set in Level but placement is outside:
 - `_is_within_buildable_area()` returns `false`
 - Placement validation fails with `OUTSIDE_NAVIGATION_REGION` error
 - User sees red preview and cannot place obstacle
 
-If no buildable area is set:
+If no buildable area is set in Level:
 - `_is_within_buildable_area()` returns `true` (backward compatible)
 - No restriction on placement area
+- ObstaclePlacement logs that no buildable area was found (debug level)
 
 ## Testing
 
@@ -197,11 +247,19 @@ If no buildable area is set:
 
 ## Configuration Options
 
-Available in `ObstaclePlacement` node:
+Available in `Level` node (per-level configuration):
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `buildable_area` | Area3D | null | Defines the buildable area (optional, smaller than navigation region) |
+| `enemy_spawner` | EnemySpawner | null | Reference to enemy spawner |
+| `ui` | Control | null | Reference to UI |
+
+Available in `ObstaclePlacement` node (usually auto-configured):
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `buildable_area` | Area3D | null | Defines the buildable area (auto-discovered from Level, or manually set) |
 | `navigation_region` | NavigationRegion3D | null | Reference to navigation region for enemy pathfinding |
 | `placement_clearance` | float | 3.0 | Minimum distance from other obstacles |
 
