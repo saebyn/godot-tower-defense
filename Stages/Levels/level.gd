@@ -7,6 +7,9 @@ extends Node3D
 
 
 func _ready() -> void:
+  # Register buildable area with GameManager for centralized coordination
+  GameManager.set_level_buildable_area(buildable_area)
+  
   enemy_spawner.enemy_spawned.connect(_on_enemy_spawned)
   enemy_spawner.wave_started.connect(_on_wave_started)
   enemy_spawner.wave_completed.connect(_on_wave_completed)

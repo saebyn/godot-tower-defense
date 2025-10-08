@@ -36,13 +36,14 @@ var _invalid_material: StandardMaterial3D
 var _original_material: Material
 
 func _ready():
-  # Auto-discover buildable area from parent Level if not explicitly set
+  # Get buildable area from GameManager if not explicitly set
   if not buildable_area:
-    var level_node = _find_level_parent()
-    if level_node and level_node.has("buildable_area"):
-      buildable_area = level_node.buildable_area
-      if buildable_area:
-        Logger.info("Placement", "Auto-discovered buildable area from Level node")
+    buildable_area = GameManager.get_level_buildable_area()
+    if buildable_area:
+      Logger.info("Placement", "Retrieved buildable area from GameManager")
+  
+  # Listen for buildable area changes from GameManager
+  GameManager.buildable_area_changed.connect(_on_buildable_area_changed)
   
   # Set up materials for visual feedback
   _valid_material = StandardMaterial3D.new()
@@ -136,14 +137,14 @@ func _is_placement_valid(target_position: Vector3) -> bool:
 
   return result.is_valid
 
-func _find_level_parent() -> Node:
-  # Walk up the scene tree to find a Level node
-  var current = get_parent()
-  while current:
-    if current is Level:
-      return current
-    current = current.get_parent()
-  return null
+func _on_buildable_area_changed(new_buildable_area: Area3D):
+  # Update buildable area when GameManager signals a change
+  if not buildable_area or buildable_area == GameManager.get_level_buildable_area():
+    buildable_area = new_buildable_area
+    if new_buildable_area:
+      Logger.info("Placement", "Buildable area updated from GameManager")
+    else:
+      Logger.info("Placement", "Buildable area cleared")
 
 func _is_within_buildable_area(target_position: Vector3) -> bool:
   # If no buildable area is defined, allow placement anywhere (legacy behavior)
