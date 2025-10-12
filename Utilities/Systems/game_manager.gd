@@ -10,9 +10,11 @@ enum GameState {
 
 var current_state: GameState = GameState.MAIN_MENU
 var current_speed_multiplier: float = 1.0
+var current_level_buildable_area: Rect2 = Rect2()
 
 signal game_state_changed(new_state: GameState)
 signal speed_changed(new_speed: float)
+signal buildable_area_changed(buildable_area: Rect2)
 
 func set_game_state(new_state: GameState):
     if current_state != new_state:
@@ -72,3 +74,18 @@ func return_to_main_menu():
     var error = get_tree().change_scene_to_file(main_menu_path)
     if error != OK:
         Logger.error("GameManager", "Failed to load main menu scene: %s (Error: %d)" % [main_menu_path, error])
+
+## Sets the buildable area for the current level
+## Called by Level when it's ready
+func set_level_buildable_area(buildable_area: Rect2):
+    if current_level_buildable_area != buildable_area:
+        current_level_buildable_area = buildable_area
+        buildable_area_changed.emit(buildable_area)
+        if buildable_area != Rect2():
+            Logger.info("GameManager", "Level buildable area registered: %s" % buildable_area)
+        else:
+            Logger.info("GameManager", "Level buildable area cleared")
+
+## Gets the current level's buildable area
+func get_level_buildable_area() -> Rect2:
+    return current_level_buildable_area

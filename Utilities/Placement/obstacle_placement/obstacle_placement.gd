@@ -18,6 +18,9 @@ signal rebake_navigation_mesh
 @export_group("Node References")
 @export var navigation_region: NavigationRegion3D
 @export var camera: Camera3D
+## Optional: Defines the buildable area bounds (2D rectangle in XZ plane)
+## If not set, will be retrieved from GameManager
+@export var buildable_area_bounds: Rect2 = Rect2()
 
 @onready var raycast: RayCast3D = $RayCast3D
 @onready var obstacle_detection_raycast: RayCast3D = RayCast3D.new()
@@ -33,6 +36,15 @@ var _invalid_material: StandardMaterial3D
 var _original_material: Material
 
 func _ready():
+  # Get buildable area from GameManager if not explicitly set
+  if buildable_area_bounds == Rect2():
+    buildable_area_bounds = GameManager.get_level_buildable_area()
+    if buildable_area_bounds != Rect2():
+      Logger.info("Placement", "Retrieved buildable area from GameManager: %s" % buildable_area_bounds)
+  
+  # Listen for buildable area changes from GameManager
+  GameManager.buildable_area_changed.connect(_on_buildable_area_changed)
+  
   # Set up materials for visual feedback
   _valid_material = StandardMaterial3D.new()
   _valid_material.albedo_color = Color.GREEN
@@ -86,6 +98,9 @@ func _validate_placement(target_position: Vector3) -> PlacementResult:
   if not _preview:
     return PlacementResult.new(false, PlacementResult.ValidationError.NO_PLACEABLE_OBSTACLE, "No obstacle selected for placement")
   
+  if not _is_within_buildable_area(target_position):
+    return PlacementResult.new(false, PlacementResult.ValidationError.OUTSIDE_BUILDABLE_AREA, "Outside buildable area")
+  
   if _has_obstacle_collision(target_position):
     return PlacementResult.new(false, PlacementResult.ValidationError.OBSTACLE_COLLISION, "Collision with existing obstacle")
   
@@ -109,8 +124,8 @@ func _is_placement_valid(target_position: Vector3) -> bool:
     match result.error:
       PlacementResult.ValidationError.NO_PLACEABLE_OBSTACLE:
         Logger.debug("Placement", "  - No placeable obstacle selected")
-      PlacementResult.ValidationError.OUTSIDE_NAVIGATION_REGION:
-        Logger.debug("Placement", "  - Outside navigation region")
+      PlacementResult.ValidationError.OUTSIDE_BUILDABLE_AREA:
+        Logger.debug("Placement", "  - Outside buildable area")
       PlacementResult.ValidationError.OBSTACLE_COLLISION:
         Logger.debug("Placement", "  - Collision with existing obstacle")
       PlacementResult.ValidationError.NO_TERRAIN_SUPPORT:
@@ -122,36 +137,26 @@ func _is_placement_valid(target_position: Vector3) -> bool:
 
   return result.is_valid
 
-func _is_within_navigation_region(target_position: Vector3) -> bool:
-  if not navigation_region or not navigation_region.navigation_mesh:
-    return false
-  
-  # Check if position is within the navigation region bounds
-  var nav_mesh := navigation_region.navigation_mesh
-  var nav_region_transform := navigation_region.global_transform
-  
-  # Get the navigation mesh AABB
-  var vertices = nav_mesh.vertices
-  if vertices.size() == 0:
-    return false
-  
-  var min_bounds = vertices[0]
-  var max_bounds = vertices[0]
-  
-  for vertex in vertices:
-    min_bounds.x = min(min_bounds.x, vertex.x)
-    min_bounds.z = min(min_bounds.z, vertex.z)
-    max_bounds.x = max(max_bounds.x, vertex.x)
-    max_bounds.z = max(max_bounds.z, vertex.z)
+func _on_buildable_area_changed(new_buildable_area: Rect2):
+  # Update buildable area when GameManager signals a change
+  if buildable_area_bounds == Rect2() or buildable_area_bounds == GameManager.get_level_buildable_area():
+    buildable_area_bounds = new_buildable_area
+    if new_buildable_area != Rect2():
+      Logger.info("Placement", "Buildable area updated from GameManager: %s" % new_buildable_area)
+    else:
+      Logger.info("Placement", "Buildable area cleared")
 
-  # Transform position to navigation region local space
-  var local_pos = nav_region_transform.affine_inverse() * target_position
-
-  # Check if within bounds (with some margin)
-  return (local_pos.x >= min_bounds.x + border_margin and
-          local_pos.x <= max_bounds.x - border_margin and
-          local_pos.z >= min_bounds.z + border_margin and
-          local_pos.z <= max_bounds.z - border_margin)
+func _is_within_buildable_area(target_position: Vector3) -> bool:
+  # If no buildable area is defined, allow placement anywhere (legacy behavior)
+  if buildable_area_bounds == Rect2():
+    return true
+  
+  # Simple 2D bounding box check in XZ plane (Y is vertical)
+  # Convert 3D position to 2D point in XZ plane
+  var point_2d = Vector2(target_position.x, target_position.z)
+  
+  # Check if point is within the rectangle bounds
+  return buildable_area_bounds.has_point(point_2d)
 
 func _has_obstacle_collision(target_position: Vector3) -> bool:
   if not _preview:
