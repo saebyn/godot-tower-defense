@@ -83,7 +83,7 @@ func apply_settings() -> void:
 
 ## Apply video settings
 func apply_video_settings() -> void:
-  var window = get_window()
+  var window = get_tree().root
   
   # Apply fullscreen
   if fullscreen:
@@ -169,10 +169,3 @@ func get_resolution_string(index: int) -> String:
     return "%dx%d" % [res.x, res.y]
   return "Unknown"
 
-## Convert volume from dB to linear (0.0 to 1.0)
-func db_to_linear(db: float) -> float:
-  return db_to_linear(db)
-
-## Convert volume from linear (0.0 to 1.0) to dB
-func linear_to_db(linear: float) -> float:
-  return linear_to_db(linear)
