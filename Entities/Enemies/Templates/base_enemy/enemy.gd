@@ -45,7 +45,7 @@ func choose_target():
     attack.cancel()
     # No targets available, stop the agent.
     navigation_agent.set_target_position(global_position)
-    Logger.debug("Enemy", "No targets available.")
+    Logger.trace("Enemy", "No targets available.")
   else:
     # TODO : Implement logic to choose a target based on some criteria.
     current_target = targets[0]
@@ -79,7 +79,7 @@ func actor_setup():
 
 func attack_target():
   if not current_target:
-    Logger.debug("Enemy", "No current target to attack.")
+    Logger.trace("Enemy", "No current target to attack.")
     choose_target()
     if not current_target:
       return
