@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8x5m7q3p2vyb"]
+
+[ext_resource type="Script" path="res://Common/UI/settings_menu/keybind_button.gd" id="1_keybind"]
+
+[node name="KeybindButton" type="HBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+script = ExtResource("1_keybind")
+
+[node name="ActionLabel" type="Label" parent="."]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Action Name"
+vertical_alignment = 1
+
+[node name="KeyButton" type="Button" parent="."]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Key"
