@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://deoia86ae444c"
-path="res://.godot/imported/Landscape1.blend-8cb245c071153891d56b70f6a686b09b.scn"
+uid="uid://cmtkjdvkgkumw"
+path="res://.godot/imported/canal bridge.blend-851546727d8a253b772f825a18f9f00b.scn"
 
 [deps]
 
-source_file="res://Assets/Models/Landscape1.blend"
-dest_files=["res://.godot/imported/Landscape1.blend-8cb245c071153891d56b70f6a686b09b.scn"]
+source_file="res://Assets/Models/canal bridge.blend"
+dest_files=["res://.godot/imported/canal bridge.blend-851546727d8a253b772f825a18f9f00b.scn"]
 
 [params]
 
@@ -33,10 +33,10 @@ animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={}
-blender/nodes/visible=1
+blender/nodes/visible=0
 blender/nodes/active_collection_only=false
-blender/nodes/punctual_lights=false
-blender/nodes/cameras=false
+blender/nodes/punctual_lights=true
+blender/nodes/cameras=true
 blender/nodes/custom_properties=true
 blender/nodes/modifiers=1
 blender/meshes/colors=false

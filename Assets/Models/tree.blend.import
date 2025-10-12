@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://deoia86ae444c"
-path="res://.godot/imported/Landscape1.blend-8cb245c071153891d56b70f6a686b09b.scn"
+uid="uid://duqnmq1hv1h8h"
+path="res://.godot/imported/tree.blend-755a250244ed5a11729857e7714d9603.scn"
 
 [deps]
 
-source_file="res://Assets/Models/Landscape1.blend"
-dest_files=["res://.godot/imported/Landscape1.blend-8cb245c071153891d56b70f6a686b09b.scn"]
+source_file="res://Assets/Models/tree.blend"
+dest_files=["res://.godot/imported/tree.blend-755a250244ed5a11729857e7714d9603.scn"]
 
 [params]
 
@@ -32,7 +32,13 @@ animation/trimming=false
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path=""
-_subresources={}
+_subresources={
+"nodes": {
+"PATH:Cube": {
+"generate/physics": true
+}
+}
+}
 blender/nodes/visible=1
 blender/nodes/active_collection_only=false
 blender/nodes/punctual_lights=false
