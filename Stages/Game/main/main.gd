@@ -9,7 +9,6 @@ extends Node3D
 @onready var enemy_raycast: RayCast3D = $EnemyRayCast3D
 var attack: Attack
 @onready var ui: Control = $UI
-@onready var enemy_spawner: EnemySpawner = $EnemySpawner
 
 @onready var obstacle_placement: ObstaclePlacement = $ObstaclePlacement
 

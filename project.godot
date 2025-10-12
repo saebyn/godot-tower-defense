@@ -29,6 +29,10 @@ AudioManager="*res://Utilities/Systems/audio_manager.gd"
 targets=""
 navigation_mesh_source_group=""
 
+[gui]
+
+theme/custom="uid://b8k2vgj8hxk5r"
+
 [input]
 
 camera_move_left={
