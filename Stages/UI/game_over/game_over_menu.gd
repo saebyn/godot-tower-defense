@@ -1,7 +1,7 @@
 extends Control
 
 func _ready():
-  # Initially hide the pause menu
+  # Initially hide the game over menu
   visible = false
   
   # Connect to GameManager state changes
