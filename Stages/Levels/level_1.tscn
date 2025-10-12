@@ -34,16 +34,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 190, 0, -25)
 [node name="Wave1" type="Node3D" parent="EnemySpawner" index="1"]
 script = ExtResource("4_gwcit")
 duration = 100.0
-max_enemies = 1000
+max_enemies = 1
 enemy_scenes = Array[PackedScene]([ExtResource("5_agnyp")])
-enemy_counts = Array[int]([100])
+enemy_counts = Array[int]([1])
 spawn_interval = 1.0
-metadata/_custom_type_script = "uid://b7jdk6preu1s4"
-
-[node name="Wave2" type="Node3D" parent="EnemySpawner" index="2"]
-script = ExtResource("4_gwcit")
-duration = 30.0
-start_delay = 10.0
-enemy_scenes = Array[PackedScene]([ExtResource("5_agnyp")])
-enemy_counts = Array[int]([5])
 metadata/_custom_type_script = "uid://b7jdk6preu1s4"

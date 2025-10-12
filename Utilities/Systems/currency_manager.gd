@@ -3,7 +3,7 @@ extends Node
 ## Manages the player's currency system
 ## Handles earning and spending currency throughout the game
 
-@export var starting_currency: int = 100
+@export var starting_currency: int = 100 # TODO change back to 0 before release
 var current_currency: int = 0
 
 signal currency_changed(new_amount: int)
@@ -12,6 +12,12 @@ signal currency_earned(amount: int)
 func _ready():
   current_currency = starting_currency
   currency_changed.emit(current_currency)
+  GameManager.game_state_changed.connect(_on_game_state_changed)
+
+func _on_game_state_changed(new_state: GameManager.GameState) -> void:
+  if new_state == GameManager.GameState.MAIN_MENU:
+    current_currency = starting_currency
+    currency_changed.emit(current_currency)
 
 ## Add currency to the player's total
 func earn_currency(amount: int) -> void:

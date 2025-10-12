@@ -14,6 +14,9 @@ func _ready():
 
 func _on_died(damage_source: String = "unknown") -> void:
   Logger.info("Target", "Target has died. Source: %s" % damage_source)
+  var parent := get_parent()
+  if parent and parent.has_method("on_target_died"):
+    parent.on_target_died(self, damage_source)
   queue_free() # Remove the target from the scene when it dies.
 
 
