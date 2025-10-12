@@ -5,6 +5,10 @@ class_name MainMenu
 ## Main menu scene that handles navigation between different game states
 ## Sets the initial game state to MAIN_MENU and provides buttons for starting the game
 
+const SettingsMenuScene = preload("res://Common/UI/settings_menu/settings_menu.tscn")
+
+var settings_menu: SettingsMenu = null
+
 func _ready():
   # Set the initial game state when the main menu loads
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
@@ -12,6 +16,14 @@ func _ready():
   
   # Make sure the game is not paused
   get_tree().paused = false
+  
+  # Create and add settings menu
+  _setup_settings_menu()
+
+func _setup_settings_menu():
+  settings_menu = SettingsMenuScene.instantiate()
+  add_child(settings_menu)
+  settings_menu.closed.connect(_on_settings_menu_closed)
 
 func _on_start_button_pressed():
   Logger.info("MainMenu", "Start button pressed - transitioning to game")
@@ -19,9 +31,11 @@ func _on_start_button_pressed():
 
 func _on_settings_button_pressed():
   Logger.info("MainMenu", "Settings button pressed")
-  # TODO: Implement settings menu
-  # For now, just show a placeholder message
-  Logger.info("MainMenu", "Settings menu not yet implemented")
+  if settings_menu:
+    settings_menu.show_menu()
+
+func _on_settings_menu_closed():
+  Logger.debug("MainMenu", "Settings menu closed")
 
 func _on_exit_button_pressed():
   Logger.info("MainMenu", "Exit button pressed - quitting game")
