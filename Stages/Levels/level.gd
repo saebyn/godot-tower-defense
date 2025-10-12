@@ -3,12 +3,14 @@ extends Node3D
 
 @export var enemy_spawner: EnemySpawner
 @export var ui: Control
-@export var buildable_area: Area3D ## Optional: Defines the buildable area for obstacle placement
+## Optional: Defines the buildable area bounds (2D rectangle in XZ plane)
+## Format: Rect2(min_x, min_z, width, depth)
+@export var buildable_area_bounds: Rect2 = Rect2()
 
 
 func _ready() -> void:
   # Register buildable area with GameManager for centralized coordination
-  GameManager.set_level_buildable_area(buildable_area)
+  GameManager.set_level_buildable_area(buildable_area_bounds)
   
   enemy_spawner.enemy_spawned.connect(_on_enemy_spawned)
   enemy_spawner.wave_started.connect(_on_wave_started)

@@ -18,9 +18,9 @@ signal rebake_navigation_mesh
 @export_group("Node References")
 @export var navigation_region: NavigationRegion3D
 @export var camera: Camera3D
-## Optional: Defines the buildable area (smaller than navigation region)
-## If not set, will automatically search for buildable_area in parent Level node
-@export var buildable_area: Area3D
+## Optional: Defines the buildable area bounds (2D rectangle in XZ plane)
+## If not set, will be retrieved from GameManager
+@export var buildable_area_bounds: Rect2 = Rect2()
 
 @onready var raycast: RayCast3D = $RayCast3D
 @onready var obstacle_detection_raycast: RayCast3D = RayCast3D.new()
@@ -37,10 +37,10 @@ var _original_material: Material
 
 func _ready():
   # Get buildable area from GameManager if not explicitly set
-  if not buildable_area:
-    buildable_area = GameManager.get_level_buildable_area()
-    if buildable_area:
-      Logger.info("Placement", "Retrieved buildable area from GameManager")
+  if buildable_area_bounds == Rect2():
+    buildable_area_bounds = GameManager.get_level_buildable_area()
+    if buildable_area_bounds != Rect2():
+      Logger.info("Placement", "Retrieved buildable area from GameManager: %s" % buildable_area_bounds)
   
   # Listen for buildable area changes from GameManager
   GameManager.buildable_area_changed.connect(_on_buildable_area_changed)
@@ -137,34 +137,26 @@ func _is_placement_valid(target_position: Vector3) -> bool:
 
   return result.is_valid
 
-func _on_buildable_area_changed(new_buildable_area: Area3D):
+func _on_buildable_area_changed(new_buildable_area: Rect2):
   # Update buildable area when GameManager signals a change
-  if not buildable_area or buildable_area == GameManager.get_level_buildable_area():
-    buildable_area = new_buildable_area
-    if new_buildable_area:
-      Logger.info("Placement", "Buildable area updated from GameManager")
+  if buildable_area_bounds == Rect2() or buildable_area_bounds == GameManager.get_level_buildable_area():
+    buildable_area_bounds = new_buildable_area
+    if new_buildable_area != Rect2():
+      Logger.info("Placement", "Buildable area updated from GameManager: %s" % new_buildable_area)
     else:
       Logger.info("Placement", "Buildable area cleared")
 
 func _is_within_buildable_area(target_position: Vector3) -> bool:
   # If no buildable area is defined, allow placement anywhere (legacy behavior)
-  if not buildable_area:
+  if buildable_area_bounds == Rect2():
     return true
   
-  # Use physics point query to check if position is within the buildable area
-  var space_state = get_world_3d().direct_space_state
-  var query = PhysicsPointQueryParameters3D.new()
-  query.position = target_position
-  query.collision_mask = buildable_area.collision_layer
+  # Simple 2D bounding box check in XZ plane (Y is vertical)
+  # Convert 3D position to 2D point in XZ plane
+  var point_2d = Vector2(target_position.x, target_position.z)
   
-  var results = space_state.intersect_point(query, 1)
-
-  # Check if any of the results is our buildable area
-  for result in results:
-    if result.collider == buildable_area:
-      return true
-  
-  return false
+  # Check if point is within the rectangle bounds
+  return buildable_area_bounds.has_point(point_2d)
 
 func _has_obstacle_collision(target_position: Vector3) -> bool:
   if not _preview:
