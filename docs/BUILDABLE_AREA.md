@@ -174,7 +174,7 @@ func _validate_placement(target_position: Vector3) -> PlacementResult:
   
   # ✓ Buildable area check (coordinated through GameManager)
   if not _is_within_buildable_area(target_position):
-    return PlacementResult.new(false, ValidationError.OUTSIDE_NAVIGATION_REGION, "Outside buildable area")
+    return PlacementResult.new(false, ValidationError.OUTSIDE_BUILDABLE_AREA, "Outside buildable area")
   
   # Other validations...
   if _has_obstacle_collision(target_position): ...
@@ -234,7 +234,7 @@ To implement more advanced buildable areas:
 
 If buildable area is set in Level but placement is outside:
 - `_is_within_buildable_area()` returns `false`
-- Placement validation fails with `OUTSIDE_NAVIGATION_REGION` error
+- Placement validation fails with `OUTSIDE_BUILDABLE_AREA` error
 - User sees red preview and cannot place obstacle
 
 If no buildable area is set in Level:

@@ -99,7 +99,7 @@ func _validate_placement(target_position: Vector3) -> PlacementResult:
     return PlacementResult.new(false, PlacementResult.ValidationError.NO_PLACEABLE_OBSTACLE, "No obstacle selected for placement")
   
   if not _is_within_buildable_area(target_position):
-    return PlacementResult.new(false, PlacementResult.ValidationError.OUTSIDE_NAVIGATION_REGION, "Outside buildable area")
+    return PlacementResult.new(false, PlacementResult.ValidationError.OUTSIDE_BUILDABLE_AREA, "Outside buildable area")
   
   if _has_obstacle_collision(target_position):
     return PlacementResult.new(false, PlacementResult.ValidationError.OBSTACLE_COLLISION, "Collision with existing obstacle")
@@ -124,8 +124,8 @@ func _is_placement_valid(target_position: Vector3) -> bool:
     match result.error:
       PlacementResult.ValidationError.NO_PLACEABLE_OBSTACLE:
         Logger.debug("Placement", "  - No placeable obstacle selected")
-      PlacementResult.ValidationError.OUTSIDE_NAVIGATION_REGION:
-        Logger.debug("Placement", "  - Outside navigation region")
+      PlacementResult.ValidationError.OUTSIDE_BUILDABLE_AREA:
+        Logger.debug("Placement", "  - Outside buildable area")
       PlacementResult.ValidationError.OBSTACLE_COLLISION:
         Logger.debug("Placement", "  - Collision with existing obstacle")
       PlacementResult.ValidationError.NO_TERRAIN_SUPPORT:
@@ -157,8 +157,8 @@ func _is_within_buildable_area(target_position: Vector3) -> bool:
   query.position = target_position
   query.collision_mask = buildable_area.collision_layer
   
-  var results = space_state.intersect_point(query)
-  
+  var results = space_state.intersect_point(query, 1)
+
   # Check if any of the results is our buildable area
   for result in results:
     if result.collider == buildable_area:
