@@ -11,6 +11,8 @@ extends Camera3D
 var zoom_tween: Tween
 var orbit_center: Vector3 # The point on the ground the camera orbits around
 
+const CAMERA_VIEW_ALIGNMENT_OFFSET := PI / 2 ## 90 degrees in radians rotation to align movement with camera view
+
 
 func _ready():
   # Initialize the orbit center to the current ground projection
@@ -26,7 +28,7 @@ func _process(delta: float) -> void:
     var move_direction := Vector3(input_vector.x, 0, input_vector.y)
 
     # Rotate the movement direction by the camera's Y-axis rotation
-    move_direction = move_direction.rotated(Vector3.UP, rotation.y + PI / 2).normalized()
+    move_direction = move_direction.rotated(Vector3.UP, rotation.y + CAMERA_VIEW_ALIGNMENT_OFFSET).normalized()
     
     global_position += move_direction * camera_move_speed * delta
     
@@ -70,9 +72,8 @@ func _process(delta: float) -> void:
 
 func _update_orbit_center():
   # Calculate the point on the ground that the camera is looking at
-  # For an orthographic camera looking down at an angle, we project the camera position to ground level
+  # TODO: Incomplete for uneven terrain. Consider using a raycast to find exact ground intersection. See https://github.com/saebyn/godot-tower-defense/issues/92
   var camera_forward = - transform.basis.z.normalized()
-  # TODO Consider using a raycast to find exact ground intersection since terrain is uneven
   var ground_plane = Plane(Vector3.UP, 0) # Ground plane at Y=0
   
   # Find intersection of camera ray with ground plane
