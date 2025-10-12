@@ -9,7 +9,6 @@ extends Camera3D
 @export var camera_zoom_duration: float = 0.2 # Duration for smooth zoom transitions
 
 var zoom_tween: Tween
-var cumulative_y_rotation: float = 0.0
 
 
 func _process(delta: float) -> void:
@@ -19,20 +18,18 @@ func _process(delta: float) -> void:
   if input_vector != Vector2.ZERO:
     # Create movement direction in world space (as original code did)
     var move_direction := Vector3(input_vector.x, 0, input_vector.y)
-    
-    # Rotate the movement direction by the cumulative Y-axis rotation
-    move_direction = move_direction.rotated(Vector3.UP, cumulative_y_rotation)
+
+    # Rotate the movement direction by the camera's Y-axis rotation
+    move_direction = move_direction.rotated(Vector3.UP, rotation.y + PI / 2).normalized()
     
     global_position += move_direction * camera_move_speed * delta
 
   # Handle camera rotation
   if Input.is_action_just_pressed("camera_rotate_left"):
     rotate_y(-PI / 2) # Rotate left by 90 degrees
-    cumulative_y_rotation -= PI / 2
 
   if Input.is_action_just_pressed("camera_rotate_right"):
     rotate_y(PI / 2) # Rotate right by 90 degrees
-    cumulative_y_rotation += PI / 2
 
   # Handle discrete zoom events from mouse wheel and keyboard
   var zoom_in_pressed = Input.is_action_just_pressed("camera_zoom_in") or Input.is_action_just_pressed("camera_zoom_in_key")
