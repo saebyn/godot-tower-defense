@@ -96,7 +96,7 @@ func _handle_obstacle_remove_click(click_position: Vector2):
       var obstacle = collider as PlaceableObstacle
       Logger.info("Player", "Confirmed PlaceableObstacle, calling remove()")
       var refund = obstacle.remove()
-      Logger.info("Player", "Removed obstacle and recovered %d currency" % refund)
+      Logger.info("Player", "Removed obstacle and recovered %d scrap" % refund)
       
       # Show UI feedback
       if ui and ui.has_method("show_obstacle_removed"):
