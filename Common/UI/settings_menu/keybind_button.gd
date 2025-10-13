@@ -32,10 +32,35 @@ func _update_display() -> void:
     var event = events[0]
     if event is InputEventKey:
       key_button.text = OS.get_keycode_string(event.physical_keycode)
+    elif event is InputEventMouseButton:
+      key_button.text = _get_mouse_button_name(event.button_index)
     else:
       key_button.text = "Unbound"
   else:
     key_button.text = "Unbound"
+
+func _get_mouse_button_name(button_index: int) -> String:
+  match button_index:
+    MOUSE_BUTTON_LEFT:
+      return "Left Mouse"
+    MOUSE_BUTTON_RIGHT:
+      return "Right Mouse"
+    MOUSE_BUTTON_MIDDLE:
+      return "Middle Mouse"
+    MOUSE_BUTTON_WHEEL_UP:
+      return "Mouse Wheel Up"
+    MOUSE_BUTTON_WHEEL_DOWN:
+      return "Mouse Wheel Down"
+    MOUSE_BUTTON_WHEEL_LEFT:
+      return "Mouse Wheel Left"
+    MOUSE_BUTTON_WHEEL_RIGHT:
+      return "Mouse Wheel Right"
+    MOUSE_BUTTON_XBUTTON1:
+      return "Mouse X1"
+    MOUSE_BUTTON_XBUTTON2:
+      return "Mouse X2"
+    _:
+      return "Mouse Button %d" % button_index
 
 func _on_key_button_pressed() -> void:
   if not is_remapping:
@@ -48,13 +73,19 @@ func _input(event: InputEvent) -> void:
     return
   
   if event is InputEventKey and event.pressed:
-    # Rebind the action
+    # Rebind the action to keyboard key
+    _rebind_action(event)
+    is_remapping = false
+    set_process_input(false)
+    get_viewport().set_input_as_handled()
+  elif event is InputEventMouseButton and event.pressed:
+    # Rebind the action to mouse button
     _rebind_action(event)
     is_remapping = false
     set_process_input(false)
     get_viewport().set_input_as_handled()
 
-func _rebind_action(event: InputEventKey) -> void:
+func _rebind_action(event: InputEvent) -> void:
   # Clear existing bindings for this action
   InputMap.action_erase_events(action_name)
   
@@ -64,7 +95,13 @@ func _rebind_action(event: InputEventKey) -> void:
   # Update display
   _update_display()
   
-  Logger.info("KeybindButton", "Rebound '%s' to %s" % [action_name, OS.get_keycode_string(event.physical_keycode)])
+  var binding_name = ""
+  if event is InputEventKey:
+    binding_name = OS.get_keycode_string(event.physical_keycode)
+  elif event is InputEventMouseButton:
+    binding_name = _get_mouse_button_name(event.button_index)
+  
+  Logger.info("KeybindButton", "Rebound '%s' to %s" % [action_name, binding_name])
   
   # Note: We don't save keybinds to file in this version
   # This could be added later if needed
