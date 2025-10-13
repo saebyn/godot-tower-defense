@@ -5,7 +5,8 @@ extends CharacterBody3D
 @export var target_group: String = "targets"
 @export var obstacle_group: String = "obstacles"
 @export var obstacle_attack_range: float = 6.0
-@export var currency_reward: int = 10
+@export var scrap_reward: int = 10 ## Scrap awarded when enemy dies (can be 0)
+@export var xp_reward: int = 10 ## XP awarded when enemy dies (always given)
 @export var enemy_type: String = "base_enemy" ## Type identifier for stats tracking
 
 var attack: Attack
@@ -146,8 +147,13 @@ func _on_died(damage_source: String = "unknown"):
     var defeated_by_hand = (damage_source == "player")
     StatsManager.track_enemy_defeated(enemy_type, defeated_by_hand)
   
-  # Award currency to the player
-  CurrencyManager.earn_currency(currency_reward)
+  # Always award XP to the player
+  CurrencyManager.earn_xp(xp_reward)
+  
+  # Award scrap if the enemy gives any
+  if scrap_reward > 0:
+    CurrencyManager.earn_scrap(scrap_reward)
+  
   queue_free()
 
 func _on_health_damaged(amount: int, hitpoints: int, damage_source: String = "unknown") -> void:
