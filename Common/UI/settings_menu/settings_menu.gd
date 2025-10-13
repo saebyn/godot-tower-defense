@@ -30,6 +30,7 @@ signal closed()
 
 # Keybind button scene
 const KeybindButtonScene = preload("res://Common/UI/settings_menu/keybind_button.tscn")
+const VideoConfirmDialogScene = preload("res://Common/UI/settings_menu/video_confirm_dialog.tscn")
 
 # Temporary settings storage
 var temp_fullscreen: bool
@@ -39,9 +40,23 @@ var temp_master_volume: float
 var temp_music_volume: float
 var temp_sfx_volume: float
 
+# Previous video settings for revert
+var previous_fullscreen: bool
+var previous_vsync: bool
+var previous_resolution: int
+
+# Video confirmation dialog
+var video_confirm_dialog: VideoSettingsConfirmDialog = null
+
 func _ready() -> void:
   # Hide by default
   visible = false
+  
+  # Create video confirmation dialog
+  video_confirm_dialog = VideoConfirmDialogScene.instantiate()
+  add_child(video_confirm_dialog)
+  video_confirm_dialog.settings_confirmed.connect(_on_video_settings_confirmed)
+  video_confirm_dialog.settings_reverted.connect(_on_video_settings_reverted)
   
   # Setup resolution options
   _setup_resolution_options()
@@ -154,19 +169,69 @@ func _on_sfx_volume_changed(value: float) -> void:
   _update_volume_labels()
 
 func _on_apply_pressed() -> void:
-  # Apply all settings
-  SettingsManager.fullscreen = temp_fullscreen
-  SettingsManager.vsync_enabled = temp_vsync
-  SettingsManager.resolution_index = temp_resolution
+  # Check if video settings changed
+  var video_settings_changed = (
+    temp_fullscreen != SettingsManager.fullscreen or
+    temp_vsync != SettingsManager.vsync_enabled or
+    temp_resolution != SettingsManager.resolution_index
+  )
+  
+  # Store previous video settings for potential revert
+  previous_fullscreen = SettingsManager.fullscreen
+  previous_vsync = SettingsManager.vsync_enabled
+  previous_resolution = SettingsManager.resolution_index
+  
+  # Apply audio settings immediately (no confirmation needed)
   SettingsManager.master_volume = temp_master_volume
   SettingsManager.music_volume = temp_music_volume
   SettingsManager.sfx_volume = temp_sfx_volume
+  SettingsManager.apply_audio_settings()
   
-  SettingsManager.apply_settings()
+  if video_settings_changed:
+    # Apply video settings
+    SettingsManager.fullscreen = temp_fullscreen
+    SettingsManager.vsync_enabled = temp_vsync
+    SettingsManager.resolution_index = temp_resolution
+    SettingsManager.apply_video_settings()
+    
+    # Show confirmation dialog for video settings
+    Logger.info("SettingsMenu", "Video settings changed, showing confirmation dialog")
+    video_confirm_dialog.show_dialog()
+  else:
+    # No video changes, just save and close
+    SettingsManager.save_settings()
+    Logger.info("SettingsMenu", "Settings applied and saved")
+    hide_menu()
+    closed.emit()
+
+func _on_video_settings_confirmed() -> void:
+  # User confirmed the video settings, save everything
   SettingsManager.save_settings()
+  Logger.info("SettingsMenu", "Video settings confirmed and saved")
+  hide_menu()
+  closed.emit()
+
+func _on_video_settings_reverted() -> void:
+  # User rejected or timeout - revert video settings
+  SettingsManager.fullscreen = previous_fullscreen
+  SettingsManager.vsync_enabled = previous_vsync
+  SettingsManager.resolution_index = previous_resolution
+  SettingsManager.apply_video_settings()
   
-  Logger.info("SettingsMenu", "Settings applied and saved")
+  # Update temp settings to match reverted state
+  temp_fullscreen = previous_fullscreen
+  temp_vsync = previous_vsync
+  temp_resolution = previous_resolution
   
+  # Update UI to reflect reverted settings
+  fullscreen_check.button_pressed = temp_fullscreen
+  vsync_check.button_pressed = temp_vsync
+  resolution_option.selected = temp_resolution
+  
+  Logger.info("SettingsMenu", "Video settings reverted to previous state")
+  
+  # Audio settings were already applied, so save those
+  SettingsManager.save_settings()
   hide_menu()
   closed.emit()
 
