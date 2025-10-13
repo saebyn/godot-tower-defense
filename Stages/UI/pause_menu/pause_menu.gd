@@ -9,7 +9,7 @@ const SettingsMenuScene = preload("res://Common/UI/settings_menu/settings_menu.t
 @onready var main_menu_button: Button = $VBoxContainer/MainMenuButton
 @onready var quit_button: Button = $VBoxContainer/QuitButton
 
-var settings_menu: SettingsMenu = null
+var settings_menu = null
 
 func _ready():
   # Initially hide the pause menu
