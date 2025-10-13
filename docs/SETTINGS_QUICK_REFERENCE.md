@@ -26,9 +26,14 @@ Complete tabbed interface for adjusting game settings.
 **Location**: `Common/UI/settings_menu/`
 
 **Tabs**:
-1. **Video** - Resolution, fullscreen, V-Sync
+1. **Video** - Resolution, fullscreen, V-Sync with confirmation dialog
 2. **Audio** - Master, Music, SFX sliders
-3. **Keybinds** - Rebindable input actions
+3. **Keybinds** - Rebindable input actions (keyboard and mouse)
+
+**Features**:
+- **Video Confirmation Dialog**: 15-second countdown with auto-revert to prevent getting stuck with broken settings
+- **Mouse Button Support**: Properly displays and rebinds mouse buttons (wheel, left/right click, etc.)
+- **Safe Settings Changes**: Audio applies immediately, video requires confirmation
 
 **Accessible From**:
 - Main Menu → Settings button
