@@ -46,7 +46,7 @@ var previous_vsync: bool
 var previous_resolution: int
 
 # Video confirmation dialog
-var video_confirm_dialog: VideoSettingsConfirmDialog = null
+var video_confirm_dialog = null
 
 func _ready() -> void:
   # Hide by default

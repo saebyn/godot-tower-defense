@@ -7,7 +7,7 @@ class_name MainMenu
 
 const SettingsMenuScene = preload("res://Common/UI/settings_menu/settings_menu.tscn")
 
-var settings_menu: SettingsMenu = null
+var settings_menu = null
 
 func _ready():
   # Set the initial game state when the main menu loads
