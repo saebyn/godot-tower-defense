@@ -95,7 +95,7 @@ func _validate_placement(target_position: Vector3) -> PlacementResult:
   if not _has_sufficient_clearance(target_position):
     return PlacementResult.new(false, PlacementResult.ValidationError.INSUFFICIENT_CLEARANCE, "Insufficient clearance from other obstacles")
 
-  if CurrencyManager.get_currency() < _place_obstacle_type.cost:
+  if CurrencyManager.get_scrap() < _place_obstacle_type.cost:
     return PlacementResult.new(false, PlacementResult.ValidationError.INSUFFICIENT_FUNDS, "Insufficient funds to place obstacle")
   
   return PlacementResult.new(true)
@@ -237,7 +237,7 @@ func _place_obstacle() -> void:
     return
 
   # Deduct cost
-  if not CurrencyManager.spend_currency(_place_obstacle_type.cost):
+  if not CurrencyManager.spend_scrap(_place_obstacle_type.cost):
     # This should not happen due to prior validation, but just in case
     Logger.error("Placement", "Cannot place obstacle: Insufficient funds")
     return
