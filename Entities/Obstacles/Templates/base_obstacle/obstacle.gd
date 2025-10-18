@@ -85,7 +85,7 @@ func remove() -> int:
     navigation_obstacle.queue_free()
   
   # Return currency
-  CurrencyManager.earn_currency(refund_amount)
+  CurrencyManager.earn_scrap(refund_amount)
   
   # Remove from scene
   queue_free()

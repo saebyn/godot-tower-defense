@@ -66,10 +66,11 @@ func _update_display():
   
   text += "\n"
   
-  # Currency stats  
-  text += "[b]Currency[/b]\n"
-  text += "Total Earned: %d\n" % stats.total_currency_earned
-  text += "Max Held: %d\n" % stats.max_currency_held
+  # Resource stats (scrap and XP)
+  text += "[b]Resources[/b]\n"
+  text += "Total Scrap Earned: %d\n" % stats.total_scrap_earned
+  text += "Max Scrap Held: %d\n" % stats.max_scrap_held
+  text += "Total XP Earned: %d\n" % stats.total_xp_earned
   
   text += "\n[center][color=gray][i]Press R twice to reset all stats[/i][/color][/center]"
   

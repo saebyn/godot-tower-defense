@@ -96,7 +96,7 @@ func _simple_fade_animation() -> void:
 ### Show a notification that an obstacle was removed
 func show_obstacle_removed(refund_amount: int) -> void:
   if label:
-    label.text = "🗑️ Obstacle Removed!\n💰 Refund: %d currency" % refund_amount
+    label.text = "🗑️ Obstacle Removed!\n💰 Refund: %d scrap" % refund_amount
   
   # Play fade in/out animation
   if animation_player and animation_player.has_animation("spawn_notification"):

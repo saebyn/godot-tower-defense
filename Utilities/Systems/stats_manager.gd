@@ -18,9 +18,10 @@ var enemies_defeated_by_hand: int = 0
 var obstacles_placed_total: int = 0
 var obstacles_placed_by_type: Dictionary = {} # String -> int
 
-# Currency tracking
-var total_currency_earned: int = 0
-var max_currency_held: int = 0
+# Resource tracking (scrap and XP)
+var total_scrap_earned: int = 0
+var max_scrap_held: int = 0
+var total_xp_earned: int = 0
 
 # Persistence
 const STATS_SAVE_PATH = "user://stats.save"
@@ -40,12 +41,13 @@ func _ready():
   
   # Connect to existing systems
   if CurrencyManager:
-    CurrencyManager.currency_earned.connect(_on_currency_earned)
-    CurrencyManager.currency_changed.connect(_on_currency_changed)
-    # Update max currency with current amount if it's higher
-    var current_currency = CurrencyManager.get_currency()
-    if current_currency > max_currency_held:
-      max_currency_held = current_currency
+    CurrencyManager.scrap_earned.connect(_on_scrap_earned)
+    CurrencyManager.scrap_changed.connect(_on_scrap_changed)
+    CurrencyManager.xp_earned.connect(_on_xp_earned)
+    # Update max scrap with current amount if it's higher
+    var current_scrap = CurrencyManager.get_scrap()
+    if current_scrap > max_scrap_held:
+      max_scrap_held = current_scrap
   else:
     Logger.error("StatsManager", "CurrencyManager not found!")
 
@@ -94,20 +96,27 @@ func track_obstacle_placed(obstacle_type: String) -> void:
   # Auto-save after significant events
   _save_stats()
 
-## Currency earned callback
-func _on_currency_earned(amount: int) -> void:
-  total_currency_earned += amount
-  Logger.debug("Stats", "Currency earned: %d. Total earned: %d" % [amount, total_currency_earned])
-  # Save periodically for currency changes
+## Scrap earned callback
+func _on_scrap_earned(amount: int) -> void:
+  total_scrap_earned += amount
+  Logger.debug("Stats", "Scrap earned: %d. Total earned: %d" % [amount, total_scrap_earned])
+  # Save periodically for scrap changes
   _save_stats()
 
-## Currency changed callback - track maximum held
-func _on_currency_changed(new_amount: int) -> void:
-  if new_amount > max_currency_held:
-    max_currency_held = new_amount
-    Logger.debug("Stats", "New max currency held: %d" % max_currency_held)
+## Scrap changed callback - track maximum held
+func _on_scrap_changed(new_amount: int) -> void:
+  if new_amount > max_scrap_held:
+    max_scrap_held = new_amount
+    Logger.debug("Stats", "New max scrap held: %d" % max_scrap_held)
     # Save when we hit a new max
     _save_stats()
+
+## XP earned callback
+func _on_xp_earned(amount: int) -> void:
+  total_xp_earned += amount
+  Logger.debug("Stats", "XP earned: %d. Total earned: %d" % [amount, total_xp_earned])
+  # Save periodically for XP changes
+  _save_stats()
 
 ## Get stats data
 
@@ -126,11 +135,14 @@ func get_obstacles_placed_total() -> int:
 func get_obstacles_placed_by_type(obstacle_type: String) -> int:
   return obstacles_placed_by_type.get(obstacle_type, 0)
 
-func get_total_currency_earned() -> int:
-  return total_currency_earned
+func get_total_scrap_earned() -> int:
+  return total_scrap_earned
 
-func get_max_currency_held() -> int:
-  return max_currency_held
+func get_max_scrap_held() -> int:
+  return max_scrap_held
+
+func get_total_xp_earned() -> int:
+  return total_xp_earned
 
 func get_all_enemy_types() -> Array[String]:
   return enemies_defeated_by_type.keys()
@@ -146,8 +158,9 @@ func get_stats_summary() -> Dictionary:
     "enemies_defeated_by_hand": enemies_defeated_by_hand,
     "obstacles_placed_total": obstacles_placed_total,
     "obstacles_placed_by_type": obstacles_placed_by_type.duplicate(),
-    "total_currency_earned": total_currency_earned,
-    "max_currency_held": max_currency_held
+    "total_scrap_earned": total_scrap_earned,
+    "max_scrap_held": max_scrap_held,
+    "total_xp_earned": total_xp_earned
   }
 
 ## Reset all stats (for new game, testing, etc.)
@@ -157,8 +170,9 @@ func reset_stats() -> void:
   enemies_defeated_by_hand = 0
   obstacles_placed_total = 0
   obstacles_placed_by_type.clear()
-  total_currency_earned = 0
-  max_currency_held = CurrencyManager.get_currency() if CurrencyManager else 0
+  total_scrap_earned = 0
+  max_scrap_held = CurrencyManager.get_scrap() if CurrencyManager else 0
+  total_xp_earned = 0
   
   Logger.info("StatsManager", "All stats reset")
   stats_updated.emit()
@@ -182,8 +196,9 @@ func _save_stats() -> void:
     "enemies_defeated_by_hand": enemies_defeated_by_hand,
     "obstacles_placed_total": obstacles_placed_total,
     "obstacles_placed_by_type": obstacles_placed_by_type,
-    "total_currency_earned": total_currency_earned,
-    "max_currency_held": max_currency_held
+    "total_scrap_earned": total_scrap_earned,
+    "max_scrap_held": max_scrap_held,
+    "total_xp_earned": total_xp_earned
   }
   
   save_file.store_string(JSON.stringify(save_data))
@@ -225,10 +240,11 @@ func _load_stats() -> void:
   enemies_defeated_by_hand = save_data.get("enemies_defeated_by_hand", 0)
   obstacles_placed_total = save_data.get("obstacles_placed_total", 0)
   obstacles_placed_by_type = save_data.get("obstacles_placed_by_type", {})
-  total_currency_earned = save_data.get("total_currency_earned", 0)
-  max_currency_held = save_data.get("max_currency_held", 0)
+  total_scrap_earned = save_data.get("total_scrap_earned", save_data.get("total_currency_earned", 0))
+  max_scrap_held = save_data.get("max_scrap_held", save_data.get("max_currency_held", 0))
+  total_xp_earned = save_data.get("total_xp_earned", 0)
   
-  Logger.info("StatsManager", "Stats loaded from save file - Enemies defeated: %d, Obstacles placed: %d, Currency earned: %d" % [enemies_defeated_total, obstacles_placed_total, total_currency_earned])
+  Logger.info("StatsManager", "Stats loaded from save file - Enemies defeated: %d, Obstacles placed: %d, Scrap earned: %d, XP earned: %d" % [enemies_defeated_total, obstacles_placed_total, total_scrap_earned, total_xp_earned])
   stats_loaded.emit()
 
 ## Manual save method for external use
