@@ -65,9 +65,9 @@ shader_parameter/uv2_offset = Vector3(0, 0, 0)
 material = SubResource("ShaderMaterial_272bh")
 size = Vector2(10, 10)
 
-[node name="EnemySpawner" type="Node3D" node_paths=PackedStringArray("spawn_area")]
+[node name="EnemySpawner" type="Node3D" node_paths=PackedStringArray("spawn_areas")]
 script = ExtResource("1_00s5r")
-spawn_area = NodePath("MeshInstance3D")
+spawn_areas = [NodePath("MeshInstance3D")]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

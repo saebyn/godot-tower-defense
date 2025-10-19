@@ -1,7 +1,7 @@
 extends Node3D
 class_name EnemySpawner
 
-@export var spawn_area: MeshInstance3D
+@export var spawn_areas: Array[MeshInstance3D] = []
 
 var _spawned_enemies: int = 0
 
@@ -94,8 +94,29 @@ func _on_child_exiting_tree(node: Node) -> void:
 
 
 func find_random_spawn_position() -> Vector3:
-    # Generate a random position within the spawn area
-    var bounds = spawn_area.get_aabb()
+    # Handle both old single spawn_area and new spawn_areas array for backward compatibility
+    var spawn_area_to_use: MeshInstance3D = null
+    
+    if spawn_areas.is_empty():
+        # Try to find old spawn_area export (backward compatibility)
+        if has_meta("spawn_area"):
+            spawn_area_to_use = get_meta("spawn_area")
+        else:
+            # Try to get from child nodes
+            for child in get_children():
+                if child is MeshInstance3D:
+                    spawn_area_to_use = child
+                    break
+        
+        if spawn_area_to_use == null:
+            Logger.error("Spawner", "No spawn areas configured!")
+            return Vector3.ZERO
+    else:
+        # Randomly select one of the spawn areas
+        spawn_area_to_use = spawn_areas.pick_random()
+    
+    # Generate a random position within the selected spawn area
+    var bounds = spawn_area_to_use.get_aabb()
     var random_position = Vector3(
         randf_range(bounds.position.x, bounds.position.x + bounds.size.x),
         randf_range(bounds.position.y, bounds.position.y + bounds.size.y),
