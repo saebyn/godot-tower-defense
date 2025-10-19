@@ -3,9 +3,9 @@ class_name CurrencyDisplay
 
 ## UI component to display the player's current resources (scrap and XP)
 
-@onready var xp_label: Label = $XPLabel
-@onready var scrap_label: Label = $ScrapLabel
-@onready var level_label: Label = $LevelLabel
+@onready var xp_label: Label = $HBoxContainer/XPLabel
+@onready var scrap_label: Label = $HBoxContainer/ScrapLabel
+@onready var level_label: Label = $HBoxContainer/LevelLabel
 
 func _ready():
   # Connect to the currency manager signals
