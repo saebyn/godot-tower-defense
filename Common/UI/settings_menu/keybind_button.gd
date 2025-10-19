@@ -58,6 +58,18 @@ func _format_key_with_modifiers(event: InputEventKey) -> String:
   # Join with "+" separator
   return "+".join(parts)
 
+func _is_modifier_key(keycode: int) -> bool:
+  # Check if the key is a modifier key (Shift, Ctrl, Alt, Meta, etc.)
+  return keycode in [
+    KEY_SHIFT,
+    KEY_CTRL, 
+    KEY_ALT,
+    KEY_META,
+    KEY_CAPSLOCK,
+    KEY_NUMLOCK,
+    KEY_SCROLLLOCK
+  ]
+
 func _get_mouse_button_name(button_index: int) -> String:
   match button_index:
     MOUSE_BUTTON_LEFT:
@@ -92,6 +104,10 @@ func _input(event: InputEvent) -> void:
     return
   
   if event is InputEventKey and event.pressed:
+    # Ignore modifier-only keys - wait for actual key with modifiers
+    if _is_modifier_key(event.physical_keycode):
+      return
+    
     # Rebind the action to keyboard key
     _rebind_action(event)
     is_remapping = false
