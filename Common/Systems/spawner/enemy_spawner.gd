@@ -1,7 +1,7 @@
 extends Node3D
 class_name EnemySpawner
 
-@export var spawn_area: MeshInstance3D
+@export var spawn_areas: Array[MeshInstance3D] = []
 
 var _spawned_enemies: int = 0
 
@@ -18,6 +18,8 @@ signal all_waves_completed()
 signal enemy_spawned(enemy: Node3D)
 
 func _ready() -> void:
+    # Monitor child nodes exiting tree to track enemies
+    child_exiting_tree.connect(_on_child_exiting_tree)
     # Defer mode detection to ensure all children are ready
     _detect_mode.call_deferred()
 
@@ -94,14 +96,25 @@ func _on_child_exiting_tree(node: Node) -> void:
 
 
 func find_random_spawn_position() -> Vector3:
-    # Generate a random position within the spawn area
-    var bounds = spawn_area.get_aabb()
-    var random_position = Vector3(
+    # Handle both old single spawn_area and new spawn_areas array for backward compatibility
+    var spawn_area_to_use: MeshInstance3D = null
+    
+    if spawn_areas.is_empty():
+        Logger.error("Spawner", "No spawn areas configured!")
+        return Vector3.ZERO
+
+    # Randomly select one of the spawn areas
+    spawn_area_to_use = spawn_areas.pick_random() as MeshInstance3D
+    
+    # Generate a random position within the selected spawn area
+    var bounds = spawn_area_to_use.get_aabb()
+    var spawn_position = Vector3(
         randf_range(bounds.position.x, bounds.position.x + bounds.size.x),
         randf_range(bounds.position.y, bounds.position.y + bounds.size.y),
         randf_range(bounds.position.z, bounds.position.z + bounds.size.z)
     )
-    return random_position
+    Logger.debug("Spawner", "Local spawn position: %s" % spawn_position)
+    return spawn_position
 
 func get_current_wave_number() -> int:
     return _current_wave_index + 1
