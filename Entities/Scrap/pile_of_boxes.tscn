@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://dmaheitw7drsh"]
+
+[ext_resource type="PackedScene" uid="uid://bw7eli0bw14jj" path="res://Entities/Scrap/scrap.tscn" id="1_gn6o2"]
+[ext_resource type="PackedScene" uid="uid://m02e40wp2uxm" path="res://Assets/Models/PileOfBoxes.blend" id="3_iryuc"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_83go7"]
+size = Vector3(1.20068, 1.03424, 1.17242)
+
+[node name="Scrap" instance=ExtResource("1_gn6o2")]
+
+[node name="model" parent="." index="1" instance=ExtResource("3_iryuc")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.158022, 0.489661, 0.00558281)
+shape = SubResource("BoxShape3D_83go7")

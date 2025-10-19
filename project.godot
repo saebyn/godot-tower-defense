@@ -29,6 +29,7 @@ SettingsManager="*res://Utilities/Systems/settings_manager.gd"
 
 targets=""
 navigation_mesh_source_group=""
+scrap=""
 
 [gui]
 
@@ -223,6 +224,7 @@ zoom_slow={
 
 [layer_names]
 
+3d_physics/layer_3="attackable"
 3d_physics/layer_5="Ground"
 3d_physics/layer_6="obstacles"
 
