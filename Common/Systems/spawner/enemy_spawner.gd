@@ -108,16 +108,13 @@ func find_random_spawn_position() -> Vector3:
     
     # Generate a random position within the selected spawn area
     var bounds = spawn_area_to_use.get_aabb()
-    Logger.debug("Spawner", "Selected spawn area: %s with bounds: %s" % [spawn_area_to_use.name, bounds])
-    var local_position = Vector3(
+    var spawn_position = Vector3(
         randf_range(bounds.position.x, bounds.position.x + bounds.size.x),
         randf_range(bounds.position.y, bounds.position.y + bounds.size.y),
         randf_range(bounds.position.z, bounds.position.z + bounds.size.z)
     )
-    Logger.debug("Spawner", "Local spawn position: %s" % local_position)
-    Logger.debug("Spawner", "Global spawn position: %s" % (spawn_area_to_use.global_transform * local_position))
-    # Transform to global coordinates
-    return local_position
+    Logger.debug("Spawner", "Local spawn position: %s" % spawn_position)
+    return spawn_position
 
 func get_current_wave_number() -> int:
     return _current_wave_index + 1
