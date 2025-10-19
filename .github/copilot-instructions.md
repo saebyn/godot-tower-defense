@@ -134,7 +134,7 @@ The project uses several autoloaded singletons for global state management:
 Access these systems from anywhere in the codebase:
 ```gdscript
 Logger.info("System", "Message")
-CurrencyManager.earn_currency(10)
+CurrencyManager.earn_scrap(10)
 GameManager.set_game_state(GameManager.GameState.IN_GAME_MENU)
 ```
 
