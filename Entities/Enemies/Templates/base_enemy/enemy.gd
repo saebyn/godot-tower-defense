@@ -66,7 +66,7 @@ func load_resource(resource: EnemyTypeResource) -> void:
       attack.damage_amount = resource.damage_amount
       attack.damage_cooldown = resource.damage_cooldown
       attack.damage_source = resource.enemy_type
-  )
+  , Object.CONNECT_ONE_SHOT)
 
 func _choose_target():
   var targets := get_tree().get_nodes_in_group(target_group)
