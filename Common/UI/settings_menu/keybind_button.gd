@@ -31,13 +31,32 @@ func _update_display() -> void:
   if events.size() > 0:
     var event = events[0]
     if event is InputEventKey:
-      key_button.text = OS.get_keycode_string(event.physical_keycode)
+      key_button.text = _format_key_with_modifiers(event)
     elif event is InputEventMouseButton:
       key_button.text = _get_mouse_button_name(event.button_index)
     else:
       key_button.text = "Unbound"
   else:
     key_button.text = "Unbound"
+
+func _format_key_with_modifiers(event: InputEventKey) -> String:
+  var parts: Array[String] = []
+  
+  # Add modifiers in a consistent order
+  if event.ctrl_pressed or event.command_or_control_autoremap:
+    parts.append("Ctrl")
+  if event.alt_pressed:
+    parts.append("Alt")
+  if event.shift_pressed:
+    parts.append("Shift")
+  if event.meta_pressed:
+    parts.append("Meta")
+  
+  # Add the actual key
+  parts.append(OS.get_keycode_string(event.physical_keycode))
+  
+  # Join with "+" separator
+  return "+".join(parts)
 
 func _get_mouse_button_name(button_index: int) -> String:
   match button_index:
@@ -97,7 +116,7 @@ func _rebind_action(event: InputEvent) -> void:
   
   var binding_name = ""
   if event is InputEventKey:
-    binding_name = OS.get_keycode_string(event.physical_keycode)
+    binding_name = _format_key_with_modifiers(event)
   elif event is InputEventMouseButton:
     binding_name = _get_mouse_button_name(event.button_index)
   
