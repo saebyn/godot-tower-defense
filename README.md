@@ -231,4 +231,4 @@ Because zombies go "nom nom nom" and puns are mandatory in lighthearted apocalyp
 
 ---
 
-**Built with** [Godot 4.4](https://godotengine.org/) | **Repo**: [github.com/saebyn/godot-tower-defense](https://github.com/saebyn/godot-tower-defense)
+**Built with** [Godot 4.4](https://godotengine.org/) | **Repo**: [github.com/saebyn/zom-nom-defense](https://github.com/saebyn/zom-nom-defense)

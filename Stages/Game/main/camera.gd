@@ -72,7 +72,7 @@ func _process(delta: float) -> void:
 
 func _update_orbit_center():
   # Calculate the point on the ground that the camera is looking at
-  # TODO: Incomplete for uneven terrain. Consider using a raycast to find exact ground intersection. See https://github.com/saebyn/godot-tower-defense/issues/92
+  # TODO: Incomplete for uneven terrain. Consider using a raycast to find exact ground intersection. See https://github.com/saebyn/zom-nom-defense/issues/92
   var camera_forward = - transform.basis.z.normalized()
   var ground_plane = Plane(Vector3.UP, 0) # Ground plane at Y=0
   

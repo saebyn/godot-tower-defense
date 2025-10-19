@@ -132,7 +132,7 @@ PC (Steam), with optional Twitch integration for live playthroughs and audience 
 - Autoload singletons: CurrencyManager, StatsManager, AchievementManager, TechTreeManager, ObstacleRegistry, GameManager, Logger, AudioManager.
 - Multiple save slot system with per-slot and global data separation.
 - Current implementation: ~25-30% complete (solid technical foundation, missing progression systems and content variety).
-- GitHub repo: [https://github.com/saebyn/godot-tower-defense](https://github.com/saebyn/godot-tower-defense)
+- GitHub repo: [https://github.com/saebyn/zom-nom-defense](https://github.com/saebyn/zom-nom-defense)
 
 ---
 
