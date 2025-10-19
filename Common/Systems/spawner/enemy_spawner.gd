@@ -18,6 +18,8 @@ signal all_waves_completed()
 signal enemy_spawned(enemy: Node3D)
 
 func _ready() -> void:
+    # Monitor child nodes exiting tree to track enemies
+    child_exiting_tree.connect(_on_child_exiting_tree)
     # Defer mode detection to ensure all children are ready
     _detect_mode.call_deferred()
 
@@ -98,32 +100,24 @@ func find_random_spawn_position() -> Vector3:
     var spawn_area_to_use: MeshInstance3D = null
     
     if spawn_areas.is_empty():
-        # Try to find old spawn_area export (backward compatibility)
-        if has_meta("spawn_area"):
-            spawn_area_to_use = get_meta("spawn_area")
-        else:
-            # Try to get from child nodes
-            for child in get_children():
-                if child is MeshInstance3D:
-                    spawn_area_to_use = child
-                    break
-        
-        if spawn_area_to_use == null:
-            Logger.error("Spawner", "No spawn areas configured!")
-            return Vector3.ZERO
-    else:
-        # Randomly select one of the spawn areas
-        spawn_area_to_use = spawn_areas.pick_random()
+        Logger.error("Spawner", "No spawn areas configured!")
+        return Vector3.ZERO
+
+    # Randomly select one of the spawn areas
+    spawn_area_to_use = spawn_areas.pick_random() as MeshInstance3D
     
     # Generate a random position within the selected spawn area
     var bounds = spawn_area_to_use.get_aabb()
+    Logger.debug("Spawner", "Selected spawn area: %s with bounds: %s" % [spawn_area_to_use.name, bounds])
     var local_position = Vector3(
         randf_range(bounds.position.x, bounds.position.x + bounds.size.x),
         randf_range(bounds.position.y, bounds.position.y + bounds.size.y),
         randf_range(bounds.position.z, bounds.position.z + bounds.size.z)
     )
+    Logger.debug("Spawner", "Local spawn position: %s" % local_position)
+    Logger.debug("Spawner", "Global spawn position: %s" % (spawn_area_to_use.global_transform * local_position))
     # Transform to global coordinates
-    return spawn_area_to_use.global_transform * local_position
+    return local_position
 
 func get_current_wave_number() -> int:
     return _current_wave_index + 1
