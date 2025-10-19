@@ -1,30 +1,88 @@
-# Tower Defense
+# Zom Nom Defense: Click. Aim. Survive.
 
-A 3D tower defense game built with Godot 4.4.
+A lighthearted zombie tower defense game with a click-to-kill twist, built with Godot 4.
 
-## Overview
+> 🧟‍♂️ Defend helpless survivors from waves of zombies using nothing but your mouse and some scrap-built defenses. Click zombies for scrap, build automated turrets, and make permanent tech tree choices that shape your playstyle.
 
-This is a work-in-progress 3D tower defense game featuring:
-- 3D environment with dynamic camera controls
-- Enemy AI with pathfinding navigation
-- Destructible targets
-- Orthogonal camera view optimized for strategy gameplay
+---
 
-## Controls
+## 🎮 What Is This?
 
-- **Camera Movement**: WASD keys
-  - W: Move camera up
-  - A: Move camera left  
-  - S: Move camera right
-  - R: Move camera down
-- **Camera Rotation**: Q/F keys
-  - Q: Rotate camera left (90°)
-  - F: Rotate camera right (90°)
-- **Camera Zoom**: Mouse wheel
-  - Mouse wheel up: Zoom in
-  - Mouse wheel down: Zoom out
+**Zom Nom Defense** is a lo-fi, chaotic tower defense/clicker hybrid where:
+- You **click zombies** to deal manual damage and earn "scrap"
+- You spend scrap to **place obstacles and turrets** to automate defense
+- You **defend absurd scenarios** (person on a car, survivor in a hammock, inflatable pool party)
+- You **unlock tech via achievements** and level up through an XP system
+- You make **permanent strategic choices** in a branching tech tree (choose Rapid Fire OR Heavy Damage - forever!)
 
-## Getting Started
+**Genre**: Tower Defense / Clicker Hybrid  
+**Platform**: PC (Steam planned)  
+**Tone**: Silly but strategic - light-hearted post-apocalypse chaos
+
+---
+
+## ⚠️ Warning
+
+This is a **work-in-progress passion project**. Core systems are functional, but many features and content are still in development. See the [Development Status](#-development-status) section for details.
+
+
+---
+
+## 📚 Documentation
+
+- **[Game Design Document](docs/zom_nom_defense_gdd.md)** - Complete vision for the game
+- **[Task Planning](docs/task_planning.md)** - Development roadmap (56 issues across 6 phases)
+- **[Tech Tree Design](docs/tech_tree_exclusive_branches.md)** - Mutually exclusive branch system
+- **[Logging System](docs/LOGGING.md)** - How the Logger autoload works
+
+---
+
+## ✨ Current Features
+
+**What's Working Now**:
+- ✅ Click-to-damage enemies with satisfying feedback
+- ✅ Scrap currency system (earn from kills, spend on obstacles)
+- ✅ XP and leveling system (CurrencyManager)
+- ✅ Basic Enemy AI with pathfinding navigation
+- ✅ Wave-based enemy spawning
+- ✅ Obstacle placement (walls and turrets)
+- ✅ Automated turret targeting and shooting
+- ✅ Component-based architecture (Health, Attack, Buff systems)
+- ✅ UI framework (hotbar, currency display, stats tracking)
+
+**What's Coming Next** (see [Task Planning](docs/task_planning.md)):
+- 🔜 Achievement system (unlock tech via gameplay)
+- 🔜 Tech tree with mutually exclusive branches
+- 🔜 Player progression persistence (save/load)
+- 🔜 Multiple levels with absurd scenarios
+- 🔜 Tower upgrades (3-5 tiers with visual progression)
+- 🔜 Support towers (buff nearby turrets)
+- 🔜 Challenge modes and endless mode
+- 🔜 More enemy variety (Scouts, Tanks, Sprinters, Bosses) and more complex AI
+- 🔜 Twitch integration for audience interaction
+- 🔜 Polish: sound effects, music, visual effects
+- 🔜 Minimap
+
+---
+
+## 🎯 Controls
+
+Controls are fully rebindable in-game via the Settings menu.
+
+### Camera
+- **WARS**: Move camera (up/left/right/down)
+- **Q/E**: Rotate camera (90° increments)
+- **Mouse Wheel**: Zoom in/out
+
+### Gameplay
+- **Left Click**: Attack enemies manually and collect scrapable objects
+- **Hotbar (1-9)**: Select obstacle to place
+- **Left Click (with obstacle selected)**: Place obstacle
+- **Right Click**: Cancel placement
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -36,7 +94,9 @@ This is a work-in-progress 3D tower defense game featuring:
 2. Open the project in Godot by importing the `project.godot` file
 3. Press F5 or click the "Play" button to run the game
 
-## Project Structure
+---
+
+## 🏗️ Project Structure
 
 ### Overview
 
@@ -111,21 +171,64 @@ Entities/Enemies/
 - **Team-friendly** - Clear separation of artist, designer, and programmer work areas
 - **Maintainable** - No hunting across multiple folders for related files
 
-This structure supports the planned features including multiple levels, wave-based enemies, tech trees, economy systems, and sandbox mode while keeping the codebase organized and approachable.
+This structure supports the game's progression systems (achievements, tech trees, multiple save slots), content variety (levels, enemies, obstacles), and planned features while keeping the codebase organized and approachable.
 
-## Development
+---
 
-This project is in early development. Current features include basic camera controls and enemy AI pathfinding. Future planned features may include:
-- Tower placement and management
-- Multiple enemy types
-- Wave-based gameplay
-- Resource management
-- Level progression
+## 🎨 Design Philosophy
 
-## License
+**Data-Driven Design**: Game content (enemies, obstacles, tech tree) uses `.tres` resource files, allowing non-programmers to create and balance content without touching code.
+
+**Component-Based Architecture**: Reusable components (Health, Attack, Buff) can be mixed and matched to create diverse game entities.
+
+**Meaningful Choices**: The tech tree features **mutually exclusive branches** - choosing Rapid Fire locks out Heavy Damage permanently (per save slot), creating distinct playstyles and encouraging replayability.
+
+**Multiple Save Slots**: Like Factorio, players can maintain 3+ parallel playthroughs to explore different tech tree paths.
+
+**Achievement Split**: 
+- **In-game achievements** reset per save slot (used to unlock tech)
+- **Steam achievements** unlock globally and permanently
+
+---
+
+## 🛠️ Development Status
+
+This is a **part-time passion project** worked on inconsistently. No timeline expectations - just methodical progress through well-defined phases.
+
+**Current Phase**: Phase 1 - Foundation Systems (achievements, tech tree, player progression persistence)
+
+See the [Task Planning](docs/task_planning.md) document for the complete roadmap.
+
+**Technical Foundation**: Solid component architecture, resource-based configuration, autoload singletons for game state management.
+
+**Content Status**: Core systems functional, progression mechanics in development, content creation ongoing.
+
+---
+
+## 🤝 Contributing & Feedback
+
+This is a personal learning project worked on publicly. While it's not actively seeking contributors, feedback and suggestions are welcome through issues!
+
+**Useful Contributions**:
+- Bug reports with reproduction steps
+- Balance feedback (when more content is playable)
+- Design suggestions for tech tree, achievements, or levels
+- Playtesting feedback
+
+---
+
+## 📜 License
 
 This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
 
-## Contributing
+---
 
-This is a personal learning project, but feedback and suggestions are welcome through issues.
+## 🎮 Why "Zom Nom Defense"?
+
+Because zombies go "nom nom nom" and puns are mandatory in lighthearted apocalypse games. 🧟‍♂️🍔
+
+**Tagline**: Click. Aim. Survive.
+
+---
+
+**Built with** [Godot 4.4](https://godotengine.org/) | **Repo**: [github.com/saebyn/godot-tower-defense](https://github.com/saebyn/godot-tower-defense)
