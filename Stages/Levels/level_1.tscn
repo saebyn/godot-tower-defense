@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://o24bc34g5fea"]
+[gd_scene load_steps=13 format=3 uid="uid://o24bc34g5fea"]
 
 [ext_resource type="PackedScene" uid="uid://deoia86ae444c" path="res://Assets/Models/Landscape1.blend" id="1_nc8vx"]
 [ext_resource type="Script" uid="uid://ch1n0ahhy65if" path="res://Stages/Levels/level_1.gd" id="2_srnku"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://Entities/Enemies/Templates/base_enemy/enemy.tscn" id="5_agnyp"]
 [ext_resource type="PackedScene" uid="uid://do57mync1tn6t" path="res://Assets/Models/canal_bridge.tscn" id="7_gwcit"]
 [ext_resource type="PackedScene" uid="uid://duqnmq1hv1h8h" path="res://Assets/Models/tree.blend" id="8_agnyp"]
+[ext_resource type="PackedScene" uid="uid://dmaheitw7drsh" path="res://Entities/Scrap/pile_of_boxes.tscn" id="9_b7d5n"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_agnyp"]
 albedo_color = Color(0.305882, 0.560784, 1, 1)
@@ -68,3 +69,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.12514, -24.73)
 
 [node name="tree2" parent="." index="9" instance=ExtResource("8_agnyp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.4422, 2.60687, -26.2774)
+
+[node name="PileOfBoxes" parent="." index="10" instance=ExtResource("9_b7d5n")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.2394, 3.16202, -16.2439)
+
+[node name="PileOfBoxes2" parent="." index="11" instance=ExtResource("9_b7d5n")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.5594, 2.26055, -27.92)
+
+[node name="PileOfBoxes3" parent="." index="12" instance=ExtResource("9_b7d5n")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.85619, 2.90484, -6.38448)
+
+[node name="PileOfBoxes4" parent="." index="13" instance=ExtResource("9_b7d5n")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.4546, 1.20441, -38.9659)
