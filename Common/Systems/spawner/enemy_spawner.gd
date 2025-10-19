@@ -69,6 +69,9 @@ func _on_enemy_spawned_from_wave(enemy: Node3D, _wave: Wave) -> void:
 
 func spawn_enemy(enemy_type: EnemyTypeResource) -> Node3D:
     var enemy = enemy_type.scene.instantiate()
+
+    assert(enemy.has_method("load_resource"), "Enemy scene must have load_resource method")
+
     enemy.load_resource(enemy_type)
 
     enemy.global_position = find_random_spawn_position()
