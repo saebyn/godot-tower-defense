@@ -11,7 +11,7 @@ class_name Wave
 @export var allow_overlap: bool = false ## If true, allows this wave to overlap with the next wave
 
 @export_group("Enemy Configuration")
-@export var enemy_scenes: Array[PackedScene] = [] ## Enemy types to spawn in this wave
+@export var enemy_types: Array[EnemyTypeResource] = [] ## Enemy types to spawn in this wave
 @export var enemy_counts: Array[int] = [] ## Number of each enemy type to spawn
 @export var spawn_interval: float = 2.0 ## Time between individual enemy spawns in seconds
 
@@ -21,7 +21,7 @@ const WAVE_OVERLAP_RECHECK_TIME: float = 1.0 ## Time to wait before rechecking f
 ## Internal state
 var _is_active: bool = false
 var _is_completed: bool = false
-var _enemies_to_spawn: Array[Dictionary] = [] ## Queue of enemies to spawn
+var _enemies_to_spawn: Array[EnemyTypeResource] = [] ## Queue of enemies to spawn
 var _spawn_timer: Timer
 var _wave_timer: Timer
 
@@ -46,12 +46,12 @@ func _ready() -> void:
   _validate_configuration()
 
 func _validate_configuration() -> void:
-  if enemy_scenes.size() != enemy_counts.size():
-    push_error("Wave: enemy_scenes and enemy_counts arrays must have the same size")
+  if enemy_types.size() != enemy_counts.size():
+    push_error("Wave: enemy_types and enemy_counts arrays must have the same size")
     return
   
-  if enemy_scenes.is_empty():
-    push_warning("Wave: No enemy scenes configured for wave")
+  if enemy_types.is_empty():
+    push_warning("Wave: No enemy types configured for wave")
     return
 
 func start_wave() -> void:
@@ -80,15 +80,12 @@ func _build_spawn_queue() -> void:
   _enemies_to_spawn.clear()
   
   # Add all enemies to the spawn queue
-  for i in range(enemy_scenes.size()):
-    var scene = enemy_scenes[i]
+  for i in range(enemy_types.size()):
+    var enemy_type = enemy_types[i]
     var count = enemy_counts[i]
     
     for j in range(count):
-      _enemies_to_spawn.append({
-        "scene": scene,
-        "index": i
-      })
+      _enemies_to_spawn.append(enemy_type)
   
   # Shuffle the spawn queue for variety (optional)
   _enemies_to_spawn.shuffle()
@@ -106,18 +103,13 @@ func _spawn_next_enemy() -> void:
     Logger.debug("Spawner.Wave", "Max enemies reached, cannot spawn more right now")
     return
 
-  var enemy_data = _enemies_to_spawn.pop_front()
-  var enemy_scene = enemy_data.scene as PackedScene
+  var enemy_type := _enemies_to_spawn.pop_front() as EnemyTypeResource
   
-  if not enemy_scene:
-    push_error("Wave: Invalid enemy scene in spawn queue")
-    return
-  
+
   # Let the parent spawner handle the actual instantiation and positioning
   var spawner = get_parent() as EnemySpawner
   if spawner:
-    var enemy = enemy_scene.instantiate()
-    spawner.spawn_enemy(enemy)
+    var enemy := spawner.spawn_enemy(enemy_type)
     enemy_spawned.emit(enemy, self)
 
 func _end_wave() -> void:

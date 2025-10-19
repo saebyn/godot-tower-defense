@@ -36,10 +36,39 @@ func _ready():
     health.damaged.connect(_on_health_damaged)
 
   # Make sure to not await during _ready.
-  actor_setup.call_deferred()
+  _actor_setup.call_deferred()
 
+# EnemyTypeResource
+func load_resource(resource: EnemyTypeResource) -> void:
+  ready.connect(func() -> void:
+    Logger.debug("Enemy", "Loading enemy resource: %s" % resource.name)
+    # Override properties from resource
+    movement_speed = resource.speed
+    target_desired_distance = resource.target_desired_distance
+    obstacle_attack_range = resource.obstacle_attack_range
+    scrap_reward = resource.scrap_reward
+    xp_reward = resource.xp_reward
+    enemy_type = resource.enemy_type
 
-func choose_target():
+    # Update navigation agent desired distance
+    navigation_agent.target_desired_distance = target_desired_distance
+
+    # Update scale
+    scale = Vector3.ONE * resource.scale_multiplier
+
+    # Update health
+    if health:
+      health.hitpoints = resource.hitpoints
+      health.max_hitpoints = resource.hitpoints
+
+    # Update attack component
+    if attack:
+      attack.damage_amount = resource.damage_amount
+      attack.damage_cooldown = resource.damage_cooldown
+      attack.damage_source = resource.enemy_type
+  , Object.CONNECT_ONE_SHOT)
+
+func _choose_target():
   var targets := get_tree().get_nodes_in_group(target_group)
   if targets.size() == 0:
     current_target = null
@@ -53,7 +82,7 @@ func choose_target():
     navigation_agent.set_target_position(current_target.global_position)
 
 
-func find_nearest_obstacle_in_range() -> Node3D:
+func _find_nearest_obstacle_in_range() -> Node3D:
   var obstacles := get_tree().get_nodes_in_group(obstacle_group)
   var nearest_obstacle: Node3D = null
   var nearest_distance: float = obstacle_attack_range + 1.0 # Start beyond max range
@@ -70,24 +99,24 @@ func find_nearest_obstacle_in_range() -> Node3D:
   return nearest_obstacle
 
 
-func actor_setup():
+func _actor_setup():
   # Wait for the first physics frame so the NavigationServer can sync.
   await get_tree().physics_frame
 
   # Now that the navigation map is no longer empty, set the movement target.
-  choose_target()
+  _choose_target()
 
 
-func attack_target():
+func _attack_target():
   if not current_target:
     Logger.trace("Enemy", "No current target to attack.")
-    choose_target()
+    _choose_target()
     if not current_target:
       return
   
   if not current_target.is_in_group(target_group):
     Logger.warn("Enemy", "Current target is not in the target group.")
-    choose_target()
+    _choose_target()
     if not current_target:
       return
 
@@ -98,7 +127,7 @@ func attack_target():
       return
 
   # If no targets in range, check for nearby obstacles to attack
-  var nearby_obstacle = find_nearest_obstacle_in_range()
+  var nearby_obstacle = _find_nearest_obstacle_in_range()
   if nearby_obstacle:
     Logger.debug("Enemy", "Attacking nearby obstacle at distance: %f" % global_position.distance_to(nearby_obstacle.global_position))
     attack.perform_attack(nearby_obstacle)
@@ -106,7 +135,7 @@ func attack_target():
 
 
 func _process(_delta: float) -> void:
-  attack_target()
+  _attack_target()
 
   # play animation based on movement speed
   if velocity.length() > 0.1:

@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://bhnpr8l9t2j5c"]
+[gd_scene load_steps=2 format=3 uid="uid://bhnpr8mat2j5c"]
 
-[ext_resource type="Script" path="res://Common/UI/currency_display/currency_display.gd" id="1_currency_display"]
+[ext_resource type="Script" uid="uid://dthb3io2o865h" path="res://Common/UI/currency_display/currency_display.gd" id="1_currency_display"]
 
 [node name="CurrencyDisplay" type="Control"]
 layout_mode = 3
