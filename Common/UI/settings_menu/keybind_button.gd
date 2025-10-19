@@ -13,10 +13,13 @@ var action_name: String = "":
       _update_display()
 
 var is_remapping: bool = false
+var modifier_wait_timer: float = 0.0
+var pending_modifier_event: InputEventKey = null
 
 func _ready() -> void:
   _update_display()
   key_button.pressed.connect(_on_key_button_pressed)
+  set_process(false)  # Disable process by default
 
 func _update_display() -> void:
   if not action_label or not key_button:
@@ -31,13 +34,44 @@ func _update_display() -> void:
   if events.size() > 0:
     var event = events[0]
     if event is InputEventKey:
-      key_button.text = OS.get_keycode_string(event.physical_keycode)
+      key_button.text = _format_key_with_modifiers(event)
     elif event is InputEventMouseButton:
       key_button.text = _get_mouse_button_name(event.button_index)
     else:
       key_button.text = "Unbound"
   else:
     key_button.text = "Unbound"
+
+func _format_key_with_modifiers(event: InputEventKey) -> String:
+  var parts: Array[String] = []
+  
+  # Add modifiers in a consistent order
+  if event.ctrl_pressed or event.command_or_control_autoremap:
+    parts.append("Ctrl")
+  if event.alt_pressed:
+    parts.append("Alt")
+  if event.shift_pressed:
+    parts.append("Shift")
+  if event.meta_pressed:
+    parts.append("Meta")
+  
+  # Add the actual key
+  parts.append(OS.get_keycode_string(event.physical_keycode))
+  
+  # Join with "+" separator
+  return "+".join(parts)
+
+func _is_modifier_key(keycode: int) -> bool:
+  # Check if the key is a modifier key (Shift, Ctrl, Alt, Meta, etc.)
+  return keycode in [
+    KEY_SHIFT,
+    KEY_CTRL, 
+    KEY_ALT,
+    KEY_META,
+    KEY_CAPSLOCK,
+    KEY_NUMLOCK,
+    KEY_SCROLLLOCK
+  ]
 
 func _get_mouse_button_name(button_index: int) -> String:
   match button_index:
@@ -67,22 +101,54 @@ func _on_key_button_pressed() -> void:
     is_remapping = true
     key_button.text = "Press any key..."
     set_process_input(true)
+    set_process(true)
+    modifier_wait_timer = 0.0
+    pending_modifier_event = null
+
+func _process(delta: float) -> void:
+  # Handle timeout for modifier-only key binding
+  if is_remapping and pending_modifier_event != null:
+    modifier_wait_timer += delta
+    # After 0.5 seconds, accept the modifier-only binding
+    if modifier_wait_timer >= 0.5:
+      _rebind_action(pending_modifier_event)
+      is_remapping = false
+      set_process_input(false)
+      set_process(false)
+      pending_modifier_event = null
 
 func _input(event: InputEvent) -> void:
   if not is_remapping:
     return
   
   if event is InputEventKey and event.pressed:
-    # Rebind the action to keyboard key
+    # Check if this is a modifier-only key
+    if _is_modifier_key(event.physical_keycode):
+      # Store the modifier event and start waiting
+      pending_modifier_event = event
+      modifier_wait_timer = 0.0
+      return
+    
+    # If we had a pending modifier and now got a real key, use the combination
+    pending_modifier_event = null
+    modifier_wait_timer = 0.0
+    
+    # Rebind the action to keyboard key (with or without modifiers)
     _rebind_action(event)
     is_remapping = false
     set_process_input(false)
+    set_process(false)
     get_viewport().set_input_as_handled()
   elif event is InputEventMouseButton and event.pressed:
+    # Clear any pending modifier
+    pending_modifier_event = null
+    modifier_wait_timer = 0.0
+    
     # Rebind the action to mouse button
     _rebind_action(event)
     is_remapping = false
     set_process_input(false)
+    set_process(false)
     get_viewport().set_input_as_handled()
 
 func _rebind_action(event: InputEvent) -> void:
@@ -97,7 +163,7 @@ func _rebind_action(event: InputEvent) -> void:
   
   var binding_name = ""
   if event is InputEventKey:
-    binding_name = OS.get_keycode_string(event.physical_keycode)
+    binding_name = _format_key_with_modifiers(event)
   elif event is InputEventMouseButton:
     binding_name = _get_mouse_button_name(event.button_index)
   
