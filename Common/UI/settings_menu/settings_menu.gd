@@ -40,6 +40,9 @@ var temp_master_volume: float
 var temp_music_volume: float
 var temp_sfx_volume: float
 
+# Store original keybinds to restore on cancel
+var original_keybinds: Dictionary = {}
+
 # Previous video settings for revert
 var previous_fullscreen: bool
 var previous_vsync: bool
@@ -105,6 +108,7 @@ func _setup_keybind_buttons() -> void:
 func show_menu() -> void:
   visible = true
   _load_current_settings()
+  _store_original_keybinds()
   
   # Focus the first tab
   if tab_container:
@@ -237,5 +241,41 @@ func _on_video_settings_reverted() -> void:
 
 func _on_cancel_pressed() -> void:
   Logger.debug("SettingsMenu", "Settings cancelled")
+  _restore_original_keybinds()
   hide_menu()
   closed.emit()
+
+func _store_original_keybinds() -> void:
+  # Store the current keybinds so we can restore them if user cancels
+  original_keybinds.clear()
+  var actions = InputMap.get_actions()
+  
+  for action in actions:
+    # Skip UI actions and built-in actions
+    if action.begins_with("ui_") or action.begins_with("spatial_editor"):
+      continue
+    
+    # Store a copy of all events for this action
+    var events = InputMap.action_get_events(action)
+    var events_copy = []
+    for event in events:
+      events_copy.append(event.duplicate())
+    original_keybinds[action] = events_copy
+
+func _restore_original_keybinds() -> void:
+  # Restore keybinds to their original state
+  for action in original_keybinds.keys():
+    # Clear current bindings
+    InputMap.action_erase_events(action)
+    
+    # Restore original bindings
+    for event in original_keybinds[action]:
+      InputMap.action_add_event(action, event)
+  
+  # Update the display of all keybind buttons
+  if keybinds_container:
+    for child in keybinds_container.get_children():
+      if child.has_method("_update_display"):
+        child._update_display()
+  
+  Logger.debug("SettingsMenu", "Keybinds restored to original state")

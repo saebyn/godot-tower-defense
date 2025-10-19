@@ -13,10 +13,13 @@ var action_name: String = "":
       _update_display()
 
 var is_remapping: bool = false
+var modifier_wait_timer: float = 0.0
+var pending_modifier_event: InputEventKey = null
 
 func _ready() -> void:
   _update_display()
   key_button.pressed.connect(_on_key_button_pressed)
+  set_process(false)  # Disable process by default
 
 func _update_display() -> void:
   if not action_label or not key_button:
@@ -98,26 +101,54 @@ func _on_key_button_pressed() -> void:
     is_remapping = true
     key_button.text = "Press any key..."
     set_process_input(true)
+    set_process(true)
+    modifier_wait_timer = 0.0
+    pending_modifier_event = null
+
+func _process(delta: float) -> void:
+  # Handle timeout for modifier-only key binding
+  if is_remapping and pending_modifier_event != null:
+    modifier_wait_timer += delta
+    # After 0.5 seconds, accept the modifier-only binding
+    if modifier_wait_timer >= 0.5:
+      _rebind_action(pending_modifier_event)
+      is_remapping = false
+      set_process_input(false)
+      set_process(false)
+      pending_modifier_event = null
 
 func _input(event: InputEvent) -> void:
   if not is_remapping:
     return
   
   if event is InputEventKey and event.pressed:
-    # Ignore modifier-only keys - wait for actual key with modifiers
+    # Check if this is a modifier-only key
     if _is_modifier_key(event.physical_keycode):
+      # Store the modifier event and start waiting
+      pending_modifier_event = event
+      modifier_wait_timer = 0.0
       return
     
-    # Rebind the action to keyboard key
+    # If we had a pending modifier and now got a real key, use the combination
+    pending_modifier_event = null
+    modifier_wait_timer = 0.0
+    
+    # Rebind the action to keyboard key (with or without modifiers)
     _rebind_action(event)
     is_remapping = false
     set_process_input(false)
+    set_process(false)
     get_viewport().set_input_as_handled()
   elif event is InputEventMouseButton and event.pressed:
+    # Clear any pending modifier
+    pending_modifier_event = null
+    modifier_wait_timer = 0.0
+    
     # Rebind the action to mouse button
     _rebind_action(event)
     is_remapping = false
     set_process_input(false)
+    set_process(false)
     get_viewport().set_input_as_handled()
 
 func _rebind_action(event: InputEvent) -> void:
