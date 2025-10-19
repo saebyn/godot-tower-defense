@@ -51,8 +51,14 @@ func earn_xp(amount: int) -> void:
   Logger.info("Economy", "Earned %d XP. Total: %d" % [amount, current_xp])
   _check_level_up()
 
+## Calculates the XP required for the next level.
+## Scaling approach: Linear (XP required increases by a fixed amount per level).
+## Formula: XP required = current_level * xp_per_level_base
+## Currently, xp_per_level_base is set to 100, so each level requires 100 more XP than the previous.
+## TODO To make this configurable in the future, adjust xp_per_level_base or implement an exponential formula.
+@export var xp_per_level_base: int = 100 # Base XP required per level (configurable)
 func _get_xp_for_next_level() -> int:
-  return current_level * 100 # Example: 100 XP per level
+  return current_level * xp_per_level_base
 
 ## Check if player has enough XP to level up
 func _check_level_up() -> void:
