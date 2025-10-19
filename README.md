@@ -28,6 +28,18 @@ This is a **work-in-progress passion project**. Core systems are functional, but
 
 ---
 
+## 📺 Watch Development Live!
+
+This game is being developed **live on stream**!
+
+**🔴 Twitch**: [twitch.tv/saebyn](https://twitch.tv/saebyn)  
+**📅 Schedule**: Sunday mornings  
+**🎥 VODs**: [@saebynVODs on YouTube](https://www.youtube.com/@saebynVODs)
+
+Come hang out, watch the chaos unfold, and see how the sausage gets made! You might even witness the birth of a new absurd level scenario or a hilariously broken bug. 🧟‍♂️✨
+
+---
+
 ## 📚 Documentation
 
 - **[Game Design Document](docs/zom_nom_defense_gdd.md)** - Complete vision for the game
