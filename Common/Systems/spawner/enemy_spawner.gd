@@ -67,12 +67,16 @@ func _on_enemy_spawned_from_wave(enemy: Node3D, _wave: Wave) -> void:
     enemy_spawned.emit(enemy)
 
 
-func spawn_enemy(enemy: Node3D) -> void:
+func spawn_enemy(enemy_type: EnemyTypeResource) -> Node3D:
+    var enemy = enemy_type.scene.instantiate()
+    enemy.load_resource(enemy_type)
+
     enemy.global_position = find_random_spawn_position()
     add_child(enemy)
     current_enemies.append(enemy)
     _spawned_enemies += 1
     enemy_spawned.emit(enemy)
+    return enemy
 
 
 func get_spawned_enemy_count() -> int:

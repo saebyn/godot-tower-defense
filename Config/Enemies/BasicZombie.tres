@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyTypeResource" load_steps=3 format=3 uid="uid://conw8uteeyyuk"]
+
+[ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://Entities/Enemies/Templates/base_enemy/enemy.tscn" id="1_004w5"]
+[ext_resource type="Script" uid="uid://veme7gd0dvne" path="res://Config/Enemies/enemy_type_resource.gd" id="2_vm6s8"]
+
+[resource]
+script = ExtResource("2_vm6s8")
+name = "Basic Zombie"
+enemy_type = "basic_zombie"
+description = "Just an ordinary zombie"
+scene = ExtResource("1_004w5")
+scale_multiplier = 1.0
+hitpoints = 1
+speed = 1.0
+damage_amount = 1
+damage_cooldown = 1.0
+scrap_reward = 1
+xp_reward = 1
+target_desired_distance = 4.0
+obstacle_attack_range = 6.0
+metadata/_custom_type_script = "uid://veme7gd0dvne"
