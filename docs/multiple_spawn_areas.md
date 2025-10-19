@@ -4,6 +4,58 @@
 
 The enemy spawner now supports spawning enemies in multiple areas across the level, providing more dynamic and interesting gameplay.
 
+
+### Before (Single Spawn Area)
+
+```
+Level Layout:
+┌────────────────────────────────────────┐
+│                                        │
+│                                        │
+│         [Target]                       │
+│                                        │
+│                                        │
+│                    🟥                  │
+│              Spawn Area                │
+│           (All enemies spawn           │
+│            from same area)             │
+│                                        │
+└────────────────────────────────────────┘
+
+Enemy Flow:
+All enemies → Single spawn point → Target
+```
+
+### After (Multiple Spawn Areas)
+
+```
+Level Layout:
+┌────────────────────────────────────────┐
+│  🟥 North                              │
+│  Spawn                                 │
+│                                        │
+│         [Target]         🟥 East       │
+│                          Spawn         │
+│                                        │
+│                                        │
+│  🟥 South                              │
+│  Spawn                                 │
+└────────────────────────────────────────┘
+
+Enemy Flow (Varied):
+North Spawn → ↘
+              → Target ← East Spawn
+South Spawn → ↗
+
+Random Distribution:
+- Enemy 1: North Spawn → Target
+- Enemy 2: South Spawn → Target  
+- Enemy 3: East Spawn → Target
+- Enemy 4: North Spawn → Target
+- Enemy 5: South Spawn → Target
+- ...continues randomly...
+```
+
 ## How to Use
 
 ### Single Spawn Area (Original Behavior)
