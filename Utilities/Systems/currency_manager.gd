@@ -35,8 +35,8 @@ func _ready():
   GameManager.game_state_changed.connect(_on_game_state_changed)
 
 func _on_game_state_changed(new_state: GameManager.GameState) -> void:
-  # Save progression when level is completed (victory or game over)
-  if new_state == GameManager.GameState.VICTORY or new_state == GameManager.GameState.GAME_OVER:
+  # Save progression only on victory (not on death/game over)
+  if new_state == GameManager.GameState.VICTORY:
     _save_progression()
   
   # Note: We no longer reset progression on MAIN_MENU - progression persists across sessions
