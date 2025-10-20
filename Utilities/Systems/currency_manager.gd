@@ -154,7 +154,7 @@ func _load_progression() -> void:
   
   var save_data = json.get_data()
   
-  if not save_data is Dictionary:
+  if not (save_data is Dictionary):
     Logger.error("CurrencyManager", "Save file contains invalid data")
     return
   
