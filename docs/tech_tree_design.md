@@ -1,4 +1,4 @@
-# Tech Tree Design – *Zom Nom ## 2) Branch Overview
+# Tech Tree Design
 
 The tree begins with **three starter nodes** (one per main branch) that are immediately available to unlock, then branches into five base categories:
 
@@ -8,15 +8,11 @@ The tree begins with **three starter nodes** (one per main branch) that are imme
 * **Support** – Buff auras, repairs, synergy amplifiers (all require progression)
 * **Click** – Player's manual damage & click perks (all require progression)
 
-> **Unlock Model:** Nodes require **Player Level (XP)** and/or **Achievements** (e.g., *Place 3 defenses*, *Survive 3 waves*). Some nodes are **mutually exclusive** with alternatives. **Tech tree unlocking is free** - no scrap cost.
+**Unlock Model:** Nodes require **Player Level (XP)** and/or **Achievements** (e.g., *Place 3 defenses*, *Survive 3 waves*). Some nodes are **mutually exclusive** with alternatives. **Tech tree unlocking is free** - no scrap cost.
 
-> **Starting State:** Players begin with **zero techs unlocked** in each save slot. The three starter nodes (`tur_scrap_shooter`, `ob_crates`, `eco_scrap_recycler`) have level 1 requirements with no prerequisites, making them **immediately available to unlock** at the start of a new game. This provides an introduction to the tech tree mechanic - players must actively unlock these starter techs before they can place those obstacles during gameplay. Tech unlocks are **persistent per save slot** and carry forward across all levels within that save.
+**Starting State:** Players begin with **zero techs unlocked** in each save slot. The three starter nodes (`tur_scrap_shooter`, `ob_crates`, `eco_scrap_recycler`) have level 1 requirements with no prerequisites, making them **immediately available to unlock** at the start of a new game. This provides an introduction to the tech tree mechanic - players must actively unlock these starter techs before they can place those obstacles during gameplay. Tech unlocks are **persistent per save slot** and carry forward across all levels within that save.
 
-> **Scrap Economy:** Scrap is earned and spent **during gameplay** to place instances of unlocked obstacles/turrets. The tech tree itself never costs scrap to interact with.
-
-> **Status:** Design-only; no implementation.
-> **Owner:** Saebyn
-> **Output file:** `/docs/tech_tree_design.md`
+**Scrap Economy:** Scrap is earned and spent **during gameplay** to place instances of unlocked obstacles/turrets. The tech tree itself never costs scrap to interact with.
 
 ---
 
