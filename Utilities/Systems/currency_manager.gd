@@ -179,7 +179,7 @@ func delete_saved_progression() -> bool:
   if FileAccess.file_exists(PROGRESSION_SAVE_PATH):
     var dir = DirAccess.open("user://")
     if dir:
-      dir.remove("player_progression.save")
+      dir.remove(PROGRESSION_SAVE_PATH)
       Logger.info("CurrencyManager", "Progression save file deleted")
       return true
     else:
