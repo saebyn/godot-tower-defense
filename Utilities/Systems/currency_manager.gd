@@ -21,11 +21,11 @@ signal progression_saved()
 signal progression_loaded()
 
 func _ready():
-  # Load progression first (will set values if save file exists)
-  _load_progression()
+  # Load progression first, returns true if successful
+  var loaded_successfully = _load_progression()
   
-  # If no save file was loaded, use defaults
-  if not FileAccess.file_exists(PROGRESSION_SAVE_PATH):
+  # If no save file was loaded or loading failed, use defaults
+  if not loaded_successfully:
     current_scrap = starting_scrap
     current_xp = 0
     current_level = 1
@@ -132,15 +132,16 @@ func _save_progression() -> void:
   progression_saved.emit()
 
 ## Load player progression from disk
-func _load_progression() -> void:
+## Returns true if the save file was loaded successfully, false otherwise
+func _load_progression() -> bool:
   if not FileAccess.file_exists(PROGRESSION_SAVE_PATH):
     Logger.info("CurrencyManager", "No save file found, starting fresh")
-    return
+    return false
   
   var save_file = FileAccess.open(PROGRESSION_SAVE_PATH, FileAccess.READ)
   if not save_file:
     Logger.error("CurrencyManager", "Could not open save file for reading: %s" % PROGRESSION_SAVE_PATH)
-    return
+    return false
   
   var json_string = save_file.get_as_text()
   save_file.close()
@@ -150,13 +151,13 @@ func _load_progression() -> void:
   
   if parse_result != OK:
     Logger.error("CurrencyManager", "Error parsing save file: %s" % json.get_error_message())
-    return
+    return false
   
   var save_data = json.get_data()
   
   if not (save_data is Dictionary):
     Logger.error("CurrencyManager", "Save file contains invalid data")
-    return
+    return false
   
   # Load the data with fallbacks for missing keys
   current_level = save_data.get("current_level", 1)
@@ -165,6 +166,7 @@ func _load_progression() -> void:
   
   Logger.info("CurrencyManager", "Progression loaded - Level: %d, XP: %d, Scrap: %d" % [current_level, current_xp, current_scrap])
   progression_loaded.emit()
+  return true
 
 ## Manual save method for external use
 func save_progression_now() -> void:
@@ -179,7 +181,8 @@ func delete_saved_progression() -> bool:
   if FileAccess.file_exists(PROGRESSION_SAVE_PATH):
     var dir = DirAccess.open("user://")
     if dir:
-      dir.remove(PROGRESSION_SAVE_PATH)
+      var filename = PROGRESSION_SAVE_PATH.replace("user://", "")
+      dir.remove(filename)
       Logger.info("CurrencyManager", "Progression save file deleted")
       return true
     else:
