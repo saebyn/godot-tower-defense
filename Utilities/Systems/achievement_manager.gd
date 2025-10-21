@@ -298,7 +298,12 @@ func get_all_achievements() -> Array[AchievementResource]:
   return all_achievements
 
 ## Get achievement by ID
+## Returns the AchievementResource for the given achievement_id, or null if not found.
+## If the achievement_id does not exist, returns null and logs a warning.
 func get_achievement(achievement_id: String) -> AchievementResource:
+  if not achievements.has(achievement_id):
+    Logger.warn("AchievementManager", "Requested achievement_id '%s' does not exist." % achievement_id)
+    return null
   return achievements.get(achievement_id)
 
 ## Persistence methods
