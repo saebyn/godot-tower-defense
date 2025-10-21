@@ -55,11 +55,11 @@ class AchievementState:
 func _ready():
   Logger.info("AchievementManager", "Achievement system initialized")
   
+  # Load saved achievement states first
+  _load_achievement_states()
+  
   # Load all achievements from Config/Achievements/
   _load_achievements()
-  
-  # Load saved achievement states
-  _load_achievement_states()
   
   # Connect to existing systems for stat tracking
   _connect_to_systems()
