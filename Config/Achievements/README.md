@@ -15,9 +15,16 @@ The `AchievementResource` is a custom Godot Resource type that defines individua
 - **icon**: Visual icon for the achievement (Texture2D)
 
 #### Unlock Conditions
+- **use_multiple_conditions**: Whether to use multiple conditions for complex achievements (bool, default: false)
+
+**For single condition achievements (use_multiple_conditions = false):**
 - **unlock_condition_type**: Type of condition to track (ConditionType enum)
 - **threshold**: Numerical threshold that must be reached to unlock (int)
 - **condition_target**: Optional target for typed conditions, e.g., enemy type name (String)
+
+**For multiple condition achievements (use_multiple_conditions = true):**
+- **condition_logic**: How to combine conditions - AND (all must be met) or OR (any must be met) (ConditionLogic enum)
+- **conditions**: Array of AchievementCondition objects defining each requirement (Array[AchievementCondition])
 
 #### Display
 - **hidden**: Whether the achievement is hidden until unlocked (bool)
@@ -41,7 +48,18 @@ The `ConditionType` enum supports the following tracking types:
 ### Methods
 
 - **is_valid()**: Validates that the achievement resource has all required fields
-- **get_condition_description()**: Returns a human-readable description of the unlock condition
+  - For single conditions: checks id, name, threshold, and type-specific requirements
+  - For multiple conditions: validates each condition in the array
+- **get_condition_description()**: Returns a human-readable description of the unlock condition(s)
+  - For single conditions: returns simple description like "Defeat 10 enemies"
+  - For multiple conditions: joins conditions with AND/OR, e.g., "Defeat 50 enemies AND Place 10 obstacles"
+
+### Nested Class: AchievementCondition
+
+When using multiple conditions, each condition is represented by an `AchievementCondition` object with:
+- **condition_type**: The type of stat to track (ConditionType enum)
+- **threshold**: The numerical value that must be reached (int)
+- **condition_target**: Optional target for type-specific conditions (String)
 
 ## Creating Achievement Resources
 
@@ -93,6 +111,88 @@ achievement.unlock_condition_type = AchievementResource.ConditionType.PLAYER_LEV
 achievement.threshold = 50
 achievement.hidden = true
 achievement.reward = "unlock_secret_tech_tree_branch"
+```
+
+### Example: Multiple Conditions with AND Logic
+
+```gdscript
+# Create an achievement requiring multiple conditions (all must be met)
+var achievement = AchievementResource.new()
+achievement.id = "multi_tasker"
+achievement.name = "Multi-Tasker"
+achievement.description = "Defeat enemies while building defenses"
+achievement.use_multiple_conditions = true
+achievement.condition_logic = AchievementResource.ConditionLogic.AND
+
+# Add first condition: defeat 50 enemies
+var cond1 = AchievementResource.AchievementCondition.new()
+cond1.condition_type = AchievementResource.ConditionType.ENEMIES_DEFEATED_TOTAL
+cond1.threshold = 50
+
+# Add second condition: place 10 obstacles
+var cond2 = AchievementResource.AchievementCondition.new()
+cond2.condition_type = AchievementResource.ConditionType.OBSTACLES_PLACED
+cond2.threshold = 10
+
+achievement.conditions = [cond1, cond2]
+# Result: "Defeat 50 enemies AND Place 10 obstacles"
+```
+
+### Example: Multiple Conditions with OR Logic
+
+```gdscript
+# Create an achievement where any condition can be met
+var achievement = AchievementResource.new()
+achievement.id = "flexible_path"
+achievement.name = "Flexible Path"
+achievement.description = "Reach success through different means"
+achievement.use_multiple_conditions = true
+achievement.condition_logic = AchievementResource.ConditionLogic.OR
+
+# First path: earn lots of scrap
+var cond1 = AchievementResource.AchievementCondition.new()
+cond1.condition_type = AchievementResource.ConditionType.SCRAP_EARNED
+cond1.threshold = 1000
+
+# Second path: reach high player level
+var cond2 = AchievementResource.AchievementCondition.new()
+cond2.condition_type = AchievementResource.ConditionType.PLAYER_LEVEL_REACHED
+cond2.threshold = 15
+
+achievement.conditions = [cond1, cond2]
+# Result: "Earn 1000 scrap OR Reach player level 15"
+```
+
+### Example: Complex Multi-Condition Achievement
+
+```gdscript
+# Create a complex achievement with multiple typed conditions
+var achievement = AchievementResource.new()
+achievement.id = "zombie_master"
+achievement.name = "Zombie Master"
+achievement.description = "Master all aspects of zombie defense"
+achievement.use_multiple_conditions = true
+achievement.condition_logic = AchievementResource.ConditionLogic.AND
+
+# Condition 1: Defeat specific enemy type
+var cond1 = AchievementResource.AchievementCondition.new()
+cond1.condition_type = AchievementResource.ConditionType.ENEMIES_DEFEATED_BY_TYPE
+cond1.threshold = 100
+cond1.condition_target = "BasicZombie"
+
+# Condition 2: Place obstacles
+var cond2 = AchievementResource.AchievementCondition.new()
+cond2.condition_type = AchievementResource.ConditionType.OBSTACLES_PLACED
+cond2.threshold = 25
+
+# Condition 3: Earn scrap
+var cond3 = AchievementResource.AchievementCondition.new()
+cond3.condition_type = AchievementResource.ConditionType.SCRAP_EARNED
+cond3.threshold = 500
+
+achievement.conditions = [cond1, cond2, cond3]
+achievement.reward = "unlock_advanced_tech"
+# Result: "Defeat 100 BasicZombie enemies AND Place 25 obstacles AND Earn 500 scrap"
 ```
 
 ## Integrating with StatsManager
