@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AchievementResource" load_steps=2 format=3 uid="uid://dv2aq0nbwbv5k"]
+
+[ext_resource type="Script" path="res://Config/Achievements/achievement_resource.gd" id="1_x8y5w"]
+
+[resource]
+script = ExtResource("1_x8y5w")
+id = "first_blood"
+name = "First Blood"
+description = "Defeat your first enemy"
+unlock_condition_type = 0
+threshold = 1
+condition_target = ""
+hidden = false
+reward = ""
