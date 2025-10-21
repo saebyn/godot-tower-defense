@@ -145,7 +145,14 @@ func get_condition_description() -> String:
       descriptions.append(condition.get_description())
     
     # Join conditions with AND/OR logic
-    var logic_word = " AND " if condition_logic == ConditionLogic.AND else " OR "
+    var logic_word := ""
+    match condition_logic:
+      ConditionLogic.AND:
+        logic_word = " AND "
+      ConditionLogic.OR:
+        logic_word = " OR "
+      _:
+        logic_word = " AND " # Default/fallback
     return logic_word.join(descriptions)
   else:
     # Single condition mode (backward compatible)
