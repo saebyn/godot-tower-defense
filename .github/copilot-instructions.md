@@ -37,7 +37,14 @@ This is a **3D tower defense game** built with **Godot 4.4**. The project uses a
 
 ### Project Setup
 
-1. **Initial Asset Import** (⚠️ CRITICAL - DO NOT CANCEL):
+1. **Initialize Submodules** (⚠️ REQUIRED):
+   ```bash
+   git submodule update --init --recursive
+   ```
+   - This downloads external dependencies like the GUT testing framework
+   - Always run this after cloning the repository
+
+2. **Initial Asset Import** (⚠️ CRITICAL - DO NOT CANCEL):
    ```bash
    # This takes 15+ minutes minimum - be patient!
    ./godot --headless --import --path .
@@ -75,12 +82,33 @@ This is a **3D tower defense game** built with **Godot 4.4**. The project uses a
 │   ├── Enemies/          # Enemy templates and configurations
 │   ├── Obstacles/        # Obstacle templates and configurations
 │   └── Targets/          # Target templates and configurations
+├── external/             # External dependencies (git submodules)
+│   ├── .gdignore         # Prevents Godot from importing externals
+│   └── Gut/              # GUT testing framework (submodule)
 ├── Localization/         # Internationalization files
 ├── Stages/               # Game stages/scenes
 │   ├── Game/             # Main game scenes
 │   └── UI/               # UI scenes
+├── tests/                # Unit and integration tests
+│   ├── unit/             # Unit tests
+│   └── integration/      # Integration tests
 └── Utilities/            # Utility scripts and tools
 ```
+
+### External Dependencies
+
+This project uses git submodules for external dependencies to keep the repository size small:
+
+- **Location**: `external/` directory
+- **Godot Ignore**: `external/.gdignore` prevents Godot from importing submodule files
+- **Addon Access**: Symlinks in `addons/` point to `external/*/addons/*`
+- **Example**: `addons/gut` → `../external/Gut/addons/gut`
+
+**When adding new addons**:
+1. Add as submodule: `git submodule add <repo-url> external/<addon-name>`
+2. Checkout specific version if needed
+3. Create symlink: `ln -s ../external/<addon-name>/addons/<name> addons/<name>`
+4. Commit the submodule and symlink (not the addon files directly)
 
 ### Key Files
 - **Main Scene**: `Stages/Game/main/main.tscn` - Primary game scene

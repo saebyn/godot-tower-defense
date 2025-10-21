@@ -102,7 +102,14 @@ Controls are fully rebindable in-game via the Settings menu.
 
 ### Running the Game
 
-1. Clone this repository
+1. Clone this repository with submodules:
+   ```bash
+   git clone --recurse-submodules <repository-url>
+   ```
+   Or if already cloned:
+   ```bash
+   git submodule update --init --recursive
+   ```
 2. Open the project in Godot by importing the `project.godot` file
 3. Press F5 or click the "Play" button to run the game
 

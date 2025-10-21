@@ -2,6 +2,35 @@
 
 This project uses [GUT (Godot Unit Testing)](https://github.com/bitwes/Gut) v9.3.0 for automated testing.
 
+## Installation
+
+GUT is included as a git submodule to keep the repository size small and allow easy updates.
+
+### First-time Setup
+
+When cloning the repository, initialize the submodules:
+
+```bash
+git clone <repository-url>
+cd zom-nom-defense
+git submodule update --init --recursive
+```
+
+Or clone with submodules in one command:
+
+```bash
+git clone --recurse-submodules <repository-url>
+```
+
+### Addon Structure
+
+The GUT addon is organized as follows:
+- `external/Gut` - Git submodule pointing to the official GUT repository
+- `external/.gdignore` - Prevents Godot from importing external dependencies
+- `addons/gut` - Symlink to `../external/Gut/addons/gut` (committed to git)
+
+This approach keeps the repository clean while maintaining easy access to the addon.
+
 ## Overview
 
 GUT is a unit testing framework for Godot that provides:
