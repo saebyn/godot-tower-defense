@@ -15,6 +15,14 @@ jobs:
       with:
         submodules: 'recursive'
     
+    - name: Cache Godot import files
+      uses: actions/cache@v4
+      with:
+        path: .godot/
+        key: godot-import-${{ hashFiles('**/*.gd', '**/*.tscn', '**/*.tres', 'project.godot') }}
+        restore-keys: |
+          godot-import-
+    
     - name: Download Godot
       run: |
         wget -q https://github.com/godotengine/godot/releases/download/4.4-stable/Godot_v4.4-stable_linux.x86_64.zip
@@ -23,10 +31,15 @@ jobs:
         mv Godot_v4.4-stable_linux.x86_64 ./godot
         ./godot --version
     
-    - name: Import Assets
+    - name: Import project files
       run: |
-        # import to register scripts and plugins
-        ./godot --headless --quit --path .
+        # Only run full import if .godot directory is not cached
+        if [ ! -d ".godot/imported" ]; then
+          echo "Running initial project import (this may take 15+ minutes)..."
+          timeout 1200 ./godot --headless --import --path . || echo "Import completed or timed out"
+        else
+          echo "Using cached import files"
+        fi
     
     - name: Run Tests
       run: |
