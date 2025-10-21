@@ -195,17 +195,27 @@ achievement.reward = "unlock_advanced_tech"
 # Result: "Defeat 100 BasicZombie enemies AND Place 25 obstacles AND Earn 500 scrap"
 ```
 
-## Integrating with StatsManager
+## Integrating with StatsManager and CurrencyManager
 
-The achievement system is designed to work with the existing `StatsManager` singleton, which tracks:
+The achievement system is integrated with the existing singleton systems:
 
+**StatsManager** tracks:
 - `enemies_defeated_total` and `enemies_defeated_by_type`
 - `enemies_defeated_by_hand` (for CLICKS_PERFORMED)
 - `obstacles_placed_total` and `obstacles_placed_by_type`
 - `total_scrap_earned`
 - `total_xp_earned`
 
-The Achievement Manager (to be implemented in a future issue) will listen to `StatsManager` signals to check achievement unlock conditions.
+**CurrencyManager** tracks:
+- `current_level` (for PLAYER_LEVEL_REACHED)
+- Scrap and XP earning events
+
+The **AchievementManager** (implemented in `Utilities/Systems/achievement_manager.gd`) automatically:
+- Loads all achievements from this directory
+- Connects to StatsManager and CurrencyManager signals
+- Tracks progress and unlocks achievements
+- Persists achievement state to save file
+- Emits signals when achievements unlock or progress updates
 
 ## Sample Achievements
 
@@ -214,14 +224,57 @@ This directory includes two sample achievements:
 1. **first_blood.tres**: Defeat your first enemy
 2. **zombie_slayer.tres**: Defeat 100 BasicZombie enemies (with reward)
 
+## Using the Achievement System
+
+### Listening for Achievements
+
+Connect to `AchievementManager` signals to respond to achievement events:
+
+```gdscript
+func _ready():
+    AchievementManager.achievement_unlocked.connect(_on_achievement_unlocked)
+    AchievementManager.achievement_progress_updated.connect(_on_achievement_progress)
+
+func _on_achievement_unlocked(achievement: AchievementResource):
+    print("Achievement unlocked: ", achievement.name)
+    # Show notification UI, play sound, award rewards
+
+func _on_achievement_progress(achievement: AchievementResource, progress: float):
+    print("Progress: ", achievement.name, " - ", progress * 100, "%")
+```
+
+### Checking Achievement Status
+
+Query achievement status from anywhere in the code:
+
+```gdscript
+# Check if unlocked
+if AchievementManager.is_achievement_unlocked("first_blood"):
+    print("First Blood unlocked!")
+
+# Get progress (0.0 to 1.0)
+var progress = AchievementManager.get_achievement_progress("zombie_slayer")
+print("Zombie Slayer: ", progress * 100, "% complete")
+
+# Get all unlocked achievements
+var unlocked = AchievementManager.get_unlocked_achievements()
+```
+
+### Persistence
+
+Achievement states are automatically saved to `user://achievements.save` when unlocked. To manually save:
+
+```gdscript
+AchievementManager.save_achievements_now()
+```
+
 ## Next Steps
 
-To complete the achievement system, the following components need to be implemented:
+To enhance the achievement system, the following components could be added:
 
-1. **Achievement Manager**: Singleton to track unlocked achievements and check conditions
-2. **Achievement UI**: Display unlocked/locked achievements to the player
-3. **Achievement Persistence**: Save/load achievement unlock state
-4. **Reward System**: Process achievement rewards (unlock tech tree items, obstacles, etc.)
+1. **Achievement UI**: Display unlocked/locked achievements to the player
+2. **Achievement Notification**: Toast notifications when achievements unlock
+3. **Reward System**: Process achievement rewards (unlock tech tree items, obstacles, etc.)
 
 ## Technical Notes
 
