@@ -25,8 +25,8 @@ jobs:
     
     - name: Import Assets
       run: |
-        # Quick import to register scripts and plugins
-        timeout 60 ./godot --headless --quit --path . || true
+        # import to register scripts and plugins
+        ./godot --headless --quit --path .
     
     - name: Run Tests
       run: |
