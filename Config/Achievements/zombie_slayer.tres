@@ -1,14 +1,19 @@
-[gd_resource type="Resource" script_class="AchievementResource" load_steps=2 format=3 uid="uid://chvj4gqgm3e51"]
+[gd_resource type="Resource" script_class="AchievementResource" load_steps=3 format=3 uid="uid://chvj4gqgm3e51"]
 
-[ext_resource type="Script" path="res://Config/Achievements/achievement_resource.gd" id="1_0o8hi"]
+[ext_resource type="Script" uid="uid://jrlpjbre51gs" path="res://Config/Achievements/achievement_resource.gd" id="1_0o8hi"]
+
+[sub_resource type="GDScript" id="GDScript_e6gjb"]
 
 [resource]
 script = ExtResource("1_0o8hi")
 id = "zombie_slayer"
 name = "Zombie Slayer"
 description = "Defeat 100 BasicZombie enemies"
+use_multiple_conditions = false
 unlock_condition_type = 1
 threshold = 100
 condition_target = "BasicZombie"
+condition_logic = 0
+conditions = Array[SubResource("GDScript_e6gjb")]([])
 hidden = false
 reward = "unlock_advanced_turret"
