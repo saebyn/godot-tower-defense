@@ -106,6 +106,22 @@ Controls are fully rebindable in-game via the Settings menu.
 2. Open the project in Godot by importing the `project.godot` file
 3. Press F5 or click the "Play" button to run the game
 
+### Running Tests
+
+This project uses [GUT (Godot Unit Testing)](https://github.com/bitwes/Gut) for automated testing.
+
+**Command Line**:
+```bash
+./run_tests.sh
+```
+
+**From Godot Editor**:
+1. Open the project in Godot
+2. Select the "Gut" tab in the bottom panel
+3. Click "Run All"
+
+See [tests/README.md](tests/README.md) for detailed testing documentation.
+
 ---
 
 ## 🏗️ Project Structure
