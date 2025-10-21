@@ -377,7 +377,7 @@ func delete_saved_achievements() -> bool:
   if FileAccess.file_exists(ACHIEVEMENTS_SAVE_PATH):
     var dir = DirAccess.open("user://")
     if dir:
-      dir.remove("achievements.save")
+      dir.remove(ACHIEVEMENTS_SAVE_PATH)
       Logger.info("AchievementManager", "Achievement save file deleted")
       
       # Reset all states
