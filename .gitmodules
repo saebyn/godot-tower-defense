@@ -1,0 +1,4 @@
+[submodule "external/Gut"]
+	path = external/Gut
+	url = https://github.com/bitwes/Gut.git
+	ignore = dirty
