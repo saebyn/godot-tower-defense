@@ -43,8 +43,8 @@ enum ConditionLogic {
 }
 
 
-## Nested resource class for individual achievement conditions
-## Used when use_multiple_conditions is true
+## Nested resource class representing an individual achievement condition.
+## Used as an element within the `conditions` array of AchievementResource when `use_multiple_conditions` is true.
 class AchievementCondition extends Resource:
   @export var condition_type: ConditionType = ConditionType.ENEMIES_DEFEATED_TOTAL ## Type of condition to track
   @export var threshold: int = 1 ## Numerical threshold that must be reached
