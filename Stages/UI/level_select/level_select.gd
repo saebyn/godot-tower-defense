@@ -5,8 +5,8 @@ class_name LevelSelect
 ## Level selection UI that displays available levels and handles level loading
 ## Shows completion status, best scores, and enforces unlock progression
 
-@onready var level_container = $ScrollContainer/LevelContainer
-@onready var back_button = $TopBar/BackButton
+@onready var level_container = $MarginContainer/VBoxContainer/ScrollContainer/LevelContainer
+@onready var back_button = $MarginContainer/VBoxContainer/TopBar/BackButton
 
 # Level card scene to be instantiated for each level
 const LevelCardScene = preload("res://Stages/UI/level_select/level_card.tscn")

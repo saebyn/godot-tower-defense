@@ -3,9 +3,6 @@ extends Node
 ## Manages level progression and completion tracking
 ## Handles level unlocking logic and persistence
 
-# Level data structure
-class_name LevelProgressManager
-
 # Save constants
 const LEVEL_PROGRESS_SAVE_PATH = "user://level_progression.save"
 const SAVE_VERSION = 1
