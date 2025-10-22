@@ -17,7 +17,9 @@ enum ObstacleCategory {
 @export var is_offensive: bool = false ## Whether the obstacle type is offensive
 @export var cost: int = 0 ## Cost associated with the obstacle type
 @export var scene: PackedScene ## Scene representing the obstacle type. Should be a PlaceableObstacle.
-@export var unlock_conditions: Array[String] = [] ## Conditions required to unlock the obstacle type
+
+@export_category("Tech Tree Integration")
+@export var required_tech_ids: Array[String] = [] ## Technology IDs that must be unlocked to use this obstacle. If empty, obstacle is available from the start.
 
 func is_valid() -> bool:
     return not id.is_empty() and scene != null

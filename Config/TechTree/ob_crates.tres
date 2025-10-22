@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="TechNodeResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Config/TechTree/tech_node_resource.gd" id="1_xxxxx"]
+
+[resource]
+script = ExtResource("1_xxxxx")
+id = "ob_crates"
+display_name = "Stacked Crates"
+description = "Simple wall with minor slow on contact. Starter tech available immediately."
+branch_name = "Defensive"
+level_requirement = 1
+scrap_cost = 0
+prerequisite_tech_ids = []
+achievement_ids = []
+mutually_exclusive_with = []
+requires_branch_completion = []
+unlocked_obstacle_ids = ["wall"]
