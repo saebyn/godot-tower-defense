@@ -313,6 +313,12 @@ func _create_graph_node(tech: TechNodeResource) -> GraphNode:
     vbox.add_child(excl_label)
   
   graph_node.add_child(vbox)
+  
+  # Configure slots for connections
+  # Slot 0: left input (for prerequisites pointing to this node)
+  # Slot 0: right output (for this node's prerequisites pointing out)
+  graph_node.set_slot(0, true, 0, Color.WHITE, true, 0, Color.WHITE)
+  
   return graph_node
 
 func _draw_connections() -> void:
@@ -379,21 +385,24 @@ func _validate_tech_tree() -> Array[String]:
   
   return errors
 
-func _has_circular_dependency(tech_id: String, visited: Array[String] = []) -> bool:
+func _has_circular_dependency(tech_id: String, visited: Dictionary = {}) -> bool:
   if tech_id in visited:
     return true
   
   if tech_id not in tech_nodes:
     return false
   
-  var new_visited := visited.duplicate()
-  new_visited.append(tech_id)
+  # Mark as visited for this path
+  visited[tech_id] = true
   
   var tech = tech_nodes[tech_id]
   for prereq_id in tech.prerequisite_tech_ids:
-    if _has_circular_dependency(prereq_id, new_visited):
+    if _has_circular_dependency(prereq_id, visited):
+      visited.erase(tech_id) # Clean up before returning
       return true
   
+  # Unmark when backtracking (allows different paths to revisit)
+  visited.erase(tech_id)
   return false
 
 func _set_status(text: String, is_error: bool = false) -> void:
@@ -1074,6 +1083,9 @@ func _update_node_display(tech_id: String) -> void:
     vbox.add_child(excl_label)
   
   graph_node.add_child(vbox)
+  
+  # Reconfigure slot for connections after updating content
+  graph_node.set_slot(0, true, 0, Color.WHITE, true, 0, Color.WHITE)
 
 func _on_validation_close_pressed() -> void:
   validation_panel.hide()
