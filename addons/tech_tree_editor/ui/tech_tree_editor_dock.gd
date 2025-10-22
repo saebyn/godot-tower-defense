@@ -800,12 +800,12 @@ func _show_inspector(tech_id: String) -> void:
   _add_multiline_field("Description", tech.description, "_on_description_changed")
   _add_dropdown_field("Branch", tech.branch_name, VALID_BRANCHES, "_on_branch_changed")
   _add_number_field("Level Requirement", tech.level_requirement, 1, 10, "_on_level_changed")
-  _add_array_field("Prerequisites", tech.prerequisite_tech_ids, "_on_prerequisites_changed")
-  _add_array_field("Achievements", tech.achievement_ids, "_on_achievements_changed")
-  _add_array_field("Mutually Exclusive", tech.mutually_exclusive_with, "_on_exclusives_changed")
-  _add_array_field("Unlocked Obstacles", tech.unlocked_obstacle_ids, "_on_obstacles_changed")
-  _add_array_field("Branch Completion", tech.requires_branch_completion, "_on_completion_changed")
-  
+  _add_array_field("Prerequisites", "prerequisite_tech_ids", tech.prerequisite_tech_ids, "_on_array_changed")
+  _add_array_field("Achievements", "achievement_ids", tech.achievement_ids, "_on_array_changed")
+  _add_array_field("Mutually Exclusive", "mutually_exclusive_with", tech.mutually_exclusive_with, "_on_array_changed")
+  _add_array_field("Unlocked Obstacles", "unlocked_obstacle_ids", tech.unlocked_obstacle_ids, "_on_array_changed")
+  _add_array_field("Branch Completion", "requires_branch_completion", tech.requires_branch_completion, "_on_array_changed")
+
   # Add save button
   var save_button := Button.new()
   save_button.text = "Save Changes"
@@ -844,7 +844,7 @@ func _add_multiline_field(label_text: String, value: String, callback: String) -
   text_edit.custom_minimum_size = Vector2(0, 60)
   text_edit.set_meta("field_name", label_text)
   if has_method(callback):
-    text_edit.text_changed.connect(Callable(self, callback))
+    text_edit.text_changed.connect(Callable(self, callback).bind(text_edit))
   vbox.add_child(text_edit)
   
   inspector_container.add_child(vbox)
@@ -892,7 +892,7 @@ func _add_number_field(label_text: String, value: int, min_val: int, max_val: in
   
   inspector_container.add_child(hbox)
 
-func _add_array_field(label_text: String, values: Array, callback: String) -> void:
+func _add_array_field(label_text: String, field, values: Array, callback: String) -> void:
   var vbox := VBoxContainer.new()
   
   var label := Label.new()
@@ -905,7 +905,7 @@ func _add_array_field(label_text: String, values: Array, callback: String) -> vo
   text_edit.placeholder_text = "Comma-separated values"
   text_edit.set_meta("field_name", label_text)
   if has_method(callback):
-    text_edit.text_changed.connect(Callable(self, callback))
+    text_edit.text_changed.connect(Callable(self, callback).bind(field, text_edit))
   vbox.add_child(text_edit)
   
   inspector_container.add_child(vbox)
@@ -917,27 +917,15 @@ func _on_id_changed(new_value: String) -> void:
     # For now, we'll just update the field but not save
     pass
 
-func _on_display_name_changed() -> void:
+func _on_display_name_changed(text: String) -> void:
   if selected_tech_id in tech_nodes:
     var tech = tech_nodes[selected_tech_id]
-    for child in inspector_container.get_children():
-      if child.has_meta("field_name") and child.get_meta("field_name") == "Display Name":
-        if child is HBoxContainer:
-          for c in child.get_children():
-            if c is LineEdit:
-              tech.display_name = c.text
-              break
+    tech.display_name = text
 
-func _on_description_changed() -> void:
+func _on_description_changed(text_edit: TextEdit) -> void:
   if selected_tech_id in tech_nodes:
     var tech = tech_nodes[selected_tech_id]
-    for child in inspector_container.get_children():
-      if child is VBoxContainer:
-        for c in child.get_children():
-          if c.has_meta("field_name") and c.get_meta("field_name") == "Description":
-            if c is TextEdit:
-              tech.description = c.text
-              break
+    tech.description = text_edit.text
 
 func _on_branch_changed(index: int) -> void:
   if selected_tech_id in tech_nodes:
@@ -949,105 +937,19 @@ func _on_level_changed(value: float) -> void:
     var tech = tech_nodes[selected_tech_id]
     tech.level_requirement = int(value)
 
-func _on_prerequisites_changed() -> void:
+func _on_array_changed(field: String, text_edit: TextEdit) -> void:
   if selected_tech_id in tech_nodes:
     var tech = tech_nodes[selected_tech_id]
-    for child in inspector_container.get_children():
-      if child is VBoxContainer:
-        for c in child.get_children():
-          if c.has_meta("field_name") and c.get_meta("field_name") == "Prerequisites":
-            if c is TextEdit:
-              var text: String = c.text.strip_edges()
-              if text.is_empty():
-                tech.prerequisite_tech_ids = []
-              else:
-                var items := text.split(",")
-                tech.prerequisite_tech_ids = []
-                for item in items:
-                  var trimmed := item.strip_edges()
-                  if not trimmed.is_empty():
-                    tech.prerequisite_tech_ids.append(trimmed)
-              break
+    var text: String = text_edit.text.strip_edges()
+    var values: Array = []
+    if not text.is_empty():
+      var items := text.split(",")
+      for item in items:
+        var trimmed := item.strip_edges()
+        if not trimmed.is_empty():
+          values.append(trimmed)
 
-func _on_achievements_changed() -> void:
-  if selected_tech_id in tech_nodes:
-    var tech = tech_nodes[selected_tech_id]
-    for child in inspector_container.get_children():
-      if child is VBoxContainer:
-        for c in child.get_children():
-          if c.has_meta("field_name") and c.get_meta("field_name") == "Achievements":
-            if c is TextEdit:
-              var text: String = c.text.strip_edges()
-              if text.is_empty():
-                tech.achievement_ids = []
-              else:
-                var items := text.split(",")
-                tech.achievement_ids = []
-                for item in items:
-                  var trimmed := item.strip_edges()
-                  if not trimmed.is_empty():
-                    tech.achievement_ids.append(trimmed)
-              break
-
-func _on_exclusives_changed() -> void:
-  if selected_tech_id in tech_nodes:
-    var tech = tech_nodes[selected_tech_id]
-    for child in inspector_container.get_children():
-      if child is VBoxContainer:
-        for c in child.get_children():
-          if c.has_meta("field_name") and c.get_meta("field_name") == "Mutually Exclusive":
-            if c is TextEdit:
-              var text: String = c.text.strip_edges()
-              if text.is_empty():
-                tech.mutually_exclusive_with = []
-              else:
-                var items := text.split(",")
-                tech.mutually_exclusive_with = []
-                for item in items:
-                  var trimmed := item.strip_edges()
-                  if not trimmed.is_empty():
-                    tech.mutually_exclusive_with.append(trimmed)
-              break
-
-func _on_obstacles_changed() -> void:
-  if selected_tech_id in tech_nodes:
-    var tech = tech_nodes[selected_tech_id]
-    for child in inspector_container.get_children():
-      if child is VBoxContainer:
-        for c in child.get_children():
-          if c.has_meta("field_name") and c.get_meta("field_name") == "Unlocked Obstacles":
-            if c is TextEdit:
-              var text: String = c.text.strip_edges()
-              if text.is_empty():
-                tech.unlocked_obstacle_ids = []
-              else:
-                var items := text.split(",")
-                tech.unlocked_obstacle_ids = []
-                for item in items:
-                  var trimmed := item.strip_edges()
-                  if not trimmed.is_empty():
-                    tech.unlocked_obstacle_ids.append(trimmed)
-              break
-
-func _on_completion_changed() -> void:
-  if selected_tech_id in tech_nodes:
-    var tech = tech_nodes[selected_tech_id]
-    for child in inspector_container.get_children():
-      if child is VBoxContainer:
-        for c in child.get_children():
-          if c.has_meta("field_name") and c.get_meta("field_name") == "Branch Completion":
-            if c is TextEdit:
-              var text: String = c.text.strip_edges()
-              if text.is_empty():
-                tech.requires_branch_completion = []
-              else:
-                var items := text.split(",")
-                tech.requires_branch_completion = []
-                for item in items:
-                  var trimmed := item.strip_edges()
-                  if not trimmed.is_empty():
-                    tech.requires_branch_completion.append(trimmed)
-              break
+    tech[field] = values
 
 func _on_save_inspector_pressed() -> void:
   if selected_tech_id in tech_nodes:
