@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="TechNodeResource" load_steps=2 format=3 uid="uid://b8px5najdk3vp"]
+
+[ext_resource type="Script" uid="uid://dj1i28ud6uv3t" path="res://Config/TechTree/tech_node_resource.gd" id="1_xxxxx"]
+
+[resource]
+script = ExtResource("1_xxxxx")
+id = "sup_cooldown_beacon"
+display_name = "Cooldown Beacon"
+description = "Aura that reduces reload times and cooldowns of nearby defenses."
+branch_name = "Support"
+level_requirement = 3
+scrap_cost = 0
+prerequisite_tech_ids = Array[String](["sup_overcharger"])
+achievement_ids = Array[String]([])
+mutually_exclusive_with = Array[String]([])
+requires_branch_completion = Array[String]([])
+unlocked_obstacle_ids = Array[String](["cooldown_beacon"])
