@@ -51,6 +51,38 @@ func _ready() -> void:
 	_load_tech_tree()
 	_rebuild_graph()
 	_update_status()
+	
+	# Set up keyboard shortcuts
+	set_process_unhandled_key_input(true)
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed:
+		# Ctrl+R - Refresh
+		if event.keycode == KEY_R and event.ctrl_pressed:
+			_on_refresh_pressed()
+			accept_event()
+		# Ctrl+N - New node
+		elif event.keycode == KEY_N and event.ctrl_pressed:
+			_on_add_node_pressed()
+			accept_event()
+		# Ctrl+V - Validate
+		elif event.keycode == KEY_V and event.ctrl_pressed:
+			_on_validate_pressed()
+			accept_event()
+		# Ctrl+E - Export
+		elif event.keycode == KEY_E and event.ctrl_pressed:
+			_on_export_pressed()
+			accept_event()
+		# Ctrl+F - Focus search
+		elif event.keycode == KEY_F and event.ctrl_pressed:
+			var search_edit := toolbar.get_node_or_null("SearchEdit") as LineEdit
+			if search_edit:
+				search_edit.grab_focus()
+			accept_event()
+		# Ctrl+L - Auto-layout
+		elif event.keycode == KEY_L and event.ctrl_pressed:
+			_auto_layout_graph()
+			accept_event()
 
 func _setup_ui() -> void:
 	# Setup GraphEdit
@@ -64,21 +96,25 @@ func _setup_ui() -> void:
 	# Setup toolbar buttons
 	var refresh_button := Button.new()
 	refresh_button.text = "Refresh"
+	refresh_button.tooltip_text = "Refresh tech tree from disk (Ctrl+R)"
 	refresh_button.pressed.connect(_on_refresh_pressed)
 	toolbar.add_child(refresh_button)
 	
 	var add_node_button := Button.new()
 	add_node_button.text = "Add Node"
+	add_node_button.tooltip_text = "Create a new tech node (Ctrl+N)"
 	add_node_button.pressed.connect(_on_add_node_pressed)
 	toolbar.add_child(add_node_button)
 	
 	var validate_button := Button.new()
 	validate_button.text = "Validate"
+	validate_button.tooltip_text = "Validate the tech tree (Ctrl+V)"
 	validate_button.pressed.connect(_on_validate_pressed)
 	toolbar.add_child(validate_button)
 	
 	var export_button := Button.new()
 	export_button.text = "Export Markdown"
+	export_button.tooltip_text = "Export tech tree to Markdown (Ctrl+E)"
 	export_button.pressed.connect(_on_export_pressed)
 	toolbar.add_child(export_button)
 	
@@ -93,12 +129,14 @@ func _setup_ui() -> void:
 	
 	var search_edit := LineEdit.new()
 	search_edit.placeholder_text = "Search by ID or name..."
+	search_edit.tooltip_text = "Filter tech nodes by ID or display name (Ctrl+F to focus)"
 	search_edit.custom_minimum_size = Vector2(150, 0)
 	search_edit.text_changed.connect(_on_search_changed)
 	search_edit.name = "SearchEdit"
 	toolbar.add_child(search_edit)
 	
 	var branch_filter := OptionButton.new()
+	branch_filter.tooltip_text = "Filter tech nodes by branch"
 	branch_filter.add_item("All Branches")
 	for branch in VALID_BRANCHES:
 		branch_filter.add_item(branch)
@@ -443,10 +481,13 @@ func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
 
 func _on_popup_request(position: Vector2) -> void:
 	var popup := PopupMenu.new()
-	popup.add_item("Add Tech Node", 0)
+	popup.add_item("Add Tech Node (Ctrl+N)", 0)
 	popup.add_separator()
-	popup.add_item("Auto-Layout Graph", 1)
+	popup.add_item("Auto-Layout Graph (Ctrl+L)", 1)
 	popup.add_item("Reset Zoom", 2)
+	popup.add_separator()
+	popup.add_item("Validate (Ctrl+V)", 3)
+	popup.add_item("Export Markdown (Ctrl+E)", 4)
 	
 	popup.id_pressed.connect(func(id: int):
 		match id:
@@ -457,6 +498,10 @@ func _on_popup_request(position: Vector2) -> void:
 			2:  # Reset zoom
 				graph_edit.zoom = 1.0
 				graph_edit.scroll_offset = Vector2.ZERO
+			3:  # Validate
+				_on_validate_pressed()
+			4:  # Export
+				_on_export_pressed()
 		popup.queue_free()
 	)
 	
