@@ -1,0 +1,92 @@
+[gd_scene load_steps=2 format=3 uid="uid://bm8v3nh3nwt5r"]
+
+[ext_resource type="Script" path="res://addons/tech_tree_editor/ui/tech_tree_editor_dock.gd" id="1_tech_tree_dock"]
+
+[node name="TechTreeEditorDock" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tech_tree_dock")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Toolbar" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="GraphEdit" type="GraphEdit" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+right_disconnects = true
+scroll_offset = Vector2(-50, -50)
+zoom = 0.8
+zoom_min = 0.2
+zoom_max = 2.0
+minimap_enabled = true
+
+[node name="ValidationPanel" type="Panel" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+custom_minimum_size = Vector2(0, 150)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ValidationPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ValidationPanel/VBoxContainer"]
+layout_mode = 2
+text = "Validation Errors:"
+horizontal_alignment = 1
+
+[node name="ValidationList" type="ItemList" parent="VBoxContainer/ValidationPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CloseButton" type="Button" parent="VBoxContainer/ValidationPanel/VBoxContainer"]
+layout_mode = 2
+text = "Close"
+
+[node name="InspectorPanel" type="Panel" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+custom_minimum_size = Vector2(0, 200)
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/InspectorPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="InspectorContainer" type="VBoxContainer" parent="VBoxContainer/InspectorPanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="StatusBar" type="Panel" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="VBoxContainer/StatusBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Ready"
+vertical_alignment = 1
+
+[connection signal="pressed" from="VBoxContainer/ValidationPanel/VBoxContainer/CloseButton" to="." method="_on_validation_close_pressed"]
