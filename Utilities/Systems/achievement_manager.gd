@@ -105,8 +105,6 @@ func _load_achievements() -> void:
 func _connect_to_systems() -> void:
   # Connect to StatsManager for stat-based achievements
   if StatsManager:
-    StatsManager.enemy_defeated.connect(_on_enemy_defeated)
-    StatsManager.obstacle_placed.connect(_on_obstacle_placed)
     StatsManager.stats_updated.connect(_check_all_achievements)
     Logger.debug("AchievementManager", "Connected to StatsManager")
   else:
@@ -254,12 +252,6 @@ func _unlock_achievement(achievement_id: String) -> void:
   _save_achievement_states()
 
 ## Event handlers for stat changes
-
-func _on_enemy_defeated(_enemy_type: String, _by_hand: bool) -> void:
-  _check_all_achievements()
-
-func _on_obstacle_placed(_obstacle_type: String) -> void:
-  _check_all_achievements()
 
 func _on_level_up(_new_level: int) -> void:
   _check_all_achievements()

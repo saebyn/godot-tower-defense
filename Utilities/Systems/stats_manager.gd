@@ -29,6 +29,7 @@ const STATS_SAVE_PATH = "user://stats.save"
 # Signals for real-time updates
 signal enemy_defeated(enemy_type: String, by_hand: bool)
 signal obstacle_placed(obstacle_type: String)
+signal max_scrap_held_updated(new_max: int)
 signal stats_updated()
 signal stats_loaded()
 signal stats_saved()
@@ -108,6 +109,8 @@ func _on_scrap_changed(new_amount: int) -> void:
   if new_amount > max_scrap_held:
     max_scrap_held = new_amount
     Logger.debug("Stats", "New max scrap held: %d" % max_scrap_held)
+    max_scrap_held_updated.emit(max_scrap_held)
+    stats_updated.emit()
     # Save when we hit a new max
     _save_stats()
 
