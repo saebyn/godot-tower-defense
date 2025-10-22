@@ -15,10 +15,6 @@ run/main_scene="res://Stages/UI/main_menu/main_menu.tscn"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://Assets/Icons/icon.svg"
 
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/gut/plugin.cfg")
-
 [autoload]
 
 Logger="*res://Utilities/Systems/logger.gd"
@@ -30,6 +26,10 @@ AudioManager="*res://Utilities/Systems/audio_manager.gd"
 SettingsManager="*res://Utilities/Systems/settings_manager.gd"
 TechTreeManager="*res://Utilities/Systems/tech_tree_manager.gd"
 AchievementManager="*res://Utilities/Systems/achievement_manager.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/tech_tree_editor/plugin.cfg")
 
 [global_group]
 
