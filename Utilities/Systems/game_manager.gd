@@ -10,6 +10,7 @@ enum GameState {
 
 var current_level: int = 0
 var current_wave: int = 0
+var current_level_id: String = ""  # Track which level is currently being played
 
 var current_state: GameState = GameState.MAIN_MENU
 var current_speed_multiplier: float = 1.0
@@ -73,6 +74,15 @@ func toggle_in_game_menu():
 
 func get_game_level() -> int:
     return current_level
+
+## Set the current level ID being played (e.g., "level_1")
+func set_current_level_id(level_id: String):
+    current_level_id = level_id
+    Logger.info("GameManager", "Current level ID set to: %s" % level_id)
+
+## Get the current level ID being played
+func get_current_level_id() -> String:
+    return current_level_id
 
 ## Returns to the main menu from any game state
 func return_to_main_menu():

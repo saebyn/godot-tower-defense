@@ -77,6 +77,7 @@ func _on_level_selected(level_id: String):
   
   # Load the level
   Logger.info("LevelSelect", "Loading level: %s from %s" % [level_id, scene_path])
+  GameManager.set_current_level_id(level_id)
   GameManager.set_game_state(GameManager.GameState.PLAYING)
   
   var error = get_tree().change_scene_to_file(scene_path)
