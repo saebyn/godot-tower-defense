@@ -62,7 +62,7 @@ func _ready():
   _load_achievements()
   
   # Connect to existing systems for stat tracking
-  _connect_to_systems()
+  _connect_to_systems.call_deferred()
 
 ## Load all achievement resources from the Config/Achievements/ folder
 func _load_achievements() -> void:
@@ -196,6 +196,9 @@ func _calculate_multiple_conditions_progress(achievement: AchievementResource) -
 
 ## Get the current value of a stat for achievement tracking
 func _get_stat_value(condition_type: AchievementResource.ConditionType, target: String = "") -> float:
+  if not StatsManager or not CurrencyManager:
+    return 0.0
+
   match condition_type:
     AchievementResource.ConditionType.ENEMIES_DEFEATED_TOTAL:
       return float(StatsManager.get_enemies_defeated_total())
@@ -210,11 +213,9 @@ func _get_stat_value(condition_type: AchievementResource.ConditionType, target: 
     AchievementResource.ConditionType.PLAYER_LEVEL_REACHED:
       return float(CurrencyManager.get_level())
     AchievementResource.ConditionType.WAVE_COMPLETED:
-      # TODO: Connect to wave system when available
-      return 0.0
+      return float(StatsManager.get_max_waves_completed())
     AchievementResource.ConditionType.GAME_LEVEL_REACHED:
-      # TODO: Connect to game level system when available
-      return 0.0
+      return float(CurrencyManager.get_game_level())
   
   return 0.0
 
