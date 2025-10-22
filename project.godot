@@ -29,6 +29,7 @@ StatsManager="*res://Utilities/Systems/stats_manager.gd"
 AudioManager="*res://Utilities/Systems/audio_manager.gd"
 SettingsManager="*res://Utilities/Systems/settings_manager.gd"
 TechTreeManager="*res://Utilities/Systems/tech_tree_manager.gd"
+AchievementManager="*res://Utilities/Systems/achievement_manager.gd"
 
 [global_group]
 

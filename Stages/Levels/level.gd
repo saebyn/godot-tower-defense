@@ -26,10 +26,12 @@ func _on_wave_started(wave: Wave) -> void:
 func _on_wave_completed(wave: Wave) -> void:
   var wave_number = enemy_spawner.get_current_wave_number()
   ui._on_wave_completed(wave, wave_number)
+  GameManager.set_complete_wave(0, wave_number)
 
 
 func _on_all_waves_completed() -> void:
   Logger.info("Level", "All waves completed. Triggering victory.")
+  # TODO advance to next game level if applicable
   GameManager.set_game_state(GameManager.GameState.VICTORY)
 
 

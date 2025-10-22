@@ -23,12 +23,17 @@ var total_scrap_earned: int = 0
 var max_scrap_held: int = 0
 var total_xp_earned: int = 0
 
+# Level tracking
+var waves_completed: int = 0
+var max_waves_completed: int = 0
+
 # Persistence
 const STATS_SAVE_PATH = "user://stats.save"
 
 # Signals for real-time updates
 signal enemy_defeated(enemy_type: String, by_hand: bool)
 signal obstacle_placed(obstacle_type: String)
+signal max_scrap_held_updated(new_max: int)
 signal stats_updated()
 signal stats_loaded()
 signal stats_saved()
@@ -50,6 +55,17 @@ func _ready():
       max_scrap_held = current_scrap
   else:
     Logger.error("StatsManager", "CurrencyManager not found!")
+
+  if GameManager:
+    GameManager.wave_changed.connect(_on_wave_completed)
+    GameManager.game_state_changed.connect(_on_game_state_changed)
+  else:
+    Logger.error("StatsManager", "GameManager not found!")
+
+func _on_game_state_changed(new_state: GameManager.GameState) -> void:
+  # Reset wave completion count on new game start
+  if new_state == GameManager.GameState.MAIN_MENU:
+    waves_completed = 0
 
 func _notification(what):
   # Auto-save when the game is closing
@@ -108,6 +124,8 @@ func _on_scrap_changed(new_amount: int) -> void:
   if new_amount > max_scrap_held:
     max_scrap_held = new_amount
     Logger.debug("Stats", "New max scrap held: %d" % max_scrap_held)
+    max_scrap_held_updated.emit(max_scrap_held)
+    stats_updated.emit()
     # Save when we hit a new max
     _save_stats()
 
@@ -117,6 +135,16 @@ func _on_xp_earned(amount: int) -> void:
   Logger.debug("Stats", "XP earned: %d. Total earned: %d" % [amount, total_xp_earned])
   # Save periodically for XP changes
   _save_stats()
+
+## Max waves completed callback
+func _on_wave_completed(_level: int, _wave: int) -> void:
+  waves_completed += 1
+  if waves_completed > max_waves_completed:
+    max_waves_completed = waves_completed
+    Logger.debug("Stats", "New max waves completed: %d" % max_waves_completed)
+    stats_updated.emit()
+    # Save when we hit a new max
+    _save_stats()
 
 ## Get stats data
 
@@ -150,6 +178,9 @@ func get_all_enemy_types() -> Array[String]:
 func get_all_obstacle_types() -> Array[String]:
   return obstacles_placed_by_type.keys()
 
+func get_max_waves_completed() -> int:
+  return max_waves_completed
+
 ## Get comprehensive stats summary
 func get_stats_summary() -> Dictionary:
   return {
@@ -160,7 +191,8 @@ func get_stats_summary() -> Dictionary:
     "obstacles_placed_by_type": obstacles_placed_by_type.duplicate(),
     "total_scrap_earned": total_scrap_earned,
     "max_scrap_held": max_scrap_held,
-    "total_xp_earned": total_xp_earned
+    "total_xp_earned": total_xp_earned,
+    "max_waves_completed": max_waves_completed
   }
 
 ## Reset all stats (for new game, testing, etc.)
@@ -173,6 +205,7 @@ func reset_stats() -> void:
   total_scrap_earned = 0
   max_scrap_held = CurrencyManager.get_scrap() if CurrencyManager else 0
   total_xp_earned = 0
+  max_waves_completed = 0
   
   Logger.info("StatsManager", "All stats reset")
   stats_updated.emit()
@@ -198,7 +231,8 @@ func _save_stats() -> void:
     "obstacles_placed_by_type": obstacles_placed_by_type,
     "total_scrap_earned": total_scrap_earned,
     "max_scrap_held": max_scrap_held,
-    "total_xp_earned": total_xp_earned
+    "total_xp_earned": total_xp_earned,
+    "max_waves_completed": max_waves_completed
   }
   
   save_file.store_string(JSON.stringify(save_data))
@@ -243,6 +277,7 @@ func _load_stats() -> void:
   total_scrap_earned = save_data.get("total_scrap_earned", save_data.get("total_currency_earned", 0))
   max_scrap_held = save_data.get("max_scrap_held", save_data.get("max_currency_held", 0))
   total_xp_earned = save_data.get("total_xp_earned", 0)
+  max_waves_completed = save_data.get("max_waves_completed", 0)
   
   Logger.info("StatsManager", "Stats loaded from save file - Enemies defeated: %d, Obstacles placed: %d, Scrap earned: %d, XP earned: %d" % [enemies_defeated_total, obstacles_placed_total, total_scrap_earned, total_xp_earned])
   stats_loaded.emit()
