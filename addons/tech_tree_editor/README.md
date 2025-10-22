@@ -178,7 +178,7 @@ Tech node IDs should follow these prefixes based on branch:
 
 Potential improvements for future versions:
 - Undo/redo support
-- Keyboard shortcuts (Ctrl+S, Ctrl+N, etc.)
+- Keyboard shortcut for Save (Ctrl+S)
 - Batch editing of multiple nodes
 - Import from Markdown
 - Diff viewer for comparing tree versions
