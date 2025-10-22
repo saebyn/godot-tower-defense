@@ -40,12 +40,21 @@ var tech_nodes: Dictionary = {} # tech_id -> TechNodeResource
 var graph_nodes: Dictionary = {} # tech_id -> GraphNode
 var selected_tech_id: String = ""
 var validation_errors: Array[String] = []
+var filter_timer: Timer = null # Debounce timer for search/filter
 
 const TECH_TREE_PATH := "res://Config/TechTree/"
+const FILTER_DEBOUNCE_TIME := 0.3 # seconds
 
 func _ready() -> void:
   if not Engine.is_editor_hint():
     return
+  
+  # Create filter debounce timer
+  filter_timer = Timer.new()
+  filter_timer.one_shot = true
+  filter_timer.wait_time = FILTER_DEBOUNCE_TIME
+  filter_timer.timeout.connect(_apply_filters)
+  add_child(filter_timer)
   
   _setup_ui()
   _load_tech_tree()
@@ -149,9 +158,12 @@ func _setup_ui() -> void:
   inspector_panel.hide()
 
 func _on_search_changed(search_text: String) -> void:
-  _apply_filters()
+  # Debounce search to avoid filtering on every keystroke
+  if filter_timer:
+    filter_timer.start()
 
 func _on_branch_filter_changed(index: int) -> void:
+  # Apply filter immediately for dropdown changes
   _apply_filters()
 
 func _apply_filters() -> void:
@@ -402,7 +414,9 @@ func _on_connection_request(from_node: StringName, from_port: int, to_node: Stri
     if from_node not in tech.prerequisite_tech_ids:
       tech.prerequisite_tech_ids.append(from_node)
       _save_tech_node(tech)
-      _rebuild_graph()
+      # Only redraw connections, don't rebuild entire graph
+      _draw_connections()
+      _update_node_display(to_node)
 
 func _on_disconnection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
   # Remove prerequisite connection
@@ -412,7 +426,9 @@ func _on_disconnection_request(from_node: StringName, from_port: int, to_node: S
     if idx >= 0:
       tech.prerequisite_tech_ids.remove_at(idx)
       _save_tech_node(tech)
-      _rebuild_graph()
+      # Only redraw connections, don't rebuild entire graph
+      _draw_connections()
+      _update_node_display(to_node)
 
 func _on_node_selected(node: Node) -> void:
   if node is GraphNode:
@@ -826,8 +842,9 @@ func _add_text_field(label_text: String, value: String, callback: String) -> voi
   line_edit.text = value
   line_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
   line_edit.set_meta("field_name", label_text)
+  # Connect to text_submitted instead of text_changed for better performance
   if has_method(callback):
-    line_edit.text_changed.connect(Callable(self, callback))
+    line_edit.text_submitted.connect(Callable(self, callback))
   hbox.add_child(line_edit)
   
   inspector_container.add_child(hbox)
@@ -843,8 +860,8 @@ func _add_multiline_field(label_text: String, value: String, callback: String) -
   text_edit.text = value
   text_edit.custom_minimum_size = Vector2(0, 60)
   text_edit.set_meta("field_name", label_text)
-  if has_method(callback):
-    text_edit.text_changed.connect(Callable(self, callback).bind(text_edit))
+  # Don't connect text_changed - changes are captured on save button instead
+  # This avoids firing callbacks on every keystroke
   vbox.add_child(text_edit)
   
   inspector_container.add_child(vbox)
@@ -904,8 +921,9 @@ func _add_array_field(label_text: String, field, values: Array, callback: String
   text_edit.custom_minimum_size = Vector2(0, 40)
   text_edit.placeholder_text = "Comma-separated values"
   text_edit.set_meta("field_name", label_text)
-  if has_method(callback):
-    text_edit.text_changed.connect(Callable(self, callback).bind(field, text_edit))
+  text_edit.set_meta("field_key", field)
+  # Don't connect text_changed - changes are captured on save button instead
+  # This avoids firing callbacks on every keystroke
   vbox.add_child(text_edit)
   
   inspector_container.add_child(vbox)
@@ -952,11 +970,49 @@ func _on_array_changed(field: String, text_edit: TextEdit) -> void:
     tech[field] = values
 
 func _on_save_inspector_pressed() -> void:
-  if selected_tech_id in tech_nodes:
-    var tech = tech_nodes[selected_tech_id]
-    _save_tech_node(tech)
-    _rebuild_graph()
-    _show_inspector(selected_tech_id) # Refresh inspector
+  if selected_tech_id not in tech_nodes:
+    return
+  
+  var tech = tech_nodes[selected_tech_id]
+  
+  # Capture all field values from inspector controls
+  for child in inspector_container.get_children():
+    if child is HBoxContainer:
+      for c in child.get_children():
+        if c is LineEdit and c.has_meta("field_name"):
+          var field_name = c.get_meta("field_name")
+          if field_name == "Display Name":
+            tech.display_name = c.text
+        elif c is SpinBox and c.has_meta("field_name"):
+          var field_name = c.get_meta("field_name")
+          if field_name == "Level Requirement":
+            tech.level_requirement = int(c.value)
+        elif c is OptionButton and c.has_meta("field_name"):
+          var field_name = c.get_meta("field_name")
+          if field_name == "Branch":
+            tech.branch_name = VALID_BRANCHES[c.selected]
+    elif child is VBoxContainer:
+      for c in child.get_children():
+        if c is TextEdit and c.has_meta("field_name"):
+          var field_name = c.get_meta("field_name")
+          if field_name == "Description":
+            tech.description = c.text
+          elif c.has_meta("field_key"):
+            # Array field
+            var field_key = c.get_meta("field_key")
+            var text: String = c.text.strip_edges()
+            var values: Array = []
+            if not text.is_empty():
+              var items := text.split(",")
+              for item in items:
+                var trimmed := item.strip_edges()
+                if not trimmed.is_empty():
+                  values.append(trimmed)
+            tech[field_key] = values
+  
+  _save_tech_node(tech)
+  _update_node_display(selected_tech_id)
+  _show_inspector(selected_tech_id) # Refresh inspector
 
 func _save_tech_node(tech: TechNodeResource) -> void:
   var file_path := TECH_TREE_PATH + tech.id + ".tres"
@@ -970,6 +1026,54 @@ func _save_tech_node(tech: TechNodeResource) -> void:
     _set_status("Failed to save tech node: " + tech.id, true)
   else:
     _set_status("Saved: " + tech.id)
+
+func _update_node_display(tech_id: String) -> void:
+  # Update a single node's display without rebuilding entire graph
+  if tech_id not in tech_nodes or tech_id not in graph_nodes:
+    return
+  
+  var tech = tech_nodes[tech_id]
+  var graph_node = graph_nodes[tech_id]
+  
+  # Update title
+  graph_node.title = tech.display_name
+  
+  # Update color based on branch
+  if tech.branch_name in BRANCH_COLORS:
+    var color = BRANCH_COLORS[tech.branch_name]
+    graph_node.modulate = Color(color.r, color.g, color.b, 1)
+  
+  # Update content - clear and recreate
+  for child in graph_node.get_children():
+    child.queue_free()
+  
+  var vbox := VBoxContainer.new()
+  
+  var id_label := Label.new()
+  id_label.text = "ID: " + tech.id
+  id_label.add_theme_font_size_override("font_size", 10)
+  vbox.add_child(id_label)
+  
+  var branch_label := Label.new()
+  branch_label.text = "Branch: " + tech.branch_name
+  vbox.add_child(branch_label)
+  
+  var level_label := Label.new()
+  level_label.text = "Level: " + str(tech.level_requirement)
+  vbox.add_child(level_label)
+  
+  if tech.prerequisite_tech_ids.size() > 0:
+    var prereq_label := Label.new()
+    prereq_label.text = "Prerequisites: " + str(tech.prerequisite_tech_ids.size())
+    vbox.add_child(prereq_label)
+  
+  if tech.mutually_exclusive_with.size() > 0:
+    var excl_label := Label.new()
+    excl_label.text = "⚠ Mutually Exclusive: " + str(tech.mutually_exclusive_with.size())
+    excl_label.add_theme_color_override("font_color", Color.RED)
+    vbox.add_child(excl_label)
+  
+  graph_node.add_child(vbox)
 
 func _on_validation_close_pressed() -> void:
   validation_panel.hide()
