@@ -820,7 +820,7 @@ func _show_inspector(tech_id: String) -> void:
   inspector_container.add_child(separator)
   
   # Add inspector fields
-  _add_text_field("ID", tech.id, "_on_id_changed")
+  _add_text_field_readonly("ID", tech.id)
   _add_text_field("Display Name", tech.display_name, "_on_display_name_changed")
   _add_multiline_field("Description", tech.description, "_on_description_changed")
   _add_dropdown_field("Branch", tech.branch_name, VALID_BRANCHES, "_on_branch_changed")
@@ -854,6 +854,22 @@ func _add_text_field(label_text: String, value: String, callback: String) -> voi
   # Connect to text_submitted instead of text_changed for better performance
   if has_method(callback):
     line_edit.text_submitted.connect(Callable(self, callback))
+  hbox.add_child(line_edit)
+  
+  inspector_container.add_child(hbox)
+
+func _add_text_field_readonly(label_text: String, value: String) -> void:
+  var hbox := HBoxContainer.new()
+  
+  var label := Label.new()
+  label.text = label_text + ":"
+  label.custom_minimum_size = Vector2(120, 0)
+  hbox.add_child(label)
+  
+  var line_edit := LineEdit.new()
+  line_edit.text = value
+  line_edit.editable = false
+  line_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
   hbox.add_child(line_edit)
   
   inspector_container.add_child(hbox)
@@ -938,12 +954,6 @@ func _add_array_field(label_text: String, field, values: Array, callback: String
   inspector_container.add_child(vbox)
 
 # Inspector field change handlers
-func _on_id_changed(new_value: String) -> void:
-  if selected_tech_id in tech_nodes:
-    # Note: Changing ID is complex as it affects file name and references
-    # For now, we'll just update the field but not save
-    pass
-
 func _on_display_name_changed(text: String) -> void:
   if selected_tech_id in tech_nodes:
     var tech = tech_nodes[selected_tech_id]
