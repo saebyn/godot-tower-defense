@@ -426,6 +426,9 @@ func _on_connection_request(from_node: StringName, from_port: int, to_node: Stri
       # Only redraw connections, don't rebuild entire graph
       _draw_connections()
       _update_node_display(to_node)
+      # Refresh inspector if this node is currently selected
+      if selected_tech_id == to_node:
+        _show_inspector(to_node)
 
 func _on_disconnection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
   # Remove prerequisite connection
@@ -438,6 +441,9 @@ func _on_disconnection_request(from_node: StringName, from_port: int, to_node: S
       # Only redraw connections, don't rebuild entire graph
       _draw_connections()
       _update_node_display(to_node)
+      # Refresh inspector if this node is currently selected
+      if selected_tech_id == to_node:
+        _show_inspector(to_node)
 
 func _on_node_selected(node: Node) -> void:
   if node is GraphNode:
