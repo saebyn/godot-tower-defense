@@ -15,5 +15,5 @@ category = 0
 is_offensive = false
 cost = 10
 scene = ExtResource("2_p6ro4")
-unlock_conditions = Array[String]([])
+required_tech_ids = Array[String]([])
 metadata/_custom_type_script = "uid://vy1lf2kd14dr"
