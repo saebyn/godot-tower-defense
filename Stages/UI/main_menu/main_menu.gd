@@ -37,6 +37,10 @@ func _on_settings_button_pressed():
 func _on_settings_menu_closed():
   Logger.debug("MainMenu", "Settings menu closed")
 
+func _on_level_select_button_pressed():
+  Logger.info("MainMenu", "Level Select button pressed - transitioning to level selection")
+  _show_level_select()
+
 func _on_exit_button_pressed():
   Logger.info("MainMenu", "Exit button pressed - quitting game")
   get_tree().quit()
@@ -53,3 +57,12 @@ func _start_game():
   var error = get_tree().change_scene_to_file(game_scene_path)
   if error != OK:
     Logger.error("MainMenu", "Failed to load game scene: %s (Error: %d)" % [game_scene_path, error])
+
+## Show level selection screen
+func _show_level_select():
+  var level_select_path = "res://Stages/UI/level_select/level_select.tscn"
+  Logger.info("MainMenu", "Loading level select scene: %s" % level_select_path)
+  
+  var error = get_tree().change_scene_to_file(level_select_path)
+  if error != OK:
+    Logger.error("MainMenu", "Failed to load level select scene: %s (Error: %d)" % [level_select_path, error])
