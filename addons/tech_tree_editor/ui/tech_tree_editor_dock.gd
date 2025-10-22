@@ -1058,7 +1058,12 @@ func _on_save_inspector_pressed() -> void:
 
 func _save_tech_node(tech: TechNodeResource) -> void:
   var file_path := TECH_TREE_PATH + tech.id + ".tres"
-  var error := ResourceSaver.save(tech, file_path)
+  
+  # Ensure the resource has the correct path
+  tech.take_over_path(file_path)
+  
+  # Save the resource with explicit flags to ensure it's written
+  var error := ResourceSaver.save(tech, file_path, ResourceSaver.FLAG_CHANGE_PATH)
   if error != OK:
     _set_status("Failed to save tech node: " + tech.id, true)
   else:
