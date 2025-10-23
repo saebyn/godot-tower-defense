@@ -2,15 +2,12 @@ extends Node
 
 ## Manages the player's resource system (scrap and XP)
 ## Handles earning and spending scrap, and tracking experience points throughout the game
+## Implements SaveableSystem interface for centralized save management
 
 @export var starting_scrap: int = 100 # TODO change back to 0 before release
 var current_scrap: int = 0
 var current_xp: int = 0
 var current_level: int = 1
-
-# Persistence
-const PROGRESSION_SAVE_PATH = "user://player_progression.save"
-const SAVE_VERSION = 1
 
 signal scrap_changed(new_amount: int)
 signal scrap_earned(amount: int)
@@ -21,14 +18,11 @@ signal progression_saved()
 signal progression_loaded()
 
 func _ready():
-  # Load progression first, returns true if successful
-  var loaded_successfully = _load_progression()
+  # Register with SaveManager
+  SaveManager.register_system(self)
   
-  # If no save file was loaded or loading failed, use defaults
-  if not loaded_successfully:
-    current_scrap = starting_scrap
-    current_xp = 0
-    current_level = 1
+  # Initialize with defaults (will be overridden if save is loaded)
+  reset_data()
   
   scrap_changed.emit(current_scrap)
   xp_changed.emit(current_xp)
@@ -37,7 +31,7 @@ func _ready():
 func _on_game_state_changed(new_state: GameManager.GameState) -> void:
   # Save progression only on victory (not on death/game over)
   if new_state == GameManager.GameState.VICTORY:
-    _save_progression()
+    SaveManager.save_current_slot()
   
   # Note: We no longer reset progression on MAIN_MENU - progression persists across sessions
   # Starting scrap for each level is handled by game logic, not here
@@ -109,83 +103,53 @@ func get_xp() -> int:
 func get_level() -> int:
   return current_level
 
-## Persistence Methods
+## SaveableSystem Interface Implementation
 
-## Save player progression to disk
-func _save_progression() -> void:
-  var save_file = FileAccess.open(PROGRESSION_SAVE_PATH, FileAccess.WRITE)
-  if not save_file:
-    Logger.error("CurrencyManager", "Could not open save file for writing: %s" % PROGRESSION_SAVE_PATH)
-    return
-  
-  var save_data = {
-    "version": SAVE_VERSION,
+## Get unique save key for this system
+func get_save_key() -> String:
+  return "player_progression"
+
+## Get saveable state as dictionary
+func get_save_data() -> Dictionary:
+  return {
     "current_level": current_level,
     "current_xp": current_xp,
     "current_scrap": current_scrap
   }
-  
-  save_file.store_string(JSON.stringify(save_data))
-  save_file.close()
-  
-  Logger.info("CurrencyManager", "Progression saved - Level: %d, XP: %d, Scrap: %d" % [current_level, current_xp, current_scrap])
-  progression_saved.emit()
 
-## Load player progression from disk
-## Returns true if the save file was loaded successfully, false otherwise
-func _load_progression() -> bool:
-  if not FileAccess.file_exists(PROGRESSION_SAVE_PATH):
-    Logger.info("CurrencyManager", "No save file found, starting fresh")
-    return false
+## Load data from saved state
+func load_data(data: Dictionary) -> void:
+  current_level = data.get("current_level", 1)
+  current_xp = data.get("current_xp", 0)
+  current_scrap = data.get("current_scrap", starting_scrap)
   
-  var save_file = FileAccess.open(PROGRESSION_SAVE_PATH, FileAccess.READ)
-  if not save_file:
-    Logger.error("CurrencyManager", "Could not open save file for reading: %s" % PROGRESSION_SAVE_PATH)
-    return false
-  
-  var json_string = save_file.get_as_text()
-  save_file.close()
-  
-  var json = JSON.new()
-  var parse_result = json.parse(json_string)
-  
-  if parse_result != OK:
-    Logger.error("CurrencyManager", "Error parsing save file: %s" % json.get_error_message())
-    return false
-  
-  var save_data = json.get_data()
-  
-  if not (save_data is Dictionary):
-    Logger.error("CurrencyManager", "Save file contains invalid data")
-    return false
-  
-  # Load the data with fallbacks for missing keys
-  current_level = save_data.get("current_level", 1)
-  current_xp = save_data.get("current_xp", 0)
-  current_scrap = save_data.get("current_scrap", starting_scrap)
+  # Emit signals to update UI
+  scrap_changed.emit(current_scrap)
+  xp_changed.emit(current_xp)
   
   Logger.info("CurrencyManager", "Progression loaded - Level: %d, XP: %d, Scrap: %d" % [current_level, current_xp, current_scrap])
   progression_loaded.emit()
-  return true
 
-## Manual save method for external use
+## Reset to default state (for new game)
+func reset_data() -> void:
+  current_level = 1
+  current_xp = 0
+  current_scrap = starting_scrap
+  
+  Logger.info("CurrencyManager", "Progression reset to defaults")
+
+## Legacy Methods (deprecated, kept for backward compatibility)
+
+## Manual save method for external use (now delegates to SaveManager)
 func save_progression_now() -> void:
-  _save_progression()
+  SaveManager.save_current_slot()
 
-## Check if save file exists
+## Check if save file exists (checks SaveManager instead)
 func has_saved_progression() -> bool:
-  return FileAccess.file_exists(PROGRESSION_SAVE_PATH)
+  return SaveManager.current_save_slot > 0
 
-## Delete save file (for complete reset)
+## Delete save file (delegates to SaveManager)
 func delete_saved_progression() -> bool:
-  if FileAccess.file_exists(PROGRESSION_SAVE_PATH):
-    var dir = DirAccess.open("user://")
-    if dir:
-      var filename = PROGRESSION_SAVE_PATH.replace("user://", "")
-      dir.remove(filename)
-      Logger.info("CurrencyManager", "Progression save file deleted")
-      return true
-    else:
-      Logger.error("CurrencyManager", "Could not access user directory to delete save file")
-      return false
+  if SaveManager.current_save_slot > 0:
+    return SaveManager.delete_save_slot(SaveManager.current_save_slot)
   return true

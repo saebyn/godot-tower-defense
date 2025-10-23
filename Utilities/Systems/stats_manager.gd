@@ -2,7 +2,7 @@ extends Node
 
 ## Comprehensive stats tracking system for Tower Defense game
 ## Tracks enemy defeats, obstacle placements, currency metrics, and player actions
-## Features persistent storage across game sessions
+## Features persistent storage via SaveManager
 ## 
 ## Usage:
 ##   StatsManager.track_enemy_defeated("basic_enemy", false)
@@ -27,9 +27,6 @@ var total_xp_earned: int = 0
 var waves_completed: int = 0
 var max_waves_completed: int = 0
 
-# Persistence
-const STATS_SAVE_PATH = "user://stats.save"
-
 # Signals for real-time updates
 signal enemy_defeated(enemy_type: String, by_hand: bool)
 signal obstacle_placed(obstacle_type: String)
@@ -41,8 +38,8 @@ signal stats_saved()
 func _ready():
   Logger.info("StatsManager", "Stats tracking system initialized")
   
-  # Load persistent stats first
-  _load_stats()
+  # Register with SaveManager
+  SaveManager.register_system(self)
   
   # Connect to existing systems
   if CurrencyManager:
@@ -71,11 +68,6 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
   if new_state == GameManager.GameState.MAIN_MENU:
     waves_completed = 0
 
-func _notification(what):
-  # Auto-save when the game is closing
-  if what == NOTIFICATION_WM_CLOSE_REQUEST:
-    _save_stats()
-
 ## Track an enemy defeat
 func track_enemy_defeated(enemy_type: String, defeated_by_hand: bool = false) -> void:
   enemies_defeated_total += 1
@@ -94,9 +86,6 @@ func track_enemy_defeated(enemy_type: String, defeated_by_hand: bool = false) ->
   
   enemy_defeated.emit(enemy_type, defeated_by_hand)
   stats_updated.emit()
-  
-  # Auto-save after significant events
-  _save_stats()
 
 ## Track an obstacle placement
 func track_obstacle_placed(obstacle_type: String) -> void:
@@ -112,16 +101,11 @@ func track_obstacle_placed(obstacle_type: String) -> void:
   
   obstacle_placed.emit(obstacle_type)
   stats_updated.emit()
-  
-  # Auto-save after significant events
-  _save_stats()
 
 ## Scrap earned callback
 func _on_scrap_earned(amount: int) -> void:
   total_scrap_earned += amount
   Logger.debug("Stats", "Scrap earned: %d. Total earned: %d" % [amount, total_scrap_earned])
-  # Save periodically for scrap changes
-  _save_stats()
 
 ## Scrap changed callback - track maximum held
 func _on_scrap_changed(new_amount: int) -> void:
@@ -130,15 +114,11 @@ func _on_scrap_changed(new_amount: int) -> void:
     Logger.debug("Stats", "New max scrap held: %d" % max_scrap_held)
     max_scrap_held_updated.emit(max_scrap_held)
     stats_updated.emit()
-    # Save when we hit a new max
-    _save_stats()
 
 ## XP earned callback
 func _on_xp_earned(amount: int) -> void:
   total_xp_earned += amount
   Logger.debug("Stats", "XP earned: %d. Total earned: %d" % [amount, total_xp_earned])
-  # Save periodically for XP changes
-  _save_stats()
 
 ## Max waves completed callback
 func _on_wave_changed(_level_id: String, _wave: int) -> void:
@@ -147,8 +127,6 @@ func _on_wave_changed(_level_id: String, _wave: int) -> void:
     max_waves_completed = waves_completed
     Logger.debug("Stats", "New max waves completed: %d" % max_waves_completed)
     stats_updated.emit()
-    # Save when we hit a new max
-    _save_stats()
 
 ## Get stats data
 
@@ -213,21 +191,16 @@ func reset_stats() -> void:
   
   Logger.info("StatsManager", "All stats reset")
   stats_updated.emit()
-  
-  # Save the reset state
-  _save_stats()
 
-## Persistence Methods
+## SaveableSystem Interface Implementation
 
-## Save stats to disk
-func _save_stats() -> void:
-  var save_file = FileAccess.open(STATS_SAVE_PATH, FileAccess.WRITE)
-  if not save_file:
-    Logger.error("StatsManager", "Could not open save file for writing: %s" % STATS_SAVE_PATH)
-    return
-  
-  var save_data = {
-    "version": 1,
+## Get unique save key for this system
+func get_save_key() -> String:
+  return "stats"
+
+## Get saveable state as dictionary
+func get_save_data() -> Dictionary:
+  return {
     "enemies_defeated_total": enemies_defeated_total,
     "enemies_defeated_by_type": enemies_defeated_by_type,
     "enemies_defeated_by_hand": enemies_defeated_by_hand,
@@ -238,71 +211,38 @@ func _save_stats() -> void:
     "total_xp_earned": total_xp_earned,
     "max_waves_completed": max_waves_completed
   }
-  
-  save_file.store_string(JSON.stringify(save_data))
-  save_file.close()
-  
-  Logger.debug("StatsManager", "Stats saved to: %s" % STATS_SAVE_PATH)
-  stats_saved.emit()
 
-## Load stats from disk
-func _load_stats() -> void:
-  if not FileAccess.file_exists(STATS_SAVE_PATH):
-    Logger.info("StatsManager", "No save file found, starting with fresh stats")
-    return
+## Load data from saved state
+func load_data(data: Dictionary) -> void:
+  enemies_defeated_total = data.get("enemies_defeated_total", 0)
+  enemies_defeated_by_type = data.get("enemies_defeated_by_type", {})
+  enemies_defeated_by_hand = data.get("enemies_defeated_by_hand", 0)
+  obstacles_placed_total = data.get("obstacles_placed_total", 0)
+  obstacles_placed_by_type = data.get("obstacles_placed_by_type", {})
+  total_scrap_earned = data.get("total_scrap_earned", data.get("total_currency_earned", 0))
+  max_scrap_held = data.get("max_scrap_held", data.get("max_currency_held", 0))
+  total_xp_earned = data.get("total_xp_earned", 0)
+  max_waves_completed = data.get("max_waves_completed", 0)
   
-  var save_file = FileAccess.open(STATS_SAVE_PATH, FileAccess.READ)
-  if not save_file:
-    Logger.error("StatsManager", "Could not open save file for reading: %s" % STATS_SAVE_PATH)
-    return
-  
-  var json_string = save_file.get_as_text()
-  save_file.close()
-  
-  var json = JSON.new()
-  var parse_result = json.parse(json_string)
-  
-  if parse_result != OK:
-    Logger.error("StatsManager", "Error parsing save file: %s" % json.get_error_message())
-    return
-  
-  var save_data = json.get_data()
-  
-  if not save_data is Dictionary:
-    Logger.error("StatsManager", "Save file contains invalid data")
-    return
-  
-  # Load the data with fallbacks for missing keys
-  enemies_defeated_total = save_data.get("enemies_defeated_total", 0)
-  enemies_defeated_by_type = save_data.get("enemies_defeated_by_type", {})
-  enemies_defeated_by_hand = save_data.get("enemies_defeated_by_hand", 0)
-  obstacles_placed_total = save_data.get("obstacles_placed_total", 0)
-  obstacles_placed_by_type = save_data.get("obstacles_placed_by_type", {})
-  total_scrap_earned = save_data.get("total_scrap_earned", save_data.get("total_currency_earned", 0))
-  max_scrap_held = save_data.get("max_scrap_held", save_data.get("max_currency_held", 0))
-  total_xp_earned = save_data.get("total_xp_earned", 0)
-  max_waves_completed = save_data.get("max_waves_completed", 0)
-  
-  Logger.info("StatsManager", "Stats loaded from save file - Enemies defeated: %d, Obstacles placed: %d, Scrap earned: %d, XP earned: %d" % [enemies_defeated_total, obstacles_placed_total, total_scrap_earned, total_xp_earned])
+  Logger.info("StatsManager", "Stats loaded - Enemies defeated: %d, Obstacles placed: %d, Scrap earned: %d, XP earned: %d" % [enemies_defeated_total, obstacles_placed_total, total_scrap_earned, total_xp_earned])
   stats_loaded.emit()
 
-## Manual save method for external use
+## Reset to default state (for new game)
+func reset_data() -> void:
+  reset_stats()
+
+## Legacy Methods (deprecated, kept for backward compatibility)
+
+## Manual save method for external use (now delegates to SaveManager)
 func save_stats_now() -> void:
-  _save_stats()
+  SaveManager.save_current_slot()
 
-## Check if save file exists
+## Check if save file exists (checks SaveManager instead)
 func has_saved_stats() -> bool:
-  return FileAccess.file_exists(STATS_SAVE_PATH)
+  return SaveManager.current_save_slot > 0
 
-## Delete save file (for complete reset)
+## Delete save file (delegates to SaveManager)
 func delete_saved_stats() -> bool:
-  if FileAccess.file_exists(STATS_SAVE_PATH):
-    var dir = DirAccess.open("user://")
-    if dir:
-      dir.remove("stats.save")
-      Logger.info("StatsManager", "Save file deleted")
-      return true
-    else:
-      Logger.error("StatsManager", "Could not access user directory to delete save file")
-      return false
+  if SaveManager.current_save_slot > 0:
+    return SaveManager.delete_save_slot(SaveManager.current_save_slot)
   return true

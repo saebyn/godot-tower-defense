@@ -2,6 +2,7 @@ extends Node
 
 ## Manages tech tree unlocks, prerequisites, and mutually exclusive branch logic
 ## Loads tech tree structure from Config/TechTree/ resource files
+## Implements SaveableSystem interface for centralized save management
 
 signal tech_unlocked(tech_id: String)
 signal tech_locked(tech_id: String)
@@ -14,7 +15,13 @@ const TECH_TREE_PATH = "res://Config/TechTree/"
 
 func _ready() -> void:
   Logger.info("TechTreeManager", "Initializing TechTreeManager...")
+  
+  # Register with SaveManager
+  SaveManager.register_system(self)
+  
+  # Load tech tree definitions
   _load_tech_tree()
+  
   Logger.info("TechTreeManager", "TechTreeManager initialized with %d tech nodes" % tech_nodes.size())
 
 ## Load all tech node resources from Config/TechTree/
@@ -182,3 +189,38 @@ func reset_tech_tree() -> void:
   unlocked_tech_ids.clear()
   locked_tech_ids.clear()
   Logger.info("TechTreeManager", "Tech tree reset")
+
+## SaveableSystem Interface Implementation
+
+## Get unique save key for this system
+func get_save_key() -> String:
+  return "tech_tree"
+
+## Get saveable state as dictionary
+func get_save_data() -> Dictionary:
+  return {
+    "unlocked_tech_ids": unlocked_tech_ids,
+    "locked_tech_ids": locked_tech_ids,
+  }
+
+## Load data from saved state
+func load_data(data: Dictionary) -> void:
+  # Load unlocked tech IDs
+  var loaded_unlocked: Array = data.get("unlocked_tech_ids", [])
+  unlocked_tech_ids.clear()
+  for tech_id in loaded_unlocked:
+    if tech_id is String:
+      unlocked_tech_ids.append(tech_id)
+  
+  # Load locked tech IDs (from exclusive branches)
+  var loaded_locked: Array = data.get("locked_tech_ids", [])
+  locked_tech_ids.clear()
+  for tech_id in loaded_locked:
+    if tech_id is String:
+      locked_tech_ids.append(tech_id)
+  
+  Logger.info("TechTreeManager", "Tech tree loaded - Unlocked: %d, Locked: %d" % [unlocked_tech_ids.size(), locked_tech_ids.size()])
+
+## Reset to default state (for new game)
+func reset_data() -> void:
+  reset_tech_tree()
