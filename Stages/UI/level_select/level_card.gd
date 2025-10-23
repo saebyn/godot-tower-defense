@@ -69,16 +69,15 @@ func configure(
     lock_message_label.visible = false
     
     # Show/update stats if completed
-    if p_is_completed and (p_best_time > 0.0 or p_best_score > 0):
+    if p_is_completed:
       var stats_text = ""
-      if p_best_time > 0.0:
-        var minutes = int(p_best_time) / 60
-        var seconds = int(p_best_time) % 60
-        stats_text += "Best Time: %d:%02d" % [minutes, seconds]
-      if p_best_score > 0:
-        if not stats_text.is_empty():
-          stats_text += " | "
-        stats_text += "Best Score: %d" % p_best_score
+      var show_time = true
+      var show_score = true
+      # Always show both, even if zero
+      var minutes = int(p_best_time) / 60
+      var seconds = int(p_best_time) % 60
+      stats_text += "Best Time: %d:%02d" % [minutes, seconds]
+      stats_text += " | Best Score: %d" % p_best_score
       stats_label.text = stats_text
       stats_label.visible = true
     else:
