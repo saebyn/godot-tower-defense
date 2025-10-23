@@ -6,8 +6,10 @@ class_name MainMenu
 ## Sets the initial game state to MAIN_MENU and provides buttons for starting the game
 
 const SettingsMenuScene = preload("res://Common/UI/settings_menu/settings_menu.tscn")
+const TechTreeScene = preload("res://Stages/UI/tech_tree/tech_tree.tscn")
 
 var settings_menu = null
+var tech_tree_ui = null
 
 func _ready():
   # Set the initial game state when the main menu loads
@@ -40,6 +42,23 @@ func _on_settings_menu_closed():
 func _on_level_select_button_pressed():
   Logger.info("MainMenu", "Level Select button pressed - transitioning to level selection")
   _show_level_select()
+
+func _on_tech_tree_button_pressed():
+  Logger.info("MainMenu", "Tech Tree button pressed")
+  _show_tech_tree()
+
+func _show_tech_tree():
+  # Create tech tree UI if not already open
+  if tech_tree_ui == null:
+    tech_tree_ui = TechTreeScene.instantiate()
+    add_child(tech_tree_ui)
+    tech_tree_ui.closed.connect(_on_tech_tree_closed)
+  else:
+    tech_tree_ui.visible = true
+
+func _on_tech_tree_closed():
+  Logger.debug("MainMenu", "Tech tree closed")
+  tech_tree_ui = null
 
 func _on_exit_button_pressed():
   Logger.info("MainMenu", "Exit button pressed - quitting game")

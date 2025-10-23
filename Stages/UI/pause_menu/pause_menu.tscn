@@ -47,6 +47,10 @@ horizontal_alignment = 1
 layout_mode = 2
 text = "Resume"
 
+[node name="TechTreeButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Tech Tree"
+
 [node name="SettingsButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Settings"
@@ -64,6 +68,7 @@ layout_mode = 2
 text = "Quit"
 
 [connection signal="pressed" from="VBoxContainer/ResumeButton" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="VBoxContainer/TechTreeButton" to="." method="_on_tech_tree_pressed"]
 [connection signal="pressed" from="VBoxContainer/SettingsButton" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="VBoxContainer/RestartButton" to="." method="_on_restart_pressed"]
 [connection signal="pressed" from="VBoxContainer/MainMenuButton" to="." method="_on_main_menu_pressed"]
