@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="TechNodeResource" load_steps=2 format=3 uid="uid://e6a15qt5j3f2"]
+
+[ext_resource type="Script" uid="uid://dj1i28ud6uv3t" path="res://Config/TechTree/tech_node_resource.gd" id="1_xxxxx"]
+
+[resource]
+script = ExtResource("1_xxxxx")
+id = "eco_industrial_recycler"
+display_name = "Industrial Recycler"
+description = "Higher income generator with increased passive scrap production."
+branch_name = "Economy"
+level_requirement = 2
+scrap_cost = 0
+prerequisite_tech_ids = Array[String](["eco_scrap_recycler"])
+achievement_ids = Array[String]([])
+mutually_exclusive_with = Array[String](["eco_drone_salvager"])
+requires_branch_completion = Array[String]([])
+unlocked_obstacle_ids = Array[String](["industrial_recycler"])

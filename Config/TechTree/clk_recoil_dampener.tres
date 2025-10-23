@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="TechNodeResource" load_steps=2 format=3 uid="uid://eb3lldasd84y"]
+
+[ext_resource type="Script" uid="uid://dj1i28ud6uv3t" path="res://Config/TechTree/tech_node_resource.gd" id="1_xxxxx"]
+
+[resource]
+script = ExtResource("1_xxxxx")
+id = "clk_recoil_dampener"
+display_name = "Recoil Dampener"
+description = "Mitigates accuracy penalties on nearby turrets while player is clicking."
+branch_name = "Click"
+level_requirement = 3
+scrap_cost = 0
+prerequisite_tech_ids = Array[String](["clk_hydraulic_mouse"])
+achievement_ids = Array[String]([])
+mutually_exclusive_with = Array[String]([])
+requires_branch_completion = Array[String]([])
+unlocked_obstacle_ids = Array[String]([])

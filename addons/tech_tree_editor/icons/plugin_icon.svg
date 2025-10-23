@@ -1,0 +1,10 @@
+<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+  <!-- Tech Tree Icon - Simple node graph representation -->
+  <circle cx="8" cy="3" r="2" fill="#3498DB"/>
+  <circle cx="4" cy="10" r="2" fill="#E74C3C"/>
+  <circle cx="12" cy="10" r="2" fill="#2ECC71"/>
+  
+  <!-- Connections -->
+  <line x1="8" y1="5" x2="4" y2="8" stroke="#888" stroke-width="1"/>
+  <line x1="8" y1="5" x2="12" y2="8" stroke="#888" stroke-width="1"/>
+</svg>
