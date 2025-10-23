@@ -47,7 +47,7 @@ func _on_exit_button_pressed():
 
 ## Starts the main game by loading the game scene
 func _start_game():
-  GameManager.set_current_level_id("level_1")
+  LevelManager.set_current_level_id("level_1")
   GameManager.set_game_state(GameManager.GameState.PLAYING)
   
   # Load the main game scene

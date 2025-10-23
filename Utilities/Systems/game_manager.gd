@@ -8,22 +8,11 @@ enum GameState {
   VICTORY
 }
 
-var current_level: int = 0
-var current_wave: int = 0
-var current_level_id: String = ""  # Track which level is currently being played
-
 var current_state: GameState = GameState.MAIN_MENU
 var current_speed_multiplier: float = 1.0
 
 signal game_state_changed(new_state: GameState)
 signal speed_changed(new_speed: float)
-signal wave_changed(level: int, new_wave: int)
-
-func set_complete_wave(level: int, wave: int):
-    current_level = level
-    current_wave = wave
-    wave_changed.emit(level, wave)
-    Logger.info("GameManager", "Set complete wave to Level %d, Wave %d" % [level, wave])
 
 func set_game_state(new_state: GameState):
     if current_state != new_state:
@@ -72,26 +61,17 @@ func toggle_in_game_menu():
         pause_game()
         set_game_state(GameState.IN_GAME_MENU)
 
-func get_game_level() -> int:
-    return current_level
-
-## Set the current level ID being played (e.g., "level_1")
-func set_current_level_id(level_id: String):
-    current_level_id = level_id
-    Logger.info("GameManager", "Current level ID set to: %s" % level_id)
-
-## Get the current level ID being played
-func get_current_level_id() -> String:
-    return current_level_id
-
 ## Returns to the main menu from any game state
 func return_to_main_menu():
-    Logger.info("GameManager", "Returning to main menu")
-    resume_game() # Ensure the game is unpaused
-    set_game_state(GameState.MAIN_MENU)
-    
-    # Load the main menu scene
-    var main_menu_path = "res://Stages/UI/main_menu/main_menu.tscn"
-    var error = get_tree().change_scene_to_file(main_menu_path)
-    if error != OK:
-        Logger.error("GameManager", "Failed to load main menu scene: %s (Error: %d)" % [main_menu_path, error])
+  Logger.info("GameManager", "Returning to main menu")
+  resume_game() # Ensure the game is unpaused
+  set_game_state(GameState.MAIN_MENU)
+  
+  # Clear the current level in LevelManager
+  LevelManager.clear_current_level()
+  
+  # Load the main menu scene
+  var main_menu_path = "res://Stages/UI/main_menu/main_menu.tscn"
+  var error = get_tree().change_scene_to_file(main_menu_path)
+  if error != OK:
+    Logger.error("GameManager", "Failed to load main menu scene: %s (Error: %d)" % [main_menu_path, error])

@@ -26,12 +26,25 @@ func _on_wave_started(wave: Wave) -> void:
 func _on_wave_completed(wave: Wave) -> void:
   var wave_number = enemy_spawner.get_current_wave_number()
   ui._on_wave_completed(wave, wave_number)
-  GameManager.set_complete_wave(0, wave_number)
+  LevelManager.set_current_wave(wave_number)
 
 
 func _on_all_waves_completed() -> void:
-  Logger.info("Level", "All waves completed. Triggering victory.")
-  # TODO advance to next game level if applicable
+  Logger.info("Level", "All waves completed. Processing level completion...")
+  
+  # Mark the level as complete in the progression system
+  var level_id = LevelManager.get_current_level_id()
+  if not level_id.is_empty():
+    # TODO: Calculate completion time and score when those systems are implemented
+    var completion_time = 0.0 # Placeholder for future level timer
+    var score = 0 # Placeholder for future scoring system
+    
+    LevelManager.mark_level_complete(level_id, completion_time, score)
+    Logger.info("Level", "Level '%s' marked as complete" % level_id)
+  else:
+    Logger.error("Level", "Cannot mark level complete - no level ID set in LevelManager!")
+  
+  # Transition to victory state (UI will respond to this)
   GameManager.set_game_state(GameManager.GameState.VICTORY)
 
 

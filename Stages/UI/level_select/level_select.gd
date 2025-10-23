@@ -32,18 +32,18 @@ func _populate_levels():
     child.queue_free()
   
   # Get all level IDs and create a card for each
-  var level_ids = LevelProgressManager.get_all_level_ids()
+  var level_ids = LevelManager.get_all_level_ids()
   
   for level_id in level_ids:
     var level_card = LevelCardScene.instantiate()
     level_container.add_child(level_card)
     
     # Configure the card
-    var metadata = LevelProgressManager.get_level_metadata(level_id)
-    var is_unlocked = LevelProgressManager.is_level_unlocked(level_id)
-    var is_completed = LevelProgressManager.is_level_completed(level_id)
-    var best_time = LevelProgressManager.get_best_time(level_id)
-    var best_score = LevelProgressManager.get_best_score(level_id)
+    var metadata = LevelManager.get_level_metadata(level_id)
+    var is_unlocked = LevelManager.is_level_unlocked(level_id)
+    var is_completed = LevelManager.is_level_completed(level_id)
+    var best_time = LevelManager.get_best_time(level_id)
+    var best_score = LevelManager.get_best_score(level_id)
     
     level_card.configure(
       level_id,
@@ -60,11 +60,11 @@ func _populate_levels():
 
 ## Handle level selection
 func _on_level_selected(level_id: String):
-  var metadata = LevelProgressManager.get_level_metadata(level_id)
+  var metadata = LevelManager.get_level_metadata(level_id)
   var scene_path = metadata.get("scene_path", "")
   
   # Check if level is unlocked
-  if not LevelProgressManager.is_level_unlocked(level_id):
+  if not LevelManager.is_level_unlocked(level_id):
     Logger.warn("LevelSelect", "Attempted to select locked level: %s" % level_id)
     return
   
@@ -77,7 +77,7 @@ func _on_level_selected(level_id: String):
   
   # Load the level
   Logger.info("LevelSelect", "Loading level: %s from %s" % [level_id, scene_path])
-  GameManager.set_current_level_id(level_id)
+  LevelManager.set_current_level_id(level_id)
   GameManager.set_game_state(GameManager.GameState.PLAYING)
   
   var error = get_tree().change_scene_to_file(scene_path)

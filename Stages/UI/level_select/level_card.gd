@@ -54,8 +54,8 @@ func configure(
   # Show/hide elements based on lock status
   if not p_is_unlocked:
     # Show lock message
-    var required_level = LevelProgressManager.get_unlock_requirement(level_id)
-    var required_metadata = LevelProgressManager.get_level_metadata(required_level)
+    var required_level = LevelManager.get_unlock_requirement(level_id)
+    var required_metadata = LevelManager.get_level_metadata(required_level)
     var required_name = required_metadata.get("name", required_level)
     lock_message_label.text = "Complete %s to unlock" % required_name
     lock_message_label.visible = true
