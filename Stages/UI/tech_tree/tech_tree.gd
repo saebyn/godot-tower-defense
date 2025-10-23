@@ -156,17 +156,17 @@ func _update_detail_panel() -> void:
 	detail_unlocks.text = unlocks_text
 	
 	# Update unlock button
-	if TechTreeManager.is_tech_unlocked(tech_id):
+	if TechTreeManager.is_tech_unlocked(selected_tech_id):
 		unlock_button.text = "Already Unlocked"
 		unlock_button.disabled = true
-	elif TechTreeManager.is_tech_locked(tech_id):
+	elif TechTreeManager.is_tech_locked(selected_tech_id):
 		unlock_button.text = "Permanently Locked"
 		unlock_button.disabled = true
 		# Show what locked this
-		var locked_by = _find_what_locked_tech(tech_id)
+		var locked_by = _find_what_locked_tech(selected_tech_id)
 		if locked_by:
 			detail_requirements.text += "\n\n⛔ Locked by: %s" % locked_by
-	elif TechTreeManager.can_unlock_tech(tech_id):
+	elif TechTreeManager.can_unlock_tech(selected_tech_id):
 		unlock_button.text = "Unlock"
 		unlock_button.disabled = false
 	else:
