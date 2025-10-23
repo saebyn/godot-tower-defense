@@ -327,6 +327,11 @@ func load_data(data: Dictionary) -> void:
 ## Reset to default state (for new game)
 func reset_data() -> void:
   achievement_states.clear()
+  
+  # Re-initialize states for all loaded achievements
+  for achievement_id in achievements:
+    achievement_states[achievement_id] = AchievementState.new()
+  
   Logger.info("AchievementManager", "Achievement states reset")
 
 ## Legacy Methods (deprecated, kept for backward compatibility)

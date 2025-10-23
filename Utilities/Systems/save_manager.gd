@@ -38,6 +38,8 @@ var auto_save_timer: float = 0.0
 # Current state
 var current_save_slot: int = -1  # -1 = no slot loaded
 var managed_systems: Array = []  # Array of objects implementing SaveableSystem interface
+var slot_playtime: float = 0.0  # Total playtime for current slot in seconds
+var slot_start_time: float = 0.0  # Time when slot was loaded/created
 
 # Signals
 signal save_started()
@@ -55,6 +57,10 @@ func _ready() -> void:
   Logger.info("SaveManager", "Save Manager initialized - Max slots: %d" % MAX_SAVE_SLOTS)
 
 func _process(delta: float) -> void:
+  # Track playtime for current slot
+  if current_save_slot > 0:
+    slot_playtime += delta
+  
   # Auto-save timer (only when a slot is loaded)
   if current_save_slot > 0:
     auto_save_timer += delta
@@ -136,6 +142,11 @@ func load_save_slot(slot_number: int) -> bool:
   current_save_slot = slot_number
   auto_save_timer = 0.0  # Reset auto-save timer
   
+  # Restore playtime from metadata
+  var metadata = save_data.get("metadata", {})
+  slot_playtime = metadata.get("playtime", 0.0)
+  slot_start_time = Time.get_ticks_msec() / 1000.0
+  
   Logger.info("SaveManager", "Successfully loaded save slot %d" % slot_number)
   load_completed.emit()
   return true
@@ -194,6 +205,10 @@ func create_new_game(slot_number: int) -> void:
   # Set current slot
   current_save_slot = slot_number
   auto_save_timer = 0.0
+  
+  # Reset playtime for new game
+  slot_playtime = 0.0
+  slot_start_time = Time.get_ticks_msec() / 1000.0
   
   # Save the fresh state
   save_current_slot()
@@ -332,7 +347,7 @@ func quick_save() -> void:
 func _generate_slot_metadata() -> Dictionary:
   var metadata = {
     "timestamp": Time.get_unix_time_from_system(),
-    "playtime": 0.0,  # TODO: Track playtime
+    "playtime": slot_playtime,
     "player_level": 1,
     "last_level": "",
     "slot_name": ""  # Optional user-customizable name
