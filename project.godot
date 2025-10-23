@@ -18,6 +18,7 @@ config/icon="res://Assets/Icons/icon.svg"
 [autoload]
 
 Logger="*res://Utilities/Systems/logger.gd"
+SaveManager="*res://Utilities/Systems/save_manager.gd"
 CurrencyManager="*res://Utilities/Systems/currency_manager.gd"
 GameManager="*res://Utilities/Systems/game_manager.gd"
 ObstacleRegistry="*res://Utilities/Systems/obstacle_registry.gd"
