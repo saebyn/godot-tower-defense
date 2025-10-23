@@ -205,7 +205,7 @@ func create_new_game(slot_number: int) -> void:
 ## Returns dictionary with slot info or empty dict if slot doesn't exist
 func get_slot_metadata(slot_number: int) -> Dictionary:
   if slot_number < 1 or slot_number > MAX_SAVE_SLOTS:
-    return {}
+    return {"exists": false, "slot_number": slot_number}
   
   var slot_path = SAVE_SLOT_PATH % slot_number
   
