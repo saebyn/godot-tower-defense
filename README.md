@@ -61,11 +61,13 @@ Come hang out, watch the chaos unfold, and see how the sausage gets made! You mi
 - ✅ Automated turret targeting and shooting
 - ✅ Component-based architecture (Health, Attack, Buff systems)
 - ✅ UI framework (hotbar, currency display, stats tracking)
+- ✅ **Centralized save system with multi-slot support** (SaveManager)
+- ✅ **Player progression persistence** (currency, stats, levels, tech tree)
 
 **What's Coming Next** (see [Task Planning](docs/task_planning.md)):
 - 🔜 Achievement system (unlock tech via gameplay)
 - 🔜 Tech tree with mutually exclusive branches
-- 🔜 Player progression persistence (save/load)
+- 🔜 Save slot selection UI (load/delete/manage slots)
 - 🔜 Multiple levels with absurd scenarios
 - 🔜 Tower upgrades (3-5 tiers with visual progression)
 - 🔜 Support towers (buff nearby turrets)
@@ -178,6 +180,47 @@ Game state and coordination is handled through autoloaded singletons:
 - **Logger** - Centralized logging with scope-based filtering
 - **CurrencyManager** - Player currency tracking and transactions
 - **GameManager** - Game state transitions and high-level coordination
+- **SaveManager** - Centralized save system with multi-slot support (see [Save System](#-save-system) below)
+
+#### 5. **Save System Architecture**
+
+The game uses a centralized save system (SaveManager) that orchestrates all game persistence:
+
+**Save Location**:
+```
+user://
+├── saves/
+│   ├── save_slot_1.save      # Per-slot data (atomic saves)
+│   ├── save_slot_1.save.bak  # Automatic backup
+│   ├── save_slot_2.save
+│   └── save_slot_N.save
+└── settings.cfg              # Global settings
+```
+
+**SaveableSystem Interface**:
+All managers implement a common interface for save coordination:
+- `get_save_key() -> String` - Unique identifier
+- `get_save_data() -> Dictionary` - Return saveable state
+- `load_data(data: Dictionary)` - Restore from saved state  
+- `reset_data()` - Reset to defaults for new game
+
+**Per-Slot Data** (resets on new game):
+- CurrencyManager: Player level, XP, scrap
+- StatsManager: Enemy defeats, obstacles placed
+- AchievementManager: In-game achievement progress
+- LevelManager: Completed levels, best times/scores
+- TechTreeManager: Unlocked tech, locked exclusive branches
+
+**Global Data** (persists across all slots):
+- SettingsManager: Video, audio, input settings
+
+**Features**:
+- ✅ Atomic writes (temp file + rename prevents corruption)
+- ✅ Automatic backups (.save.bak files)
+- ✅ Auto-save every 5 minutes + on level completion
+- ✅ Multiple save slots (up to 10, expandable)
+- ✅ Save slot metadata (timestamp, playtime, player level)
+- ✅ Corruption recovery (restores from backup if primary corrupted)
 
 ### Example Structure
 
