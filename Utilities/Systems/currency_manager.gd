@@ -31,11 +31,7 @@ func _ready():
 func _on_game_state_changed(new_state: GameManager.GameState) -> void:
   # Save progression only on victory (not on death/game over)
   if new_state == GameManager.GameState.VICTORY:
-    # Only save if a slot is loaded
-    if SaveManager.current_save_slot != -1:
-      SaveManager.save_current_slot()
-    else:
-      Logger.warn("CurrencyManager", "Cannot save - no save slot loaded")
+    SaveManager.save_current_slot()
   
   # Note: We no longer reset progression on MAIN_MENU - progression persists across sessions
   # Starting scrap for each level is handled by game logic, not here

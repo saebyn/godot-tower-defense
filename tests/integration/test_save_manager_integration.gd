@@ -28,6 +28,10 @@ func _cleanup_test_slots():
   SaveManager.delete_save_slot(TEST_SLOT_1)
   SaveManager.delete_save_slot(TEST_SLOT_2)
   SaveManager.current_save_slot = -1
+  
+  # Reset all manager state to ensure clean slate between tests
+  for system in SaveManager.managed_systems:
+    system.reset_data()
 
 ## Test: Create new game and save currency data
 func test_currency_manager_save_load():
