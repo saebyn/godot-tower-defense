@@ -45,7 +45,7 @@ func setup(achievement: AchievementResource, is_unlocked: bool, progress: float,
     if is_unlocked:
       progress_label.visible = false
       unlock_date_label.visible = true
-      unlock_date_label.text = "Unlocked: %s" % _format_date(unlock_date)
+      unlock_date_label.text = "Unlocked: %s" % unlock_date
     else:
       progress_label.visible = true
       progress_label.text = "Progress: %d%%" % int(progress * 100.0)
@@ -55,19 +55,3 @@ func setup(achievement: AchievementResource, is_unlocked: bool, progress: float,
   if locked_overlay:
     locked_overlay.visible = not is_unlocked
     locked_overlay.modulate = Color(0, 0, 0, 0.6) if not is_unlocked else Color(0, 0, 0, 0)
-
-## Format ISO date string to a more readable format
-func _format_date(iso_date: String) -> String:
-  if iso_date.is_empty():
-    return "Unknown"
-  
-  # Parse ISO 8601 format: YYYY-MM-DDTHH:MM:SS
-  var parts = iso_date.split("T")
-  if parts.size() < 1:
-    return iso_date
-  
-  var date_parts = parts[0].split("-")
-  if date_parts.size() < 3:
-    return iso_date
-  
-  return "%s/%s/%s" % [date_parts[1], date_parts[2], date_parts[0]]
