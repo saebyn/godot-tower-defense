@@ -2,7 +2,7 @@ class_name AchievementResource
 extends Resource
 
 ## Resource class defining individual achievements
-## Used to configure achievement tracking, unlock conditions, and rewards
+## Used to configure achievement tracking, unlock conditions
 ## 
 ## Usage:
 ##   # Simple single condition achievement
@@ -100,9 +100,6 @@ class AchievementCondition extends Resource:
 
 @export_category("Display")
 @export var hidden: bool = false ## Whether the achievement is hidden until unlocked
-
-@export_category("Rewards")
-@export var reward: String = "" ## Reward identifier (could unlock tech tree items, obstacles, etc.)
 
 
 ## Validate the achievement resource has required fields

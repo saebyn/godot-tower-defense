@@ -95,7 +95,6 @@ achievement.description = "Defeat 100 BasicZombie enemies"
 achievement.unlock_condition_type = AchievementResource.ConditionType.ENEMIES_DEFEATED_BY_TYPE
 achievement.threshold = 100
 achievement.condition_target = "BasicZombie"
-achievement.reward = "unlock_advanced_turret"
 achievement.hidden = false
 ```
 
@@ -110,7 +109,6 @@ achievement.description = "Discover the secret technique"
 achievement.unlock_condition_type = AchievementResource.ConditionType.PLAYER_LEVEL_REACHED
 achievement.threshold = 50
 achievement.hidden = true
-achievement.reward = "unlock_secret_tech_tree_branch"
 ```
 
 ### Example: Multiple Conditions with AND Logic
@@ -191,7 +189,6 @@ cond3.condition_type = AchievementResource.ConditionType.SCRAP_EARNED
 cond3.threshold = 500
 
 achievement.conditions = [cond1, cond2, cond3]
-achievement.reward = "unlock_advanced_tech"
 # Result: "Defeat 100 BasicZombie enemies AND Place 25 obstacles AND Earn 500 scrap"
 ```
 

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="AchievementResource" load_steps=3 format=3 uid="uid://bx9n6k5m7tpwq"]
+[gd_resource type="Resource" script_class="AchievementResource" load_steps=3 format=3 uid="uid://byan6k5m7tpwq"]
 
 [ext_resource type="Script" uid="uid://jrlpjbre51gs" path="res://Config/Achievements/achievement_resource.gd" id="1_level"]
 
@@ -16,4 +16,3 @@ condition_target = ""
 condition_logic = 0
 conditions = Array[SubResource("GDScript_e6gjb")]([])
 hidden = false
-reward = ""
