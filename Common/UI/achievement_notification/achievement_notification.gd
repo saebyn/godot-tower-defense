@@ -15,8 +15,8 @@ const NOTIFICATION_OFFSET = Vector2(400, -100) # Start position offset
 @onready var name_label: Label = $PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/NameLabel
 @onready var description_label: Label = $PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/DescriptionLabel
 @onready var auto_hide_timer: Timer = $AutoHideTimer
-@onready var slide_in_tween: Tween = null
-@onready var slide_out_tween: Tween = null
+var slide_in_tween: Tween = null
+var slide_out_tween: Tween = null
 
 var target_position: Vector2 = Vector2.ZERO
 var is_showing: bool = false
