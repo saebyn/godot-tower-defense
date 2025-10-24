@@ -79,11 +79,34 @@ graph TB
     
     GameManager --> Main
     
+    %% Color Legend:
+    %% Blue (#e1f5ff) - Debugging/Infrastructure
+    %% Pink (#ffe1f5) - Persistence/Save System
+    %% Green (#e1ffe1) - Economy/Progression
+    %% Yellow (#fff5e1) - Game State Management
+    %% Purple (#f5e1ff) - Content Management
+    %% Orange (#ffe1cc) - Audio/Settings
+    
     style Logger fill:#e1f5ff
     style SaveManager fill:#ffe1f5
     style CurrencyManager fill:#e1ffe1
+    style StatsManager fill:#e1ffe1
     style GameManager fill:#fff5e1
+    style ObstacleRegistry fill:#f5e1ff
+    style TechTreeManager fill:#f5e1ff
+    style AchievementManager fill:#e1ffe1
+    style LevelManager fill:#f5e1ff
+    style AudioManager fill:#ffe1cc
+    style SettingsManager fill:#ffe1cc
 ```
+
+**Color Legend:**
+- 🔵 **Blue** - Debugging/Infrastructure systems (Logger)
+- 🩷 **Pink** - Persistence/Save systems (SaveManager)
+- 🟢 **Green** - Economy/Progression systems (CurrencyManager, StatsManager, AchievementManager)
+- 🟡 **Yellow** - Game State Management (GameManager)
+- 🟣 **Purple** - Content Management systems (ObstacleRegistry, TechTreeManager, LevelManager)
+- 🟠 **Orange** - Audio/Settings systems (AudioManager, SettingsManager)
 
 ---
 
