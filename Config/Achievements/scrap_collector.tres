@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="AchievementResource" load_steps=3 format=3 uid="uid://dyp4r2k8vh3xj"]
+
+[ext_resource type="Script" uid="uid://jrlpjbre51gs" path="res://Config/Achievements/achievement_resource.gd" id="1_scrap"]
+
+[sub_resource type="GDScript" id="GDScript_e6gjb"]
+
+[resource]
+script = ExtResource("1_scrap")
+id = "scrap_collector"
+name = "Scrap Collector"
+description = "Earn 100 scrap total"
+use_multiple_conditions = false
+unlock_condition_type = 3
+threshold = 100
+condition_target = ""
+condition_logic = 0
+conditions = Array[SubResource("GDScript_e6gjb")]([])
+hidden = false
+reward = ""

@@ -8,9 +8,9 @@
 script = ExtResource("1_x8y5w")
 id = "first_blood"
 name = "First Blood"
-description = "Defeat your first enemy"
+description = "Defeat 1 zombie by clicking"
 use_multiple_conditions = false
-unlock_condition_type = 0
+unlock_condition_type = 2
 threshold = 1
 condition_target = ""
 condition_logic = 0

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="AchievementResource" load_steps=3 format=3 uid="uid://b0vn3qk4m8ype"]
+
+[ext_resource type="Script" uid="uid://jrlpjbre51gs" path="res://Config/Achievements/achievement_resource.gd" id="1_click"]
+
+[sub_resource type="GDScript" id="GDScript_e6gjb"]
+
+[resource]
+script = ExtResource("1_click")
+id = "click_happy"
+name = "Click Happy"
+description = "Click 5 times"
+use_multiple_conditions = false
+unlock_condition_type = 2
+threshold = 5
+condition_target = ""
+condition_logic = 0
+conditions = Array[SubResource("GDScript_e6gjb")]([])
+hidden = false
+reward = ""

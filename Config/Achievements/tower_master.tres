@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="AchievementResource" load_steps=3 format=3 uid="uid://d4k8p3m9v2xrw"]
+
+[ext_resource type="Script" uid="uid://jrlpjbre51gs" path="res://Config/Achievements/achievement_resource.gd" id="1_tower"]
+
+[sub_resource type="GDScript" id="GDScript_e6gjb"]
+
+[resource]
+script = ExtResource("1_tower")
+id = "tower_master"
+name = "Tower Master"
+description = "Place 10 obstacles"
+use_multiple_conditions = false
+unlock_condition_type = 4
+threshold = 10
+condition_target = ""
+condition_logic = 0
+conditions = Array[SubResource("GDScript_e6gjb")]([])
+hidden = false
+reward = ""
