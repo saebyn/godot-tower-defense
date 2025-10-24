@@ -154,9 +154,13 @@ func load_save_slot(slot_number: int) -> bool:
 ## Save the current slot atomically
 ## Uses temporary file + rename to ensure atomic writes
 func save_current_slot() -> void:
-  if current_save_slot < 1 or current_save_slot > MAX_SAVE_SLOTS:
-    Logger.error("SaveManager", "No valid save slot loaded (current: %d)" % current_save_slot)
-    save_failed.emit("No valid save slot loaded")
+  if current_save_slot == -1:
+    Logger.error("SaveManager", "No save slot is currently loaded")
+    save_failed.emit("No save slot is currently loaded")
+    return
+  elif current_save_slot < 1 or current_save_slot > MAX_SAVE_SLOTS:
+    Logger.error("SaveManager", "Invalid save slot %d (valid range: 1-%d)" % [current_save_slot, MAX_SAVE_SLOTS])
+    save_failed.emit("Invalid save slot %d (valid range: 1-%d)" % [current_save_slot, MAX_SAVE_SLOTS])
     return
   
   save_started.emit()
