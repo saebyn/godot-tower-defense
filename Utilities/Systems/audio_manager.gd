@@ -2,6 +2,7 @@ extends Node
 
 enum SoundEffect {
   PLAYER_ATTACK_HIT,
+  ACHIEVEMENT_UNLOCKED,
 }
 
 var sound_effects: Dictionary[SoundEffect, Array] = {}
@@ -12,6 +13,9 @@ func _ready() -> void:
     SoundEffect.PLAYER_ATTACK_HIT: [
       preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"),
       preload("res://Assets/Audio/SFX/qubodupImpactMeat02.ogg"),
+    ],
+    SoundEffect.ACHIEVEMENT_UNLOCKED: [
+      preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper achievement sound
     ],
   }
 

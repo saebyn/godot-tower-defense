@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://bw8h4n3xvg7rs" path="res://Common/UI/offscreen_indicator/offscreen_indicator.tscn" id="9_offscreen_indicator"]
 [ext_resource type="PackedScene" uid="uid://bx8f5navg2rs" path="res://Common/UI/minimap/minimap.tscn" id="10_minimap"]
 [ext_resource type="PackedScene" uid="uid://b2jcxh0e7r1tv" path="res://Common/UI/stats_display/stats_display.tscn" id="11_stats_display"]
+[ext_resource type="Script" path="res://Common/UI/achievement_notification/achievement_notification_manager.gd" id="12_achievement_notification"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_b3t5h"]
 size = Vector2(16, 16)
@@ -80,5 +81,8 @@ layout_mode = 1
 
 [node name="StatsDisplay" parent="." instance=ExtResource("11_stats_display")]
 layout_mode = 1
+
+[node name="AchievementNotificationManager" type="CanvasLayer" parent="."]
+script = ExtResource("12_achievement_notification")
 
 [connection signal="obstacle_selected" from="Hotbar" to="." method="request_obstacle_spawn"]
