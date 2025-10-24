@@ -18,6 +18,7 @@ config/icon="res://Assets/Icons/icon.svg"
 [autoload]
 
 Logger="*res://Utilities/Systems/logger.gd"
+SaveManager="*res://Utilities/Systems/save_manager.gd"
 CurrencyManager="*res://Utilities/Systems/currency_manager.gd"
 GameManager="*res://Utilities/Systems/game_manager.gd"
 ObstacleRegistry="*res://Utilities/Systems/obstacle_registry.gd"
@@ -27,10 +28,6 @@ SettingsManager="*res://Utilities/Systems/settings_manager.gd"
 TechTreeManager="*res://Utilities/Systems/tech_tree_manager.gd"
 AchievementManager="*res://Utilities/Systems/achievement_manager.gd"
 LevelManager="*res://Utilities/Systems/level_manager.gd"
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
 [editor_plugins]
 

@@ -3,6 +3,7 @@ extends Node
 ## Manages achievement tracking, unlocking, and persistence
 ## Tracks achievement progress and emits signals when achievements are unlocked
 ## Connects to StatsManager and CurrencyManager to monitor game stats
+## Implements SaveableSystem interface for centralized save management
 ##
 ## Usage:
 ##   # Achievements are automatically loaded from Config/Achievements/
@@ -16,10 +17,6 @@ extends Node
 # Achievement storage
 var achievements: Dictionary = {} # id (String) -> AchievementResource
 var achievement_states: Dictionary = {} # id (String) -> AchievementState
-
-# Persistence
-const ACHIEVEMENTS_SAVE_PATH = "user://achievements.save"
-const SAVE_VERSION = 1
 
 # Signals
 signal achievement_unlocked(achievement: AchievementResource)
@@ -55,8 +52,8 @@ class AchievementState:
 func _ready():
   Logger.info("AchievementManager", "Achievement system initialized")
   
-  # Load saved achievement states first
-  _load_achievement_states()
+  # Register with SaveManager
+  SaveManager.register_system(self)
   
   # Load all achievements from Config/Achievements/
   _load_achievements()
@@ -248,9 +245,6 @@ func _unlock_achievement(achievement_id: String) -> void:
   # If achievement was hidden, now emit progress update
   if achievement.hidden:
     achievement_progress_updated.emit(achievement, 1.0)
-  
-  # Save achievement state
-  _save_achievement_states()
 
 ## Event handlers for stat changes
 
@@ -299,61 +293,29 @@ func get_achievement(achievement_id: String) -> AchievementResource:
     return null
   return achievements.get(achievement_id)
 
-## Persistence methods
+## SaveableSystem Interface Implementation
 
-## Save achievement states to disk
-func _save_achievement_states() -> void:
-  var save_file = FileAccess.open(ACHIEVEMENTS_SAVE_PATH, FileAccess.WRITE)
-  if not save_file:
-    Logger.error("AchievementManager", "Could not open save file for writing: %s" % ACHIEVEMENTS_SAVE_PATH)
-    return
-  
+## Get unique save key for this system
+func get_save_key() -> String:
+  return "achievements"
+
+## Get saveable state as dictionary
+func get_save_data() -> Dictionary:
   # Convert achievement states to dictionary format
   var states_dict = {}
   for achievement_id in achievement_states:
     states_dict[achievement_id] = achievement_states[achievement_id].to_dict()
   
-  var save_data = {
-    "version": SAVE_VERSION,
+  return {
     "states": states_dict
   }
-  
-  save_file.store_string(JSON.stringify(save_data))
-  save_file.close()
-  
-  Logger.debug("AchievementManager", "Achievement states saved")
-  achievements_saved.emit()
 
-## Load achievement states from disk
-func _load_achievement_states() -> void:
-  if not FileAccess.file_exists(ACHIEVEMENTS_SAVE_PATH):
-    Logger.info("AchievementManager", "No save file found, starting with fresh achievement states")
-    return
-  
-  var save_file = FileAccess.open(ACHIEVEMENTS_SAVE_PATH, FileAccess.READ)
-  if not save_file:
-    Logger.error("AchievementManager", "Could not open save file for reading: %s" % ACHIEVEMENTS_SAVE_PATH)
-    return
-  
-  var json_string = save_file.get_as_text()
-  save_file.close()
-  
-  var json = JSON.new()
-  var parse_result = json.parse(json_string)
-  
-  if parse_result != OK:
-    Logger.error("AchievementManager", "Error parsing save file: %s" % json.get_error_message())
-    return
-  
-  var save_data = json.get_data()
-  
-  if not save_data is Dictionary:
-    Logger.error("AchievementManager", "Save file contains invalid data")
-    return
-  
+## Load data from saved state
+func load_data(data: Dictionary) -> void:
   # Load achievement states
-  var states_dict = save_data.get("states", {})
+  var states_dict = data.get("states", {})
   if states_dict is Dictionary:
+    achievement_states.clear()
     for achievement_id in states_dict:
       var state_data = states_dict[achievement_id]
       if state_data is Dictionary:
@@ -362,28 +324,28 @@ func _load_achievement_states() -> void:
   Logger.info("AchievementManager", "Achievement states loaded - %d achievements tracked" % achievement_states.size())
   achievements_loaded.emit()
 
-## Manual save method for external use
+## Reset to default state (for new game)
+func reset_data() -> void:
+  achievement_states.clear()
+  
+  # Re-initialize states for all loaded achievements
+  for achievement_id in achievements:
+    achievement_states[achievement_id] = AchievementState.new()
+  
+  Logger.info("AchievementManager", "Achievement states reset")
+
+## Legacy Methods (deprecated, kept for backward compatibility)
+
+## Manual save method for external use (now delegates to SaveManager)
 func save_achievements_now() -> void:
-  _save_achievement_states()
+  SaveManager.save_current_slot()
 
-## Check if save file exists
+## Check if save file exists (checks SaveManager instead)
 func has_saved_achievements() -> bool:
-  return FileAccess.file_exists(ACHIEVEMENTS_SAVE_PATH)
+  return SaveManager.current_save_slot > 0
 
-## Delete save file (for complete reset)
+## Delete save file (delegates to SaveManager)
 func delete_saved_achievements() -> bool:
-  if FileAccess.file_exists(ACHIEVEMENTS_SAVE_PATH):
-    var dir = DirAccess.open("user://")
-    if dir:
-      dir.remove(ACHIEVEMENTS_SAVE_PATH)
-      Logger.info("AchievementManager", "Achievement save file deleted")
-      
-      # Reset all states
-      for achievement_id in achievement_states:
-        achievement_states[achievement_id] = AchievementState.new()
-      
-      return true
-    else:
-      Logger.error("AchievementManager", "Could not access user directory to delete save file")
-      return false
+  if SaveManager.current_save_slot > 0:
+    return SaveManager.delete_save_slot(SaveManager.current_save_slot)
   return true

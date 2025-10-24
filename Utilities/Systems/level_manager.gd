@@ -1,6 +1,7 @@
 extends Node
 
 ## Manages all level-related state: runtime session state and persistent progression
+## Implements SaveableSystem interface for centralized save management
 ## 
 ## Runtime State (per gameplay session):
 ## - Current level being played
@@ -10,10 +11,6 @@ extends Node
 ## - Completed levels
 ## - Best times and scores per level
 ## - Level unlocking logic
-
-# Save constants
-const LEVEL_PROGRESS_SAVE_PATH = "user://level_progression.save"
-const SAVE_VERSION = 1
 
 # Runtime state (resets each session)
 var current_level_id: String = "" # Currently active level (e.g., "level_1")
@@ -65,7 +62,9 @@ signal wave_changed(level_id: String, wave: int)
 signal level_ended(level_id: String)
 
 func _ready():
-  _load_progression()
+  # Register with SaveManager
+  SaveManager.register_system(self)
+  
   Logger.info("LevelManager", "Level Manager initialized")
 
 ## Runtime State Management
@@ -127,8 +126,6 @@ func mark_level_complete(level_id: String, time: float = 0.0, score: int = 0) ->
     if level_id not in level_best_scores or score > level_best_scores[level_id]:
       level_best_scores[level_id] = score
       Logger.info("LevelManager", "New best score for %s: %d" % [level_id, score])
-  
-  _save_progression()
 
 ## Check if a level is unlocked
 func is_level_unlocked(level_id: String) -> bool:
@@ -184,86 +181,51 @@ func _get_next_level_id(level_id: String) -> String:
     return next_level
   return ""
 
-## Save progression to disk
-func _save_progression() -> void:
-  var save_file = FileAccess.open(LEVEL_PROGRESS_SAVE_PATH, FileAccess.WRITE)
-  if not save_file:
-    Logger.error("LevelManager", "Could not open save file for writing: %s" % LEVEL_PROGRESS_SAVE_PATH)
-    return
-  
-  var save_data = {
-    "version": SAVE_VERSION,
+## SaveableSystem Interface Implementation
+
+## Get unique save key for this system
+func get_save_key() -> String:
+  return "level_progression"
+
+## Get saveable state as dictionary
+func get_save_data() -> Dictionary:
+  return {
     "completed_levels": completed_levels,
     "level_best_times": level_best_times,
     "level_best_scores": level_best_scores,
   }
-  
-  save_file.store_string(JSON.stringify(save_data))
-  save_file.close()
-  
-  Logger.info("LevelManager", "Level progression saved - Completed: %s" % str(completed_levels))
-  progression_saved.emit()
 
-## Load progression from disk
-func _load_progression() -> bool:
-  if not FileAccess.file_exists(LEVEL_PROGRESS_SAVE_PATH):
-    Logger.info("LevelManager", "No level progress save file found, starting fresh")
-    return false
-  
-  var save_file = FileAccess.open(LEVEL_PROGRESS_SAVE_PATH, FileAccess.READ)
-  if not save_file:
-    Logger.error("LevelManager", "Could not open save file for reading: %s" % LEVEL_PROGRESS_SAVE_PATH)
-    return false
-  
-  var json_string = save_file.get_as_text()
-  save_file.close()
-  
-  var json = JSON.new()
-  var parse_result = json.parse(json_string)
-  
-  if parse_result != OK:
-    Logger.error("LevelManager", "Error parsing save file: %s" % json.get_error_message())
-    return false
-  
-  var save_data = json.get_data()
-  
-  if not (save_data is Dictionary):
-    Logger.error("LevelManager", "Save file contains invalid data")
-    return false
-  
+## Load data from saved state
+func load_data(data: Dictionary) -> void:
   # Load the data with fallbacks
-  var loaded_completed: Array = save_data.get("completed_levels", [])
+  var loaded_completed: Array = data.get("completed_levels", [])
   completed_levels.clear()
   for level in loaded_completed:
     if level is String:
       completed_levels.append(level)
   
-  level_best_times = save_data.get("level_best_times", {})
-  level_best_scores = save_data.get("level_best_scores", {})
+  level_best_times = data.get("level_best_times", {})
+  level_best_scores = data.get("level_best_scores", {})
   
   Logger.info("LevelManager", "Level progression loaded - Completed: %s" % str(completed_levels))
   progression_loaded.emit()
-  return true
 
-## Manual save method for external use
+## Reset to default state (for new game)
+func reset_data() -> void:
+  completed_levels.clear()
+  level_best_times.clear()
+  level_best_scores.clear()
+  
+  Logger.info("LevelManager", "Level progression reset")
+
+## Legacy Methods (deprecated, kept for backward compatibility)
+
+## Manual save method for external use (now delegates to SaveManager)
 func save_progression_now() -> void:
-  _save_progression()
+  SaveManager.save_current_slot()
 
-## Delete save file (for complete reset)
+## Delete save file (delegates to SaveManager)
 func delete_saved_progression() -> bool:
-  if FileAccess.file_exists(LEVEL_PROGRESS_SAVE_PATH):
-    var dir = DirAccess.open("user://")
-    if dir:
-      var filename = LEVEL_PROGRESS_SAVE_PATH.replace("user://", "")
-      dir.remove(filename)
-      Logger.info("LevelManager", "Level progression save file deleted")
-      
-      # Reset in-memory data
-      completed_levels.clear()
-      level_best_times.clear()
-      level_best_scores.clear()
-      return true
-    else:
-      Logger.error("LevelManager", "Could not access user directory to delete save file")
-      return false
+  if SaveManager.current_save_slot > 0:
+    return SaveManager.delete_save_slot(SaveManager.current_save_slot)
   return true
