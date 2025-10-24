@@ -15,6 +15,7 @@ var health: Health
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 var current_target: Node3D = null
+var fallback_obstacle_target: Node3D = null # Used when direct path to target is blocked
 
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
 
@@ -99,12 +100,66 @@ func _find_nearest_obstacle_in_range() -> Node3D:
   return nearest_obstacle
 
 
+func _find_obstacle_closest_to_target() -> Node3D:
+  """Find the obstacle that is closest to the current target.
+  This is used as a fallback when the zombie cannot path directly to the target."""
+  if not current_target:
+    return null
+  
+  var obstacles := get_tree().get_nodes_in_group(obstacle_group)
+  if obstacles.is_empty():
+    return null
+  
+  var closest_obstacle: Node3D = null
+  var closest_distance: float = INF
+  
+  for obstacle in obstacles:
+    if not obstacle or not is_instance_valid(obstacle):
+      continue
+    
+    var distance_to_target: float = obstacle.global_position.distance_to(current_target.global_position)
+    if distance_to_target < closest_distance:
+      closest_distance = distance_to_target
+      closest_obstacle = obstacle
+  
+  return closest_obstacle
+
+
 func _actor_setup():
   # Wait for the first physics frame so the NavigationServer can sync.
   await get_tree().physics_frame
 
   # Now that the navigation map is no longer empty, set the movement target.
   _choose_target()
+  
+  # Check if we need fallback pathfinding
+  _check_and_set_fallback_target()
+
+
+func _check_and_set_fallback_target() -> void:
+  """Check if the enemy can reach the target. If not, find an obstacle to attack."""
+  if not current_target:
+    return
+  
+  # Wait for navigation to calculate path
+  await get_tree().physics_frame
+  
+  # Check if the path is valid/reachable
+  if navigation_agent.is_target_reachable():
+    # Path is fine, clear any fallback
+    fallback_obstacle_target = null
+    Logger.debug("Enemy.Navigation", "Path to target is reachable")
+  else:
+    # Path is blocked, find obstacle to attack
+    Logger.info("Enemy.Navigation", "Cannot reach target, searching for blocking obstacle")
+    var blocking_obstacle = _find_obstacle_closest_to_target()
+    
+    if blocking_obstacle:
+      fallback_obstacle_target = blocking_obstacle
+      navigation_agent.set_target_position(blocking_obstacle.global_position)
+      Logger.info("Enemy.Navigation", "Found blocking obstacle, switching to fallback target")
+    else:
+      Logger.warn("Enemy.Navigation", "No path to target and no obstacles found to attack!")
 
 
 func _attack_target():
@@ -120,8 +175,25 @@ func _attack_target():
     if not current_target:
       return
 
+  # If we have a fallback obstacle target, prioritize it
+  if fallback_obstacle_target and is_instance_valid(fallback_obstacle_target):
+    var distance_to_fallback: float = global_position.distance_to(fallback_obstacle_target.global_position)
+    
+    # Attack the fallback obstacle if in range
+    if distance_to_fallback <= obstacle_attack_range:
+      Logger.debug("Enemy", "Attacking fallback obstacle at distance: %f" % distance_to_fallback)
+      attack.perform_attack(fallback_obstacle_target)
+      return
+  else:
+    # Fallback target was destroyed or is invalid, recheck path
+    if fallback_obstacle_target != null:
+      Logger.info("Enemy.Navigation", "Fallback obstacle destroyed, rechecking path to target")
+      fallback_obstacle_target = null
+      navigation_agent.set_target_position(current_target.global_position)
+      _check_and_set_fallback_target()
+
   # Attack primary target if in range (higher priority)
-  var distance_to_target := global_position.distance_to(current_target.global_position)
+  var distance_to_target: float = global_position.distance_to(current_target.global_position)
   if distance_to_target <= target_desired_distance:
       attack.perform_attack(current_target)
       return
@@ -129,7 +201,7 @@ func _attack_target():
   # If no targets in range, check for nearby obstacles to attack
   var nearby_obstacle = _find_nearest_obstacle_in_range()
   if nearby_obstacle:
-    Logger.debug("Enemy", "Attacking nearby obstacle at distance: %f" % global_position.distance_to(nearby_obstacle.global_position))
+    Logger.trace("Enemy", "Attacking nearby obstacle at distance: %f" % global_position.distance_to(nearby_obstacle.global_position))
     attack.perform_attack(nearby_obstacle)
     return
 
@@ -149,8 +221,18 @@ func _physics_process(_delta):
   if NavigationServer3D.map_get_iteration_id(navigation_agent.get_navigation_map()) == 0:
     Logger.debug("Enemy.Navigation", "Navigation map is empty, cannot navigate.")
     return
+  
   if navigation_agent.is_navigation_finished():
-    Logger.trace("Enemy.Navigation", "Navigation finished.")
+    # Check if we reached the fallback obstacle or if we need to recheck path
+    if fallback_obstacle_target and is_instance_valid(fallback_obstacle_target):
+      # We've reached the fallback obstacle, stay here and attack it
+      Logger.trace("Enemy.Navigation", "Reached fallback obstacle target.")
+    else:
+      # Check if we can now reach the main target
+      if current_target:
+        navigation_agent.set_target_position(current_target.global_position)
+        _check_and_set_fallback_target()
+    
     velocity = Vector3.ZERO
     move_and_slide()
     return
@@ -158,7 +240,7 @@ func _physics_process(_delta):
   var next_path_position: Vector3 = navigation_agent.get_next_path_position()
 
   # Move directly without avoidance
-  var direction := global_position.direction_to(next_path_position)
+  var direction: Vector3 = global_position.direction_to(next_path_position)
   velocity = direction * movement_speed
 
   # if we are moving, face the direction we are moving
