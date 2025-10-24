@@ -8,12 +8,11 @@
 script = ExtResource("1_0o8hi")
 id = "zombie_slayer"
 name = "Zombie Slayer"
-description = "Defeat 100 BasicZombie enemies"
+description = "Defeat 50 zombies"
 use_multiple_conditions = false
-unlock_condition_type = 1
-threshold = 100
-condition_target = "BasicZombie"
+unlock_condition_type = 0
+threshold = 50
+condition_target = ""
 condition_logic = 0
 conditions = Array[SubResource("GDScript_e6gjb")]([])
 hidden = false
-reward = "unlock_advanced_turret"
