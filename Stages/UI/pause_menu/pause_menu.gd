@@ -3,9 +3,11 @@ class_name PauseMenu
 
 const SettingsMenuScene = preload("res://Common/UI/settings_menu/settings_menu.tscn")
 const TechTreeScene = preload("res://Stages/UI/tech_tree/tech_tree.tscn")
+const AchievementListScene = preload("res://Stages/UI/achievement_list/achievement_list.tscn")
 
 @onready var resume_button: Button = $VBoxContainer/ResumeButton
 @onready var tech_tree_button: Button = $VBoxContainer/TechTreeButton
+@onready var achievements_button: Button = $VBoxContainer/AchievementsButton
 @onready var settings_button: Button = $VBoxContainer/SettingsButton
 @onready var restart_button: Button = $VBoxContainer/RestartButton
 @onready var main_menu_button: Button = $VBoxContainer/MainMenuButton
@@ -13,6 +15,7 @@ const TechTreeScene = preload("res://Stages/UI/tech_tree/tech_tree.tscn")
 
 var settings_menu = null
 var tech_tree_ui = null
+var achievement_list_ui = null
 
 func _ready():
   # Initially hide the pause menu
@@ -68,6 +71,23 @@ func _show_tech_tree():
 func _on_tech_tree_closed():
   Logger.debug("PauseMenu", "Tech tree closed")
   tech_tree_ui = null
+
+func _on_achievements_pressed():
+  Logger.info("PauseMenu", "Achievements button pressed")
+  _show_achievements()
+
+func _show_achievements():
+  # Create achievement list UI if not already open
+  if achievement_list_ui == null:
+    achievement_list_ui = AchievementListScene.instantiate()
+    add_child(achievement_list_ui)
+    achievement_list_ui.closed.connect(_on_achievement_list_closed)
+  else:
+    achievement_list_ui.visible = true
+
+func _on_achievement_list_closed():
+  Logger.debug("PauseMenu", "Achievement list closed")
+  achievement_list_ui = null
 
 func _on_settings_menu_closed():
   Logger.debug("PauseMenu", "Settings menu closed")
