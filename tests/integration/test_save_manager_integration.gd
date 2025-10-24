@@ -119,36 +119,44 @@ func test_level_manager_save_load():
 func test_tech_tree_manager_save_load():
   # This test verifies tech tree persistence works
   # Note: Tech tree state may persist between tests due to autoload nature
-  
   # Create fresh game
   SaveManager.create_new_game(TEST_SLOT_1)
   
-  # Unlock some tech (assuming at least one tech exists)
-  if TechTreeManager.tech_nodes.size() > 0:
-    var tech_id = TechTreeManager.tech_nodes.keys()[0]
-    
-    # Manually add to unlocked (bypass unlock logic)
-    if not TechTreeManager.is_tech_unlocked(tech_id):
-      TechTreeManager.unlocked_tech_ids.append(tech_id)
-    
-    var expected_count = TechTreeManager.unlocked_tech_ids.size()
-    
-    # Save
-    SaveManager.save_current_slot()
-    
-    # Verify save file contains tech tree data
-    var slot_path = SaveManager.SAVE_SLOT_PATH % TEST_SLOT_1
-    var save_data = SaveManager._load_json_file(slot_path)
-    assert_true(save_data.has("tech_tree"), "Save should contain tech tree data")
-    assert_true(save_data["tech_tree"].has("unlocked_tech_ids"), "Tech tree should have unlocked_tech_ids")
-    
-    # Load into a different slot to verify data round-trips
-    SaveManager.create_new_game(TEST_SLOT_2)
-    TechTreeManager.unlocked_tech_ids.clear()  # Clear for this new game
-    
-    SaveManager.load_save_slot(TEST_SLOT_1)
-    
-    assert_true(TechTreeManager.is_tech_unlocked(tech_id), "Tech should be unlocked after load")
+  # Verify tech nodes exist
+  assert_gt(TechTreeManager.tech_nodes.size(), 0, "Tech tree should have at least one tech node")
+  
+  # Get first tech node
+  var tech_id = TechTreeManager.tech_nodes.keys()[0]
+  
+  # Manually add to unlocked (bypass unlock logic for testing)
+  if not TechTreeManager.is_tech_unlocked(tech_id):
+    TechTreeManager.unlocked_tech_ids.append(tech_id)
+  
+  var expected_count = TechTreeManager.unlocked_tech_ids.size()
+  assert_gt(expected_count, 0, "Should have at least one unlocked tech")
+  
+  # Save
+  SaveManager.save_current_slot()
+  
+  # Verify save file contains tech tree data
+  var slot_path = SaveManager.SAVE_SLOT_PATH % TEST_SLOT_1
+  var save_data = SaveManager._load_json_file(slot_path)
+  assert_true(save_data.has("tech_tree"), "Save should contain tech tree data")
+  assert_true(save_data["tech_tree"].has("unlocked_tech_ids"), "Tech tree should have unlocked_tech_ids")
+  
+  # Load into a different slot to verify data round-trips
+  SaveManager.create_new_game(TEST_SLOT_2)
+  TechTreeManager.unlocked_tech_ids.clear() # Clear for this new game
+  
+  # Verify it's cleared
+  assert_eq(TechTreeManager.unlocked_tech_ids.size(), 0, "Tech tree should be reset after new game")
+  
+  # Load original slot
+  SaveManager.load_save_slot(TEST_SLOT_1)
+  
+  # Verify tech is restored
+  assert_true(TechTreeManager.is_tech_unlocked(tech_id), "Tech should be unlocked after load")
+  assert_eq(TechTreeManager.unlocked_tech_ids.size(), expected_count, "Unlocked count should match")
 
 ## Test: Multiple managers save/load together
 func test_all_managers_save_load():
@@ -181,7 +189,6 @@ func test_all_managers_save_load():
 ## Test: Switch between save slots
 func test_save_slot_switching():
   # This test verifies that different save slots maintain independent state
-  
   # Create slot 1 with specific scrap amount
   SaveManager.create_new_game(TEST_SLOT_1)
   var base_scrap = CurrencyManager.get_scrap()
@@ -215,7 +222,7 @@ func test_save_metadata():
   SaveManager.create_new_game(TEST_SLOT_1)
   
   # Modify state
-  CurrencyManager.earn_xp(300)  # Should level up
+  CurrencyManager.earn_xp(300) # Should level up
   LevelManager.set_current_level_id("level_2")
   
   var player_level = CurrencyManager.get_level()
