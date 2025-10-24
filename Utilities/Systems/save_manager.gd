@@ -23,7 +23,7 @@ extends Node
 ##     current_level = 1
 
 # Save slot configuration
-const MAX_SAVE_SLOTS = 10  # Expandable, minimum 3
+const MAX_SAVE_SLOTS = 10 # Expandable, minimum 3
 const SAVE_SLOT_DIR = "user://saves/"
 const SAVE_SLOT_PATH = "user://saves/save_slot_%d.save"
 const SAVE_SLOT_BACKUP_PATH = "user://saves/save_slot_%d.save.bak"
@@ -32,14 +32,14 @@ const GLOBAL_SAVE_BACKUP_PATH = "user://global.save.bak"
 const SAVE_VERSION = 1
 
 # Auto-save configuration
-const AUTO_SAVE_INTERVAL = 300.0  # 5 minutes in seconds
+const AUTO_SAVE_INTERVAL = 300.0 # 5 minutes in seconds
 var auto_save_timer: float = 0.0
 
 # Current state
-var current_save_slot: int = -1  # -1 = no slot loaded
-var managed_systems: Array = []  # Array of objects implementing SaveableSystem interface
-var slot_playtime: float = 0.0  # Total playtime for current slot in seconds
-var slot_start_time: float = 0.0  # Time when slot was loaded/created
+var current_save_slot: int = -1 # -1 = no slot loaded
+var managed_systems: Array = [] # Array of objects implementing SaveableSystem interface
+var slot_playtime: float = 0.0 # Total playtime for current slot in seconds
+var slot_start_time: float = 0.0 # Time when slot was loaded/created
 
 # Signals
 signal save_started()
@@ -140,7 +140,7 @@ func load_save_slot(slot_number: int) -> bool:
   
   # Update current slot
   current_save_slot = slot_number
-  auto_save_timer = 0.0  # Reset auto-save timer
+  auto_save_timer = 0.0 # Reset auto-save timer
   
   # Restore playtime from metadata
   var metadata = save_data.get("metadata", {})
@@ -350,7 +350,7 @@ func _generate_slot_metadata() -> Dictionary:
     "playtime": slot_playtime,
     "player_level": 1,
     "last_level": "",
-    "slot_name": ""  # Optional user-customizable name
+    "slot_name": "" # Optional user-customizable name
   }
   
   # Try to get player level from CurrencyManager
@@ -416,7 +416,7 @@ func _save_json_file_atomic(primary_path: String, backup_path: String, data: Dic
     Logger.error("SaveManager", "Could not open temp file for writing: %s" % temp_path)
     return false
   
-  var json_string = JSON.stringify(data, "  ")  # Pretty print with 2-space indent
+  var json_string = JSON.stringify(data, "  ") # Pretty print with 2-space indent
   file.store_string(json_string)
   file.close()
   

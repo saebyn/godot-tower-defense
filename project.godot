@@ -31,10 +31,6 @@ LevelManager="*res://Utilities/Systems/level_manager.gd"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gut/plugin.cfg")
-
-[editor_plugins]
-
 enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/tech_tree_editor/plugin.cfg")
 
 [global_group]

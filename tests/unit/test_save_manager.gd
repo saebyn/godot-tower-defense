@@ -32,11 +32,17 @@ class MockSaveableSystem:
 # Test slot number
 const TEST_SLOT = 1
 
+# Store original managed systems to restore after tests
+var original_managed_systems: Array = []
+
 func before_each():
   # Clean up any existing test save files
   _cleanup_test_saves()
   
-  # Clear registered systems
+  # Save original managed systems so we can restore them after
+  original_managed_systems = SaveManager.managed_systems.duplicate()
+  
+  # Clear registered systems for isolated unit testing
   SaveManager.managed_systems.clear()
   SaveManager.current_save_slot = -1
   SaveManager.auto_save_timer = 0.0
@@ -44,6 +50,9 @@ func before_each():
 func after_each():
   # Clean up test saves after each test
   _cleanup_test_saves()
+  
+  # Restore original managed systems for other tests
+  SaveManager.managed_systems = original_managed_systems.duplicate()
 
 func _cleanup_test_saves():
   # Delete test save slots
