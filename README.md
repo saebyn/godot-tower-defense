@@ -42,6 +42,7 @@ Come hang out, watch the chaos unfold, and see how the sausage gets made! You mi
 
 ## 📚 Documentation
 
+- **[Architecture Diagrams](docs/ARCHITECTURE.md)** - Comprehensive system architecture with mermaid diagrams
 - **[Game Design Document](docs/zom_nom_defense_gdd.md)** - Complete vision for the game
 - **[Task Planning](docs/task_planning.md)** - Development roadmap (56 issues across 6 phases)
 - **[Tech Tree Design](docs/tech_tree_exclusive_branches.md)** - Mutually exclusive branch system
