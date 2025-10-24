@@ -5,6 +5,12 @@ extends Node
 ## Orchestrates all game persistence, replacing decentralized save/load in individual managers.
 ## Provides atomic saves, multi-slot support, and separation between per-slot and global data.
 ##
+## Current Implementation:
+##   - Automatically uses slot 1 by default (initialize_default_slot())
+##   - Loads existing save from slot 1 if available, or creates new game
+##   - Called from main menu and level select on game start
+##   - Future: Will add slot selection UI for multiple save slots
+##
 ## Usage:
 ##   # In manager _ready():
 ##   SaveManager.register_system(self)
@@ -24,6 +30,7 @@ extends Node
 
 # Save slot configuration
 const MAX_SAVE_SLOTS = 10 # Expandable, minimum 3
+const DEFAULT_SLOT = 1 # Default slot to use when no slot selection UI exists
 const SAVE_SLOT_DIR = "user://saves/"
 const SAVE_SLOT_PATH = "user://saves/save_slot_%d.save"
 const SAVE_SLOT_BACKUP_PATH = "user://saves/save_slot_%d.save.bak"
@@ -150,6 +157,24 @@ func load_save_slot(slot_number: int) -> bool:
   Logger.info("SaveManager", "Successfully loaded save slot %d" % slot_number)
   load_completed.emit()
   return true
+
+## Initialize default save slot (slot 1)
+## Loads existing save if available, or creates new game
+## Call this when starting the game to ensure a slot is always loaded
+func initialize_default_slot() -> bool:
+  if current_save_slot > 0:
+    Logger.info("SaveManager", "Save slot already loaded: %d" % current_save_slot)
+    return true
+  
+  var slot_path = SAVE_SLOT_PATH % DEFAULT_SLOT
+  
+  if FileAccess.file_exists(slot_path):
+    Logger.info("SaveManager", "Loading existing save from default slot %d" % DEFAULT_SLOT)
+    return load_save_slot(DEFAULT_SLOT)
+  else:
+    Logger.info("SaveManager", "Creating new game in default slot %d" % DEFAULT_SLOT)
+    create_new_game(DEFAULT_SLOT)
+    return true
 
 ## Save the current slot atomically
 ## Uses temporary file + rename to ensure atomic writes

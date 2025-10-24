@@ -12,6 +12,9 @@ class_name LevelSelect
 const LevelCardScene = preload("res://Stages/UI/level_select/level_card.tscn")
 
 func _ready():
+  # Ensure a save slot is loaded (default to slot 1)
+  SaveManager.initialize_default_slot()
+  
   # Set the game state
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
   Logger.info("LevelSelect", "Level selection screen loaded")

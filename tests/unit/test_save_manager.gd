@@ -260,3 +260,53 @@ func test_save_directory_created():
   # Directory should exist after SaveManager initializes
   var dir = DirAccess.open("user://")
   assert_true(dir.dir_exists("saves"), "Save directory should exist")
+
+## Test: Initialize default slot loads existing save
+func test_initialize_default_slot_loads_existing():
+  var mock_system = MockSaveableSystem.new("test_system", {"value": 42})
+  SaveManager.register_system(mock_system)
+  
+  # Create existing save in slot 1
+  SaveManager.create_new_game(SaveManager.DEFAULT_SLOT)
+  mock_system.save_data = {"value": 100}
+  SaveManager.save_current_slot()
+  
+  # Reset state
+  SaveManager.current_save_slot = -1
+  mock_system.loaded_data = {}
+  
+  # Initialize default slot should load existing save
+  var success = SaveManager.initialize_default_slot()
+  
+  assert_true(success, "Should succeed")
+  assert_eq(SaveManager.current_save_slot, SaveManager.DEFAULT_SLOT, "Should load default slot")
+  assert_eq(mock_system.loaded_data.get("value"), 100, "Should load saved data")
+
+## Test: Initialize default slot creates new game if no save exists
+func test_initialize_default_slot_creates_new():
+  var mock_system = MockSaveableSystem.new("test_system")
+  SaveManager.register_system(mock_system)
+  
+  # Ensure no save exists
+  SaveManager.delete_save_slot(SaveManager.DEFAULT_SLOT)
+  
+  # Initialize should create new game
+  var success = SaveManager.initialize_default_slot()
+  
+  assert_true(success, "Should succeed")
+  assert_eq(SaveManager.current_save_slot, SaveManager.DEFAULT_SLOT, "Should create default slot")
+  assert_true(mock_system.reset_called, "Should reset system data")
+
+## Test: Initialize default slot does nothing if already loaded
+func test_initialize_default_slot_already_loaded():
+  var mock_system = MockSaveableSystem.new("test_system")
+  SaveManager.register_system(mock_system)
+  
+  # Load slot 2
+  SaveManager.create_new_game(2)
+  
+  # Initialize should not change slot
+  var success = SaveManager.initialize_default_slot()
+  
+  assert_true(success, "Should succeed")
+  assert_eq(SaveManager.current_save_slot, 2, "Should keep existing slot")
