@@ -2,14 +2,17 @@ extends Control
 class_name PauseMenu
 
 const SettingsMenuScene = preload("res://Common/UI/settings_menu/settings_menu.tscn")
+const TechTreeScene = preload("res://Stages/UI/tech_tree/tech_tree.tscn")
 
 @onready var resume_button: Button = $VBoxContainer/ResumeButton
+@onready var tech_tree_button: Button = $VBoxContainer/TechTreeButton
 @onready var settings_button: Button = $VBoxContainer/SettingsButton
 @onready var restart_button: Button = $VBoxContainer/RestartButton
 @onready var main_menu_button: Button = $VBoxContainer/MainMenuButton
 @onready var quit_button: Button = $VBoxContainer/QuitButton
 
 var settings_menu = null
+var tech_tree_ui = null
 
 func _ready():
   # Initially hide the pause menu
@@ -48,6 +51,23 @@ func _on_settings_pressed():
   Logger.info("PauseMenu", "Settings button pressed")
   if settings_menu:
     settings_menu.show_menu()
+
+func _on_tech_tree_pressed():
+  Logger.info("PauseMenu", "Tech Tree button pressed")
+  _show_tech_tree()
+
+func _show_tech_tree():
+  # Create tech tree UI if not already open
+  if tech_tree_ui == null:
+    tech_tree_ui = TechTreeScene.instantiate()
+    add_child(tech_tree_ui)
+    tech_tree_ui.closed.connect(_on_tech_tree_closed)
+  else:
+    tech_tree_ui.visible = true
+
+func _on_tech_tree_closed():
+  Logger.debug("PauseMenu", "Tech tree closed")
+  tech_tree_ui = null
 
 func _on_settings_menu_closed():
   Logger.debug("PauseMenu", "Settings menu closed")

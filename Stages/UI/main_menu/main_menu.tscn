@@ -78,6 +78,15 @@ text = "LEVEL SELECT"
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
+[node name="TechTreeButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "TECH TREE"
+
+[node name="Spacer2c" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
 [node name="SettingsButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
@@ -98,5 +107,6 @@ size_flags_vertical = 3
 
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/LevelSelectButton" to="." method="_on_level_select_button_pressed"]
+[connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/TechTreeButton" to="." method="_on_tech_tree_button_pressed"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/ExitButton" to="." method="_on_exit_button_pressed"]
