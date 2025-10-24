@@ -73,5 +73,5 @@ func test_force_hide_stops_timers():
   notification.force_hide()
   
   # Assert
-  assert_false(notification.auto_hide_timer.is_stopped(), "Timer should be stopped")
+  assert_true(notification.auto_hide_timer.is_stopped(), "Timer should be stopped")
   assert_false(notification.is_showing, "Should not be showing after force hide")
