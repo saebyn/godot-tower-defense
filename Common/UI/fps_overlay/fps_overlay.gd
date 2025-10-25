@@ -6,10 +6,6 @@ class_name FpsOverlay
 
 @onready var fps_label: Label = $FpsLabel
 
-# Performance tracking
-var frame_times: Array[float] = []
-const MAX_FRAME_SAMPLES = 60
-
 func _ready():
   # Start hidden by default
   visible = false
