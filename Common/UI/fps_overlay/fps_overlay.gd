@@ -35,8 +35,7 @@ func _update_display() -> void:
   var frame_time = Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0
   
   # Get memory usage in MB
-  var static_memory = Performance.get_monitor(Performance.MEMORY_STATIC) / 1048576.0
-  var total_memory = static_memory
+  var memory_usage = Performance.get_monitor(Performance.MEMORY_STATIC) / 1048576.0
   
   # Get object/node counts
   var object_count = Performance.get_monitor(Performance.OBJECT_COUNT)
@@ -46,7 +45,7 @@ func _update_display() -> void:
   var text = ""
   text += "FPS: %d\n" % fps
   text += "Frame Time: %.2f ms\n" % frame_time
-  text += "Memory: %.1f MB\n" % total_memory
+  text += "Memory: %.1f MB\n" % memory_usage
   text += "Objects: %d\n" % object_count
   text += "Nodes: %d" % node_count
   
