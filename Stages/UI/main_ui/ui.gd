@@ -5,6 +5,7 @@ signal obstacle_spawn_requested(obstacle: ObstacleTypeResource)
 @onready var spawn_indicator: Control = $SpawnIndicator
 @onready var hotbar: Control = $Hotbar
 @onready var stats_display: Control = $StatsDisplay
+@onready var fps_overlay: Control = $FpsOverlay
 
 
 func _process(_delta: float) -> void:
@@ -12,6 +13,8 @@ func _process(_delta: float) -> void:
     GameManager.toggle_in_game_menu()
   elif Input.is_action_just_pressed("toggle_stats"):
     _toggle_stats_display()
+  elif Input.is_action_just_pressed("toggle_fps"):
+    _toggle_fps_overlay()
 
 
 func request_obstacle_spawn(obstacle: ObstacleTypeResource) -> void:
@@ -46,3 +49,9 @@ func _toggle_stats_display() -> void:
   if stats_display:
     stats_display.toggle_visibility()
     Logger.info("UI", "Stats display toggled: %s" % ("visible" if stats_display.visible else "hidden"))
+
+## Toggle the FPS overlay visibility
+func _toggle_fps_overlay() -> void:
+  if fps_overlay:
+    fps_overlay.toggle_visibility()
+    Logger.info("UI", "FPS overlay toggled: %s" % ("visible" if fps_overlay.visible else "hidden"))
