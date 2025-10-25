@@ -36,8 +36,7 @@ func _update_display() -> void:
   
   # Get memory usage in MB
   var static_memory = Performance.get_monitor(Performance.MEMORY_STATIC) / 1048576.0
-  var dynamic_memory = Performance.get_monitor(Performance.MEMORY_DYNAMIC) / 1048576.0
-  var total_memory = static_memory + dynamic_memory
+  var total_memory = static_memory
   
   # Get object/node counts
   var object_count = Performance.get_monitor(Performance.OBJECT_COUNT)
