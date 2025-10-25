@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=3 uid="uid://c5m8n7qaq1r2s"]
+
+[ext_resource type="Script" uid="uid://7goiej14kydk" path="res://Common/UI/fps_overlay/fps_overlay.gd" id="1_fps_overlay"]
+
+[node name="FpsOverlay" type="Control"]
+process_mode = 3
+visible = false
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -190.0
+offset_top = -140.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+script = ExtResource("1_fps_overlay")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="FpsLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "FPS: --
+Frame Time: -- ms
+Memory: -- MB
+Objects: --
+Nodes: --"
+vertical_alignment = 1

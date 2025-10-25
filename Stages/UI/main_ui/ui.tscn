@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://duje032qpuq2"]
+[gd_scene load_steps=16 format=3 uid="uid://duje032qpuq2"]
 
 [ext_resource type="Script" uid="uid://3yfu45cvudar" path="res://Stages/UI/main_ui/ui.gd" id="1_27fn8"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://bx8f5navg2rs" path="res://Common/UI/minimap/minimap.tscn" id="10_minimap"]
 [ext_resource type="PackedScene" uid="uid://b2jcxh0e7r1tv" path="res://Common/UI/stats_display/stats_display.tscn" id="11_stats_display"]
 [ext_resource type="Script" uid="uid://diix4dd6hthxj" path="res://Common/UI/achievement_notification/achievement_notification_manager.gd" id="12_achievement_notification"]
+[ext_resource type="PackedScene" uid="uid://c5m8n7qaq1r2s" path="res://Common/UI/fps_overlay/fps_overlay.tscn" id="12_fps_overlay"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_b3t5h"]
 size = Vector2(16, 16)
@@ -80,6 +81,9 @@ anchors_preset = 0
 layout_mode = 1
 
 [node name="StatsDisplay" parent="." instance=ExtResource("11_stats_display")]
+layout_mode = 1
+
+[node name="FpsOverlay" parent="." instance=ExtResource("12_fps_overlay")]
 layout_mode = 1
 
 [node name="AchievementNotificationManager" type="CanvasLayer" parent="."]
