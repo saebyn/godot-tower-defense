@@ -80,14 +80,21 @@ PC (Steam), with optional Twitch integration for live playthroughs and audience 
 
 ## Aesthetic & Tone
 
-- Lo-fi 3D graphics with clean UI.
+- Modern lo-fi 3D graphics with clean UI.
 - Silly but strategic tone.
 - Names, icons, and audio should reflect light-hearted post-apocalypse vibe.
 
 ### Art Style
 
-- Isometric orthographic perspective.
-- Low-poly or pixel-style minimalism.
+- **Modern Lo-Fi Aesthetic** - Stylized low-poly 3D with simple, painterly textures
+- **Orthographic camera** (45° dimetric projection) providing clear top-down gameplay view
+- **Smooth organic forms**, not blocky/cubic (think Firewatch, A Short Hike, not Minecraft)
+- **Limited color palette** for visual cohesion
+- **Character models**: 500-2000 polygons with hand-painted textures
+- **Clear silhouettes** and readable gameplay elements
+- **Charming and inviting**, not scary or gross
+
+See `docs/visual_style_guide.md` for comprehensive visual specifications.
 
 ### Audio
 

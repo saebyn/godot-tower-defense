@@ -36,6 +36,7 @@ While we have a solid technical foundation, the majority of game systems and con
 - ✅ **UI framework** - Hotbar, minimap, currency display, stats display exist
 - ✅ **XP/Level system** - CurrencyManager tracks player level (no persistence yet)
 - ✅ **Scrap economy** - Currency earning and spending works
+- ✅ **Camera system** - Orthographic dimetric projection (45° tilt) with smooth movement, rotation, and zoom
 
 ### Critical Missing Systems ❌
 - ❌ **Achievement system** - Completely missing (0% - required for tech unlocks)
@@ -51,9 +52,8 @@ While we have a solid technical foundation, the majority of game systems and con
 
 ### Partial Implementations 🟡
 - 🟡 **Obstacles** - Basic walls exist, but no variety or upgrades
-- 🟡 **Camera** - Orthogonal view exists, but not true isometric per GDD
 - 🟡 **Audio** - Minimal sounds, missing survivor yelps, zombie groans, comedy soundtrack
-- 🟡 **Visual style** - Generic 3D, missing "lo-fi" aesthetic and comedic tone
+- 🟡 **Visual style** - Generic 3D models/textures, missing modern lo-fi aesthetic (stylized low-poly with painterly textures) and comedic tone
 - 🟡 **Survivors** - Exist as static targets, missing flee behavior and personality
 
 
@@ -67,6 +67,7 @@ While we have a solid technical foundation, the majority of game systems and con
 ### 1.1 Achievement System
 
 #### Issue #1: Create Achievement Resource Type
+**GitHub Issue**: [#110](https://github.com/saebyn/zom-nom-defense/issues/110) ✅ CLOSED  
 **Type**: Feature  
 **Priority**: High  
 **Effort**: M  
@@ -101,6 +102,7 @@ enum ConditionType {
 ---
 
 #### Issue #2: Implement AchievementManager Autoload
+**GitHub Issue**: [#111](https://github.com/saebyn/zom-nom-defense/issues/111) ✅ CLOSED  
 **Type**: Feature  
 **Priority**: High  
 **Effort**: L  
@@ -126,6 +128,7 @@ Create a singleton system to track and unlock achievements during gameplay.
 ---
 
 #### Issue #3: Create Achievement Notification UI
+**GitHub Issue**: [#112](https://github.com/saebyn/zom-nom-defense/issues/112) ✅ CLOSED  
 **Type**: Feature  
 **Priority**: Medium  
 **Effort**: M  
@@ -143,6 +146,7 @@ Display toast notifications when achievements are unlocked.
 ---
 
 #### Issue #4: Create Starter Achievements
+**GitHub Issue**: [#113](https://github.com/saebyn/zom-nom-defense/issues/113) ✅ CLOSED  
 **Type**: Content  
 **Priority**: Medium  
 **Effort**: S  
@@ -163,6 +167,7 @@ Create 5-10 basic achievements to test the system.
 ---
 
 #### Issue #4.5: Implement Player Progression Persistence
+**GitHub Issue**: [#1c](https://github.com/saebyn/zom-nom-defense/issues/114) ✅ CLOSED  
 **Type**: Feature  
 **Priority**: CRITICAL  
 **Effort**: M  
@@ -211,6 +216,8 @@ func _load_progression() -> void:
 ### 1.2 Tech Tree System
 
 #### Issue #5: Design Tech Tree Structure
+**GitHub Issue**: [#115](https://github.com/saebyn/zom-nom-defense/issues/115) ✅ CLOSED
+
 **Type**: Design  
 **Priority**: High  
 **Effort**: M  
@@ -273,6 +280,7 @@ This keeps data as resources in the Godot editor, not hardcoded in scripts.
 ---
 
 #### Issue #6: Implement TechTreeManager Autoload
+**GitHub Issue**: [#116](https://github.com/saebyn/zom-nom-defense/issues/116) ✅ CLOSED  
 **Type**: Feature  
 **Priority**: High  
 **Effort**: L  
@@ -358,6 +366,7 @@ func is_branch_completion_met(branch_name: String) -> bool:
 ---
 
 #### Issue #7: Connect Obstacle Unlocks to Tech Tree
+**GitHub Issue**: [#117](https://github.com/saebyn/zom-nom-defense/issues/117) ✅ CLOSED  
 **Type**: Feature  
 **Priority**: High  
 **Effort**: M  
@@ -375,6 +384,7 @@ Integrate existing obstacle unlock system with tech tree.
 ---
 
 #### Issue #8: Create Tech Tree UI Screen
+**GitHub Issue**: [#118](https://github.com/saebyn/zom-nom-defense/issues/118) ✅ CLOSED  
 **Type**: Feature  
 **Priority**: Medium  
 **Effort**: XL  
@@ -405,6 +415,8 @@ Build visual interface for viewing and unlocking tech tree with exclusive branch
 ---
 
 #### Issue #8.5: Create Example Tech Tree Configurations
+**GitHub Issue**: [#119](https://github.com/saebyn/zom-nom-defense/issues/119) ✅ CLOSED
+
 **Type**: Content  
 **Priority**: High  
 **Effort**: M  
@@ -466,6 +478,8 @@ branch_name = "Advanced"
 ### 1.3 Multiple Levels Implementation
 
 #### Issue #9: Create Level Selection System
+**GitHub Issue**: [#120](https://github.com/saebyn/zom-nom-defense/issues/120) ✅ CLOSED
+
 **Type**: Feature  
 **Priority**: Medium  
 **Effort**: M  
@@ -484,6 +498,8 @@ Implement level selection screen and progression tracking.
 ---
 
 #### Issue #10: Level 2 - Campfire Survivors
+**GitHub Issue**: [#121](https://github.com/saebyn/zom-nom-defense/issues/121) 🔓 OPEN
+
 **Type**: Content  
 **Priority**: Medium  
 **Effort**: L  
@@ -503,6 +519,8 @@ Create Level 2 as described in GDD (two survivors next to campfire).
 ---
 
 #### Issue #11: Level 3 - Hammock Defense
+**GitHub Issue**: [#122](https://github.com/saebyn/zom-nom-defense/issues/122) 🔓 OPEN
+
 **Type**: Content  
 **Priority**: Low  
 **Effort**: L  
@@ -522,6 +540,8 @@ Create Level 3 with absurd hammock scenario from GDD.
 ---
 
 #### Issue #12: Level 4 - Inflatable Pool Party
+**GitHub Issue**: [#123](https://github.com/saebyn/zom-nom-defense/issues/123) 🔓 OPEN
+
 **Type**: Content  
 **Priority**: Low  
 **Effort**: L  
@@ -547,44 +567,10 @@ Create Level 4 with inflatable pool scenario.
 
 ### 2.1 Tower Upgrade System
 
-#### Issue #13: Design Upgrade System
-**Type**: Design  
-**Priority**: High  
-**Effort**: M  
-**Description**:
-Define how tower upgrades work mechanically and visually.
 
-**Acceptance Criteria**:
-- [ ] Create `docs/tower_upgrade_design.md`
-- [ ] Define upgrade tiers (3-5 tiers per tower)
-- [ ] Specify stat improvements per tier (damage, range, fire rate)
-- [ ] Define upgrade costs (scrap + level requirements)
-- [ ] Plan visual distinction between tiers
-- [ ] Decide on upgrade UI/UX (click tower, upgrade menu, etc.)
-- [ ] Document whether upgrades are persistent or per-level
+#### Issue #15: Basic tower upgrade system (2-3 tiers)
+**GitHub Issue**: [#147](https://github.com/saebyn/zom-nom-defense/issues/147) 🔓 OPEN
 
----
-
-#### Issue #14: Implement UpgradeableObstacle Class
-**Type**: Feature  
-**Priority**: High  
-**Effort**: L  
-**Description**:
-Extend obstacle system to support upgrades.
-
-**Acceptance Criteria**:
-- [ ] Create `Entities/Obstacles/Templates/upgradeable_obstacle/` 
-- [ ] Extend PlaceableObstacle or ShootingObstacle
-- [ ] Track current upgrade tier
-- [ ] Add upgrade() method with cost checking
-- [ ] Update stats when upgraded (damage, range, fire rate)
-- [ ] Emit upgrade_completed signal
-- [ ] Save/load upgrade state
-- [ ] Add visual tier indicator (particle effect, color change, etc.)
-
----
-
-#### Issue #15: Create Upgrade UI Component
 **Type**: Feature  
 **Priority**: High  
 **Effort**: L  
@@ -601,28 +587,9 @@ Build interface for upgrading placed towers.
 - [ ] Display upgrade history
 - [ ] Close on click away or ESC
 
----
-
-#### Issue #16: Add Upgrades to Turret
-**Type**: Feature  
-**Priority**: Medium  
-**Effort**: M  
-**Description**:
-Implement 3-5 upgrade tiers for the basic turret.
-
-**Acceptance Criteria**:
-- [ ] Update turret scene to use UpgradeableObstacle
-- [ ] Define tier 1 (base): current stats
-- [ ] Define tier 2: +50% damage, +10% fire rate, cost 50 scrap
-- [ ] Define tier 3: +100% damage, +25% fire rate, +10% range, cost 100 scrap
-- [ ] Define tier 4: +150% damage, +50% fire rate, +20% range, cost 200 scrap
-- [ ] Add visual changes per tier (color, size, glow effect)
-- [ ] Test balance and adjust costs
-- [ ] Update obstacle_type_resource with upgrade data
-
----
-
 ### 2.2 Support Tower System
+
+**GitHub Issue**: [#146](https://github.com/saebyn/zom-nom-defense/issues/146) 🔓 OPEN
 
 #### Issue #17: Design Support Tower Types
 **Type**: Design  
@@ -725,6 +692,8 @@ Second support tower for variety.
 ### 2.3 Additional Enemy Types
 
 #### Issue #22: Design Enemy Variety
+**GitHub Issue**: [#145](https://github.com/saebyn/zom-nom-defense/issues/145) 🔓 OPEN
+
 **Type**: Design  
 **Priority**: Medium  
 **Effort**: M  
@@ -781,6 +750,8 @@ Create slow, tanky enemy type.
 ### 2.4 Audio & Polish
 
 #### Issue #25: Add Combat Sound Effects
+**GitHub Issue**: [#149](https://github.com/saebyn/zom-nom-defense/issues/149) 🔓 OPEN
+
 **Type**: Polish  
 **Priority**: Low  
 **Effort**: M  
@@ -834,14 +805,83 @@ Implement adaptive music system.
 
 ---
 
-## Phase 3: Game Modes (Medium Priority)
+## Phase 3: Game Modes and Polish
 
-**Goal**: Add replay value with alternate modes  
+**Goal**: Add replay value with alternate modes and challenges, improve overall polish and user experience.
 **Priority**: MEDIUM  
+
+### 3.0 Overall Polish
+
+
+#### Issue #40: Implement Tutorial/Onboarding
+**GitHub Issue**: [#74](https://github.com/saebyn/zom-nom-defense/issues/74) 🔓 OPEN
+**Type**: Feature  
+**Priority**: Medium  
+**Effort**: L  
+**Description**:
+Create first-time player experience.
+
+**Acceptance Criteria**:
+- [ ] Create tutorial level (Tutorial.tscn)
+- [ ] Step-by-step instructions with highlights
+- [ ] Teach clicking to attack
+- [ ] Teach obstacle placement
+- [ ] Teach reading UI (scrap, XP, wave info)
+- [ ] Introduce tech tree and achievements
+- [ ] Skip tutorial option for returning players
+- [ ] Mark tutorial as completed in save file
+
+---
+
+#### Issue #51: Implement Lo-Fi Visual Style Pass
+**GitHub Issue**: [#148](https://github.com/saebyn/zom-nom-defense/issues/148)
+**Type**: Polish  
+**Priority**: High (near launch)  
+**Effort**: XL  
+**Description**:
+Apply modern lo-fi aesthetic to game visuals - stylized low-poly models with simple, painterly textures.
+
+**Visual Style Guidelines**:
+- **Modern Lo-Fi** aesthetic (NOT retro/blocky)
+- Smooth, organic low-poly forms (~500-2000 polys per character)
+- Hand-painted or simple gradient textures
+- Stylized proportions supporting comedic tone
+- Clear, readable silhouettes
+- Think: Firewatch, A Short Hike, Dorfromantik style
+
+**Acceptance Criteria**:
+- [ ] Review visual style guide document (`docs/visual_style_guide.md`)
+- [ ] Define color palette (10-20 core colors)
+- [ ] Create example assets demonstrating target style
+- [ ] Update zombie models: smooth low-poly (~800 polys), painted textures, comedic proportions
+- [ ] Update survivor models: similar style, easily distinguishable
+- [ ] Update environment props (campfire, trees, pool, hammock) with consistent style
+- [ ] Apply simple shader (toon/cel-shaded or custom painterly shader)
+- [ ] Update terrain textures to painted/stylized look
+- [ ] Ensure all assets follow consistent visual language
+- [ ] Test readability in gameplay - ensure clarity at camera distance
+
+**Reference Style**:
+- Organic shapes, not blocky/cubic
+- "Saturday morning cartoon" quality, not photorealistic
+- Intentionally simple, not technically limited
+- Charming and inviting, not jarring or retro
+
+**Technical Specs**:
+- Character models: 500-2000 polygons
+- Texture resolution: 512x512 to 1024x1024 max
+- Simple lighting (ambient + directional)
+- Minimal use of normal maps
+- Soft shadows preferred
+
+---
+
 
 ### 3.1 Challenge Levels
 
 #### Issue #28: Design Challenge Level System
+**GitHub Issue**: [#150](https://github.com/saebyn/zom-nom-defense/issues/150) 🔓 OPEN
+
 **Type**: Design  
 **Priority**: Medium  
 **Effort**: M  
@@ -863,6 +903,8 @@ Define challenge level mechanics and victory conditions.
 ---
 
 #### Issue #29: Implement Challenge Level Framework
+**GitHub Issue**: [#151](https://github.com/saebyn/zom-nom-defense/issues/151) 🔓 OPEN
+
 **Type**: Feature  
 **Priority**: Medium  
 **Effort**: L  
@@ -880,6 +922,8 @@ Create system for challenge levels with custom rules.
 ---
 
 #### Issue #30: Create "Click Only" Challenge
+**GitHub Issue**: [#152](https://github.com/saebyn/zom-nom-defense/issues/152) 🔓 OPEN
+
 **Type**: Content  
 **Priority**: Low  
 **Effort**: M  
@@ -897,6 +941,8 @@ First challenge level - no obstacles allowed.
 ---
 
 #### Issue #31: Create "No Turrets" Challenge
+**GitHub Issue**: [#153](https://github.com/saebyn/zom-nom-defense/issues/153) 🔓 OPEN
+
 **Type**: Content  
 **Priority**: Low  
 **Effort**: M  
@@ -915,6 +961,8 @@ Challenge emphasizing defensive play.
 ### 3.2 Endless Mode
 
 #### Issue #32: Implement Endless Mode Framework
+**GitHub Issue**: [#154](https://github.com/saebyn/zom-nom-defense/issues/154) 🔓 OPEN
+
 **Type**: Feature  
 **Priority**: Medium  
 **Effort**: L  
@@ -933,6 +981,8 @@ Create infinitely scaling wave system.
 ---
 
 #### Issue #33: Balance Endless Mode Difficulty Curve
+**GitHub Issue**: [#155](https://github.com/saebyn/zom-nom-defense/issues/155) 🔓 OPEN
+
 **Type**: Balance  
 **Priority**: Low  
 **Effort**: M  
@@ -1030,7 +1080,9 @@ Allow viewers to spend points to affect gameplay.
 
 ### 4.2 Quality of Life & Polish
 
-#### Issue #38: Implement Multiple Save Slot System (Factorio-style)
+#### Issue #38: Implement Multiple Save Slot System
+**GitHub Issue**: [#144](https://github.com/saebyn/zom-nom-defense/issues/144) 🔓 OPEN
+
 **Type**: Feature  
 **Priority**: Medium (but foundational for Option A tech tree)  
 **Effort**: XL
@@ -1116,25 +1168,6 @@ Let players choose difficulty level.
 - [ ] Brutal: -50% scrap, +100% enemy HP, +40% enemy speed
 - [ ] Disable achievements on Easy mode
 - [ ] Add difficulty indicator to level select
-
----
-
-#### Issue #40: Implement Tutorial/Onboarding
-**Type**: Feature  
-**Priority**: Medium  
-**Effort**: L  
-**Description**:
-Create first-time player experience.
-
-**Acceptance Criteria**:
-- [ ] Create tutorial level (Tutorial.tscn)
-- [ ] Step-by-step instructions with highlights
-- [ ] Teach clicking to attack
-- [ ] Teach obstacle placement
-- [ ] Teach reading UI (scrap, XP, wave info)
-- [ ] Introduce tech tree and achievements
-- [ ] Skip tutorial option for returning players
-- [ ] Mark tutorial as completed in save file
 
 ---
 
@@ -1251,7 +1284,7 @@ Comprehensive testing and bug fixing.
 
 ---
 
-#### Issue #51: Balance Pass
+#### Issue #51.5: Balance Pass
 **Type**: Balance  
 **Priority**: High (near launch)  
 **Effort**: XL  
