@@ -48,6 +48,11 @@ var previous_fullscreen: bool
 var previous_vsync: bool
 var previous_resolution: int
 
+# Previous audio settings for revert
+var previous_master_volume: float
+var previous_music_volume: float
+var previous_sfx_volume: float
+
 # Video confirmation dialog
 var video_confirm_dialog = null
 
@@ -125,6 +130,11 @@ func _load_current_settings() -> void:
   temp_master_volume = SettingsManager.master_volume
   temp_music_volume = SettingsManager.music_volume
   temp_sfx_volume = SettingsManager.sfx_volume
+
+  # Save original audio settings for potential revert
+  previous_master_volume = temp_master_volume
+  previous_music_volume = temp_music_volume
+  previous_sfx_volume = temp_sfx_volume
   
   # Update UI controls
   fullscreen_check.button_pressed = temp_fullscreen
@@ -139,12 +149,10 @@ func _load_current_settings() -> void:
   _update_volume_labels()
 
 func _db_to_percentage(db: float) -> float:
-  # Convert dB (-80 to 0) to percentage (0 to 100)
-  return (db + 80.0) * 100.0 / 80.0
+  return db_to_linear(db) * 100.0
 
 func _percentage_to_db(percentage: float) -> float:
-  # Convert percentage (0 to 100) to dB (-80 to 0)
-  return (percentage * 80.0 / 100.0) - 80.0
+  return linear_to_db(percentage / 100.0)
 
 func _update_volume_labels() -> void:
   master_label.text = "Master: %d%%" % int(master_slider.value)
@@ -162,14 +170,23 @@ func _on_resolution_selected(index: int) -> void:
 
 func _on_master_volume_changed(value: float) -> void:
   temp_master_volume = _percentage_to_db(value)
+  # immediately change the master volume for instant feedback
+  SettingsManager.master_volume = temp_master_volume
+  SettingsManager.apply_audio_settings()
   _update_volume_labels()
 
 func _on_music_volume_changed(value: float) -> void:
   temp_music_volume = _percentage_to_db(value)
+  # immediately change the music volume for instant feedback
+  SettingsManager.music_volume = temp_music_volume
+  SettingsManager.apply_audio_settings()
   _update_volume_labels()
 
 func _on_sfx_volume_changed(value: float) -> void:
   temp_sfx_volume = _percentage_to_db(value)
+  # immediately change the SFX volume for instant feedback
+  SettingsManager.sfx_volume = temp_sfx_volume
+  SettingsManager.apply_audio_settings()
   _update_volume_labels()
 
 func _on_apply_pressed() -> void:
@@ -208,6 +225,13 @@ func _on_apply_pressed() -> void:
     hide_menu()
     closed.emit()
 
+func _on_cancel_pressed() -> void:
+  Logger.debug("SettingsMenu", "Settings cancelled")
+  _restore_original_keybinds()
+  _restore_original_audio_settings()
+  hide_menu()
+  closed.emit()
+
 func _on_video_settings_confirmed() -> void:
   # User confirmed the video settings, save everything
   SettingsManager.save_settings()
@@ -236,12 +260,6 @@ func _on_video_settings_reverted() -> void:
   
   # Audio settings were already applied, so save those
   SettingsManager.save_settings()
-  hide_menu()
-  closed.emit()
-
-func _on_cancel_pressed() -> void:
-  Logger.debug("SettingsMenu", "Settings cancelled")
-  _restore_original_keybinds()
   hide_menu()
   closed.emit()
 
@@ -279,3 +297,9 @@ func _restore_original_keybinds() -> void:
         child._update_display()
   
   Logger.debug("SettingsMenu", "Keybinds restored to original state")
+
+func _restore_original_audio_settings() -> void:
+  SettingsManager.master_volume = previous_master_volume
+  SettingsManager.music_volume = previous_music_volume
+  SettingsManager.sfx_volume = previous_sfx_volume
+  SettingsManager.apply_audio_settings()

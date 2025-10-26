@@ -13,7 +13,7 @@ const SETTINGS_FILE = "user://settings.cfg"
 # Video settings
 var fullscreen: bool = false
 var vsync_enabled: bool = true
-var resolution_index: int = 2  # Default to 1920x1080
+var resolution_index: int = 2 # Default to 1920x1080
 
 # Audio settings (in dB, range -80 to 0)
 var master_volume: float = 0.0
@@ -168,4 +168,3 @@ func get_resolution_string(index: int) -> String:
     var res = RESOLUTIONS[index]
     return "%dx%d" % [res.x, res.y]
   return "Unknown"
-
