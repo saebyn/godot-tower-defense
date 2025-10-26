@@ -53,7 +53,8 @@ func _ready() -> void:
   update_timer.wait_time = update_interval
   update_timer.timeout.connect(_update_minimap)
   add_child(update_timer)
-  update_timer.start()
+  # TODO enable timer once we are ready to use the minimap
+  # update_timer.start()
   
   # Calculate world bounds
   _calculate_world_bounds()

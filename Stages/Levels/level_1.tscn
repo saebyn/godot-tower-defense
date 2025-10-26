@@ -73,7 +73,7 @@ shader_parameter/uv2_offset = Vector3(0, 0, 0)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_su7sb"]
 material = SubResource("ShaderMaterial_272bh")
-size = Vector2(10, 10)
+size = Vector2(32.37, 30.705)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_agnyp"]
 albedo_color = Color(0.305882, 0.560784, 1, 1)

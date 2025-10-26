@@ -971,12 +971,13 @@ _data = {
 }
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s6e6n"]
-radius = 0.71866
+radius = 0.465962
 height = 4.10729
 
 [node name="enemy" type="CharacterBody3D" groups=["enemies"]]
 collision_layer = 4
 collision_mask = 7
+safe_margin = 0.1
 script = ExtResource("2_4gyqm")
 movement_speed = 20.0
 
@@ -1396,6 +1397,10 @@ bones/57/rotation = Quaternion(-0.0598794, 0.997998, 0.0200427, 0.00359886)
 bones/57/scale = Vector3(1, 1, 1)
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_max_distance = 10.01
+path_postprocessing = 2
+simplify_path = true
+simplify_epsilon = 5.0
 debug_enabled = true
 debug_path_custom_color = Color(1, 0.0392157, 0.0352941, 1)
 
