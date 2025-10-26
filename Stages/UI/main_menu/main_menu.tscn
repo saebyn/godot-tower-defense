@@ -1,13 +1,19 @@
-[gd_scene load_steps=4 format=3 uid="uid://dcw0hfnkb8jpt"]
+[gd_scene load_steps=6 format=3 uid="uid://dcw0hfnkb8jpt"]
 
 [ext_resource type="Script" uid="uid://bor5bken0xt0" path="res://Stages/UI/main_menu/main_menu.gd" id="1_j5t8x"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
+[ext_resource type="AudioStream" uid="uid://besdcxihxcckh" path="res://Assets/Audio/Music/battleThemeA.mp3" id="3_l55nh"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_title"]
 font_size = 36
 font_color = Color(0.239, 0.761, 0.757, 1)
 outline_size = 2
 outline_color = Color(0.239, 0.184, 0.251, 0.8)
+
+[sub_resource type="AudioStreamPlaylist" id="AudioStreamPlaylist_ptjlr"]
+shuffle = true
+stream_count = 1
+stream_0 = ExtResource("3_l55nh")
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -113,6 +119,11 @@ text = "EXIT"
 [node name="Spacer4" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="BgMusicAudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamPlaylist_ptjlr")
+autoplay = true
+bus = &"Music"
 
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/LevelSelectButton" to="." method="_on_level_select_button_pressed"]

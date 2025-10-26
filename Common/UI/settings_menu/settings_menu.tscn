@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://ckh35yn4ynuev"]
 
-[ext_resource type="Script" path="res://Common/UI/settings_menu/settings_menu.gd" id="1_settings"]
+[ext_resource type="Script" uid="uid://q4474n3vbxwb" path="res://Common/UI/settings_menu/settings_menu.gd" id="1_settings"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
 
 [node name="SettingsMenu" type="Control"]
@@ -61,6 +61,7 @@ horizontal_alignment = 1
 [node name="TabContainer" type="TabContainer" parent="Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+current_tab = 0
 
 [node name="Video" type="MarginContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer"]
 layout_mode = 2
@@ -133,7 +134,6 @@ text = "Master: 100%"
 
 [node name="MasterSlider" type="HSlider" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/MasterContainer"]
 layout_mode = 2
-max_value = 100.0
 value = 100.0
 
 [node name="MusicContainer" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer"]
@@ -145,7 +145,6 @@ text = "Music: 100%"
 
 [node name="MusicSlider" type="HSlider" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/MusicContainer"]
 layout_mode = 2
-max_value = 100.0
 value = 100.0
 
 [node name="SFXContainer" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer"]
@@ -157,7 +156,6 @@ text = "SFX: 100%"
 
 [node name="SFXSlider" type="HSlider" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/SFXContainer"]
 layout_mode = 2
-max_value = 100.0
 value = 100.0
 
 [node name="Keybinds" type="MarginContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer"]
