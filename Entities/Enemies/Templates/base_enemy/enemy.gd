@@ -221,7 +221,13 @@ func _physics_process(_delta):
   if NavigationServer3D.map_get_iteration_id(navigation_agent.get_navigation_map()) == 0:
     Logger.debug("Enemy.Navigation", "Navigation map is empty, cannot navigate.")
     return
-  
+
+  _update_navigation()
+
+  move_and_slide()
+
+
+func _update_navigation():
   if navigation_agent.is_navigation_finished():
     # Check if we reached the fallback obstacle or if we need to recheck path
     if fallback_obstacle_target and is_instance_valid(fallback_obstacle_target):
@@ -234,20 +240,16 @@ func _physics_process(_delta):
         _check_and_set_fallback_target()
     
     velocity = Vector3.ZERO
-    move_and_slide()
-    return
+  else:
+    var next_path_position: Vector3 = navigation_agent.get_next_path_position()
 
-  var next_path_position: Vector3 = navigation_agent.get_next_path_position()
+    # Move directly without avoidance
+    var direction: Vector3 = global_position.direction_to(next_path_position)
+    velocity = direction * movement_speed
 
-  # Move directly without avoidance
-  var direction: Vector3 = global_position.direction_to(next_path_position)
-  velocity = direction * movement_speed
-
-  # if we are moving, face the direction we are moving
-  if velocity.length() > 0.01:
-    look_at(next_path_position, Vector3.UP, true)
-
-  move_and_slide()
+    # if we are moving, face the direction we are moving
+    if velocity.length() > 0.01:
+      look_at(next_path_position, Vector3.UP, true)
 
 
 func _on_died(damage_source: String = "unknown"):

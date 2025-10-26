@@ -4,6 +4,9 @@ extends Node3D
 @export var raycast_length: float = 1000.0
 @export var attack_waiting_cursor_image: Texture2D
 
+@export_group("Navigation")
+@export var navigation_rebake_interval: float = 5.0 # Seconds between rebakes
+
 @onready var camera: Camera3D = $Camera3D
 @onready var navigation_region: NavigationRegion3D = $NavigationRegion3D
 @onready var enemy_raycast: RayCast3D = $EnemyRayCast3D
@@ -29,6 +32,9 @@ func _ready() -> void:
   if attack:
     attack.damage_source = "player"
 
+  # Rebake navigation mesh periodically
+  _start_navigation_rebake_timer()
+
 
 func rebake_navigation_mesh():
   Logger.info("Navigation", "Rebaking navigation mesh...")
@@ -41,6 +47,13 @@ func rebake_navigation_mesh():
     navigation_region.bake_navigation_mesh()
     Logger.info("Navigation", "Navigation mesh rebaked!")
 
+func _start_navigation_rebake_timer() -> void:
+  var timer = Timer.new()
+  timer.wait_time = navigation_rebake_interval
+  timer.autostart = true
+  timer.one_shot = false
+  add_child(timer)
+  timer.timeout.connect(rebake_navigation_mesh)
 
 func _input(event: InputEvent) -> void:
   if event is InputEventMouseButton and not obstacle_placement.busy and event.pressed:
