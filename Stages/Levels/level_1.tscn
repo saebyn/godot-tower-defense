@@ -98,11 +98,11 @@ metadata/_custom_type_script = "uid://du3d1fs80prdm"
 
 [node name="Wave1" type="Node3D" parent="EnemySpawner" index="0"]
 script = ExtResource("4_gwcit")
-duration = 10000.0
-max_enemies = 10000000
-enemy_types = Array[ExtResource("6_b7d5n")]([ExtResource("7_b7d5n")])
-enemy_counts = Array[int]([100])
-spawn_interval = 0.01
+duration = 100.0
+max_enemies = 1
+enemy_types = Array[ExtResource("6_b7d5n")]([ExtResource("7_b7d5n"), ExtResource("8_k4dam")])
+enemy_counts = Array[int]([1, 1])
+spawn_interval = 1.0
 metadata/_custom_type_script = "uid://b7jdk6preu1s4"
 
 [node name="Area1" type="MeshInstance3D" parent="EnemySpawner" index="1"]
