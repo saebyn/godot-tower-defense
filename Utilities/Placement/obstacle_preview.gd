@@ -11,8 +11,8 @@ func _init(from_obstacle_type: ObstacleTypeResource):
 
 func _create_mesh_from_obstacle_type() -> void:
   # Extract just the mesh from the obstacle scene
-  var temp_obstacle = obstacle_type.scene.instantiate()
-  var temp_mesh = temp_obstacle.get_node("MeshInstance3D")
+  var temp_obstacle: PlaceableObstacle = obstacle_type.scene.instantiate()
+  var temp_mesh = temp_obstacle.mesh_instance
   
   if not temp_mesh:
     Logger.error("ObstaclePreview", "Could not find MeshInstance3D in obstacle scene: %s" % obstacle_type.name)

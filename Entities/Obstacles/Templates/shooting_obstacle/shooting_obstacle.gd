@@ -1,3 +1,4 @@
+@tool
 extends PlaceableObstacle
 class_name ShootingObstacle
 

@@ -1,11 +1,21 @@
+@tool
 extends Node3D
 class_name PlaceableObstacle
 
-@onready var mesh_instance: MeshInstance3D = $MeshInstance3D
-var health: Health
+@export var mesh_instance: MeshInstance3D:
+  set(value):
+    mesh_instance = value
+    update_configuration_warnings()
 
+var health: Health
 var obstacle_type: ObstacleTypeResource
 var navigation_obstacle: NavigationObstacle3D
+
+func _get_configuration_warnings():
+  var warnings = []
+  if not mesh_instance:
+    warnings.append("MeshInstance3D is not assigned.")
+  return warnings
 
 func _ready():
   # Find Health component via metadata
