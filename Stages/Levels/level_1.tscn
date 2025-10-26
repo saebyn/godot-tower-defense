@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://o24bc34g5fea"]
+[gd_scene load_steps=18 format=3 uid="uid://o24bc34g5fea"]
 
 [ext_resource type="PackedScene" uid="uid://deoia86ae444c" path="res://Assets/Models/Landscape1.blend" id="1_nc8vx"]
 [ext_resource type="Script" uid="uid://ch1n0ahhy65if" path="res://Stages/Levels/level_1.gd" id="2_srnku"]
@@ -9,6 +9,7 @@
 [ext_resource type="Resource" uid="uid://conw8uteeyyuk" path="res://Config/Enemies/BasicZombie.tres" id="7_b7d5n"]
 [ext_resource type="PackedScene" uid="uid://do57mync1tn6t" path="res://Assets/Models/canal_bridge.tscn" id="7_gwcit"]
 [ext_resource type="PackedScene" uid="uid://duqnmq1hv1h8h" path="res://Assets/Models/tree.blend" id="8_agnyp"]
+[ext_resource type="Resource" uid="uid://b07wewlgyi6ur" path="res://Config/Enemies/SlightlyBiggerZombie.tres" id="8_k4dam"]
 [ext_resource type="PackedScene" uid="uid://dmaheitw7drsh" path="res://Entities/Scrap/pile_of_boxes.tscn" id="9_b7d5n"]
 
 [sub_resource type="Shader" id="Shader_vni6r"]
