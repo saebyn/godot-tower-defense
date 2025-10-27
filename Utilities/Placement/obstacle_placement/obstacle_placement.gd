@@ -30,7 +30,6 @@ var _place_obstacle_type: ObstacleTypeResource = null
 var _preview: ObstaclePreview = null
 var _valid_material: StandardMaterial3D
 var _invalid_material: StandardMaterial3D
-var _original_material: Material
 
 func _ready():
   # Set up materials for visual feedback
@@ -218,13 +217,6 @@ func _on_obstacle_spawn_requested(obstacle: ObstacleTypeResource) -> void:
   Logger.info("Placement", "Created preview for obstacle: %s" % obstacle.name)
   raycast.enabled = true
   add_child(_preview)
-  
-  # Store original material for restoration
-  if _preview.mesh_instance:
-    _original_material = _preview.mesh_instance.get_surface_override_material(0)
-    # If no override material exists, get the mesh material
-    if not _original_material and _preview.mesh_instance.mesh:
-      _original_material = _preview.mesh_instance.mesh.surface_get_material(0)
 
 func _place_obstacle() -> void:
   if not _preview:
@@ -287,7 +279,7 @@ func _clear_obstacle_placement() -> void:
   raycast.enabled = false
 
 func _update_visual_feedback(target_position: Vector3) -> void:
-  if not _preview or not _preview.mesh_instance:
+  if not _preview:
     return
 
   # Only update if we have valid materials
