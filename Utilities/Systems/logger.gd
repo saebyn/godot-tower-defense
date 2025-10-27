@@ -1,3 +1,4 @@
+@tool
 extends Node
 
 ## Comprehensive logging framework for Tower Defense game
