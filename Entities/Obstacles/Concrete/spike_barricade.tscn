@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=4 uid="uid://dv7qe6gwjunkd"]
+[gd_scene load_steps=10 format=4 uid="uid://dv7qe6gwjunkd"]
 
 [ext_resource type="Script" uid="uid://xilsmnlbxoyk" path="res://Entities/Obstacles/Templates/base_obstacle/obstacle.gd" id="1_hj81n"]
+[ext_resource type="Script" uid="uid://bdo7p56suq8gm" path="res://Common/Components/passive_damage/passive_damage.gd" id="2_vxr3d"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7l2u3"]
 resource_name = "Wood"
@@ -100,12 +101,17 @@ shadow_mesh = SubResource("ArrayMesh_7uchd")
 [sub_resource type="BoxShape3D" id="BoxShape3D_vxr3d"]
 size = Vector3(1.15808, 1.9043, 3.12)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_wobsg"]
+size = Vector3(1.2, 2, 3.2)
+
 [node name="SpikeBarricade" type="StaticBody3D" node_paths=PackedStringArray("mesh_instances")]
 collision_layer = 34
 collision_mask = 0
 script = ExtResource("1_hj81n")
 mesh_instances = [NodePath("Cylinder"), NodePath("Cylinder_001")]
 metadata/_custom_type_script = "uid://xilsmnlbxoyk"
+metadata/passive_damage_component = Object(Area3D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","transform":Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0),"rotation_edit_mode":0,"rotation_order":2,"top_level":false,"visible":true,"visibility_parent":NodePath(""),"disable_mode":0,"collision_layer":1,"collision_mask":1,"collision_priority":1.0,"input_ray_pickable":true,"input_capture_on_drag":false,"monitoring":true,"monitorable":false,"priority":0,"gravity_space_override":0,"gravity_point":false,"gravity_point_unit_distance":0.0,"gravity_point_center":Vector3(0, -1, 0),"gravity_direction":Vector3(0, -1, 0),"gravity":9.8,"linear_damp_space_override":0,"linear_damp":0.1,"angular_damp_space_override":0,"angular_damp":0.1,"wind_force_magnitude":0.0,"wind_attenuation_factor":0.0,"wind_source_path":NodePath(""),"audio_bus_override":false,"audio_bus_name":&"Master","reverb_bus_enabled":false,"reverb_bus_name":&"Master","reverb_bus_amount":0.0,"reverb_bus_uniformity":0.0,"script":ExtResource("2_vxr3d"),"damage_amount":10,"damage_cooldown":1.0,"damage_source":"spike_barricade","target_group":"enemies","enable_sound":false,"damage_sound":0,"audio_player":null,"_enemy_cooldowns":{},"_enemies_in_area":Array[Node]([]),"metadata/_custom_type_script":"uid://bdo7p56suq8gm")
+
 
 [node name="Cylinder" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.910228, 0.414108, 0, -0.414108, 0.910228, 0, 0, 0, 1, 0, 0, 0)
@@ -120,3 +126,13 @@ skeleton = NodePath("")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0790405, 0.962891, 0.0175171)
 shape = SubResource("BoxShape3D_vxr3d")
+
+[node name="PassiveDamage" type="Area3D" parent="."]
+monitorable = false
+script = ExtResource("2_vxr3d")
+damage_source = "spike_barricade"
+metadata/_custom_type_script = "uid://bdo7p56suq8gm"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PassiveDamage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.175537, 0.955017, 0.0212251)
+shape = SubResource("BoxShape3D_wobsg")
