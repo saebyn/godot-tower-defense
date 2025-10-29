@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://dd5321pothnh6"]
+
+[ext_resource type="Script" uid="uid://cjf3cwgo3gtsa" path="res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.gd" id="1_xhycr"]
+[ext_resource type="PackedScene" uid="uid://dhtdi4gopvqer" path="res://Assets/Models/ElectricFence.blend" id="2_xhycr"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_oxi2c"]
+size = Vector3(2.45456, 1.86517, 0.288818)
+
+[node name="PlaceableObstacle" type="StaticBody3D" node_paths=PackedStringArray("mesh_instances")]
+script = ExtResource("1_xhycr")
+mesh_instances = [NodePath("ElectricFence/Cube"), NodePath("ElectricFence/Cube_001")]
+metadata/_custom_type_script = "uid://cjf3cwgo3gtsa"
+
+[node name="ElectricFence" parent="." instance=ExtResource("2_xhycr")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00256729, 0.929089, 0.00134277)
+shape = SubResource("BoxShape3D_oxi2c")
+
+[editable path="ElectricFence"]

@@ -25,6 +25,8 @@ func _create_mesh_from_obstacle_type() -> void:
   for temp_mesh in temp_meshes:
     var mesh_instance = MeshInstance3D.new()
     mesh_instance.mesh = temp_mesh.mesh
+    mesh_instance.transform = temp_mesh.transform
+    mesh_instance.scale = temp_mesh.scale
 
     # Extract original material for restoration later
     original_material = temp_mesh.get_surface_override_material(0)
