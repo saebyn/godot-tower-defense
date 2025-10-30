@@ -1,15 +1,15 @@
 extends PanelContainer
 
-## Individual level card that displays level info and handles selection
-## Shows level name, status (locked/available/completed), and best stats
+## Individual scenario card that displays scenario info and handles selection
+## Shows scenario name, status (locked/available/completed), and best stats
 
-signal level_selected(level_id: String)
+signal scenario_selected(scenario_id: String)
 
-var level_id: String = ""
+var scenario_id: String = ""
 var is_unlocked: bool = false
 var scene_path: String = ""
 
-@onready var level_name_label = $MarginContainer/VBoxContainer/HeaderHBox/LevelName
+@onready var scenario_name_label = $MarginContainer/VBoxContainer/HeaderHBox/ScenarioName
 @onready var status_label = $MarginContainer/VBoxContainer/HeaderHBox/StatusLabel
 @onready var description_label = $MarginContainer/VBoxContainer/DescriptionLabel
 @onready var stats_label = $MarginContainer/VBoxContainer/StatsLabel
@@ -21,21 +21,21 @@ func _ready():
   if play_button:
     play_button.pressed.connect(_on_play_button_pressed)
 
-## Configure the level card with level data
+## Configure the scenario card with scenario data
 func configure(
-  p_level_id: String,
-  p_level_name: String,
+  p_scenario_id: String,
+  p_scenario_name: String,
   p_description: String,
   p_is_unlocked: bool,
   p_is_completed: bool,
   p_best_time: float,
   p_best_score: int
 ):
-  level_id = p_level_id
+  scenario_id = p_scenario_id
   is_unlocked = p_is_unlocked
   
-  # Set level name
-  level_name_label.text = p_level_name
+  # Set scenario name
+  scenario_name_label.text = p_scenario_name
   
   # Set description
   description_label.text = p_description
@@ -54,9 +54,9 @@ func configure(
   # Show/hide elements based on lock status
   if not p_is_unlocked:
     # Show lock message
-    var required_level = LevelManager.get_unlock_requirement(level_id)
-    var required_metadata = LevelManager.get_level_metadata(required_level)
-    var required_name = required_metadata.get("name", required_level)
+    var required_scenario = ScenarioManager.get_unlock_requirement(scenario_id)
+    var required_metadata = ScenarioManager.get_scenario_metadata(required_scenario)
+    var required_name = required_metadata.get("name", required_scenario)
     lock_message_label.text = "Complete %s to unlock" % required_name
     lock_message_label.visible = true
     
@@ -90,5 +90,5 @@ func configure(
 ## Handle play button press
 func _on_play_button_pressed():
   if is_unlocked:
-    Logger.info("LevelCard", "Level selected: %s" % level_id)
-    level_selected.emit(level_id)
+    Logger.info("ScenarioCard", "Scenario selected: %s" % scenario_id)
+    scenario_selected.emit(scenario_id)

@@ -8,7 +8,7 @@ extends Node
 ## Current Implementation:
 ##   - Automatically uses slot 1 by default (initialize_default_slot())
 ##   - Loads existing save from slot 1 if available, or creates new game
-##   - Called from main menu and level select on game start
+##   - Called from main menu and scenario select on game start
 ##   - Future: Will add slot selection UI for multiple save slots
 ##
 ## Usage:
@@ -378,7 +378,7 @@ func _generate_slot_metadata() -> Dictionary:
     "timestamp": Time.get_unix_time_from_system(),
     "playtime": slot_playtime,
     "player_level": 1,
-    "last_level": "",
+    "last_scenario": "",
     "slot_name": "" # Optional user-customizable name
   }
   
@@ -386,9 +386,9 @@ func _generate_slot_metadata() -> Dictionary:
   if CurrencyManager:
     metadata["player_level"] = CurrencyManager.get_level()
   
-  # Try to get last level from LevelManager
-  if LevelManager:
-    metadata["last_level"] = LevelManager.get_current_level_id()
+  # Try to get last scenario from ScenarioManager
+  if ScenarioManager:
+    metadata["last_scenario"] = ScenarioManager.get_current_scenario_id()
   
   return metadata
 

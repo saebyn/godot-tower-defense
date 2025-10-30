@@ -41,9 +41,9 @@ func _on_settings_button_pressed():
 func _on_settings_menu_closed():
   Logger.debug("MainMenu", "Settings menu closed")
 
-func _on_level_select_button_pressed():
-  Logger.info("MainMenu", "Level Select button pressed - transitioning to level selection")
-  _show_level_select()
+func _on_scenario_select_button_pressed():
+  Logger.info("MainMenu", "Scenario Select button pressed - transitioning to scenario selection")
+  _show_scenario_select()
 
 func _on_tech_tree_button_pressed():
   Logger.info("MainMenu", "Tech Tree button pressed")
@@ -88,7 +88,7 @@ func _start_game():
   # Ensure a save slot is loaded (default to slot 1)
   SaveManager.initialize_default_slot()
   
-  LevelManager.set_current_level_id("level_1")
+  ScenarioManager.set_current_scenario_id("scenario_1")
   GameManager.set_game_state(GameManager.GameState.PLAYING)
   
   # Load the main game scene
@@ -100,11 +100,11 @@ func _start_game():
   if error != OK:
     Logger.error("MainMenu", "Failed to load game scene: %s (Error: %d)" % [game_scene_path, error])
 
-## Show level selection screen
-func _show_level_select():
-  var level_select_path = "res://Stages/UI/level_select/level_select.tscn"
-  Logger.info("MainMenu", "Loading level select scene: %s" % level_select_path)
+## Show scenario selection screen
+func _show_scenario_select():
+  var scenario_select_path = "res://Stages/UI/scenario_select/scenario_select.tscn"
+  Logger.info("MainMenu", "Loading scenario select scene: %s" % scenario_select_path)
   
-  var error = get_tree().change_scene_to_file(level_select_path)
+  var error = get_tree().change_scene_to_file(scenario_select_path)
   if error != OK:
-    Logger.error("MainMenu", "Failed to load level select scene: %s (Error: %d)" % [level_select_path, error])
+    Logger.error("MainMenu", "Failed to load scenario select scene: %s (Error: %d)" % [scenario_select_path, error])
