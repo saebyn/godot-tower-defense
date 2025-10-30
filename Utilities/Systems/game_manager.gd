@@ -67,8 +67,8 @@ func return_to_main_menu():
   resume_game() # Ensure the game is unpaused
   set_game_state(GameState.MAIN_MENU)
   
-  # Clear the current level in LevelManager
-  LevelManager.clear_current_level()
+  # Clear the current scenario in ScenarioManager
+  ScenarioManager.clear_current_scenario()
   
   # Load the main menu scene
   var main_menu_path = "res://Stages/UI/main_menu/main_menu.tscn"
