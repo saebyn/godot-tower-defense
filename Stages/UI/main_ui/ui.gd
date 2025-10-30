@@ -1,6 +1,6 @@
 extends Control
 
-signal obstacle_spawn_requested(obstacle: ObstacleTypeResource)
+signal obstacle_spawn_requested(obstacle: Resource_ObstacleType)
 
 @onready var spawn_indicator: Control = $SpawnIndicator
 @onready var hotbar: Control = $Hotbar
@@ -17,7 +17,7 @@ func _process(_delta: float) -> void:
     _toggle_fps_overlay()
 
 
-func request_obstacle_spawn(obstacle: ObstacleTypeResource) -> void:
+func request_obstacle_spawn(obstacle: Resource_ObstacleType) -> void:
   Logger.info("UI", "Requesting obstacle spawn: %s" % obstacle.name)
   obstacle_spawn_requested.emit(obstacle)
 

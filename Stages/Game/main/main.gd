@@ -126,7 +126,7 @@ func _handle_obstacle_remove_click(click_position: Vector2):
   obstacle_raycast.enabled = false
 
 
-func _on_obstacle_spawn_requested(obstacle: ObstacleTypeResource) -> void:
+func _on_obstacle_spawn_requested(obstacle: Resource_ObstacleType) -> void:
   # Forward the signal to the obstacle placement system
   obstacle_placement._on_obstacle_spawn_requested(obstacle)
 

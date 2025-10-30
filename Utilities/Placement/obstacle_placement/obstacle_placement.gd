@@ -26,7 +26,7 @@ var busy: bool:
   get:
     return _preview != null
 
-var _place_obstacle_type: ObstacleTypeResource = null
+var _place_obstacle_type: Resource_ObstacleType = null
 var _preview: ObstaclePreview = null
 var _valid_material: StandardMaterial3D
 var _invalid_material: StandardMaterial3D
@@ -205,7 +205,7 @@ func _has_sufficient_clearance(target_position: Vector3) -> bool:
 
   return space_state.intersect_shape(query).size() == 0
 
-func _on_obstacle_spawn_requested(obstacle: ObstacleTypeResource) -> void:
+func _on_obstacle_spawn_requested(obstacle: Resource_ObstacleType) -> void:
   Logger.info("Placement", "Spawn obstacle button pressed for: %s" % obstacle.name)
 
   if busy:

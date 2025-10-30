@@ -3,10 +3,10 @@
 ## This script should be set as an Autoload in the project settings.
 extends Node
 
-signal obstacle_types_updated(added_types: Array[ObstacleTypeResource], removed_types: Array[ObstacleTypeResource])
+signal obstacle_types_updated(added_types: Array[Resource_ObstacleType], removed_types: Array[Resource_ObstacleType])
 
-var _obstacle_types: Array[ObstacleTypeResource] = []
-var available_obstacle_types: Array[ObstacleTypeResource] = []
+var _obstacle_types: Array[Resource_ObstacleType] = []
+var available_obstacle_types: Array[Resource_ObstacleType] = []
 
 @export var obstacle_types_directory: String = "res://Config/Obstacles/"
 @export var obstacle_type_resource_extension: String = ".tres"
@@ -44,7 +44,7 @@ func _load_obstacle_types() -> void:
     if file_name.ends_with(obstacle_type_resource_extension):
       var file_path = obstacle_types_directory + file_name
       var resource = ResourceLoader.load(file_path)
-      if resource and resource is ObstacleTypeResource:
+      if resource and resource is Resource_ObstacleType:
         _obstacle_types.append(resource)
         Logger.debug("ObstacleRegistry", "Loaded obstacle type: %s (%s)" % [resource.id, resource.name])
       else:
@@ -54,9 +54,9 @@ func _load_obstacle_types() -> void:
 
 ## Update the list of available obstacles based on tech tree state
 func _update_available_obstacles() -> void:
-  var added_types: Array[ObstacleTypeResource] = []
-  var removed_types: Array[ObstacleTypeResource] = []
-  var updated_available: Array[ObstacleTypeResource] = []
+  var added_types: Array[Resource_ObstacleType] = []
+  var removed_types: Array[Resource_ObstacleType] = []
+  var updated_available: Array[Resource_ObstacleType] = []
   
   for obstacle_type in _obstacle_types:
     var is_unlocked = _is_obstacle_unlocked(obstacle_type)
@@ -78,7 +78,7 @@ func _update_available_obstacles() -> void:
 
 
 ## Check if an obstacle is unlocked based on tech tree
-func _is_obstacle_unlocked(obstacle_type: ObstacleTypeResource) -> bool:
+func _is_obstacle_unlocked(obstacle_type: Resource_ObstacleType) -> bool:
   # If no tech requirements, obstacle is always unlocked
   if obstacle_type.required_tech_ids.is_empty():
     return true
@@ -110,7 +110,7 @@ func _on_save_loaded() -> void:
 
 
 ## Get an obstacle type by ID
-func get_obstacle_type(obstacle_id: String) -> ObstacleTypeResource:
+func get_obstacle_type(obstacle_id: String) -> Resource_ObstacleType:
   for obstacle_type in _obstacle_types:
     if obstacle_type.id == obstacle_id:
       return obstacle_type
