@@ -3,7 +3,7 @@ class_name ObstaclePreview
 
 var placement_preview_node: Node3D
 var obstacle_type: ObstacleTypeResource
-var original_material: Material
+var original_materials: Dictionary = {}  # Maps MeshInstance3D to its original material
 var placement_bounds: AABB
 
 func _init(from_obstacle_type: ObstacleTypeResource):
@@ -15,7 +15,7 @@ func _create_mesh_from_obstacle_type() -> void:
   var temp_obstacle: PlaceableObstacle = obstacle_type.scene.instantiate()
   var temp_meshes = temp_obstacle.mesh_instances
 
-  if not temp_meshes:
+  if not temp_meshes or temp_meshes.is_empty():
     Logger.error("ObstaclePreview", "Could not find MeshInstance3D in obstacle scene: %s" % obstacle_type.name)
     temp_obstacle.queue_free()
     return
@@ -29,9 +29,12 @@ func _create_mesh_from_obstacle_type() -> void:
     mesh_instance.scale = temp_mesh.scale
 
     # Extract original material for restoration later
-    original_material = temp_mesh.get_surface_override_material(0)
+    var original_material = temp_mesh.get_surface_override_material(0)
     if not original_material and temp_mesh.mesh:
       original_material = temp_mesh.mesh.surface_get_material(0)
+    
+    # Store the original material for this specific mesh instance
+    original_materials[mesh_instance] = original_material
 
     placement_preview_node.add_child(mesh_instance)
   
@@ -52,8 +55,8 @@ func set_preview_material(material: Material) -> void:
 func restore_original_material() -> void:
   if placement_preview_node:
     for mesh_instance in placement_preview_node.get_children():
-      if mesh_instance is MeshInstance3D:
-        mesh_instance.set_surface_override_material(0, original_material)
+      if mesh_instance is MeshInstance3D and mesh_instance in original_materials:
+        mesh_instance.set_surface_override_material(0, original_materials[mesh_instance])
 
 func get_bounds() -> AABB:
   return placement_bounds
