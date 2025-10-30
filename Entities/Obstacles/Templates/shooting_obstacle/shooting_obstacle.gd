@@ -6,7 +6,7 @@ class_name Entity_ShootingObstacle
 @export var attack_range: float = 15.0
 @export var detection_interval: float = 0.5
 
-var attack: Attack
+var attack: Component_Attack
 @onready var detection_timer: Timer = $DetectionTimer
 
 func _ready():

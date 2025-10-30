@@ -50,7 +50,7 @@ func test_scenario_handles_missing_scenario_id_gracefully():
   
   # Act - Simulate victory with no level ID (error condition)
   var scenario_id = ScenarioManager.get_current_scenario_id()
-  if level_id.is_empty():
+  if scenario_id.is_empty():
     # Level should log error but continue to victory state
     Logger.error("Test", "Simulating error: no level ID set")
   else:
@@ -108,7 +108,7 @@ func test_scenario_completion_data_persists_across_state_changes():
   ScenarioManager.set_current_scenario_id(scenario_id)
   
   # Act - Complete level and change states multiple times
-  ScenarioManager.mark_scenario_complete(level_id, 120.5, 1000)
+  ScenarioManager.mark_scenario_complete(scenario_id, 120.5, 1000)
   GameManager.set_game_state(GameManager.GameState.VICTORY)
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
   GameManager.set_game_state(GameManager.GameState.PLAYING)

@@ -30,12 +30,12 @@ func _on_enemy_spawned(enemy: Node3D) -> void:
     spawn_indicator._update_wave_display()
 
 ## Called when a wave starts to show wave information
-func _on_wave_started(wave: Wave, wave_number: int) -> void:
+func _on_wave_started(wave: System_Wave, wave_number: int) -> void:
   if spawn_indicator and spawn_indicator.has_method("show_wave_started"):
     spawn_indicator.show_wave_started(wave, wave_number)
 
 ## Called when a wave is completed
-func _on_wave_completed(wave: Wave, wave_number: int) -> void:
+func _on_wave_completed(wave: System_Wave, wave_number: int) -> void:
   if spawn_indicator and spawn_indicator.has_method("show_wave_completed"):
     spawn_indicator.show_wave_completed(wave, wave_number)
 

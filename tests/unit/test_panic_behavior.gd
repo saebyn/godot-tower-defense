@@ -3,7 +3,7 @@ extends GutTest
 ## Unit tests for PanicBehavior component
 ## Tests panic detection, movement, and animation control
 
-var panic_behavior: PanicBehavior
+var panic_behavior: Component_PanicBehavior
 var target_node: Node3D
 var enemy_node: Node3D
 

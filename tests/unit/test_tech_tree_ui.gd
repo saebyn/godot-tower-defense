@@ -4,7 +4,7 @@ extends GutTest
 ## Tests tech tree UI initialization, node selection, and unlock functionality
 
 var tech_tree_scene = preload("res://Stages/UI/tech_tree/tech_tree.tscn")
-var tech_tree: TechTree
+var tech_tree: UI_TechTree
 
 func before_each():
 	# Reset the TechTreeManager state before each test

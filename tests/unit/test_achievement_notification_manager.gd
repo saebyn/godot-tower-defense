@@ -2,7 +2,7 @@ extends GutTest
 
 ## Unit tests for AchievementNotificationManager
 
-var manager: AchievementNotificationManager = null
+var manager: UI_AchievementNotificationManager = null
 
 func before_each():
   # Create manager instance

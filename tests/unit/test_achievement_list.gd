@@ -3,7 +3,7 @@ extends GutTest
 ## Unit tests for AchievementList UI
 
 var list_scene = preload("res://Stages/UI/achievement_list/achievement_list.tscn")
-var achievement_list: AchievementList = null
+var achievement_list: UI_AchievementList = null
 
 func before_each():
   # Instantiate achievement list for each test

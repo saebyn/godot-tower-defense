@@ -27,7 +27,7 @@ var busy: bool:
     return _preview != null
 
 var _place_obstacle_type: Resource_ObstacleType = null
-var _preview: ObstaclePreview = null
+var _preview: Utility_ObstaclePreview = null
 var _valid_material: StandardMaterial3D
 var _invalid_material: StandardMaterial3D
 

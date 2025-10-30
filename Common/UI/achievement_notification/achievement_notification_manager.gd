@@ -7,7 +7,7 @@ class_name UI_AchievementNotificationManager
 const AchievementNotificationScene = preload("res://Common/UI/achievement_notification/achievement_notification.tscn")
 
 var notification_queue: Array[Resource_Achievement] = []
-var current_notification: AchievementNotification = null
+var current_notification: UI_AchievementNotification = null
 var is_showing_notification: bool = false
 
 func _ready() -> void:

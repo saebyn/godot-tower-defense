@@ -7,7 +7,7 @@ class_name UI_SpawnIndicator
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 var notification_duration: float = 3.0 # Increased duration for more info
-var current_wave: Wave
+var current_wave: System_Wave
 var wave_number: int = 0
 var is_showing_wave_info: bool = false
 
@@ -33,7 +33,7 @@ func show_spawn_notification(enemy: Node3D) -> void:
     _simple_fade_animation()
 
 ### Show wave start notification with detailed information
-func show_wave_started(wave: Wave, wave_num: int) -> void:
+func show_wave_started(wave: System_Wave, wave_num: int) -> void:
   current_wave = wave
   wave_number = wave_num
   is_showing_wave_info = true
@@ -43,7 +43,7 @@ func show_wave_started(wave: Wave, wave_num: int) -> void:
   modulate.a = 1.0
 
 ### Show wave completed notification
-func show_wave_completed(wave: Wave, wave_num: int) -> void:
+func show_wave_completed(wave: System_Wave, wave_num: int) -> void:
   is_showing_wave_info = false
   if label:
     var total_enemies = 0

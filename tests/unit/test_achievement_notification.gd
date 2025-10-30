@@ -3,7 +3,7 @@ extends GutTest
 ## Unit tests for AchievementNotification component
 
 var notification_scene = preload("res://Common/UI/achievement_notification/achievement_notification.tscn")
-var notification: AchievementNotification = null
+var notification: UI_AchievementNotification = null
 
 func before_each():
   # Instantiate notification for each test

@@ -2,7 +2,7 @@ class_name Stage_Scenario
 extends Node3D
 
 @export_category("References")
-@export var enemy_spawner: EnemySpawner
+@export var enemy_spawner: System_EnemySpawner
 @export var ui: Control
 
 @export_category("Scenario Settings")
@@ -38,7 +38,7 @@ func _on_enemy_spawned(enemy: Node3D) -> void:
   if ui:
     ui._on_enemy_spawned(enemy)
 
-func _on_wave_started(wave: Wave) -> void:
+func _on_wave_started(wave: System_Wave) -> void:
   var wave_number = enemy_spawner.get_current_wave_number()
   if ui:
     ui._on_wave_started(wave, wave_number)
@@ -49,7 +49,7 @@ func _on_wave_started(wave: Wave) -> void:
     timer_started = true
     Logger.debug("Scenario", "Scenario timer started at wave %d" % wave_number)
 
-func _on_wave_completed(wave: Wave) -> void:
+func _on_wave_completed(wave: System_Wave) -> void:
   var wave_number = enemy_spawner.get_current_wave_number()
   if ui:
     ui._on_wave_completed(wave, wave_number)

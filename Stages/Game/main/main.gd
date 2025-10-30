@@ -10,10 +10,10 @@ extends Node3D
 @onready var camera: Camera3D = $Camera3D
 @onready var navigation_region: NavigationRegion3D = $NavigationRegion3D
 @onready var enemy_raycast: RayCast3D = $EnemyRayCast3D
-var attack: Attack
+var attack: Component_Attack
 @onready var ui: Control = $UI
 
-@onready var obstacle_placement: ObstaclePlacement = $ObstaclePlacement
+@onready var obstacle_placement: Utility_ObstaclePlacement = $ObstaclePlacement
 
 var obstacle_raycast: RayCast3D
 
@@ -104,10 +104,10 @@ func _handle_obstacle_remove_click(click_position: Vector2):
     var collider = obstacle_raycast.get_collider()
     Logger.info("Player", "Right-clicked on: %s (type: %s)" % [collider.name, collider.get_class()])
     
-    # Check if the collider is a PlaceableObstacle
-    if collider is PlaceableObstacle:
-      var obstacle = collider as PlaceableObstacle
-      Logger.info("Player", "Confirmed PlaceableObstacle, calling remove()")
+    # Check if the collider is a Entity_PlaceableObstacle
+    if collider is Entity_PlaceableObstacle:
+      var obstacle = collider as Entity_PlaceableObstacle
+      Logger.info("Player", "Confirmed Entity_PlaceableObstacle, calling remove()")
       var refund = obstacle.remove()
       Logger.info("Player", "Removed obstacle and recovered %d scrap" % refund)
       

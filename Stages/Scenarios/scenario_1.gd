@@ -1,1 +1,1 @@
-extends Scenario
+extends Stage_Scenario

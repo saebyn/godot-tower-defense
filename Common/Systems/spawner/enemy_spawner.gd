@@ -12,8 +12,8 @@ var _waves: Array[Wave] = []
 var _current_wave_index: int = 0
 
 # Signals for wave system
-signal wave_started(wave: Wave)
-signal wave_completed(wave: Wave)
+signal wave_started(wave: System_Wave)
+signal wave_completed(wave: System_Wave)
 signal all_waves_completed()
 signal enemy_spawned(enemy: Node3D)
 
@@ -54,10 +54,10 @@ func _start_next_wave() -> void:
     Logger.info("Spawner", "Starting wave %d" % (_current_wave_index + 1))
     wave.start_wave()
 
-func _on_wave_started(wave: Wave) -> void:
+func _on_wave_started(wave: System_Wave) -> void:
     wave_started.emit(wave)
 
-func _on_wave_completed(wave: Wave) -> void:
+func _on_wave_completed(wave: System_Wave) -> void:
     wave_completed.emit(wave)
     _current_wave_index += 1
     
@@ -65,7 +65,7 @@ func _on_wave_completed(wave: Wave) -> void:
     await get_tree().create_timer(1.0).timeout
     _start_next_wave()
 
-func _on_enemy_spawned_from_wave(enemy: Node3D, _wave: Wave) -> void:
+func _on_enemy_spawned_from_wave(enemy: Node3D, _wave: System_Wave) -> void:
     enemy_spawned.emit(enemy)
 
 
