@@ -33,7 +33,7 @@ enum ConditionType {
   SCRAP_EARNED, ## Track total scrap earned over all time
   OBSTACLES_PLACED, ## Track total obstacles placed
   WAVE_COMPLETED, ## Track waves completed in a single game
-  GAME_LEVEL_REACHED, ## Track highest game level reached
+  GAME_SCENARIO_REACHED, ## Track highest game scenario reached
   PLAYER_LEVEL_REACHED ## Track player XP level reached
 }
 
@@ -74,8 +74,8 @@ class AchievementCondition extends Resource:
         desc = "Place %d obstacles" % threshold
       ConditionType.WAVE_COMPLETED:
         desc = "Complete wave %d" % threshold
-      ConditionType.GAME_LEVEL_REACHED:
-        desc = "Reach game level %d" % threshold
+      ConditionType.GAME_SCENARIO_REACHED:
+        desc = "Reach game scenario %d" % threshold
       ConditionType.PLAYER_LEVEL_REACHED:
         desc = "Reach player level %d" % threshold
     return desc
@@ -168,8 +168,8 @@ func get_condition_description() -> String:
         condition_desc = "Place %d obstacles" % threshold
       ConditionType.WAVE_COMPLETED:
         condition_desc = "Complete wave %d" % threshold
-      ConditionType.GAME_LEVEL_REACHED:
-        condition_desc = "Reach game level %d" % threshold
+      ConditionType.GAME_SCENARIO_REACHED:
+        condition_desc = "Reach game scenario %d" % threshold
       ConditionType.PLAYER_LEVEL_REACHED:
         condition_desc = "Reach player level %d" % threshold
     

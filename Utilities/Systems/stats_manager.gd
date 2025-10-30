@@ -58,10 +58,10 @@ func _ready():
   else:
     Logger.error("StatsManager", "GameManager not found!")
 
-  if LevelManager:
-    LevelManager.wave_changed.connect(_on_wave_changed)
+  if ScenarioManager:
+    ScenarioManager.wave_changed.connect(_on_wave_changed)
   else:
-    Logger.error("StatsManager", "LevelManager not found!")
+    Logger.error("StatsManager", "ScenarioManager not found!")
 
 func _on_game_state_changed(new_state: GameManager.GameState) -> void:
   # Reset wave completion count on new game start
@@ -121,7 +121,7 @@ func _on_xp_earned(amount: int) -> void:
   Logger.debug("Stats", "XP earned: %d. Total earned: %d" % [amount, total_xp_earned])
 
 ## Max waves completed callback
-func _on_wave_changed(_level_id: String, _wave: int) -> void:
+func _on_wave_changed(_scenario_id: String, _wave: int) -> void:
   waves_completed += 1
   if waves_completed > max_waves_completed:
     max_waves_completed = waves_completed

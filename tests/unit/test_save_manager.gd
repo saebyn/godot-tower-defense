@@ -216,7 +216,7 @@ func test_save_includes_metadata():
   assert_true(metadata.has("timestamp"), "Should have timestamp")
   assert_true(metadata.has("playtime"), "Should have playtime")
   assert_true(metadata.has("player_level"), "Should have player_level")
-  assert_true(metadata.has("last_level"), "Should have last_level")
+  assert_true(metadata.has("last_scenario"), "Should have last_scenario")
 
 ## Test: Multiple systems save independently
 func test_multiple_systems_save_independently():

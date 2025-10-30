@@ -89,31 +89,31 @@ func test_stats_manager_save_load():
   assert_eq(StatsManager.get_obstacles_placed_total(), expected_obstacles, "Obstacle count should be restored")
 
 ## Test: Level manager save/load
-func test_level_manager_save_load():
+func test_scenario_manager_save_load():
   # Create fresh game
   SaveManager.create_new_game(TEST_SLOT_1)
   
-  # Mark some levels complete
-  LevelManager.mark_level_complete("level_1", 120.5, 1000)
-  LevelManager.mark_level_complete("level_2", 95.3, 1500)
+  # Mark some scenarios complete
+  ScenarioManager.mark_scenario_complete("scenario_1", 120.5, 1000)
+  ScenarioManager.mark_scenario_complete("scenario_2", 95.3, 1500)
   
-  var expected_count = LevelManager.completed_levels.size()
-  var expected_best_time = LevelManager.get_best_time("level_1")
+  var expected_count = ScenarioManager.completed_scenarios.size()
+  var expected_best_time = ScenarioManager.get_best_time("scenario_1")
   
   # Save
   SaveManager.save_current_slot()
   
   # Create different save to reset
   SaveManager.create_new_game(TEST_SLOT_2)
-  assert_eq(LevelManager.completed_levels.size(), 0, "Should be reset")
+  assert_eq(ScenarioManager.completed_scenarios.size(), 0, "Should be reset")
   
   # Load
   SaveManager.load_save_slot(TEST_SLOT_1)
   
-  assert_eq(LevelManager.completed_levels.size(), expected_count, "Completed count should match")
-  assert_true(LevelManager.is_level_completed("level_1"), "Level 1 should be complete")
-  assert_true(LevelManager.is_level_completed("level_2"), "Level 2 should be complete")
-  assert_eq(LevelManager.get_best_time("level_1"), expected_best_time, "Best time should be restored")
+  assert_eq(ScenarioManager.completed_scenarios.size(), expected_count, "Completed count should match")
+  assert_true(ScenarioManager.is_scenario_completed("scenario_1"), "Scenario 1 should be complete")
+  assert_true(ScenarioManager.is_scenario_completed("scenario_2"), "Scenario 2 should be complete")
+  assert_eq(ScenarioManager.get_best_time("scenario_1"), expected_best_time, "Best time should be restored")
 
 ## Test: Tech tree manager save/load
 func test_tech_tree_manager_save_load():
@@ -166,11 +166,11 @@ func test_all_managers_save_load():
   # Modify all managers
   CurrencyManager.earn_scrap(300)
   StatsManager.track_enemy_defeated("zombie", false)
-  LevelManager.mark_level_complete("level_1")
+  ScenarioManager.mark_scenario_complete("scenario_1")
   
   var expected_scrap = CurrencyManager.get_scrap()
   var expected_enemies = StatsManager.get_enemies_defeated_total()
-  var expected_levels = LevelManager.completed_levels.size()
+  var expected_levels = ScenarioManager.completed_scenarios.size()
   
   # Save
   SaveManager.save_current_slot()
@@ -184,7 +184,7 @@ func test_all_managers_save_load():
   # Verify all restored
   assert_eq(CurrencyManager.get_scrap(), expected_scrap, "Scrap restored")
   assert_eq(StatsManager.get_enemies_defeated_total(), expected_enemies, "Stats restored")
-  assert_eq(LevelManager.completed_levels.size(), expected_levels, "Levels restored")
+  assert_eq(ScenarioManager.completed_scenarios.size(), expected_levels, "Scenarios restored")
 
 ## Test: Switch between save slots
 func test_save_slot_switching():
@@ -223,7 +223,7 @@ func test_save_metadata():
   
   # Modify state
   CurrencyManager.earn_xp(300) # Should level up
-  LevelManager.set_current_level_id("level_2")
+  ScenarioManager.set_current_scenario_id("scenario_2")
   
   var player_level = CurrencyManager.get_level()
   
@@ -235,5 +235,5 @@ func test_save_metadata():
   
   assert_true(metadata.get("exists"), "Slot should exist")
   assert_eq(metadata.get("player_level"), player_level, "Player level should match")
-  assert_eq(metadata.get("last_level"), "level_2", "Last level should match")
+  assert_eq(metadata.get("last_scenario"), "scenario_2", "Last scenario should match")
   assert_true(metadata.has("timestamp"), "Should have timestamp")

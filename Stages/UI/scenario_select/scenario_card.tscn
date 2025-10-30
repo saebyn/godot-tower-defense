@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cl4h3jy3xi5av"]
 
-[ext_resource type="Script" path="res://Stages/UI/level_select/level_card.gd" id="1_card_script"]
+[ext_resource type="Script" path="res://Stages/UI/scenario_select/scenario_card.gd" id="1_card_script"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
 
 [node name="LevelCard" type="PanelContainer"]
@@ -22,7 +22,7 @@ theme_override_constants/separation = 10
 [node name="HeaderHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="LevelName" type="Label" parent="MarginContainer/VBoxContainer/HeaderHBox"]
+[node name="ScenarioName" type="Label" parent="MarginContainer/VBoxContainer/HeaderHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"HeaderMedium"

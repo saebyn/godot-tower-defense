@@ -211,8 +211,15 @@ func _get_stat_value(condition_type: AchievementResource.ConditionType, target: 
       return float(CurrencyManager.get_level())
     AchievementResource.ConditionType.WAVE_COMPLETED:
       return float(StatsManager.get_max_waves_completed())
-    AchievementResource.ConditionType.GAME_LEVEL_REACHED:
-      return float(CurrencyManager.get_game_level())
+    AchievementResource.ConditionType.GAME_SCENARIO_REACHED:
+      # Get the highest completed scenario number
+      var completed_scenarios = ScenarioManager.completed_scenarios
+      var highest = 0
+      for scenario_id in completed_scenarios:
+        var num = int(scenario_id.replace("scenario_", ""))
+        if num > highest:
+          highest = num
+      return float(highest)
   
   return 0.0
 

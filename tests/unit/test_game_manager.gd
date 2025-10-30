@@ -1,44 +1,44 @@
 extends GutTest
 
 ## Unit tests for GameManager functionality
-## Tests state management, level ID tracking, and cleanup
+## Tests state management, scenario ID tracking, and cleanup
 
 func before_each():
   # Reset GameManager to known state
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
-  GameManager.set_current_level_id("")
+  ScenarioManager.clear_current_scenario()
   GameManager.resume_game() # Ensure not paused
 
 func after_each():
   # Restore default state
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
-  GameManager.set_current_level_id("")
+  ScenarioManager.clear_current_scenario()
   GameManager.resume_game()
 
-func test_level_id_managed_by_level_manager():
-  # Level ID is now managed by LevelManager, not GameManager
+func test_scenario_id_managed_by_scenario_manager():
+  # Scenario ID is now managed by ScenarioManager, not GameManager
   # This test verifies the integration
   # Arrange
-  var level_id = "level_1"
+  var scenario_id = "scenario_1"
   
   # Act
-  LevelManager.set_current_level_id(level_id)
+  ScenarioManager.set_current_scenario_id(scenario_id)
   
   # Assert
-  assert_eq(LevelManager.get_current_level_id(), level_id, "LevelManager should track level ID")
+  assert_eq(ScenarioManager.get_current_scenario_id(), scenario_id, "ScenarioManager should track scenario ID")
 
-func test_return_to_main_menu_clears_level_via_level_manager():
-  # This test verifies that returning to main menu clears the level in LevelManager
+func test_return_to_main_menu_clears_scenario_via_scenario_manager():
+  # This test verifies that returning to main menu clears the scenario in ScenarioManager
   # Arrange
-  LevelManager.set_current_level_id("level_3")
-  assert_eq(LevelManager.get_current_level_id(), "level_3", "Level ID should be set initially")
+  ScenarioManager.set_current_scenario_id("scenario_3")
+  assert_eq(ScenarioManager.get_current_scenario_id(), "scenario_3", "Scenario ID should be set initially")
   
   # Act - Simulate what return_to_main_menu does
-  LevelManager.clear_current_level()
+  ScenarioManager.clear_current_scenario()
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
   
   # Assert
-  assert_eq(LevelManager.get_current_level_id(), "", "Level ID should be cleared when returning to main menu")
+  assert_eq(ScenarioManager.get_current_scenario_id(), "", "Scenario ID should be cleared when returning to main menu")
 
 func test_game_state_changed_signal_is_emitted():
   # Arrange
@@ -51,18 +51,18 @@ func test_game_state_changed_signal_is_emitted():
   assert_signal_emitted(GameManager, "game_state_changed", "game_state_changed signal should be emitted")
   assert_signal_emitted_with_parameters(GameManager, "game_state_changed", [GameManager.GameState.PLAYING], "Signal should include new state")
 
-func test_wave_tracking_moved_to_level_manager():
-  # Wave tracking is now managed by LevelManager, not GameManager
+func test_wave_tracking_moved_to_scenario_manager():
+  # Wave tracking is now managed by ScenarioManager, not GameManager
   # Arrange
-  watch_signals(LevelManager)
+  watch_signals(ScenarioManager)
   var wave = 5
   
   # Act
-  LevelManager.set_current_wave(wave)
+  ScenarioManager.set_current_wave(wave)
   
   # Assert
-  assert_signal_emitted(LevelManager, "wave_changed", "wave_changed signal should be emitted by LevelManager")
-  assert_eq(LevelManager.get_current_wave(), wave, "LevelManager should track current wave")
+  assert_signal_emitted(ScenarioManager, "wave_changed", "wave_changed signal should be emitted by ScenarioManager")
+  assert_eq(ScenarioManager.get_current_wave(), wave, "ScenarioManager should track current wave")
 
 func test_pause_and_resume():
   # Arrange
