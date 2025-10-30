@@ -21,12 +21,12 @@ func before_each():
   
   # Reset state
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
-  ScenarioManager.clear_current_level()
+  ScenarioManager.clear_current_scenario()
 
 func after_each():
   # Restore original state
   ScenarioManager.completed_scenarios = initial_completed_scenarios.duplicate()
-  ScenarioManager.clear_current_level()
+  ScenarioManager.clear_current_scenario()
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
 
 func test_scenario_id_is_set_when_starting_level():
