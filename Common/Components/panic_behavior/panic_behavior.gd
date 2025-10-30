@@ -64,10 +64,17 @@ func _check_for_nearby_enemies() -> bool:
 	if not target:
 		return false
 	
+	# Note: For large numbers of enemies, consider using Area3D with collision layers
+	# or spatial partitioning for better performance. Current implementation is
+	# acceptable for typical tower defense enemy counts (< 100 enemies).
 	var enemies = get_tree().get_nodes_in_group(enemy_group)
 	
 	for enemy in enemies:
-		if not enemy or not is_instance_valid(enemy):
+		if not is_instance_valid(enemy):
+			continue
+		
+		# Ensure enemy is a Node3D before accessing position
+		if not enemy is Node3D:
 			continue
 		
 		var distance = target.global_position.distance_to(enemy.global_position)
