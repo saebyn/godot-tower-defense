@@ -1,13 +1,30 @@
-[gd_scene load_steps=2 format=3 uid="uid://bl5g2v8n3jkph"]
+[gd_scene load_steps=4 format=3 uid="uid://bl5g2v8n3jkph"]
 
 [ext_resource type="PackedScene" uid="uid://cj8x0adt0k2cd" path="res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.tscn" id="1_turret"]
 
-[node name="BasicTurret" instance=ExtResource("1_turret")]
-enemy_group = "enemies"
+[sub_resource type="BoxShape3D" id="BoxShape3D_sl1jc"]
+size = Vector3(10, 5, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_qoubk"]
+size = Vector3(9.95, 4.975, 1.965)
+
+[node name="BasicTurret" node_paths=PackedStringArray("mesh_instances") instance=ExtResource("1_turret")]
 attack_range = 12.0
 detection_interval = 0.3
+mesh_instances = [NodePath("MeshInstance3D")]
 
-[node name="Attack" parent="." index="3"]
+[node name="Attack" parent="." index="1"]
 damage_amount = 20
 damage_cooldown = 1.5
 damage_source = "turret"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+shape = SubResource("BoxShape3D_sl1jc")
+
+[node name="DetectionTimer" parent="." index="3"]
+wait_time = 0.3
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.96503, 0)
+mesh = SubResource("BoxMesh_qoubk")

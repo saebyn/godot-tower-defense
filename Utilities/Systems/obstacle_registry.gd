@@ -21,6 +21,11 @@ func _ready() -> void:
   TechTreeManager.tech_locked.connect(_on_tech_locked)
   Logger.info("ObstacleRegistry", "Connected to TechTreeManager")
   
+  # Connect to SaveManager to update obstacles after save data is loaded
+  SaveManager.load_completed.connect(_on_save_loaded)
+  
+  # Do initial update of available obstacles
+  # This will be updated again when save data loads
   _update_available_obstacles()
   Logger.info("ObstacleRegistry", "ObstacleRegistry initialized with %d total obstacles, %d available" % [_obstacle_types.size(), available_obstacle_types.size()])
 
@@ -45,7 +50,6 @@ func _load_obstacle_types() -> void:
       else:
         Logger.warn("ObstacleRegistry", "Failed to load obstacle type from: %s" % file_path)
     file_name = dir.get_next()
-  dir.list_dir_end()
 
 
 ## Update the list of available obstacles based on tech tree state
@@ -96,6 +100,12 @@ func _on_tech_unlocked(tech_id: String) -> void:
 ## Called when a tech is locked (mutually exclusive)
 func _on_tech_locked(tech_id: String) -> void:
   Logger.debug("ObstacleRegistry", "Tech locked: %s - checking for removed obstacles" % tech_id)
+  _update_available_obstacles()
+
+
+## Called when save data is loaded - refresh obstacle availability
+func _on_save_loaded() -> void:
+  Logger.info("ObstacleRegistry", "Save data loaded - updating available obstacles")
   _update_available_obstacles()
 
 

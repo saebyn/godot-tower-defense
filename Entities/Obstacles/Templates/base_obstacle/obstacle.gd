@@ -1,11 +1,21 @@
-extends Node3D
+@tool
+extends StaticBody3D
 class_name PlaceableObstacle
 
-@onready var mesh_instance: MeshInstance3D = $MeshInstance3D
-var health: Health
+@export var mesh_instances: Array[MeshInstance3D] = []:
+  set(values):
+    mesh_instances = values
+    update_configuration_warnings()
 
+var health: Health
 var obstacle_type: ObstacleTypeResource
 var navigation_obstacle: NavigationObstacle3D
+
+func _get_configuration_warnings():
+  var warnings = []
+  if mesh_instances.size() == 0:
+    warnings.append("MeshInstance3D is not assigned.")
+  return warnings
 
 func _ready():
   # Find Health component via metadata
@@ -38,13 +48,18 @@ func place(navigation_region: NavigationRegion3D) -> void:
     obstacle.global_transform = global_transform
 
     # set the vertices based on the mesh size
-    var aabb = mesh_instance.get_aabb()
-    var size = aabb.size / 2.0
-    obstacle.vertices = PackedVector3Array([
-        Vector3(-size.x, 0, -size.z),
-        Vector3(size.x, 0, -size.z),
-        Vector3(size.x, 0, size.z),
-        Vector3(-size.x, 0, size.z)
+    var size: Vector3 = Vector3.ONE
+    for mesh_instance in mesh_instances:
+        var aabb = mesh_instance.get_aabb()
+        size.x = max(size.x, aabb.size.x * 0.5)
+        size.y = max(size.y, aabb.size.y * 0.5)
+        size.z = max(size.z, aabb.size.z * 0.5)
+
+    obstacle.vertices.append_array([
+      Vector3(-size.x, 0, -size.z),
+      Vector3(size.x, 0, -size.z),
+      Vector3(size.x, 0, size.z),
+      Vector3(-size.x, 0, size.z)
     ])
 
     navigation_region.add_child(obstacle)
@@ -91,3 +106,10 @@ func remove() -> int:
   queue_free()
   
   return refund_amount
+
+
+func get_aabb() -> AABB:
+  var combined_aabb = AABB()
+  for mesh_instance in mesh_instances:
+    combined_aabb = combined_aabb.merge(mesh_instance.get_aabb())
+  return combined_aabb
