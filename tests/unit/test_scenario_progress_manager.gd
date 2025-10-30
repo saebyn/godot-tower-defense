@@ -24,23 +24,23 @@ func after_each():
     if dir:
       dir.remove(test_save_path.replace("user://", ""))
 
-func test_level_1_is_always_unlocked():
+func test_scenario_1_is_always_unlocked():
   # Act & Assert
-  assert_true(ScenarioManager.is_scenario_unlocked("scenario_1"), "Level 1 should always be unlocked")
+  assert_true(ScenarioManager.is_scenario_unlocked("scenario_1"), "Scenario 1 should always be unlocked")
 
-func test_level_2_locked_by_default():
+func test_scenario_2_locked_by_default():
   # Act & Assert
-  assert_false(ScenarioManager.is_scenario_unlocked("scenario_2"), "Level 2 should be locked initially")
+  assert_false(ScenarioManager.is_scenario_unlocked("scenario_2"), "Scenario 2 should be locked initially")
 
-func test_completing_level_1_unlocks_level_2():
+func test_completing_scenario_1_unlocks_scenario_2():
   # Arrange - Level 2 should be locked initially
-  assert_false(ScenarioManager.is_scenario_unlocked("scenario_2"), "Level 2 should be locked initially")
+  assert_false(ScenarioManager.is_scenario_unlocked("scenario_2"), "Scenario 2 should be locked initially")
   
-  # Act - Complete level 1
+  # Act - Complete scenario 1
   ScenarioManager.mark_scenario_complete("scenario_1")
   
   # Assert - Level 2 should now be unlocked
-  assert_true(ScenarioManager.is_scenario_unlocked("scenario_2"), "Level 2 should be unlocked after completing level 1")
+  assert_true(ScenarioManager.is_scenario_unlocked("scenario_2"), "Scenario 2 should be unlocked after completing scenario 1")
 
 func test_mark_scenario_complete_adds_to_completed_list():
   # Arrange
@@ -51,17 +51,17 @@ func test_mark_scenario_complete_adds_to_completed_list():
   
   # Assert
   assert_eq(ScenarioManager.completed_scenarios.size(), initial_count + 1, "Completed levels should increase by 1")
-  assert_true(ScenarioManager.completed_scenarios.has("scenario_1"), "Level 1 should be in completed list")
+  assert_true(ScenarioManager.completed_scenarios.has("scenario_1"), "Scenario 1 should be in completed list")
 
 func test_is_scenario_completed_returns_correct_status():
   # Arrange - Level not completed
-  assert_false(ScenarioManager.is_scenario_completed("scenario_1"), "Level 1 should not be completed initially")
+  assert_false(ScenarioManager.is_scenario_completed("scenario_1"), "Scenario 1 should not be completed initially")
   
   # Act - Complete level
   ScenarioManager.mark_scenario_complete("scenario_1")
   
   # Assert - Level is completed
-  assert_true(ScenarioManager.is_scenario_completed("scenario_1"), "Level 1 should be completed")
+  assert_true(ScenarioManager.is_scenario_completed("scenario_1"), "Scenario 1 should be completed")
 
 func test_best_time_tracking():
   # Arrange - No best time initially
@@ -115,33 +115,33 @@ func test_best_score_only_updates_when_higher():
   # Assert - Best score should update to 1500
   assert_eq(ScenarioManager.get_best_score("scenario_1"), 1500, "Best score should update with higher score")
 
-func test_get_level_metadata_returns_correct_data():
+func test_get_scenario_metadata_returns_correct_data():
   # Act
-  var metadata = ScenarioManager.get_level_metadata("scenario_1")
+  var metadata = ScenarioManager.get_scenario_metadata("scenario_1")
   
   # Assert
   assert_true(metadata.has("name"), "Metadata should have name field")
   assert_true(metadata.has("scene_path"), "Metadata should have scene_path field")
   assert_true(metadata.has("description"), "Metadata should have description field")
-  assert_eq(metadata.get("name"), "Bridge Defense", "Level 1 should have correct name")
+  assert_eq(metadata.get("name"), "Bridge Defense", "Scenario 1 should have correct name")
 
-func test_get_all_level_ids_returns_sorted_list():
+func test_get_all_scenario_ids_returns_sorted_list():
   # Act
-  var level_ids = ScenarioManager.get_all_level_ids()
+  var scenario_ids = ScenarioManager.get_all_scenario_ids()
   
   # Assert
-  assert_gt(level_ids.size(), 0, "Should have at least one level")
-  assert_true(level_ids.has("scenario_1"), "Should include level_1")
-  assert_true(level_ids.has("scenario_2"), "Should include level_2")
+  assert_gt(scenario_ids.size(), 0, "Should have at least one scenario")
+  assert_true(scenario_ids.has("scenario_1"), "Should include scenario_1")
+  assert_true(scenario_ids.has("scenario_2"), "Should include scenario_2")
   # Check if sorted
-  for i in range(level_ids.size() - 1):
-    assert_true(level_ids[i] <= level_ids[i + 1], "Level IDs should be sorted")
+  for i in range(scenario_ids.size() - 1):
+    assert_true(scenario_ids[i] <= scenario_ids[i + 1], "Scenario IDs should be sorted")
 
-func test_get_unlock_requirement_returns_previous_level():
+func test_get_unlock_requirement_returns_previous_scenario():
   # Act & Assert
-  assert_eq(ScenarioManager.get_unlock_requirement("scenario_1"), "", "Level 1 has no requirement")
-  assert_eq(ScenarioManager.get_unlock_requirement("scenario_2"), "scenario_1", "Level 2 requires level 1")
-  assert_eq(ScenarioManager.get_unlock_requirement("scenario_3"), "scenario_2", "Level 3 requires level 2")
+  assert_eq(ScenarioManager.get_unlock_requirement("scenario_1"), "", "Scenario 1 has no requirement")
+  assert_eq(ScenarioManager.get_unlock_requirement("scenario_2"), "scenario_1", "Scenario 2 requires scenario 1")
+  assert_eq(ScenarioManager.get_unlock_requirement("scenario_3"), "scenario_2", "Scenario 3 requires scenario 2")
 
 func test_completing_same_level_twice_doesnt_duplicate():
   # Act
@@ -150,28 +150,28 @@ func test_completing_same_level_twice_doesnt_duplicate():
   
   # Assert - Should only appear once
   var count = 0
-  for level in ScenarioManager.completed_scenarios:
-    if level == "scenario_1":
+  for scenario in ScenarioManager.completed_scenarios:
+    if scenario == "scenario_1":
       count += 1
-  assert_eq(count, 1, "Level 1 should only appear once in completed list")
+  assert_eq(count, 1, "Scenario 1 should only appear once in completed list")
 
 func test_unlock_progression_chain():
-  # Start with all levels locked except level 1
-  assert_true(ScenarioManager.is_scenario_unlocked("scenario_1"), "Level 1 should be unlocked")
-  assert_false(ScenarioManager.is_scenario_unlocked("scenario_2"), "Level 2 should be locked")
-  assert_false(ScenarioManager.is_scenario_unlocked("scenario_3"), "Level 3 should be locked")
-  assert_false(ScenarioManager.is_scenario_unlocked("scenario_4"), "Level 4 should be locked")
+  # Start with all scenarios locked except scenario 1
+  assert_true(ScenarioManager.is_scenario_unlocked("scenario_1"), "Scenario 1 should be unlocked")
+  assert_false(ScenarioManager.is_scenario_unlocked("scenario_2"), "Scenario 2 should be locked")
+  assert_false(ScenarioManager.is_scenario_unlocked("scenario_3"), "Scenario 3 should be locked")
+  assert_false(ScenarioManager.is_scenario_unlocked("scenario_4"), "Scenario 4 should be locked")
   
-  # Complete level 1 - should unlock level 2
+  # Complete scenario 1 - should unlock scenario 2
   ScenarioManager.mark_scenario_complete("scenario_1")
-  assert_true(ScenarioManager.is_scenario_unlocked("scenario_2"), "Level 2 should be unlocked")
-  assert_false(ScenarioManager.is_scenario_unlocked("scenario_3"), "Level 3 should still be locked")
+  assert_true(ScenarioManager.is_scenario_unlocked("scenario_2"), "Scenario 2 should be unlocked")
+  assert_false(ScenarioManager.is_scenario_unlocked("scenario_3"), "Scenario 3 should still be locked")
   
-  # Complete level 2 - should unlock level 3
+  # Complete scenario 2 - should unlock level 3
   ScenarioManager.mark_scenario_complete("scenario_2")
-  assert_true(ScenarioManager.is_scenario_unlocked("scenario_3"), "Level 3 should be unlocked")
-  assert_false(ScenarioManager.is_scenario_unlocked("scenario_4"), "Level 4 should still be locked")
+  assert_true(ScenarioManager.is_scenario_unlocked("scenario_3"), "Scenario 3 should be unlocked")
+  assert_false(ScenarioManager.is_scenario_unlocked("scenario_4"), "Scenario 4 should still be locked")
   
   # Complete level 3 - should unlock level 4
   ScenarioManager.mark_scenario_complete("scenario_3")
-  assert_true(ScenarioManager.is_scenario_unlocked("scenario_4"), "Level 4 should be unlocked")
+  assert_true(ScenarioManager.is_scenario_unlocked("scenario_4"), "Scenario 4 should be unlocked")
