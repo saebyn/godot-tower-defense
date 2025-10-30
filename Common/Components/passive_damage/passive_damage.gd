@@ -26,7 +26,8 @@ var _enemies_in_area: Array[Node] = []
 
 
 func _ready():
-	# Configure area to detect bodies
+	# Configure area to detect bodies on layer 4 (enemies)
+	collision_mask = 4
 	monitoring = true
 	monitorable = false
 	
