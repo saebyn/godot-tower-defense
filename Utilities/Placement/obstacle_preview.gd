@@ -40,7 +40,7 @@ func _create_mesh_from_obstacle_type() -> void:
 func set_preview_material(material: Material) -> void:
   if placement_preview_node:
     for mesh_instance in placement_preview_node.get_children():
-      if mesh_instance is MeshInstance3D:
+      if mesh_instance is MeshInstance3D and mesh_instance.mesh != null:
         var surface_count = mesh_instance.mesh.get_surface_count()
         for i in range(surface_count):
           mesh_instance.set_surface_override_material(i, material)
