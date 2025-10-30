@@ -243,7 +243,7 @@ func _place_obstacle() -> void:
   _preview = null
   
   # Now instantiate the real obstacle
-  var real_obstacle = _place_obstacle_type.scene.instantiate() as PlaceableObstacle
+  var real_obstacle = _place_obstacle_type.scene.instantiate() as Entity_PlaceableObstacle
   real_obstacle.global_position = preview_position
   real_obstacle.rotation = preview_rotation
   real_obstacle.obstacle_type = _place_obstacle_type
