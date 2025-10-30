@@ -5,6 +5,9 @@ extends Node
 ##
 ## This component detects nearby enemies and causes the survivor to move erratically
 ## within a constrained area, never leaving the designated focus zone.
+##
+## [b]IMPORTANT:[/b] This component must be attached to a Node3D parent node (the survivor).
+## It will automatically disable itself if the parent is not a Node3D.
 
 @export_category("Panic Settings")
 @export var panic_detection_radius: float = 10.0 ## Distance at which enemies trigger panic
@@ -27,7 +30,8 @@ func _ready() -> void:
 	# Get reference to parent target
 	target = get_parent() as Node3D
 	if not target:
-		Logger.error("PanicBehavior", "Parent is not a Node3D!")
+		Logger.error("PanicBehavior", "Parent must be a Node3D! PanicBehavior disabled.")
+		set_process(false) # Disable processing if parent is invalid
 		return
 	
 	# Store the initial position as the center point for panic movement
@@ -38,7 +42,9 @@ func _ready() -> void:
 	if not animation_player_path.is_empty():
 		animation_player = get_node_or_null(animation_player_path)
 		if not animation_player:
-			Logger.warning("PanicBehavior", "AnimationPlayer not found at path: %s" % animation_player_path)
+			Logger.warn("PanicBehavior", "AnimationPlayer not found at path: %s" % animation_player_path)
+	
+	Logger.debug("PanicBehavior", "PanicBehavior initialized successfully for target: %s" % target.name)
 
 func _process(delta: float) -> void:
 	# Check for nearby enemies
