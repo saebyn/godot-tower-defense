@@ -484,7 +484,7 @@ branch_name = "Advanced"
 **Priority**: Medium  
 **Effort**: M  
 **Description**:
-Implement level selection screen and progression tracking.
+Implement scenario selection screen and progression tracking.
 
 **Acceptance Criteria**:
 - [ ] Create `Stages/UI/level_select/` scene
@@ -1167,7 +1167,7 @@ Let players choose difficulty level.
 - [ ] Hard: -25% scrap, +50% enemy HP, +20% enemy speed
 - [ ] Brutal: -50% scrap, +100% enemy HP, +40% enemy speed
 - [ ] Disable achievements on Easy mode
-- [ ] Add difficulty indicator to level select
+- [ ] Add difficulty indicator to scenario select
 
 ---
 

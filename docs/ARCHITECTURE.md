@@ -28,7 +28,7 @@ graph TB
         ObstacleRegistry[ObstacleRegistry<br/>Available obstacles]
         TechTreeManager[TechTreeManager<br/>Tech unlocks & branches]
         AchievementManager[AchievementManager<br/>Achievement tracking]
-        LevelManager[LevelManager<br/>Level progression]
+        ScenarioManager[ScenarioManager<br/>Level progression]
         AudioManager[AudioManager<br/>Sound & music]
         SettingsManager[SettingsManager<br/>Video, audio, input]
     end
@@ -75,7 +75,7 @@ graph TB
     SaveManager -.Coordinates.-> StatsManager
     SaveManager -.Coordinates.-> TechTreeManager
     SaveManager -.Coordinates.-> AchievementManager
-    SaveManager -.Coordinates.-> LevelManager
+    SaveManager -.Coordinates.-> ScenarioManager
     
     GameManager --> Main
     
@@ -95,7 +95,7 @@ graph TB
     style ObstacleRegistry fill:#f5e1ff
     style TechTreeManager fill:#f5e1ff
     style AchievementManager fill:#e1ffe1
-    style LevelManager fill:#f5e1ff
+    style ScenarioManager fill:#f5e1ff
     style AudioManager fill:#ffe1cc
     style SettingsManager fill:#ffe1cc
 ```
@@ -105,7 +105,7 @@ graph TB
 - 🩷 **Pink** - Persistence/Save systems (SaveManager)
 - 🟢 **Green** - Economy/Progression systems (CurrencyManager, StatsManager, AchievementManager)
 - 🟡 **Yellow** - Game State Management (GameManager)
-- 🟣 **Purple** - Content Management systems (ObstacleRegistry, TechTreeManager, LevelManager)
+- 🟣 **Purple** - Content Management systems (ObstacleRegistry, TechTreeManager, ScenarioManager)
 - 🟠 **Orange** - Audio/Settings systems (AudioManager, SettingsManager)
 
 ---
@@ -196,7 +196,7 @@ graph TB
         Stats[StatsManager<br/>defeats, placements]
         Tech[TechTreeManager<br/>unlocks, locked branches]
         Achievements[AchievementManager<br/>in-game progress]
-        Levels[LevelManager<br/>completed levels, scores]
+        Scenarios[ScenarioManager<br/>completed scenarios, scores]
     end
     
     subgraph "Global Data (Cross-Slot)"
@@ -204,7 +204,7 @@ graph TB
     end
     
     subgraph "Save File Structure"
-        SlotFile["user://saves/save_slot_N.save<br/>{<br/>  version: 1,<br/>  metadata: {timestamp, playtime, level},<br/>  currency_manager: {...},<br/>  stats_manager: {...},<br/>  tech_tree_manager: {...},<br/>  achievement_manager: {...},<br/>  level_manager: {...}<br/>}"]
+        SlotFile["user://saves/save_slot_N.save<br/>{<br/>  version: 1,<br/>  metadata: {timestamp, playtime, level},<br/>  currency_manager: {...},<br/>  stats_manager: {...},<br/>  tech_tree_manager: {...},<br/>  achievement_manager: {...},<br/>  scenario_manager: {...}<br/>}"]
         SlotBackup[save_slot_N.save.bak]
     end
     

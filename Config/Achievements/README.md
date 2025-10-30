@@ -42,7 +42,7 @@ The `ConditionType` enum supports the following tracking types:
 4. **SCRAP_EARNED**: Track total scrap earned over all time
 5. **OBSTACLES_PLACED**: Track total obstacles placed
 6. **WAVE_COMPLETED**: Track waves completed in a single game
-7. **GAME_LEVEL_REACHED**: Track highest game level reached
+7. **GAME_SCENARIO_REACHED**: Track highest game scenario reached
 8. **PLAYER_LEVEL_REACHED**: Track player XP level reached
 
 ### Methods
