@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dpr1nw7t5q7l6"]
 
-[ext_resource type="Script" path="res://Stages/UI/level_select/level_select.gd" id="1_select_script"]
+[ext_resource type="Script" path="res://Stages/UI/scenario_select/scenario_select.gd" id="1_select_script"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_title"]
@@ -62,7 +62,7 @@ text = "BACK"
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="LevelContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+[node name="ScenarioContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 15
