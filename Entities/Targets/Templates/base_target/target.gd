@@ -1,6 +1,7 @@
 extends Node3D
 
 var health: Health
+var panic_behavior: PanicBehavior
 
 func _ready():
   # Find Health component via metadata
@@ -11,6 +12,12 @@ func _ready():
   if health:
     health.died.connect(_on_died)
     health.damaged.connect(_on_health_damaged)
+  
+  # Add panic behavior component
+  panic_behavior = PanicBehavior.new()
+  panic_behavior.name = "PanicBehavior"
+  panic_behavior.animation_player_path = NodePath("AnimationPlayer")
+  add_child(panic_behavior)
 
 func _on_died(damage_source: String = "unknown") -> void:
   Logger.info("Target", "Target has died. Source: %s" % damage_source)
