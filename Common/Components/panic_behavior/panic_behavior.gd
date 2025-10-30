@@ -1,5 +1,5 @@
 class_name PanicBehavior
-extends Node3D
+extends Node
 
 ## Component that makes survivors panic and run around when enemies are nearby
 ##
@@ -21,10 +21,17 @@ var spawn_position: Vector3
 var current_panic_destination: Vector3
 var panic_timer: float = 0.0
 var animation_player: AnimationPlayer
+var target: Node3D # Reference to the parent target node
 
 func _ready() -> void:
+	# Get reference to parent target
+	target = get_parent() as Node3D
+	if not target:
+		Logger.error("PanicBehavior", "Parent is not a Node3D!")
+		return
+	
 	# Store the initial position as the center point for panic movement
-	spawn_position = global_position
+	spawn_position = target.global_position
 	current_panic_destination = spawn_position
 	
 	# Get animation player reference
@@ -48,13 +55,16 @@ func _process(delta: float) -> void:
 		_update_panic_movement(delta)
 
 func _check_for_nearby_enemies() -> bool:
+	if not target:
+		return false
+	
 	var enemies = get_tree().get_nodes_in_group(enemy_group)
 	
 	for enemy in enemies:
 		if not enemy or not is_instance_valid(enemy):
 			continue
 		
-		var distance = global_position.distance_to(enemy.global_position)
+		var distance = target.global_position.distance_to(enemy.global_position)
 		if distance <= panic_detection_radius:
 			return true
 	
@@ -74,6 +84,9 @@ func _stop_panic() -> void:
 		animation_player.play("Idle")
 
 func _update_panic_movement(delta: float) -> void:
+	if not target:
+		return
+	
 	panic_timer += delta
 	
 	# Choose a new destination periodically
@@ -82,7 +95,7 @@ func _update_panic_movement(delta: float) -> void:
 		panic_timer = 0.0
 	
 	# Move towards the panic destination
-	var direction = (current_panic_destination - global_position)
+	var direction = (current_panic_destination - target.global_position)
 	var distance = direction.length()
 	
 	if distance > 0.1:
@@ -93,11 +106,11 @@ func _update_panic_movement(delta: float) -> void:
 		if move_amount > distance:
 			move_amount = distance
 		
-		global_position += direction * move_amount
+		target.global_position += direction * move_amount
 		
 		# Face the direction of movement
-		var target_position = global_position + direction
-		look_at(target_position, Vector3.UP, true)
+		var target_look_position = target.global_position + direction
+		target.look_at(target_look_position, Vector3.UP, true)
 		
 		# Play run animation
 		if animation_player and animation_player.has_animation("Run"):
