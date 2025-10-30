@@ -1,5 +1,5 @@
 extends Control
-class_name StatsDisplay
+class_name UI_StatsDisplay
 
 ## UI component to display game statistics
 ## Shows enemy defeats, obstacle placements, and currency metrics

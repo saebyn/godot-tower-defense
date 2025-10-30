@@ -1,5 +1,5 @@
 extends PanelContainer
-class_name TechNodeCard
+class_name UI_TechNodeCard
 
 ## Individual tech node card component
 ## Displays tech node state and basic info

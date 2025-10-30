@@ -1,5 +1,5 @@
 extends Control
-class_name TechTree
+class_name UI_TechTree
 
 ## Tech Tree UI Screen
 ## Displays tech nodes as a visual tree, allows players to unlock techs,

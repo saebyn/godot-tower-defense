@@ -1,7 +1,7 @@
 extends Node3D
 
-var health: Health
-var panic_behavior: PanicBehavior
+var health: Component_Health
+var panic_behavior: Component_PanicBehavior
 
 func _ready():
   # Find Health component via metadata
@@ -14,7 +14,7 @@ func _ready():
     health.damaged.connect(_on_health_damaged)
   
   # Add panic behavior component
-  panic_behavior = PanicBehavior.new()
+  panic_behavior = Component_PanicBehavior.new()
   panic_behavior.name = "PanicBehavior"
   panic_behavior.animation_player_path = NodePath("AnimationPlayer")
   add_child(panic_behavior)

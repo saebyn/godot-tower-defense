@@ -36,7 +36,7 @@ const ID_PREFIXES := {
 @onready var inspector_container: VBoxContainer = $VBoxContainer/InspectorPanel/ScrollContainer/InspectorContainer
 
 # Data
-var tech_nodes: Dictionary = {} # tech_id -> TechNodeResource
+var tech_nodes: Dictionary = {} # tech_id -> Resource_TechNode
 var graph_nodes: Dictionary = {} # tech_id -> GraphNode
 var selected_tech_id: String = ""
 var validation_errors: Array[String] = []
@@ -218,7 +218,7 @@ func _load_tech_tree() -> void:
   while file_name != "":
     if not dir.current_is_dir() and file_name.ends_with(".tres"):
       var resource_path := TECH_TREE_PATH + file_name
-      var tech_node := load(resource_path) as TechNodeResource
+      var tech_node := load(resource_path) as Resource_TechNode
       
       if tech_node:
         tech_nodes[tech_node.id] = tech_node
@@ -259,7 +259,7 @@ func _rebuild_graph() -> void:
     
     var branch_techs: Array = branches_dict[branch_name]
     for i in range(branch_techs.size()):
-      var tech: TechNodeResource = branch_techs[i]
+      var tech: Resource_TechNode = branch_techs[i]
       var graph_node := _create_graph_node(tech)
       
       # Position node
@@ -273,7 +273,7 @@ func _rebuild_graph() -> void:
   # Draw connections
   _draw_connections()
 
-func _create_graph_node(tech: TechNodeResource) -> GraphNode:
+func _create_graph_node(tech: Resource_TechNode) -> GraphNode:
   var graph_node := GraphNode.new()
   graph_node.name = tech.id
   graph_node.title = tech.display_name
@@ -566,7 +566,7 @@ func _auto_layout_graph() -> void:
     branch_techs.sort_custom(func(a, b): return a.level_requirement < b.level_requirement)
     
     for i in range(branch_techs.size()):
-      var tech: TechNodeResource = branch_techs[i]
+      var tech: Resource_TechNode = branch_techs[i]
       if tech.id in graph_nodes:
         var graph_node = graph_nodes[tech.id]
         graph_node.position_offset = start_pos + Vector2(branch_index * column_width, i * row_height)
@@ -665,7 +665,7 @@ func _on_add_node_pressed() -> void:
       return
     
     # Create new tech node resource
-    var new_tech := TechNodeResource.new()
+    var new_tech := Resource_TechNode.new()
     new_tech.id = new_id
     new_tech.display_name = new_name
     new_tech.branch_name = new_branch
@@ -769,7 +769,7 @@ func _generate_markdown() -> String:
     # Sort by level
     branch_techs.sort_custom(func(a, b): return a.level_requirement < b.level_requirement)
     
-    for tech: TechNodeResource in branch_techs:
+    for tech: Resource_TechNode in branch_techs:
       md += "### %s (`%s`)\n\n" % [tech.display_name, tech.id]
       md += "- **Level Required:** %d\n" % tech.level_requirement
       md += "- **Description:** %s\n" % tech.description
@@ -1039,7 +1039,7 @@ func _on_save_inspector_pressed() -> void:
   _update_node_display(selected_tech_id)
   _show_inspector(selected_tech_id) # Refresh inspector
 
-func _save_tech_node(tech: TechNodeResource) -> void:
+func _save_tech_node(tech: Resource_TechNode) -> void:
   var file_path := TECH_TREE_PATH + tech.id + ".tres"
   
   # Ensure the resource has the correct path

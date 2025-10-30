@@ -1,5 +1,5 @@
 extends Control
-class_name FpsOverlay
+class_name UI_FpsOverlay
 
 ## UI component to display FPS and performance statistics
 ## Shows real-time performance metrics in a compact overlay

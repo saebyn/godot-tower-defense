@@ -1,5 +1,5 @@
 extends Control
-class_name SettingsMenu
+class_name UI_SettingsMenu
 
 ## Settings Menu UI
 ## Provides interface for adjusting video, audio, and input settings

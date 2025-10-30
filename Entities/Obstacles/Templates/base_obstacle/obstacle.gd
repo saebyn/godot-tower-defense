@@ -1,14 +1,14 @@
 @tool
 extends StaticBody3D
-class_name PlaceableObstacle
+class_name Entity_PlaceableObstacle
 
 @export var mesh_instances: Array[MeshInstance3D] = []:
   set(values):
     mesh_instances = values
     update_configuration_warnings()
 
-var health: Health
-var obstacle_type: ObstacleTypeResource
+var health: Component_Health
+var obstacle_type: Resource_ObstacleType
 var navigation_obstacle: NavigationObstacle3D
 
 func _get_configuration_warnings():

@@ -18,12 +18,12 @@ func after_each():
 
 func test_manager_queues_achievements():
   # Arrange
-  var achievement1 = AchievementResource.new()
+  var achievement1 = Resource_Achievement.new()
   achievement1.id = "test1"
   achievement1.name = "Achievement 1"
   achievement1.description = "First achievement"
   
-  var achievement2 = AchievementResource.new()
+  var achievement2 = Resource_Achievement.new()
   achievement2.id = "test2"
   achievement2.name = "Achievement 2"
   achievement2.description = "Second achievement"
@@ -46,12 +46,12 @@ func test_manager_handles_null_achievement():
 
 func test_clear_queue_removes_all_notifications():
   # Arrange
-  var achievement1 = AchievementResource.new()
+  var achievement1 = Resource_Achievement.new()
   achievement1.id = "test1"
   achievement1.name = "Achievement 1"
   achievement1.description = "First achievement"
   
-  var achievement2 = AchievementResource.new()
+  var achievement2 = Resource_Achievement.new()
   achievement2.id = "test2"
   achievement2.name = "Achievement 2"
   achievement2.description = "Second achievement"
@@ -67,12 +67,12 @@ func test_clear_queue_removes_all_notifications():
 
 func test_manager_shows_next_after_current_finishes():
   # Arrange
-  var achievement1 = AchievementResource.new()
+  var achievement1 = Resource_Achievement.new()
   achievement1.id = "test1"
   achievement1.name = "Achievement 1"
   achievement1.description = "First achievement"
   
-  var achievement2 = AchievementResource.new()
+  var achievement2 = Resource_Achievement.new()
   achievement2.id = "test2"
   achievement2.name = "Achievement 2"
   achievement2.description = "Second achievement"

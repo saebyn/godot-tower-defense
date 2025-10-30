@@ -51,11 +51,11 @@ func test_stats_label_updates_correctly():
 
 func test_sort_achievements_unlocked_first():
   # Arrange
-  var achievement1 = AchievementResource.new()
+  var achievement1 = Resource_Achievement.new()
   achievement1.id = "test1"
   achievement1.name = "B Achievement"
   
-  var achievement2 = AchievementResource.new()
+  var achievement2 = Resource_Achievement.new()
   achievement2.id = "test2"
   achievement2.name = "A Achievement"
   

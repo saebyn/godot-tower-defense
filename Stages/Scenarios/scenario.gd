@@ -1,4 +1,4 @@
-class_name Scenario
+class_name Stage_Scenario
 extends Node3D
 
 @export_category("References")

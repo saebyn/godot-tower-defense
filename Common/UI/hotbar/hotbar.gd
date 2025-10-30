@@ -6,9 +6,9 @@ Supports both mouse clicks and keyboard shortcuts for obstacle selection.
 Includes configuration capabilities to change which obstacles are in which slots.
 """
 extends Control
-class_name Hotbar
+class_name UI_Hotbar
 
-signal obstacle_selected(obstacle: ObstacleTypeResource)
+signal obstacle_selected(obstacle: Resource_ObstacleType)
 
 @export var max_slots: int = 6 # Maximum number of hotbar slots
 @export var slot_size: Vector2 = Vector2(64, 64) # Size of each hotbar slot
@@ -89,7 +89,7 @@ func _populate_default_hotbar() -> void:
   for i in range(max_slots):
     _update_slot_visual(i)
 
-func _get_obstacle_by_id(obstacle_id: String) -> ObstacleTypeResource:
+func _get_obstacle_by_id(obstacle_id: String) -> Resource_ObstacleType:
   """Get obstacle resource by ID from the registry"""
   if obstacle_id.is_empty() or not ObstacleRegistry:
     return null
@@ -207,7 +207,7 @@ func _on_obstacle_menu_item_selected(id: int) -> void:
   # Reset the configuring slot
   current_configuring_slot = -1
 
-func set_slot_obstacle(slot_index: int, obstacle: ObstacleTypeResource) -> void:
+func set_slot_obstacle(slot_index: int, obstacle: Resource_ObstacleType) -> void:
   """Set an obstacle for a specific slot"""
   if slot_index < 0 or slot_index >= max_slots:
     Logger.warn("Hotbar", "Invalid slot index: %d" % slot_index)
@@ -246,14 +246,14 @@ func _input(event: InputEvent) -> void:
     if slot_index >= 0:
       _on_slot_pressed(slot_index)
 
-func _on_obstacle_types_updated(added_types: Array[ObstacleTypeResource], removed_types: Array[ObstacleTypeResource]) -> void:
+func _on_obstacle_types_updated(added_types: Array[Resource_ObstacleType], removed_types: Array[Resource_ObstacleType]) -> void:
   Logger.info("Hotbar", "Obstacle types updated. Added: %d, Removed: %d" % [added_types.size(), removed_types.size()])
   
   # Update visuals for all slots to reflect changes
   for i in range(max_slots):
     _update_slot_visual(i)
 
-func get_slot_obstacle(slot_index: int) -> ObstacleTypeResource:
+func get_slot_obstacle(slot_index: int) -> Resource_ObstacleType:
   """Get the obstacle for a specific slot"""
   if slot_index < 0 or slot_index >= slot_obstacle_ids.size():
     return null

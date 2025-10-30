@@ -1,5 +1,5 @@
 extends Control
-class_name SpawnIndicator
+class_name UI_SpawnIndicator
 
 ## A UI component that displays information about wave spawning and progress
 

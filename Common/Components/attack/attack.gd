@@ -3,7 +3,7 @@
 # It checks if the target is valid and applies damage if possible.
 # The attack has a cooldown to prevent continuous damage application.
 extends Node
-class_name Attack
+class_name Component_Attack
 
 # Emitted immediately after a successful attack when cooldown begins.
 signal cooldown_started
@@ -42,7 +42,7 @@ func perform_attack(target: Node) -> AttackResult:
     if target.has_meta("health_component"):
       health = target.get_meta("health_component")
     
-    if health and health is Health:
+    if health and health is Component_Health:
       health.take_damage(damage_amount, damage_source)
       if audio_player:
         AudioManager.play_sound(audio_player, hit_sound)

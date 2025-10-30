@@ -1,5 +1,5 @@
 extends Control
-class_name CurrencyDisplay
+class_name UI_CurrencyDisplay
 
 ## UI component to display the player's current resources (scrap and XP)
 

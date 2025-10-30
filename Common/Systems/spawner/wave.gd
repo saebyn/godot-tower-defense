@@ -1,5 +1,5 @@
 extends Node3D
-class_name Wave
+class_name System_Wave
 
 ## A wave definition node that specifies enemies to spawn during a wave period
 ## Used as child nodes of EnemySpawner to define wave-based enemy spawning
@@ -11,7 +11,7 @@ class_name Wave
 @export var allow_overlap: bool = false ## If true, allows this wave to overlap with the next wave
 
 @export_group("Enemy Configuration")
-@export var enemy_types: Array[EnemyTypeResource] = [] ## Enemy types to spawn in this wave
+@export var enemy_types: Array[Resource_EnemyType] = [] ## Enemy types to spawn in this wave
 @export var enemy_counts: Array[int] = [] ## Number of each enemy type to spawn
 @export var spawn_interval: float = 2.0 ## Time between individual enemy spawns in seconds
 
@@ -21,14 +21,14 @@ const WAVE_OVERLAP_RECHECK_TIME: float = 1.0 ## Time to wait before rechecking f
 ## Internal state
 var _is_active: bool = false
 var _is_completed: bool = false
-var _enemies_to_spawn: Array[EnemyTypeResource] = [] ## Queue of enemies to spawn
+var _enemies_to_spawn: Array[Resource_EnemyType] = [] ## Queue of enemies to spawn
 var _spawn_timer: Timer
 var _wave_timer: Timer
 
 ## Signals
-signal wave_started(wave: Wave)
-signal wave_completed(wave: Wave)
-signal enemy_spawned(enemy: Node3D, wave: Wave)
+signal wave_started(wave: System_Wave)
+signal wave_completed(wave: System_Wave)
+signal enemy_spawned(enemy: Node3D, wave: System_Wave)
 
 func _ready() -> void:
   # Create and configure timers
@@ -103,11 +103,11 @@ func _spawn_next_enemy() -> void:
     Logger.debug("Spawner.Wave", "Max enemies reached, cannot spawn more right now")
     return
 
-  var enemy_type := _enemies_to_spawn.pop_front() as EnemyTypeResource
+  var enemy_type := _enemies_to_spawn.pop_front() as Resource_EnemyType
   
 
   # Let the parent spawner handle the actual instantiation and positioning
-  var spawner = get_parent() as EnemySpawner
+  var spawner = get_parent() as System_EnemySpawner
   if spawner:
     var enemy := spawner.spawn_enemy(enemy_type)
     enemy_spawned.emit(enemy, self)

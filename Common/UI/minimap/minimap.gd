@@ -18,7 +18,7 @@
 ## - Automatically finds game components
 ## - Configurable through exported properties
 extends Control
-class_name Minimap
+class_name UI_Minimap
 
 @export var minimap_size: Vector2 = Vector2(150, 150) ## Size of the minimap
 @export var minimap_position: Vector2 = Vector2(10, 10) ## Position from top-left corner
@@ -31,7 +31,7 @@ class_name Minimap
 @export var update_interval: float = 0.2 ## How often to update minimap
 
 @onready var camera: Camera3D
-@onready var enemy_spawner: EnemySpawner
+@onready var enemy_spawner: System_EnemySpawner
 
 # Minimap components
 var background_panel: Panel
@@ -103,8 +103,8 @@ func _find_camera(node: Node) -> Camera3D:
   return null
 
 func _find_enemy_spawner(node: Node) -> EnemySpawner:
-  if node is EnemySpawner:
-    return node as EnemySpawner
+  if node is System_EnemySpawner:
+    return node as System_EnemySpawner
   
   for child in node.get_children():
     var result = _find_enemy_spawner(child)

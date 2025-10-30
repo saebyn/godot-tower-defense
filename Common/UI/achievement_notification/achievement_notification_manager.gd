@@ -1,12 +1,12 @@
 extends CanvasLayer
-class_name AchievementNotificationManager
+class_name UI_AchievementNotificationManager
 
 ## Manages the queue and display of achievement notifications
 ## Ensures only one notification is displayed at a time
 
 const AchievementNotificationScene = preload("res://Common/UI/achievement_notification/achievement_notification.tscn")
 
-var notification_queue: Array[AchievementResource] = []
+var notification_queue: Array[Resource_Achievement] = []
 var current_notification: AchievementNotification = null
 var is_showing_notification: bool = false
 
@@ -19,7 +19,7 @@ func _ready() -> void:
     Logger.error("AchievementNotificationManager", "AchievementManager not found!")
 
 ## Handle achievement unlock events
-func _on_achievement_unlocked(achievement: AchievementResource) -> void:
+func _on_achievement_unlocked(achievement: Resource_Achievement) -> void:
   if not achievement:
     return
   

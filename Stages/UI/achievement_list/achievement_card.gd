@@ -1,5 +1,5 @@
 extends Control
-class_name AchievementCard
+class_name UI_AchievementCard
 
 ## Individual achievement card for the achievement list
 ## Shows achievement name, description, icon, and unlock status

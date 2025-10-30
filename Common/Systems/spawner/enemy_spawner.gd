@@ -1,5 +1,5 @@
 extends Node3D
-class_name EnemySpawner
+class_name System_EnemySpawner
 
 @export var spawn_areas: Array[MeshInstance3D] = []
 
@@ -27,7 +27,7 @@ func _detect_mode() -> void:
     # Check for Wave child nodes
     _waves.clear() # Clear in case of multiple calls
     for child in get_children():
-        if child is Wave:
+        if child is System_Wave:
             _waves.append(child)
     
     Logger.info("Spawner", "Using wave mode with %d waves" % _waves.size())
@@ -69,7 +69,7 @@ func _on_enemy_spawned_from_wave(enemy: Node3D, _wave: Wave) -> void:
     enemy_spawned.emit(enemy)
 
 
-func spawn_enemy(enemy_type: EnemyTypeResource) -> Node3D:
+func spawn_enemy(enemy_type: Resource_EnemyType) -> Node3D:
     var enemy = enemy_type.scene.instantiate()
 
     assert(enemy.has_method("load_resource"), "Enemy scene must have load_resource method")

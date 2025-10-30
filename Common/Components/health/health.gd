@@ -1,5 +1,5 @@
 extends Node
-class_name Health
+class_name Component_Health
 
 @export var hitpoints: int = 100
 

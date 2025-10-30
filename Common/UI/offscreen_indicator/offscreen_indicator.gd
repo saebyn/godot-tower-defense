@@ -16,7 +16,7 @@
 ## - Automatically finds camera and enemy spawner in scene tree
 ## - Configurable through exported properties
 extends Control
-class_name OffscreenIndicator
+class_name UI_OffscreenIndicator
 
 ## UI component that displays indicators for enemies outside the viewport
 ## Shows direction and count of offscreen enemies at screen edges
@@ -27,7 +27,7 @@ class_name OffscreenIndicator
 @export var indicator_texture: Texture2D ## Texture for the indicator dots
 
 @onready var camera: Camera3D
-@onready var enemy_spawner: EnemySpawner
+@onready var enemy_spawner: System_EnemySpawner
 
 # Indicator pools for reuse
 var indicator_pool: Array[Control] = []
@@ -74,8 +74,8 @@ func _find_camera(node: Node) -> Camera3D:
   return null
 
 func _find_enemy_spawner(node: Node) -> EnemySpawner:
-  if node is EnemySpawner:
-    return node as EnemySpawner
+  if node is System_EnemySpawner:
+    return node as System_EnemySpawner
   
   for child in node.get_children():
     var result = _find_enemy_spawner(child)

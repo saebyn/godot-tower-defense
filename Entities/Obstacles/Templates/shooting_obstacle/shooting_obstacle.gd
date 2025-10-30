@@ -1,6 +1,6 @@
 @tool
-extends PlaceableObstacle
-class_name ShootingObstacle
+extends Entity_PlaceableObstacle
+class_name Entity_ShootingObstacle
 
 @export var enemy_group: String = "enemies"
 @export var attack_range: float = 15.0

@@ -1,5 +1,5 @@
 extends Control
-class_name AchievementList
+class_name UI_AchievementList
 
 ## Achievement list screen that shows all achievements and their unlock status
 ## Can be opened from the main menu or pause menu

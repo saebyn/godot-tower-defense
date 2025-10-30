@@ -1,6 +1,6 @@
 extends Control
 
-class_name ScenarioSelect
+class_name UI_ScenarioSelect
 
 ## Scenario selection UI that displays available scenarios and handles scenario loading
 ## Shows completion status, best scores, and enforces unlock progression

@@ -1,4 +1,4 @@
-class_name PanicBehavior
+class_name Component_PanicBehavior
 extends Node
 
 ## Component that makes survivors panic and run around when enemies are nearby

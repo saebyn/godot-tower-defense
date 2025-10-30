@@ -1,5 +1,5 @@
 extends Node3D
-class_name ObstaclePreview
+class_name Utility_ObstaclePreview
 
 var placement_preview_node: Node3D
 var obstacle_type: ObstacleTypeResource
@@ -11,7 +11,7 @@ func _init(from_obstacle_type: ObstacleTypeResource):
 
 func _create_mesh_from_obstacle_type() -> void:
   # Extract just the mesh from the obstacle scene
-  var temp_obstacle: PlaceableObstacle = obstacle_type.scene.instantiate()
+  var temp_obstacle: Entity_PlaceableObstacle = obstacle_type.scene.instantiate()
   var temp_meshes = temp_obstacle.mesh_instances
 
   if not temp_meshes or temp_meshes.is_empty():

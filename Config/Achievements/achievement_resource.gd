@@ -1,4 +1,4 @@
-class_name AchievementResource
+class_name Resource_Achievement
 extends Resource
 
 ## Resource class defining individual achievements

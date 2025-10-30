@@ -1,4 +1,4 @@
-class_name EnemyTypeResource
+class_name Resource_EnemyType
 extends Resource
 
 @export_category("Basic Properties")

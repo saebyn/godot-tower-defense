@@ -1,5 +1,5 @@
 extends HBoxContainer
-class_name KeybindButton
+class_name UI_KeybindButton
 
 ## Keybind Button - Displays and allows rebinding of input actions
 

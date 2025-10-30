@@ -1,5 +1,5 @@
 extends AcceptDialog
-class_name VideoSettingsConfirmDialog
+class_name UI_VideoSettingsConfirmDialog
 
 ## Confirmation dialog for video settings changes with auto-revert timer
 

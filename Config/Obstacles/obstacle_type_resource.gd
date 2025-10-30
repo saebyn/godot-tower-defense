@@ -1,5 +1,5 @@
 extends Resource
-class_name ObstacleTypeResource
+class_name Resource_ObstacleType
 
 enum ObstacleCategory {
     BASIC

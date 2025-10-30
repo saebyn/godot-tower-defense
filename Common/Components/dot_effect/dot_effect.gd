@@ -1,6 +1,6 @@
 @tool
 extends Area3D
-class_name DotEffect
+class_name Component_DotEffect
 
 ## Applies damage over time to enemies within the area.
 ## Useful for electric fences, poison clouds, fire zones, acid pools, etc.
@@ -86,7 +86,7 @@ func _on_tick():
 		if target.has_meta("health_component"):
 			health = target.get_meta("health_component")
 		
-		if health and health is Health:
+		if health and health is Component_Health:
 			health.take_damage(damage_per_tick, damage_source)
 			dot_applied.emit(target, damage_per_tick)
 			Logger.trace("DotEffect", "Applied %d DoT damage to %s" % [damage_per_tick, target.name])
