@@ -92,7 +92,7 @@ func test_completing_scenario_unlocks_next_scenario_before_victory_screen():
   ScenarioManager.mark_scenario_complete("scenario_1")
   
   # Assert - Level 2 should be unlocked BEFORE we transition to victory state
-  assert_true(ScenarioManager.is_scenario_unlocked("scenario_2"), "Level 2 should be unlocked immediately")
+  assert_true(ScenarioManager.is_scenario_unlocked("scenario_2"), "scenario 2 should be unlocked immediately")
   assert_signal_emitted(ScenarioManager, "scenario_unlocked", "scenario unlock signal should emit")
   
   # Now transition to victory state (UI layer)
