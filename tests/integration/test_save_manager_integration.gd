@@ -237,3 +237,25 @@ func test_save_metadata():
   assert_eq(metadata.get("player_level"), player_level, "Player level should match")
   assert_eq(metadata.get("last_scenario"), "scenario_2", "Last scenario should match")
   assert_true(metadata.has("timestamp"), "Should have timestamp")
+
+## Test: Current scenario ID is restored when loading save
+func test_restore_current_scenario_on_load():
+  # Create fresh game and set a scenario
+  SaveManager.create_new_game(TEST_SLOT_1)
+  ScenarioManager.set_current_scenario_id("scenario_2")
+  var expected_scenario = "scenario_2"
+  
+  # Save
+  SaveManager.save_current_slot()
+  
+  # Create a different game to clear the scenario
+  SaveManager.create_new_game(TEST_SLOT_2)
+  ScenarioManager.clear_current_scenario()
+  assert_eq(ScenarioManager.get_current_scenario_id(), "", "Scenario should be cleared")
+  
+  # Load the original save
+  var success = SaveManager.load_save_slot(TEST_SLOT_1)
+  
+  # Verify scenario was restored
+  assert_true(success, "Load should succeed")
+  assert_eq(ScenarioManager.get_current_scenario_id(), expected_scenario, "Current scenario should be restored from save")

@@ -73,7 +73,7 @@ func _find_camera(node: Node) -> Camera3D:
   
   return null
 
-func _find_enemy_spawner(node: Node) -> EnemySpawner:
+func _find_enemy_spawner(node: Node) -> System_EnemySpawner:
   if node is System_EnemySpawner:
     return node as System_EnemySpawner
   

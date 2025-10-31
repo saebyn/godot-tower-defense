@@ -79,6 +79,10 @@ func _on_achievement_list_closed():
   Logger.debug("MainMenu", "Achievement list closed")
   achievement_list_ui = null
 
+func _on_load_game_button_pressed():
+  Logger.info("MainMenu", "Load Game button pressed - transitioning to save slot selection")
+  _show_save_slot_selection()
+
 func _on_exit_button_pressed():
   Logger.info("MainMenu", "Exit button pressed - quitting game")
   get_tree().quit()
@@ -108,3 +112,12 @@ func _show_scenario_select():
   var error = get_tree().change_scene_to_file(scenario_select_path)
   if error != OK:
     Logger.error("MainMenu", "Failed to load scenario select scene: %s (Error: %d)" % [scenario_select_path, error])
+
+## Show save slot selection screen
+func _show_save_slot_selection():
+  var save_slot_path = "res://Stages/UI/save_slot_selection/save_slot_selection.tscn"
+  Logger.info("MainMenu", "Loading save slot selection scene: %s" % save_slot_path)
+  
+  var error = get_tree().change_scene_to_file(save_slot_path)
+  if error != OK:
+    Logger.error("MainMenu", "Failed to load save slot selection scene: %s (Error: %d)" % [save_slot_path, error])

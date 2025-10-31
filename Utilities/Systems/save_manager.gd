@@ -34,9 +34,14 @@ const DEFAULT_SLOT = 1 # Default slot to use when no slot selection UI exists
 const SAVE_SLOT_DIR = "user://saves/"
 const SAVE_SLOT_PATH = "user://saves/save_slot_%d.save"
 const SAVE_SLOT_BACKUP_PATH = "user://saves/save_slot_%d.save.bak"
+const SAVE_SLOT_SCREENSHOT_PATH = "user://saves/save_slot_%d_screenshot.png"
 const GLOBAL_SAVE_PATH = "user://global.save"
 const GLOBAL_SAVE_BACKUP_PATH = "user://global.save.bak"
 const SAVE_VERSION = 1
+
+# Screenshot configuration
+const SCREENSHOT_WIDTH = 320 # Thumbnail width
+const SCREENSHOT_HEIGHT = 180 # Thumbnail height (16:9 aspect ratio)
 
 # Auto-save configuration
 const AUTO_SAVE_INTERVAL = 300.0 # 5 minutes in seconds
@@ -154,6 +159,12 @@ func load_save_slot(slot_number: int) -> bool:
   slot_playtime = metadata.get("playtime", 0.0)
   slot_start_time = Time.get_ticks_msec() / 1000.0
   
+  # Restore current scenario from metadata
+  var last_scenario = metadata.get("last_scenario", "")
+  if not last_scenario.is_empty() and ScenarioManager:
+    ScenarioManager.set_current_scenario_id(last_scenario)
+    Logger.info("SaveManager", "Restored current scenario: %s" % last_scenario)
+  
   Logger.info("SaveManager", "Successfully loaded save slot %d" % slot_number)
   load_completed.emit()
   return true
@@ -211,6 +222,9 @@ func save_current_slot() -> void:
   var backup_path = SAVE_SLOT_BACKUP_PATH % current_save_slot
   
   if _save_json_file_atomic(slot_path, backup_path, save_data):
+    # Capture and save screenshot after successful save
+    _capture_screenshot(current_save_slot)
+    
     Logger.info("SaveManager", "Successfully saved slot %d" % current_save_slot)
     save_completed.emit()
   else:
@@ -304,6 +318,9 @@ func delete_save_slot(slot_number: int) -> bool:
       Logger.warn("SaveManager", "Failed to delete backup file: %s" % backup_filename)
     else:
       Logger.debug("SaveManager", "Deleted backup file: %s" % backup_filename)
+  
+  # Delete screenshot
+  _delete_screenshot(slot_number)
   
   if success:
     Logger.info("SaveManager", "Deleted save slot %d" % slot_number)
@@ -475,3 +492,63 @@ func _save_json_file_atomic(primary_path: String, backup_path: String, data: Dic
     return false
   
   return true
+
+## Helper: Capture screenshot for save slot
+## Captures the current viewport and saves it as a thumbnail
+func _capture_screenshot(slot_number: int) -> void:
+  # Get the current viewport
+  var viewport = get_viewport()
+  if not viewport:
+    Logger.warn("SaveManager", "Could not get viewport for screenshot")
+    return
+  
+  # Wait one frame to ensure frame is rendered
+  await get_tree().process_frame
+  
+  # Get the viewport texture
+  var img = viewport.get_texture().get_image()
+  if not img:
+    Logger.warn("SaveManager", "Could not get viewport image for screenshot")
+    return
+  
+  # Resize to thumbnail size
+  img.resize(SCREENSHOT_WIDTH, SCREENSHOT_HEIGHT, Image.INTERPOLATE_LANCZOS)
+  
+  # Save as PNG
+  var screenshot_path = SAVE_SLOT_SCREENSHOT_PATH % slot_number
+  var error = img.save_png(screenshot_path)
+  
+  if error != OK:
+    Logger.warn("SaveManager", "Failed to save screenshot for slot %d: error %d" % [slot_number, error])
+  else:
+    Logger.debug("SaveManager", "Saved screenshot for slot %d" % slot_number)
+
+## Helper: Load screenshot for save slot
+## Returns ImageTexture or null if screenshot doesn't exist
+func get_slot_screenshot(slot_number: int) -> ImageTexture:
+  var screenshot_path = SAVE_SLOT_SCREENSHOT_PATH % slot_number
+  
+  if not FileAccess.file_exists(screenshot_path):
+    Logger.debug("SaveManager", "No screenshot found for slot %d" % slot_number)
+    return null
+  
+  var img = Image.load_from_file(screenshot_path)
+  if not img:
+    Logger.warn("SaveManager", "Failed to load screenshot for slot %d" % slot_number)
+    return null
+  
+  var texture = ImageTexture.create_from_image(img)
+  return texture
+
+## Helper: Delete screenshot for save slot
+func _delete_screenshot(slot_number: int) -> void:
+  var screenshot_path = SAVE_SLOT_SCREENSHOT_PATH % slot_number
+  
+  if FileAccess.file_exists(screenshot_path):
+    var dir = DirAccess.open("user://saves/")
+    if dir:
+      var filename = screenshot_path.get_file()
+      if dir.remove(filename) == OK:
+        Logger.debug("SaveManager", "Deleted screenshot for slot %d" % slot_number)
+      else:
+        Logger.warn("SaveManager", "Failed to delete screenshot for slot %d" % slot_number)
