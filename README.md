@@ -50,6 +50,11 @@ Come hang out, watch the chaos unfold, and see how the sausage gets made! You mi
 - **[Game Design Document](docs/zom_nom_defense_gdd.md)** - Complete vision for the game
 - **[Task Planning](docs/task_planning.md)** - Development roadmap (56 issues across 6 phases)
 - **[Tech Tree Design](docs/tech_tree_exclusive_branches.md)** - Mutually exclusive branch system
+- **[Tech Tree Manager Implementation](docs/TECH_TREE_MANAGER_IMPLEMENTATION.md)** - Complete tech tree system docs
+- **[Tech Tree UI Implementation](docs/TECH_TREE_UI_IMPLEMENTATION.md)** - UI implementation details
+- **[Achievement UI Implementation](docs/ACHIEVEMENT_UI_IMPLEMENTATION.md)** - Achievement system UI
+- **[Obstacle Tech Tree Integration](docs/obstacle_tech_tree_integration.md)** - How obstacles unlock via tech
+- **[Color Palette](docs/COLOR_PALETTE.md)** - UI color scheme and theme
 - **[Logging System](docs/LOGGING.md)** - How the Logger autoload works
 
 ---
@@ -68,19 +73,23 @@ Come hang out, watch the chaos unfold, and see how the sausage gets made! You mi
 - ✅ UI framework (hotbar, currency display, stats tracking)
 - ✅ **Centralized save system with multi-slot support** (SaveManager)
 - ✅ **Player progression persistence** (currency, stats, levels, tech tree)
+- ✅ **Achievement system** with toast notifications and full achievement list UI
+- ✅ **Tech tree system** with mutually exclusive branches and unlock conditions
+- ✅ **Tech tree UI** with visual node states and unlock interface
+- ✅ **Obstacle unlocking via tech tree** (dynamic availability based on research)
+- ✅ **Save slot selection UI** (create, load, delete, manage multiple saves)
+- ✅ **Color palette** and theme standardization across UI
 
 **What's Coming Next** (see [Task Planning](docs/task_planning.md)):
-- 🔜 Achievement system (unlock tech via gameplay)
-- 🔜 Tech tree with mutually exclusive branches
-- 🔜 Save slot selection UI (load/delete/manage slots)
-- 🔜 Multiple levels with absurd scenarios
+- 🔜 Multiple levels with absurd scenarios (Level 2+)
 - 🔜 Tower upgrades (3-5 tiers with visual progression)
 - 🔜 Support towers (buff nearby turrets)
 - 🔜 Challenge modes and endless mode
 - 🔜 More enemy variety (Scouts, Tanks, Sprinters, Bosses) and more complex AI
 - 🔜 Twitch integration for audience interaction
 - 🔜 Polish: sound effects, music, visual effects
-- 🔜 Minimap
+- 🔜 Tutorial/onboarding experience
+- 🔜 Lo-fi visual style pass
 
 ---
 
@@ -278,13 +287,15 @@ This structure supports the game's progression systems (achievements, tech trees
 
 This is a **part-time passion project** worked on inconsistently. No timeline expectations - just methodical progress through well-defined phases.
 
-**Current Phase**: Phase 1 - Foundation Systems (achievements, tech tree, player progression persistence)
+**Current Phase**: Phase 2 - Content Expansion (tower upgrades, support towers, enemy variety)
+
+**Phase 1 Complete** ✅: Foundation systems (achievements, tech tree, save system) are fully implemented.
 
 See the [Task Planning](docs/task_planning.md) document for the complete roadmap.
 
-**Technical Foundation**: Solid component architecture, resource-based configuration, autoload singletons for game state management.
+**Technical Foundation**: Solid component architecture, resource-based configuration, autoload singletons for game state management, comprehensive save system with multi-slot support.
 
-**Content Status**: Core systems functional, progression mechanics in development, content creation ongoing.
+**Content Status**: Core systems functional, progression mechanics fully implemented, content creation ongoing.
 
 ---
 
