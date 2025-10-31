@@ -88,7 +88,7 @@ func test_completing_scenario_unlocks_next_scenario_before_victory_screen():
   assert_false(ScenarioManager.is_scenario_unlocked("scenario_2"), "Level 2 should be locked")
   watch_signals(ScenarioManager)
   
-  # Act - Simulate Level._on_all_waves_completed() flow
+  # Act - Simulate Scenario._on_all_waves_completed() flow
   ScenarioManager.mark_scenario_complete("scenario_1")
   
   # Assert - Level 2 should be unlocked BEFORE we transition to victory state
