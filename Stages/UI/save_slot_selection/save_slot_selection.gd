@@ -26,9 +26,6 @@ func _ready():
   # Make sure the game is not paused
   get_tree().paused = false
   
-  # Connect signals
-  back_button.pressed.connect(_on_back_button_pressed)
-  
   # Populate slot list
   _populate_slots()
 
