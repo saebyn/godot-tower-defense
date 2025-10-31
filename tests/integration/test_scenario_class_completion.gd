@@ -107,7 +107,7 @@ func test_scenario_completion_data_persists_across_state_changes():
   var scenario_id = "scenario_3"
   ScenarioManager.set_current_scenario_id(scenario_id)
   
-  # Act - Complete level and change states multiple times
+  # Act - Complete scenario and change states multiple times
   ScenarioManager.mark_scenario_complete(scenario_id, 120.5, 1000)
   GameManager.set_game_state(GameManager.GameState.VICTORY)
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
