@@ -72,7 +72,7 @@ layout_mode = 2
 text = "START GAME"
 
 [node name="Spacer2" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
 [node name="LoadGameButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]
@@ -81,7 +81,7 @@ layout_mode = 2
 text = "LOAD GAME"
 
 [node name="Spacer2a" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
 [node name="ScenarioSelectButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]
@@ -90,16 +90,7 @@ layout_mode = 2
 text = "LEVEL SELECT"
 
 [node name="Spacer2b" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-
-[node name="TechTreeButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-text = "TECH TREE"
-
-[node name="Spacer2c" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
 [node name="AchievementsButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]
@@ -117,7 +108,7 @@ layout_mode = 2
 text = "SETTINGS"
 
 [node name="Spacer3" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
 [node name="ExitButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]
@@ -137,7 +128,6 @@ bus = &"Music"
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/LoadGameButton" to="." method="_on_load_game_button_pressed"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/ScenarioSelectButton" to="." method="_on_scenario_select_button_pressed"]
-[connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/TechTreeButton" to="." method="_on_tech_tree_button_pressed"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/AchievementsButton" to="." method="_on_achievements_button_pressed"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/ExitButton" to="." method="_on_exit_button_pressed"]

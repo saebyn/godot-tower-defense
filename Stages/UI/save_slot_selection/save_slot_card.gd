@@ -11,6 +11,11 @@ signal slot_deleted(slot_number: int)
 # Month names for date formatting
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
+# Placeholder texture for empty slots
+const PLACEHOLDER_TEXTURE = preload("res://Assets/Icons/new_placeholder_texture_2d.tres")
+
+@onready var screenshot_container = $MarginContainer/HBoxContainer/ScreenshotContainer
+@onready var screenshot_rect = $MarginContainer/HBoxContainer/ScreenshotContainer/ScreenshotRect
 @onready var slot_name_label = $MarginContainer/HBoxContainer/LeftContainer/SlotNameLabel
 @onready var slot_info_label = $MarginContainer/HBoxContainer/LeftContainer/SlotInfoLabel
 @onready var slot_details_label = $MarginContainer/HBoxContainer/LeftContainer/SlotDetailsLabel
@@ -29,6 +34,9 @@ func configure(slot_num: int, metadata: Dictionary):
   
   # Set slot name
   slot_name_label.text = "Slot %d" % slot_number
+  
+  # Load and display screenshot if available
+  _load_screenshot()
   
   if is_corrupted:
     # Handle corrupted save
@@ -79,6 +87,19 @@ func _get_month_name(month: int) -> String:
   if month >= 1 and month <= 12:
     return MONTH_NAMES[month - 1]
   return "???"
+
+## Load screenshot for this save slot
+func _load_screenshot():
+  var screenshot = SaveManager.get_slot_screenshot(slot_number)
+  
+  if screenshot:
+    # Use actual screenshot
+    screenshot_rect.texture = screenshot
+    screenshot_container.visible = true
+  else:
+    # Use placeholder for empty slots
+    screenshot_rect.texture = PLACEHOLDER_TEXTURE
+    screenshot_container.visible = true
 
 ## Handle action button press (New Game or Continue)
 func _on_action_button_pressed():

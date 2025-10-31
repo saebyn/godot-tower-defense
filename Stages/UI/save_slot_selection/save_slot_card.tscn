@@ -4,7 +4,7 @@
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
 
 [node name="SaveSlotCard" type="PanelContainer"]
-custom_minimum_size = Vector2(600, 120)
+custom_minimum_size = Vector2(700, 120)
 theme = ExtResource("2_theme")
 script = ExtResource("1_card_script")
 
@@ -18,6 +18,15 @@ theme_override_constants/margin_bottom = 10
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
+
+[node name="ScreenshotContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(160, 90)
+layout_mode = 2
+
+[node name="ScreenshotRect" type="TextureRect" parent="MarginContainer/HBoxContainer/ScreenshotContainer"]
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
 
 [node name="LeftContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
