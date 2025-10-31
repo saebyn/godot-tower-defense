@@ -99,7 +99,7 @@ func test_completing_scenario_unlocks_next_scenario_before_victory_screen():
   GameManager.set_game_state(GameManager.GameState.VICTORY)
   
   # Level 2 should still be unlocked
-  assert_true(ScenarioManager.is_scenario_unlocked("scenario_2"), "Level 2 should remain unlocked")
+  assert_true(ScenarioManager.is_scenario_unlocked("scenario_2"), "scenario 2 should remain unlocked")
 
 func test_scenario_completion_data_persists_across_state_changes():
   # Verify that level completion isn't lost when changing game states
