@@ -1,14 +1,15 @@
-[gd_scene load_steps=6 format=3 uid="uid://dcw0hfnkb8jpt"]
+[gd_scene load_steps=7 format=3 uid="uid://dcw0hfnkb8jpt"]
 
+[ext_resource type="Texture2D" uid="uid://dtci5njcdxhnv" path="res://Assets/Icons/icon.svg" id="1_icon"]
 [ext_resource type="Script" uid="uid://bor5bken0xt0" path="res://Stages/UI/main_menu/main_menu.gd" id="1_j5t8x"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
 [ext_resource type="AudioStream" uid="uid://besdcxihxcckh" path="res://Assets/Audio/Music/battleThemeA.mp3" id="3_l55nh"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_title"]
 font_size = 36
-font_color = Color(0.239, 0.761, 0.757, 1)
+font_color = Color(0.949, 0.655, 0.353, 1)
 outline_size = 2
-outline_color = Color(0.239, 0.184, 0.251, 0.8)
+outline_color = Color(0.102, 0.122, 0.18, 0.8)
 
 [sub_resource type="AudioStreamPlaylist" id="AudioStreamPlaylist_ptjlr"]
 shuffle = true
@@ -32,7 +33,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.235, 0.259, 0.231, 1)
+color = Color(0.172, 0.29, 0.306, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
@@ -43,7 +44,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="MenuPanel" type="Panel" parent="CenterContainer"]
-custom_minimum_size = Vector2(400, 586.775)
+custom_minimum_size = Vector2(400, 621.995)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MenuPanel"]
@@ -56,14 +57,26 @@ anchor_bottom = 0.9
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TitleLabel" type="Label" parent="CenterContainer/MenuPanel/VBoxContainer"]
+[node name="LogoContainer" type="VBoxContainer" parent="CenterContainer/MenuPanel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="IconTexture" type="TextureRect" parent="CenterContainer/MenuPanel/VBoxContainer/LogoContainer"]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("1_icon")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/MenuPanel/VBoxContainer/LogoContainer"]
 layout_mode = 2
 text = "Zom Nom Defense"
 label_settings = SubResource("LabelSettings_title")
 horizontal_alignment = 1
 
 [node name="Spacer1" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 
 [node name="StartButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]

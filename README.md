@@ -1,4 +1,8 @@
-# Zom Nom Defense: Click. Aim. Survive.
+<div align="center">
+  <img src="Assets/Icons/icon.svg" alt="Zom Nom Defense Icon" width="128" height="128">
+  
+  # Zom Nom Defense: Click. Aim. Survive.
+</div>
 
 A lighthearted zombie tower defense game with a click-to-kill twist, built with Godot 4.
 
