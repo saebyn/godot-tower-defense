@@ -552,4 +552,3 @@ func _delete_screenshot(slot_number: int) -> void:
         Logger.debug("SaveManager", "Deleted screenshot for slot %d" % slot_number)
       else:
         Logger.warn("SaveManager", "Failed to delete screenshot for slot %d" % slot_number)
-
