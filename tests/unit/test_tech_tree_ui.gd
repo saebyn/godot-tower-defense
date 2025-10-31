@@ -4,7 +4,7 @@ extends GutTest
 ## Tests tech tree UI initialization, node selection, and unlock functionality
 
 var tech_tree_scene = preload("res://Stages/UI/tech_tree/tech_tree.tscn")
-var tech_tree: TechTree
+var tech_tree: UI_TechTree
 
 func before_each():
 	# Reset the TechTreeManager state before each test
@@ -88,7 +88,7 @@ func test_tech_node_card_state_updates_on_unlock():
 	await wait_frames(2)
 	
 	# Assert - card state should update
-	assert_eq(card.current_state, TechNodeCard.NodeState.UNLOCKED, "Card should show as unlocked")
+	assert_eq(card.current_state, UI_TechNodeCard.NodeState.UNLOCKED, "Card should show as unlocked")
 
 func test_tech_node_card_state_updates_on_lock():
 	# Arrange
@@ -102,7 +102,7 @@ func test_tech_node_card_state_updates_on_lock():
 	# Assert - mutually exclusive tech card should update
 	var molotov_card = tech_tree.tech_node_cards.get("tur_molotov_mortar")
 	if molotov_card:
-		assert_eq(molotov_card.current_state, TechNodeCard.NodeState.PERMANENTLY_LOCKED, "Card should show as permanently locked")
+		assert_eq(molotov_card.current_state, UI_TechNodeCard.NodeState.PERMANENTLY_LOCKED, "Card should show as permanently locked")
 
 func test_tech_tree_displays_all_branches():
 	# Assert - check that all expected branches are represented

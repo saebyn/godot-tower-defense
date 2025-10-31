@@ -3,7 +3,7 @@ extends GutTest
 ## Unit tests for AchievementNotification component
 
 var notification_scene = preload("res://Common/UI/achievement_notification/achievement_notification.tscn")
-var notification: AchievementNotification = null
+var notification: UI_AchievementNotification = null
 
 func before_each():
   # Instantiate notification for each test
@@ -23,7 +23,7 @@ func test_notification_starts_hidden():
 
 func test_notification_shows_achievement_data():
   # Arrange
-  var achievement = AchievementResource.new()
+  var achievement = Resource_Achievement.new()
   achievement.id = "test_achievement"
   achievement.name = "Test Achievement"
   achievement.description = "This is a test achievement"
@@ -46,7 +46,7 @@ func test_notification_handles_null_achievement():
 
 func test_notification_emits_finished_signal():
   # Arrange
-  var achievement = AchievementResource.new()
+  var achievement = Resource_Achievement.new()
   achievement.id = "test_achievement"
   achievement.name = "Test Achievement"
   achievement.description = "Test description"
@@ -62,7 +62,7 @@ func test_notification_emits_finished_signal():
 
 func test_force_hide_stops_timers():
   # Arrange
-  var achievement = AchievementResource.new()
+  var achievement = Resource_Achievement.new()
   achievement.id = "test_achievement"
   achievement.name = "Test Achievement"
   achievement.description = "Test description"

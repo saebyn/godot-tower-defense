@@ -1,6 +1,6 @@
 extends Button
 
-@export var spawnable: ObstacleTypeResource
+@export var spawnable: Resource_ObstacleType
 @onready var ui: Node = $"../.."
 
 func _on_pressed() -> void:

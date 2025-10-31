@@ -1,4 +1,4 @@
-class_name Scrap
+class_name Entity_Scrap
 extends Node3D
 
 @export_group("Scrap Settings")

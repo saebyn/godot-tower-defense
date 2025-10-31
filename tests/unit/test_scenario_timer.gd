@@ -4,7 +4,7 @@ extends GutTest
 ## Tests accurate time tracking, pause handling, and integration with scenario completion
 
 # Mock EnemySpawner for testing
-class MockEnemySpawner extends EnemySpawner:
+class MockEnemySpawner extends System_EnemySpawner:
   var _mock_wave_number: int = 1
   
   func get_current_wave_number() -> int:
@@ -15,7 +15,7 @@ class MockEnemySpawner extends EnemySpawner:
     pass
 
 # Test-specific Scenario class that allows controlling pause state  
-class TestScenario extends Scenario:
+class TestScenario extends Stage_Scenario:
   var _test_is_paused: bool = false
   
   func _is_paused() -> bool:

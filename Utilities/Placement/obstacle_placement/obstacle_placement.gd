@@ -1,5 +1,5 @@
 extends Node3D
-class_name ObstaclePlacement
+class_name Utility_ObstaclePlacement
 
 const ObstaclePreviewScene = preload("res://Utilities/Placement/obstacle_preview.gd")
 
@@ -26,8 +26,8 @@ var busy: bool:
   get:
     return _preview != null
 
-var _place_obstacle_type: ObstacleTypeResource = null
-var _preview: ObstaclePreview = null
+var _place_obstacle_type: Resource_ObstacleType = null
+var _preview: Utility_ObstaclePreview = null
 var _valid_material: StandardMaterial3D
 var _invalid_material: StandardMaterial3D
 
@@ -81,23 +81,23 @@ func _input(event: InputEvent) -> void:
     _project_placed_obstacle(event.position)
 
 
-func _validate_placement(target_position: Vector3) -> PlacementResult:
+func _validate_placement(target_position: Vector3) -> Utility_PlacementResult:
   if not _preview:
-    return PlacementResult.new(false, PlacementResult.ValidationError.NO_PLACEABLE_OBSTACLE, "No obstacle selected for placement")
+    return Utility_PlacementResult.new(false, Utility_PlacementResult.ValidationError.NO_PLACEABLE_OBSTACLE, "No obstacle selected for placement")
   
   if _has_obstacle_collision(target_position):
-    return PlacementResult.new(false, PlacementResult.ValidationError.OBSTACLE_COLLISION, "Collision with existing obstacle")
+    return Utility_PlacementResult.new(false, Utility_PlacementResult.ValidationError.OBSTACLE_COLLISION, "Collision with existing obstacle")
   
   if not _has_terrain_support(target_position):
-    return PlacementResult.new(false, PlacementResult.ValidationError.NO_TERRAIN_SUPPORT, "No valid terrain support")
+    return Utility_PlacementResult.new(false, Utility_PlacementResult.ValidationError.NO_TERRAIN_SUPPORT, "No valid terrain support")
   
   if not _has_sufficient_clearance(target_position):
-    return PlacementResult.new(false, PlacementResult.ValidationError.INSUFFICIENT_CLEARANCE, "Insufficient clearance from other obstacles")
+    return Utility_PlacementResult.new(false, Utility_PlacementResult.ValidationError.INSUFFICIENT_CLEARANCE, "Insufficient clearance from other obstacles")
 
   if CurrencyManager.get_scrap() < _place_obstacle_type.cost:
-    return PlacementResult.new(false, PlacementResult.ValidationError.INSUFFICIENT_FUNDS, "Insufficient funds to place obstacle")
+    return Utility_PlacementResult.new(false, Utility_PlacementResult.ValidationError.INSUFFICIENT_FUNDS, "Insufficient funds to place obstacle")
   
-  return PlacementResult.new(true)
+  return Utility_PlacementResult.new(true)
 
 func _is_placement_valid(target_position: Vector3) -> bool:
   var result = _validate_placement(target_position)
@@ -106,17 +106,17 @@ func _is_placement_valid(target_position: Vector3) -> bool:
     Logger.debug("Placement", "Invalid placement: %s" % result.error_message)
     # Debug information about why placement failed
     match result.error:
-      PlacementResult.ValidationError.NO_PLACEABLE_OBSTACLE:
+      Utility_PlacementResult.ValidationError.NO_PLACEABLE_OBSTACLE:
         Logger.debug("Placement", "  - No placeable obstacle selected")
-      PlacementResult.ValidationError.OUTSIDE_NAVIGATION_REGION:
+      Utility_PlacementResult.ValidationError.OUTSIDE_NAVIGATION_REGION:
         Logger.debug("Placement", "  - Outside navigation region")
-      PlacementResult.ValidationError.OBSTACLE_COLLISION:
+      Utility_PlacementResult.ValidationError.OBSTACLE_COLLISION:
         Logger.debug("Placement", "  - Collision with existing obstacle")
-      PlacementResult.ValidationError.NO_TERRAIN_SUPPORT:
+      Utility_PlacementResult.ValidationError.NO_TERRAIN_SUPPORT:
         Logger.debug("Placement", "  - Invalid terrain support")
-      PlacementResult.ValidationError.INSUFFICIENT_CLEARANCE:
+      Utility_PlacementResult.ValidationError.INSUFFICIENT_CLEARANCE:
         Logger.debug("Placement", "  - Insufficient clearance")
-      PlacementResult.ValidationError.INSUFFICIENT_FUNDS:
+      Utility_PlacementResult.ValidationError.INSUFFICIENT_FUNDS:
         Logger.debug("Placement", "  - Insufficient funds")
 
   return result.is_valid
@@ -205,7 +205,7 @@ func _has_sufficient_clearance(target_position: Vector3) -> bool:
 
   return space_state.intersect_shape(query).size() == 0
 
-func _on_obstacle_spawn_requested(obstacle: ObstacleTypeResource) -> void:
+func _on_obstacle_spawn_requested(obstacle: Resource_ObstacleType) -> void:
   Logger.info("Placement", "Spawn obstacle button pressed for: %s" % obstacle.name)
 
   if busy:
@@ -243,7 +243,7 @@ func _place_obstacle() -> void:
   _preview = null
   
   # Now instantiate the real obstacle
-  var real_obstacle = _place_obstacle_type.scene.instantiate() as PlaceableObstacle
+  var real_obstacle = _place_obstacle_type.scene.instantiate() as Entity_PlaceableObstacle
   real_obstacle.global_position = preview_position
   real_obstacle.rotation = preview_rotation
   real_obstacle.obstacle_type = _place_obstacle_type

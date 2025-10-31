@@ -1,5 +1,5 @@
 extends Node3D
-class_name EnemySpawner
+class_name System_EnemySpawner
 
 @export var spawn_areas: Array[MeshInstance3D] = []
 
@@ -12,8 +12,8 @@ var _waves: Array[Wave] = []
 var _current_wave_index: int = 0
 
 # Signals for wave system
-signal wave_started(wave: Wave)
-signal wave_completed(wave: Wave)
+signal wave_started(wave: System_Wave)
+signal wave_completed(wave: System_Wave)
 signal all_waves_completed()
 signal enemy_spawned(enemy: Node3D)
 
@@ -27,7 +27,7 @@ func _detect_mode() -> void:
     # Check for Wave child nodes
     _waves.clear() # Clear in case of multiple calls
     for child in get_children():
-        if child is Wave:
+        if child is System_Wave:
             _waves.append(child)
     
     Logger.info("Spawner", "Using wave mode with %d waves" % _waves.size())
@@ -54,10 +54,10 @@ func _start_next_wave() -> void:
     Logger.info("Spawner", "Starting wave %d" % (_current_wave_index + 1))
     wave.start_wave()
 
-func _on_wave_started(wave: Wave) -> void:
+func _on_wave_started(wave: System_Wave) -> void:
     wave_started.emit(wave)
 
-func _on_wave_completed(wave: Wave) -> void:
+func _on_wave_completed(wave: System_Wave) -> void:
     wave_completed.emit(wave)
     _current_wave_index += 1
     
@@ -65,11 +65,11 @@ func _on_wave_completed(wave: Wave) -> void:
     await get_tree().create_timer(1.0).timeout
     _start_next_wave()
 
-func _on_enemy_spawned_from_wave(enemy: Node3D, _wave: Wave) -> void:
+func _on_enemy_spawned_from_wave(enemy: Node3D, _wave: System_Wave) -> void:
     enemy_spawned.emit(enemy)
 
 
-func spawn_enemy(enemy_type: EnemyTypeResource) -> Node3D:
+func spawn_enemy(enemy_type: Resource_EnemyType) -> Node3D:
     var enemy = enemy_type.scene.instantiate()
 
     assert(enemy.has_method("load_resource"), "Enemy scene must have load_resource method")

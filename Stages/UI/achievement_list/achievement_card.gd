@@ -1,5 +1,5 @@
 extends Control
-class_name AchievementCard
+class_name UI_AchievementCard
 
 ## Individual achievement card for the achievement list
 ## Shows achievement name, description, icon, and unlock status
@@ -15,7 +15,7 @@ class_name AchievementCard
 var achievement_id: String = ""
 
 ## Setup the card with achievement data
-func setup(achievement: AchievementResource, is_unlocked: bool, progress: float, unlock_date: String) -> void:
+func setup(achievement: Resource_Achievement, is_unlocked: bool, progress: float, unlock_date: String) -> void:
   if not achievement:
     return
   

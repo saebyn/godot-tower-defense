@@ -1,5 +1,5 @@
 extends Control
-class_name AchievementNotification
+class_name UI_AchievementNotification
 
 ## Toast notification that slides in from top-right to show achievement unlocks
 ## Auto-hides after 5 seconds and supports queueing multiple notifications
@@ -31,7 +31,7 @@ func _ready() -> void:
   auto_hide_timer.timeout.connect(_on_auto_hide_timeout)
 
 ## Show notification with achievement data
-func show_notification(achievement: AchievementResource) -> void:
+func show_notification(achievement: Resource_Achievement) -> void:
   if not achievement:
     Logger.warn("AchievementNotification", "Attempted to show notification with null achievement")
     return

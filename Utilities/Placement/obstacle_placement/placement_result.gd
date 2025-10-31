@@ -1,4 +1,4 @@
-class_name PlacementResult
+class_name Utility_PlacementResult
 
 enum ValidationError {
   NONE,

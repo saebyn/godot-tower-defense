@@ -1,7 +1,7 @@
 ## A component that adds a shake effect to an entity when it takes damage.
 ## The shake effect is achieved using a Tween to animate the position offset.
 ## Add this node as a child of any entity that has a Health component to enable the effect.
-class_name ShakeEffect
+class_name Effect_Shake
 extends Node
 
 @export var shake_magnitude: float = 0.1 # Magnitude of the shake effect

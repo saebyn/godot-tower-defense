@@ -1,5 +1,5 @@
 extends PanelContainer
-class_name TechNodeCard
+class_name UI_TechNodeCard
 
 ## Individual tech node card component
 ## Displays tech node state and basic info
@@ -13,14 +13,14 @@ enum NodeState {
 	PERMANENTLY_LOCKED  # Red - permanently locked by exclusive choice
 }
 
-var tech: TechNodeResource
+var tech: Resource_TechNode
 var current_state: NodeState = NodeState.LOCKED
 
 @onready var name_label: Label = $MarginContainer/VBoxContainer/NameLabel
 @onready var level_label: Label = $MarginContainer/VBoxContainer/LevelLabel
 @onready var state_label: Label = $MarginContainer/VBoxContainer/StateLabel
 
-func setup(tech_node: TechNodeResource) -> void:
+func setup(tech_node: Resource_TechNode) -> void:
 	tech = tech_node
 	name_label.text = tech.display_name
 	level_label.text = "Level %d" % tech.level_requirement

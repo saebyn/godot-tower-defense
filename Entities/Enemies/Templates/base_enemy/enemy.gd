@@ -9,8 +9,8 @@ extends CharacterBody3D
 @export var xp_reward: int = 10 ## XP awarded when enemy dies (always given)
 @export var enemy_type: String = "base_enemy" ## Type identifier for stats tracking
 
-var attack: Attack
-var health: Health
+var attack: Component_Attack
+var health: Component_Health
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
@@ -39,8 +39,8 @@ func _ready():
   # Make sure to not await during _ready.
   _actor_setup.call_deferred()
 
-# EnemyTypeResource
-func load_resource(resource: EnemyTypeResource) -> void:
+# Resource_EnemyType
+func load_resource(resource: Resource_EnemyType) -> void:
   ready.connect(func() -> void:
     Logger.debug("Enemy", "Loading enemy resource: %s" % resource.name)
     # Override properties from resource

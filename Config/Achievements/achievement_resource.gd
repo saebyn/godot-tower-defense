@@ -1,4 +1,4 @@
-class_name AchievementResource
+class_name Resource_Achievement
 extends Resource
 
 ## Resource class defining individual achievements
@@ -6,14 +6,14 @@ extends Resource
 ## 
 ## Usage:
 ##   # Simple single condition achievement
-##   var achievement = AchievementResource.new()
+##   var achievement = Resource_Achievement.new()
 ##   achievement.id = "first_kill"
 ##   achievement.name = "First Blood"
 ##   achievement.unlock_condition_type = ConditionType.ENEMIES_DEFEATED_TOTAL
 ##   achievement.threshold = 1
 ##
 ##   # Multiple conditions achievement
-##   var complex_achievement = AchievementResource.new()
+##   var complex_achievement = Resource_Achievement.new()
 ##   complex_achievement.id = "multi_task"
 ##   complex_achievement.name = "Multi-Tasker"
 ##   complex_achievement.use_multiple_conditions = true
@@ -44,7 +44,7 @@ enum ConditionLogic {
 
 
 ## Nested resource class representing an individual achievement condition.
-## Used as an element within the `conditions` array of AchievementResource when `use_multiple_conditions` is true.
+## Used as an element within the `conditions` array of Resource_Achievement when `use_multiple_conditions` is true.
 class AchievementCondition extends Resource:
   @export var condition_type: ConditionType = ConditionType.ENEMIES_DEFEATED_TOTAL ## Type of condition to track
   @export var threshold: int = 1 ## Numerical threshold that must be reached

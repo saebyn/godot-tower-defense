@@ -1,5 +1,5 @@
 extends Control
-class_name AchievementList
+class_name UI_AchievementList
 
 ## Achievement list screen that shows all achievements and their unlock status
 ## Can be opened from the main menu or pause menu
@@ -14,7 +14,7 @@ const AchievementCardScene = preload("res://Stages/UI/achievement_list/achieveme
 @onready var achievement_container: VBoxContainer = $Panel/MarginContainer/VBoxContainer/ScrollContainer/AchievementContainer
 @onready var stats_label: Label = $Panel/MarginContainer/VBoxContainer/StatsLabel
 
-var achievement_cards: Array[AchievementCard] = []
+var achievement_cards: Array[UI_AchievementCard] = []
 
 func _ready() -> void:
   # Connect signals
@@ -61,7 +61,7 @@ func refresh_achievements() -> void:
   _update_stats(all_achievements)
 
 ## Sort achievements: unlocked first, then by name
-func _sort_achievements(a: AchievementResource, b: AchievementResource) -> bool:
+func _sort_achievements(a: Resource_Achievement, b: Resource_Achievement) -> bool:
   var a_unlocked = AchievementManager.is_achievement_unlocked(a.id)
   var b_unlocked = AchievementManager.is_achievement_unlocked(b.id)
   
@@ -73,7 +73,7 @@ func _sort_achievements(a: AchievementResource, b: AchievementResource) -> bool:
   return a.name < b.name
 
 ## Update the stats label with unlock statistics
-func _update_stats(all_achievements: Array[AchievementResource]) -> void:
+func _update_stats(all_achievements: Array[Resource_Achievement]) -> void:
   var total_count = all_achievements.size()
   var unlocked_count = 0
   

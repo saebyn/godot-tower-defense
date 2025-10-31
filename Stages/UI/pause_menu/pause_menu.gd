@@ -1,5 +1,5 @@
 extends Control
-class_name PauseMenu
+class_name UI_PauseMenu
 
 const SettingsMenuScene = preload("res://Common/UI/settings_menu/settings_menu.tscn")
 const TechTreeScene = preload("res://Stages/UI/tech_tree/tech_tree.tscn")

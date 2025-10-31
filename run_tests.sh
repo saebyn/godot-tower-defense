@@ -4,4 +4,4 @@
 
 cd "$(dirname "$0")"
 
-./godot --headless -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json
+./godot --headless -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json $@

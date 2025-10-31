@@ -1,6 +1,6 @@
 extends Control
 
-class_name MainMenu
+class_name UI_MainMenu
 
 ## Main menu scene that handles navigation between different game states
 ## Sets the initial game state to MAIN_MENU and provides buttons for starting the game

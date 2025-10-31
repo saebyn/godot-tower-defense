@@ -5,7 +5,7 @@ A UI component that provides game speed control buttons (pause/play, 1x, 2x, 4x 
 Connects to the GameManager singleton to control game speed and pause state.
 """
 extends Control
-class_name SpeedControls
+class_name UI_SpeedControls
 
 @onready var pause_button: Button = $HBoxContainer/PauseButton
 @onready var speed_1x_button: Button = $HBoxContainer/Speed1xButton

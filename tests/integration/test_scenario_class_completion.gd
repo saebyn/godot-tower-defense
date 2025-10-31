@@ -3,16 +3,16 @@ extends GutTest
 ## Integration test for Level class completion behavior
 ## Verifies that Level properly handles victory conditions and calls progression system
 
-var initial_completed_levels: Array[String] = []
+var initial_completed_scenarios: Array[String] = []
 
 func before_each():
   # Save the initial state
-  initial_completed_levels = ScenarioManager.completed_levels.duplicate()
+  initial_completed_scenarios = ScenarioManager.completed_scenarios.duplicate()
   
   # Reset to a known state
-  ScenarioManager.completed_levels.clear()
-  ScenarioManager.level_best_times.clear()
-  ScenarioManager.level_best_scores.clear()
+  ScenarioManager.completed_scenarios.clear()
+  ScenarioManager.scenario_best_times.clear()
+  ScenarioManager.scenario_best_scores.clear()
   
   # Reset GameManager state
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
@@ -20,7 +20,7 @@ func before_each():
 
 func after_each():
   # Restore original state
-  ScenarioManager.completed_levels = initial_completed_levels.duplicate()
+  ScenarioManager.completed_scenarios = initial_completed_scenarios.duplicate()
   ScenarioManager.clear_current_scenario()
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
 
@@ -50,9 +50,9 @@ func test_scenario_handles_missing_scenario_id_gracefully():
   
   # Act - Simulate victory with no level ID (error condition)
   var scenario_id = ScenarioManager.get_current_scenario_id()
-  if level_id.is_empty():
+  if scenario_id.is_empty():
     # Level should log error but continue to victory state
-    Logger.error("Test", "Simulating error: no level ID set")
+    Logger.error("Test", "Simulating error: no scenario ID set")
   else:
     ScenarioManager.mark_scenario_complete(scenario_id)
   
@@ -85,30 +85,30 @@ func test_completing_scenario_unlocks_next_scenario_before_victory_screen():
   # Verify that next level is unlocked as part of completion, not during UI display
   # Arrange
   ScenarioManager.set_current_scenario_id("scenario_1")
-  assert_false(ScenarioManager.is_level_unlocked("scenario_2"), "Level 2 should be locked")
+  assert_false(ScenarioManager.is_scenario_unlocked("scenario_2"), "scenario 2 should be locked")
   watch_signals(ScenarioManager)
   
-  # Act - Simulate Level._on_all_waves_completed() flow
+  # Act - Simulate Scenario._on_all_waves_completed() flow
   ScenarioManager.mark_scenario_complete("scenario_1")
   
   # Assert - Level 2 should be unlocked BEFORE we transition to victory state
-  assert_true(ScenarioManager.is_level_unlocked("scenario_2"), "Level 2 should be unlocked immediately")
-  assert_signal_emitted(ScenarioManager, "scenario_unlocked", "Level unlock signal should emit")
+  assert_true(ScenarioManager.is_scenario_unlocked("scenario_2"), "scenario 2 should be unlocked immediately")
+  assert_signal_emitted(ScenarioManager, "scenario_unlocked", "scenario unlock signal should emit")
   
   # Now transition to victory state (UI layer)
   GameManager.set_game_state(GameManager.GameState.VICTORY)
   
   # Level 2 should still be unlocked
-  assert_true(ScenarioManager.is_level_unlocked("scenario_2"), "Level 2 should remain unlocked")
+  assert_true(ScenarioManager.is_scenario_unlocked("scenario_2"), "scenario 2 should remain unlocked")
 
 func test_scenario_completion_data_persists_across_state_changes():
-  # Verify that level completion isn't lost when changing game states
+  # Verify that scenario completion isn't lost when changing game states
   # Arrange
   var scenario_id = "scenario_3"
   ScenarioManager.set_current_scenario_id(scenario_id)
   
-  # Act - Complete level and change states multiple times
-  ScenarioManager.mark_scenario_complete(level_id, 120.5, 1000)
+  # Act - Complete scenario and change states multiple times
+  ScenarioManager.mark_scenario_complete(scenario_id, 120.5, 1000)
   GameManager.set_game_state(GameManager.GameState.VICTORY)
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
   GameManager.set_game_state(GameManager.GameState.PLAYING)

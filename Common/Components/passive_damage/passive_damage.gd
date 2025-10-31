@@ -1,6 +1,6 @@
 @tool
 extends Area3D
-class_name PassiveDamage
+class_name Component_PassiveDamage
 
 ## Deals damage to enemies that enter/stay in contact with this area.
 ## Useful for spike traps, fire patches, barbed wire, etc.
@@ -96,7 +96,7 @@ func _try_damage_enemy(enemy: Node):
 	if enemy.has_meta("health_component"):
 		health = enemy.get_meta("health_component")
 	
-	if health and health is Health:
+	if health and health is Component_Health:
 		health.take_damage(damage_amount, damage_source)
 		_enemy_cooldowns[enemy] = damage_cooldown
 		damage_dealt.emit(enemy, damage_amount)

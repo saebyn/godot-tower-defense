@@ -9,7 +9,7 @@ signal tech_locked(tech_id: String)
 
 var unlocked_tech_ids: Array[String] = []
 var locked_tech_ids: Array[String] = []
-var tech_nodes: Dictionary = {} # tech_id -> TechNodeResource
+var tech_nodes: Dictionary = {} # tech_id -> Resource_TechNode
 
 const TECH_TREE_PATH = "res://Config/TechTree/"
 
@@ -37,7 +37,7 @@ func _load_tech_tree() -> void:
   while file_name != "":
     if not dir.current_is_dir() and file_name.ends_with(".tres"):
       var resource_path = TECH_TREE_PATH + file_name
-      var tech_node = load(resource_path) as TechNodeResource
+      var tech_node = load(resource_path) as Resource_TechNode
       
       if tech_node and tech_node.is_valid():
         tech_nodes[tech_node.id] = tech_node
@@ -140,12 +140,12 @@ func is_tech_locked(tech_id: String) -> bool:
   return tech_id in locked_tech_ids
 
 ## Get a tech node by ID
-func get_tech_node(tech_id: String) -> TechNodeResource:
+func get_tech_node(tech_id: String) -> Resource_TechNode:
   return tech_nodes.get(tech_id)
 
 ## Get all tech nodes in a specific branch
-func get_techs_in_branch(branch_name: String) -> Array[TechNodeResource]:
-  var branch_techs: Array[TechNodeResource] = []
+func get_techs_in_branch(branch_name: String) -> Array[Resource_TechNode]:
+  var branch_techs: Array[Resource_TechNode] = []
   for tech_id in tech_nodes:
     var tech = tech_nodes[tech_id]
     if tech.branch_name == branch_name:

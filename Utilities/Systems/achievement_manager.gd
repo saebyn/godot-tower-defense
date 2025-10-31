@@ -15,12 +15,12 @@ extends Node
 ##   var is_unlocked = AchievementManager.is_achievement_unlocked("first_blood")
 
 # Achievement storage
-var achievements: Dictionary = {} # id (String) -> AchievementResource
+var achievements: Dictionary = {} # id (String) -> Resource_Achievement
 var achievement_states: Dictionary = {} # id (String) -> AchievementState
 
 # Signals
-signal achievement_unlocked(achievement: AchievementResource)
-signal achievement_progress_updated(achievement: AchievementResource, progress: float)
+signal achievement_unlocked(achievement: Resource_Achievement)
+signal achievement_progress_updated(achievement: Resource_Achievement, progress: float)
 signal achievements_loaded()
 signal achievements_saved()
 
@@ -78,7 +78,7 @@ func _load_achievements() -> void:
     # Only load .tres resource files
     if file_name.ends_with(".tres"):
       var file_path = achievements_dir + file_name
-      var achievement = load(file_path) as AchievementResource
+      var achievement = load(file_path) as Resource_Achievement
       
       if achievement and achievement.is_valid():
         achievements[achievement.id] = achievement
@@ -151,14 +151,14 @@ func _check_achievement(achievement_id: String) -> void:
     _unlock_achievement(achievement_id)
 
 ## Calculate progress (0.0 to 1.0) for an achievement
-func _calculate_achievement_progress(achievement: AchievementResource) -> float:
+func _calculate_achievement_progress(achievement: Resource_Achievement) -> float:
   if achievement.use_multiple_conditions:
     return _calculate_multiple_conditions_progress(achievement)
   else:
     return _calculate_single_condition_progress(achievement)
 
 ## Calculate progress for single condition achievements
-func _calculate_single_condition_progress(achievement: AchievementResource) -> float:
+func _calculate_single_condition_progress(achievement: Resource_Achievement) -> float:
   var current_value = _get_stat_value(achievement.unlock_condition_type, achievement.condition_target)
   var threshold = float(achievement.threshold)
   
@@ -168,11 +168,11 @@ func _calculate_single_condition_progress(achievement: AchievementResource) -> f
   return clampf(current_value / threshold, 0.0, 1.0)
 
 ## Calculate progress for multiple condition achievements
-func _calculate_multiple_conditions_progress(achievement: AchievementResource) -> float:
+func _calculate_multiple_conditions_progress(achievement: Resource_Achievement) -> float:
   if achievement.conditions.is_empty():
     return 0.0
   
-  if achievement.condition_logic == AchievementResource.ConditionLogic.AND:
+  if achievement.condition_logic == Resource_Achievement.ConditionLogic.AND:
     # For AND logic, progress is the minimum of all conditions
     var min_progress = 1.0
     for condition in achievement.conditions:
@@ -192,26 +192,26 @@ func _calculate_multiple_conditions_progress(achievement: AchievementResource) -
     return max_progress
 
 ## Get the current value of a stat for achievement tracking
-func _get_stat_value(condition_type: AchievementResource.ConditionType, target: String = "") -> float:
+func _get_stat_value(condition_type: Resource_Achievement.ConditionType, target: String = "") -> float:
   if not StatsManager or not CurrencyManager:
     return 0.0
 
   match condition_type:
-    AchievementResource.ConditionType.ENEMIES_DEFEATED_TOTAL:
+    Resource_Achievement.ConditionType.ENEMIES_DEFEATED_TOTAL:
       return float(StatsManager.get_enemies_defeated_total())
-    AchievementResource.ConditionType.ENEMIES_DEFEATED_BY_TYPE:
+    Resource_Achievement.ConditionType.ENEMIES_DEFEATED_BY_TYPE:
       return float(StatsManager.get_enemies_defeated_by_type(target))
-    AchievementResource.ConditionType.CLICKS_PERFORMED:
+    Resource_Achievement.ConditionType.CLICKS_PERFORMED:
       return float(StatsManager.get_enemies_defeated_by_hand())
-    AchievementResource.ConditionType.SCRAP_EARNED:
+    Resource_Achievement.ConditionType.SCRAP_EARNED:
       return float(StatsManager.get_total_scrap_earned())
-    AchievementResource.ConditionType.OBSTACLES_PLACED:
+    Resource_Achievement.ConditionType.OBSTACLES_PLACED:
       return float(StatsManager.get_obstacles_placed_total())
-    AchievementResource.ConditionType.PLAYER_LEVEL_REACHED:
+    Resource_Achievement.ConditionType.PLAYER_LEVEL_REACHED:
       return float(CurrencyManager.get_level())
-    AchievementResource.ConditionType.WAVE_COMPLETED:
+    Resource_Achievement.ConditionType.WAVE_COMPLETED:
       return float(StatsManager.get_max_waves_completed())
-    AchievementResource.ConditionType.GAME_SCENARIO_REACHED:
+    Resource_Achievement.ConditionType.GAME_SCENARIO_REACHED:
       # Get the highest completed scenario number
       var completed_scenarios = ScenarioManager.completed_scenarios
       var highest = 0
@@ -277,24 +277,24 @@ func get_achievement_progress(achievement_id: String) -> float:
   return state.progress if state else 0.0
 
 ## Get all unlocked achievements
-func get_unlocked_achievements() -> Array[AchievementResource]:
-  var unlocked: Array[AchievementResource] = []
+func get_unlocked_achievements() -> Array[Resource_Achievement]:
+  var unlocked: Array[Resource_Achievement] = []
   for achievement_id in achievements:
     if is_achievement_unlocked(achievement_id):
       unlocked.append(achievements[achievement_id])
   return unlocked
 
 ## Get all achievements (including locked ones)
-func get_all_achievements() -> Array[AchievementResource]:
-  var all_achievements: Array[AchievementResource] = []
+func get_all_achievements() -> Array[Resource_Achievement]:
+  var all_achievements: Array[Resource_Achievement] = []
   for achievement in achievements.values():
     all_achievements.append(achievement)
   return all_achievements
 
 ## Get achievement by ID
-## Returns the AchievementResource for the given achievement_id, or null if not found.
+## Returns the Resource_Achievement for the given achievement_id, or null if not found.
 ## If the achievement_id does not exist, returns null and logs a warning.
-func get_achievement(achievement_id: String) -> AchievementResource:
+func get_achievement(achievement_id: String) -> Resource_Achievement:
   if not achievements.has(achievement_id):
     Logger.warn("AchievementManager", "Requested achievement_id '%s' does not exist." % achievement_id)
     return null

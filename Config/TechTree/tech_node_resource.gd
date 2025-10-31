@@ -1,6 +1,6 @@
 @tool
 extends Resource
-class_name TechNodeResource
+class_name Resource_TechNode
 
 ## Resource representing a single node in the tech tree
 ## Defines unlock requirements, effects, and mutually exclusive relationships

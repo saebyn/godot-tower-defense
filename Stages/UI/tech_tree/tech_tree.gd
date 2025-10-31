@@ -1,5 +1,5 @@
 extends Control
-class_name TechTree
+class_name UI_TechTree
 
 ## Tech Tree UI Screen
 ## Displays tech nodes as a visual tree, allows players to unlock techs,
@@ -21,7 +21,7 @@ const TechNodeCardScene = preload("res://Stages/UI/tech_tree/tech_node_card.tscn
 @onready var confirmation_dialog: ConfirmationDialog = $ConfirmationDialog
 
 var selected_tech_id: String = ""
-var tech_node_cards: Dictionary = {} # tech_id -> TechNodeCard
+var tech_node_cards: Dictionary = {} # tech_id -> UI_TechNodeCard
 
 func _ready() -> void:
 	# Connect to TechTreeManager signals
@@ -83,7 +83,7 @@ func _refresh_tech_tree() -> void:
 				_create_tech_node_card(tech)
 
 ## Create a tech node card for the given tech
-func _create_tech_node_card(tech: TechNodeResource) -> void:
+func _create_tech_node_card(tech: Resource_TechNode) -> void:
 	var card = TechNodeCardScene.instantiate()
 	tech_grid.add_child(card)
 	tech_node_cards[tech.id] = card
@@ -104,13 +104,13 @@ func _update_tech_node_card(tech_id: String) -> void:
 	var tech = TechTreeManager.tech_nodes[tech_id]
 	
 	# Determine state
-	var state = TechNodeCard.NodeState.LOCKED
+	var state = UI_TechNodeCard.NodeState.LOCKED
 	if TechTreeManager.is_tech_unlocked(tech_id):
-		state = TechNodeCard.NodeState.UNLOCKED
+		state = UI_TechNodeCard.NodeState.UNLOCKED
 	elif TechTreeManager.is_tech_locked(tech_id):
-		state = TechNodeCard.NodeState.PERMANENTLY_LOCKED
+		state = UI_TechNodeCard.NodeState.PERMANENTLY_LOCKED
 	elif TechTreeManager.can_unlock_tech(tech_id):
-		state = TechNodeCard.NodeState.AVAILABLE
+		state = UI_TechNodeCard.NodeState.AVAILABLE
 	
 	card.update_state(state)
 
@@ -195,7 +195,7 @@ func _on_unlock_button_pressed() -> void:
 		_unlock_tech(selected_tech_id)
 
 ## Show confirmation dialog for mutually exclusive choices
-func _show_exclusive_warning(tech: TechNodeResource) -> void:
+func _show_exclusive_warning(tech: Resource_TechNode) -> void:
 	var locked_names = []
 	for exclusive_id in tech.mutually_exclusive_with:
 		if exclusive_id in TechTreeManager.tech_nodes:
