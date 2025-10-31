@@ -8,6 +8,9 @@ class_name UI_SaveSlotCard
 signal slot_selected(slot_number: int)
 signal slot_deleted(slot_number: int)
 
+# Month names for date formatting
+const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
 @onready var slot_name_label = $MarginContainer/HBoxContainer/LeftContainer/SlotNameLabel
 @onready var slot_info_label = $MarginContainer/HBoxContainer/LeftContainer/SlotInfoLabel
 @onready var slot_details_label = $MarginContainer/HBoxContainer/LeftContainer/SlotDetailsLabel
@@ -73,9 +76,8 @@ func configure(slot_num: int, metadata: Dictionary):
 
 ## Get month name from month number
 func _get_month_name(month: int) -> String:
-  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
   if month >= 1 and month <= 12:
-    return months[month - 1]
+    return MONTH_NAMES[month - 1]
   return "???"
 
 ## Handle action button press (New Game or Continue)

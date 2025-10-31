@@ -3,9 +3,12 @@ extends GutTest
 ## Integration tests for Save Slot Selection UI
 ## Tests slot display, selection, deletion, and navigation
 
+# Test slot range (using a smaller range than SaveManager.MAX_SAVE_SLOTS for faster tests)
+const TEST_SLOT_COUNT = 3
+
 func before_each():
   # Clean up any existing test save files
-  for slot_num in range(1, 4):
+  for slot_num in range(1, TEST_SLOT_COUNT + 1):
     SaveManager.delete_save_slot(slot_num)
   
   # Reset SaveManager state
@@ -13,7 +16,7 @@ func before_each():
 
 func after_each():
   # Clean up test saves
-  for slot_num in range(1, 4):
+  for slot_num in range(1, TEST_SLOT_COUNT + 1):
     SaveManager.delete_save_slot(slot_num)
   
   SaveManager.current_save_slot = -1

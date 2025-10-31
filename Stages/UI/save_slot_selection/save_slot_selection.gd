@@ -12,8 +12,8 @@ class_name UI_SaveSlotSelection
 # Save slot card scene to be instantiated for each slot
 const SaveSlotCardScene = preload("res://Stages/UI/save_slot_selection/save_slot_card.tscn")
 
-# Number of save slots to display (minimum 3, expandable)
-const NUM_SLOTS = 3
+# Number of save slots to display (using SaveManager's MAX_SAVE_SLOTS, minimum 3)
+const NUM_SLOTS = 3  # Can be increased up to SaveManager.MAX_SAVE_SLOTS
 
 # Slot number pending deletion (for confirmation dialog)
 var pending_delete_slot: int = -1
