@@ -102,7 +102,7 @@ func test_completing_scenario_unlocks_next_scenario_before_victory_screen():
   assert_true(ScenarioManager.is_scenario_unlocked("scenario_2"), "scenario 2 should remain unlocked")
 
 func test_scenario_completion_data_persists_across_state_changes():
-  # Verify that level completion isn't lost when changing game states
+  # Verify that scenario completion isn't lost when changing game states
   # Arrange
   var scenario_id = "scenario_3"
   ScenarioManager.set_current_scenario_id(scenario_id)
