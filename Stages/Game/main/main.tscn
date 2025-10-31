@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cfwritmlpver8" path="res://Assets/Icons/red_x.png" id="2_wy7n0"]
 [ext_resource type="PackedScene" uid="uid://duje032qpuq2" path="res://Stages/UI/main_ui/ui.tscn" id="3_272bh"]
 [ext_resource type="Script" uid="uid://c474c2uw4525n" path="res://Stages/Game/main/camera.gd" id="5_hjeu7"]
-[ext_resource type="PackedScene" uid="uid://o24bc34g5fea" path="res://Stages/Levels/level_1.tscn" id="6_pcgyj"]
+[ext_resource type="PackedScene" uid="uid://o24bc34g5fea" path="res://Stages/Scenarios/scenario_1.tscn" id="6_pcgyj"]
 [ext_resource type="PackedScene" uid="uid://bpf2dmre1y8t0" path="res://Utilities/Placement/obstacle_placement/obstacle_placement.tscn" id="7_kek77"]
 [ext_resource type="AudioStream" uid="uid://besdcxihxcckh" path="res://Assets/Audio/Music/battleThemeA.mp3" id="9_i0vvu"]
 

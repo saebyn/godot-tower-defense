@@ -8,7 +8,7 @@ var _spawned_enemies: int = 0
 var current_enemies: Array[Node3D] = []
 
 # Wave system
-var _waves: Array[Wave] = []
+var _waves: Array[System_Wave] = []
 var _current_wave_index: int = 0
 
 # Signals for wave system
