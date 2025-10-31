@@ -154,6 +154,12 @@ func load_save_slot(slot_number: int) -> bool:
   slot_playtime = metadata.get("playtime", 0.0)
   slot_start_time = Time.get_ticks_msec() / 1000.0
   
+  # Restore current scenario from metadata
+  var last_scenario = metadata.get("last_scenario", "")
+  if not last_scenario.is_empty() and ScenarioManager:
+    ScenarioManager.set_current_scenario_id(last_scenario)
+    Logger.info("SaveManager", "Restored current scenario: %s" % last_scenario)
+  
   Logger.info("SaveManager", "Successfully loaded save slot %d" % slot_number)
   load_completed.emit()
   return true
