@@ -939,7 +939,6 @@ Integrate Steamworks SDK.
 
 ### Phase Overview
 
-Based on the 60% completion assessment:
 
 | Phase | Issues | Completion | Status |
 |-------|--------|------------|--------|
