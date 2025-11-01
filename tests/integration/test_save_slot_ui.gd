@@ -33,12 +33,12 @@ func test_scene_loads():
   await wait_frames(1)
   
   # Check that key components exist
-  assert_has_node(instance, "MarginContainer/VBoxContainer/ScrollContainer/SlotContainer", 
-                  "Slot container should exist")
-  assert_has_node(instance, "MarginContainer/VBoxContainer/TopBar/BackButton",
-                  "Back button should exist")
-  assert_has_node(instance, "ConfirmDialog",
-                  "Confirm dialog should exist")
+  assert_true(instance.has_node("MarginContainer/VBoxContainer/ScrollContainer/SlotContainer"),
+              "Slot container should exist")
+  assert_true(instance.has_node("MarginContainer/VBoxContainer/TopBar/BackButton"),
+              "Back button should exist")
+  assert_true(instance.has_node("ConfirmDialog"),
+              "Confirm dialog should exist")
 
 ## Test that empty slots display correctly
 func test_empty_slots_display():
@@ -90,10 +90,10 @@ func test_slot_card_loads():
   await wait_frames(1)
   
   # Check that key components exist
-  assert_has_node(instance, "MarginContainer/HBoxContainer/LeftContainer/SlotNameLabel",
-                  "Slot name label should exist")
-  assert_has_node(instance, "MarginContainer/HBoxContainer/ButtonContainer/ActionButton",
-                  "Action button should exist")
+  assert_true(instance.has_node("MarginContainer/HBoxContainer/LeftContainer/SlotNameLabel"),
+              "Slot name label should exist")
+  assert_true(instance.has_node("MarginContainer/HBoxContainer/ButtonContainer/ActionButton"),
+              "Action button should exist")
 
 ## Test that slot card configures correctly for empty slot
 func test_slot_card_configure_empty():
@@ -124,7 +124,7 @@ func test_slot_card_configure_occupied():
     "exists": true,
     "slot_number": 1,
     "player_level": 5,
-    "playtime": 3600.0,  # 1 hour
+    "playtime": 3600.0, # 1 hour
     "timestamp": Time.get_unix_time_from_system(),
     "last_scenario": "scenario_1"
   }
