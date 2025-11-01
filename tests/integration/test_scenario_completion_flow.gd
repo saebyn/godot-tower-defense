@@ -148,7 +148,7 @@ func test_game_manager_returns_empty_string_when_no_level_set():
 
 func test_level_completion_signal_is_emitted():
   # Arrange
-  var scenario_id = "scenario_1"
+  var scenario_id := "scenario_1"
   watch_signals(ScenarioManager)
   
   # Act
@@ -156,7 +156,7 @@ func test_level_completion_signal_is_emitted():
   
   # Assert
   assert_signal_emitted(ScenarioManager, "scenario_completed", "scenario_completed signal should be emitted")
-  assert_signal_emitted_with_parameters(ScenarioManager, "scenario_completed", [scenario_id], "Signal should include level ID")
+  assert_signal_emitted_with_parameters(ScenarioManager, "scenario_completed", [scenario_id])
 
 func test_scenario_unlocked_signal_is_emitted():
   # Arrange
@@ -167,4 +167,4 @@ func test_scenario_unlocked_signal_is_emitted():
   
   # Assert
   assert_signal_emitted(ScenarioManager, "scenario_unlocked", "scenario_unlocked signal should be emitted")
-  assert_signal_emitted_with_parameters(ScenarioManager, "scenario_unlocked", ["scenario_2"], "Signal should include unlocked level ID")
+  assert_signal_emitted_with_parameters(ScenarioManager, "scenario_unlocked", ["scenario_2"])

@@ -49,7 +49,7 @@ func test_game_state_changed_signal_is_emitted():
   
   # Assert
   assert_signal_emitted(GameManager, "game_state_changed", "game_state_changed signal should be emitted")
-  assert_signal_emitted_with_parameters(GameManager, "game_state_changed", [GameManager.GameState.PLAYING], "Signal should include new state")
+  assert_signal_emitted_with_parameters(GameManager, "game_state_changed", [GameManager.GameState.PLAYING])
 
 func test_wave_tracking_moved_to_scenario_manager():
   # Wave tracking is now managed by ScenarioManager, not GameManager
@@ -131,4 +131,4 @@ func test_speed_changed_signal_is_emitted():
   
   # Assert
   assert_signal_emitted(GameManager, "speed_changed", "speed_changed signal should be emitted")
-  assert_signal_emitted_with_parameters(GameManager, "speed_changed", [1.5], "Signal should include new speed")
+  assert_signal_emitted_with_parameters(GameManager, "speed_changed", [1.5])

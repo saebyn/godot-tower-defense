@@ -59,7 +59,7 @@ func test_timer_starts_on_first_wave():
   assert_false(scenario_instance.timer_started, "Timer not started initially")
   
   # Act - Simulate first wave starting
-  var mock_wave = Wave.new()
+  var mock_wave = System_Wave.new()
   scenario_instance._on_wave_started(mock_wave)
   
   # Assert
@@ -69,7 +69,7 @@ func test_timer_starts_on_first_wave():
 
 func test_timer_accumulates_time():
   # Arrange
-  var mock_wave = Wave.new()
+  var mock_wave = System_Wave.new()
   scenario_instance._on_wave_started(mock_wave)
   
   # Act - Simulate time passing via _process
@@ -83,7 +83,7 @@ func test_timer_accumulates_time():
 
 func test_timer_stops_on_scenario_completion():
   # Arrange
-  var mock_wave = Wave.new()
+  var mock_wave = System_Wave.new()
   scenario_instance._on_wave_started(mock_wave)
   scenario_instance._process(5.0) # Simulate 5 seconds passing
   
@@ -97,7 +97,7 @@ func test_timer_stops_on_scenario_completion():
 
 func test_timer_doesnt_accumulate_when_stopped():
   # Arrange
-  var mock_wave = Wave.new()
+  var mock_wave = System_Wave.new()
   scenario_instance._on_wave_started(mock_wave)
   scenario_instance._process(3.0)
   scenario_instance._stop_timer()
@@ -112,7 +112,7 @@ func test_timer_doesnt_accumulate_when_stopped():
 
 func test_timer_pauses_when_game_paused():
   # Arrange
-  var mock_wave = Wave.new()
+  var mock_wave = System_Wave.new()
   scenario_instance._on_wave_started(mock_wave)
   scenario_instance._process(2.0) # 2 seconds
   
@@ -126,7 +126,7 @@ func test_timer_pauses_when_game_paused():
 
 func test_timer_resumes_when_game_unpaused():
   # Arrange
-  var mock_wave = Wave.new()
+  var mock_wave = System_Wave.new()
   scenario_instance._on_wave_started(mock_wave)
   scenario_instance._process(2.0)
   
@@ -143,7 +143,7 @@ func test_timer_resumes_when_game_unpaused():
 
 func test_timer_handles_multiple_pause_resume_cycles():
   # Arrange
-  var mock_wave = Wave.new()
+  var mock_wave = System_Wave.new()
   scenario_instance._on_wave_started(mock_wave)
   
   # Act - Use test pause control for multiple pause/resume cycles
@@ -164,7 +164,7 @@ func test_timer_handles_multiple_pause_resume_cycles():
 
 func test_get_elapsed_time_returns_current_time():
   # Arrange
-  var mock_wave = Wave.new()
+  var mock_wave = System_Wave.new()
   scenario_instance._on_wave_started(mock_wave)
   scenario_instance._process(7.3)
   
@@ -177,7 +177,7 @@ func test_get_elapsed_time_returns_current_time():
 
 func test_timer_only_starts_once():
   # Arrange
-  var mock_wave = Wave.new()
+  var mock_wave = System_Wave.new()
   
   # Act - Try to start timer multiple times
   scenario_instance._on_wave_started(mock_wave)
@@ -192,7 +192,7 @@ func test_timer_only_starts_once():
 
 func test_timer_stops_on_game_over():
   # Arrange
-  var mock_wave = Wave.new()
+  var mock_wave = System_Wave.new()
   scenario_instance._on_wave_started(mock_wave)
   scenario_instance._process(3.0)
   

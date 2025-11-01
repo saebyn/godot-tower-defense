@@ -6,7 +6,7 @@ var manager: UI_AchievementNotificationManager = null
 
 func before_each():
   # Create manager instance
-  manager = AchievementNotificationManager.new()
+  manager = UI_AchievementNotificationManager.new()
   add_child(manager)
   await wait_frames(2) # Allow ready to be called
 

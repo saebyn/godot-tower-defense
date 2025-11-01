@@ -46,7 +46,7 @@ func test_set_current_scenario_emits_signal():
   
   # Assert
   assert_signal_emitted(ScenarioManager, "scenario_started", "scenario_started signal should be emitted")
-  assert_signal_emitted_with_parameters(ScenarioManager, "scenario_started", [scenario_id], "Signal should include scenario ID")
+  assert_signal_emitted_with_parameters(ScenarioManager, "scenario_started", [scenario_id])
 
 func test_clear_current_scenario():
   # Arrange
@@ -81,7 +81,7 @@ func test_wave_changed_signal():
   
   # Assert
   assert_signal_emitted(ScenarioManager, "wave_changed", "wave_changed signal should be emitted")
-  assert_signal_emitted_with_parameters(ScenarioManager, "wave_changed", ["scenario_1", 3], "Signal should include scenario ID and wave")
+  assert_signal_emitted_with_parameters(ScenarioManager, "wave_changed", ["scenario_1", 3])
 
 func test_changing_scenario_resets_wave():
   # Arrange
