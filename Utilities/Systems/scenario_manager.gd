@@ -24,15 +24,15 @@ var scenario_best_scores: Dictionary = {} # scenario_id -> best score
 # Scenario metadata (can be extended to load from resources in the future)
 var scenario_metadata: Dictionary = {
   "scenario_1": {
-    "name": "Bridge Defense",
-    "scene_path": "res://Stages/Game/main/main.tscn",
+    "name": "Car Defense",
+    "scene_path": "res://Stages/Scenarios/scenario_1.tscn",
     "description": "Defend a person on top of a car.",
     "thumbnail": "", # Optional icon path
   },
   # Scenario 2-4 placeholders for future content
   "scenario_2": {
     "name": "Campfire Survivors",
-    "scene_path": "", # To be created
+    "scene_path": "res://Stages/Scenarios/scenario_2.tscn", # To be created
     "description": "Protect two survivors next to a campfire.",
     "thumbnail": "",
   },

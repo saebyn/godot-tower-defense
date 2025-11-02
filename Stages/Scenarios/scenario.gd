@@ -7,6 +7,7 @@ extends Node3D
 
 @export_category("Scenario Settings")
 @export var survivor_count: int = 1
+@export var scenario_environment: Environment ## Custom environment for this scenario (optional)
 
 # Scenario timer tracking
 var scenario_start_time: float = 0.0 # Time when first wave started (in seconds)
@@ -16,6 +17,10 @@ var timer_started: bool = false # Whether timer has been started at all
 
 
 func _ready() -> void:
+  # Apply custom environment if configured
+  if scenario_environment:
+    _apply_environment()
+  
   enemy_spawner.enemy_spawned.connect(_on_enemy_spawned)
   enemy_spawner.wave_started.connect(_on_wave_started)
   enemy_spawner.wave_completed.connect(_on_wave_completed)
@@ -118,3 +123,15 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
     Logger.trace("Scenario", "Game paused - timer paused at %.2f seconds" % scenario_elapsed_time)
   elif new_state == GameManager.GameState.PLAYING and timer_started:
     Logger.trace("Scenario", "Game resumed - timer continuing from %.2f seconds" % scenario_elapsed_time)
+
+
+## Apply custom environment to the scene's WorldEnvironment
+func _apply_environment() -> void:
+  # Look for WorldEnvironment in the scene tree root
+  var world_env = get_tree().root.get_node_or_null("Main/WorldEnvironment")
+  
+  if world_env and world_env is WorldEnvironment:
+    world_env.environment = scenario_environment
+    Logger.info("Scenario", "Applied custom environment to WorldEnvironment")
+  else:
+    Logger.warn("Scenario", "No WorldEnvironment found at 'Main/WorldEnvironment' - cannot apply scenario environment")
