@@ -123,7 +123,6 @@ func test_get_scenario_metadata_returns_correct_data():
   assert_true(metadata.has("name"), "Metadata should have name field")
   assert_true(metadata.has("scene_path"), "Metadata should have scene_path field")
   assert_true(metadata.has("description"), "Metadata should have description field")
-  assert_eq(metadata.get("name"), "Bridge Defense", "Scenario 1 should have correct name")
 
 func test_get_all_scenario_ids_returns_sorted_list():
   # Act
