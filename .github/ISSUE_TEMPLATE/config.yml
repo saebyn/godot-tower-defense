@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Watch Development Live
+    url: https://twitch.tv/saebyn
+    about: Join the live development streams on Twitch every Sunday morning
+  - name: VODs on YouTube
+    url: https://www.youtube.com/@saebynVODs
+    about: Watch past development streams and see how the game is being built
+  - name: Documentation
+    url: https://github.com/saebyn/zom-nom-defense/tree/main/docs
+    about: Read the architecture diagrams and game design document

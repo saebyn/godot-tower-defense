@@ -1,0 +1,53 @@
+name: General Issue
+description: Report something that doesn't fit into bug or feature categories (questions, discussions, etc.)
+title: "[General]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for questions, discussions, documentation issues, or anything that doesn't fit into bug reports or feature requests.
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Issue Type
+      description: What type of issue is this?
+      options:
+        - Question
+        - Discussion
+        - Documentation
+        - Build/Setup Issue
+        - Performance Question
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe your issue, question, or topic for discussion
+      placeholder: Provide details here...
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Add any other context, links, or screenshots that might be helpful
+      placeholder: Any additional information...
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Before submitting, please check the following
+      options:
+        - label: I have searched existing issues to ensure this isn't a duplicate
+          required: true
+        - label: I have checked the documentation (README.md and docs/)
+          required: false
