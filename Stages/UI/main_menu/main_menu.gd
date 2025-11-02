@@ -32,9 +32,6 @@ func _setup_settings_menu():
 func _on_start_button_pressed():
   Logger.info("MainMenu", "Start button pressed")
   
-  # Ensure a save slot is loaded (default to slot 1)
-  SaveManager.initialize_default_slot()
-  
   # Check how many scenarios are unlocked
   var unlocked_count = 0
   var scenario_ids = ScenarioManager.get_all_scenario_ids()
@@ -44,11 +41,14 @@ func _on_start_button_pressed():
   
   # If only scenario_1 is unlocked, go directly to it
   # Otherwise show scenario selection screen
-  if unlocked_count <= 1:
+  if unlocked_count == 1:
     Logger.info("MainMenu", "Only one scenario unlocked - starting scenario_1 directly")
+    # Ensure a save slot is loaded before starting game
+    SaveManager.initialize_default_slot()
     _start_game()
   else:
     Logger.info("MainMenu", "Multiple scenarios unlocked - showing scenario select")
+    # Scenario select screen will initialize save slot in its _ready() method
     _show_scenario_select()
 
 func _on_settings_button_pressed():
@@ -103,9 +103,6 @@ func _on_exit_button_pressed():
 
 ## Starts the main game by loading the game scene
 func _start_game():
-  # Ensure a save slot is loaded (default to slot 1)
-  SaveManager.initialize_default_slot()
-  
   ScenarioManager.set_current_scenario_id("scenario_1")
   GameManager.set_game_state(GameManager.GameState.PLAYING)
   
