@@ -47,10 +47,16 @@ func _on_start_button_pressed():
     # Ensure a save slot is loaded before starting game
     SaveManager.initialize_default_slot()
     _start_specific_scenario(scenario_id)
-  else:
+  elif unlocked_scenarios.size() > 1:
     Logger.info("MainMenu", "Multiple scenarios unlocked - showing scenario select")
     # Scenario select screen will initialize save slot in its _ready() method
     _show_scenario_select()
+  else:
+    # Fallback: This should never happen as scenario_1 is always unlocked,
+    # but handle gracefully just in case
+    Logger.warn("MainMenu", "No scenarios unlocked - starting scenario_1 as fallback")
+    SaveManager.initialize_default_slot()
+    _start_specific_scenario("scenario_1")
 
 func _on_settings_button_pressed():
   Logger.info("MainMenu", "Settings button pressed")
