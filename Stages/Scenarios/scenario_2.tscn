@@ -1,0 +1,222 @@
+[gd_scene load_steps=29 format=3 uid="uid://crt1361ejynrc"]
+
+[ext_resource type="Script" uid="uid://nv24k764rct" path="res://Stages/Scenarios/scenario.gd" id="1_bm4tj"]
+[ext_resource type="Environment" uid="uid://lgwnmcqtuha3" path="res://Config/Environments/nighttime_campfire.tres" id="2_vvsim"]
+[ext_resource type="PackedScene" uid="uid://twvnc7h1smbw" path="res://Assets/Models/campfire.blend" id="3_0dvov"]
+[ext_resource type="Script" uid="uid://du3d1fs80prdm" path="res://Common/Systems/spawner/enemy_spawner.gd" id="3_c6qy0"]
+[ext_resource type="Script" uid="uid://b7jdk6preu1s4" path="res://Common/Systems/spawner/wave.gd" id="4_c6qy0"]
+[ext_resource type="Texture2D" uid="uid://cj1d4nm3dx27e" path="res://Assets/Textures/fire/0001.png" id="4_o6b7a"]
+[ext_resource type="PackedScene" uid="uid://b1yehhqyw2nfo" path="res://Entities/Targets/Templates/base_target/target.tscn" id="5_o7r5u"]
+[ext_resource type="Texture2D" uid="uid://bplxfpvgvkkhh" path="res://Assets/Textures/fire/0011.png" id="5_td2w0"]
+[ext_resource type="Texture2D" uid="uid://bpote5rhxj28j" path="res://Assets/Textures/fire/0021.png" id="6_nswya"]
+[ext_resource type="Texture2D" uid="uid://cb0cxfhiawiuc" path="res://Assets/Textures/fire/0031.png" id="7_eu0mb"]
+[ext_resource type="Texture2D" uid="uid://6m110v2qg4jc" path="res://Assets/Textures/fire/0041.png" id="8_h2jl5"]
+[ext_resource type="Texture2D" uid="uid://bqgjdieve7m58" path="res://Assets/Textures/fire/0051.png" id="9_bxgxw"]
+[ext_resource type="Texture2D" uid="uid://dqggtbpb4bykw" path="res://Assets/Textures/fire/0061.png" id="10_3ckho"]
+[ext_resource type="Texture2D" uid="uid://pswj8w3ljb4f" path="res://Assets/Textures/fire/0071.png" id="11_pr8sm"]
+[ext_resource type="Texture2D" uid="uid://cx7f87w63font" path="res://Assets/Textures/fire/0081.png" id="12_3mp6f"]
+[ext_resource type="Texture2D" uid="uid://c1jarl43xw3yl" path="res://Assets/Textures/fire/0091.png" id="13_fjbwx"]
+[ext_resource type="Texture2D" uid="uid://bjkqc5jpf8q6m" path="res://Assets/Textures/fire/0101.png" id="14_qp5cx"]
+[ext_resource type="Texture2D" uid="uid://buq6g8w4mqldq" path="res://Assets/Textures/fire/0111.png" id="15_mf37w"]
+[ext_resource type="Texture2D" uid="uid://bbe4uhmabb4m5" path="res://Assets/Textures/fire/0121.png" id="16_h8fgx"]
+[ext_resource type="Texture2D" uid="uid://d0188f00s1i7k" path="res://Assets/Textures/fire/0131.png" id="17_ieiss"]
+[ext_resource type="Texture2D" uid="uid://babxb6r2b2fct" path="res://Assets/Textures/fire/0141.png" id="18_24qjn"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_0dvov"]
+emission_shape = 3
+emission_box_extents = Vector3(0.685, 2.92, 0.685)
+direction = Vector3(0, 1, 0)
+initial_velocity_min = 5.13
+initial_velocity_max = 9.58
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wwkb3"]
+albedo_color = Color(1, 0.109804, 0, 1)
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_0dvov"]
+material = SubResource("StandardMaterial3D_wwkb3")
+size = Vector2(0.05, 0.04)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0dvov"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_o6b7a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_td2w0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_nswya")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_eu0mb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_h2jl5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_bxgxw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_3ckho")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_pr8sm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_3mp6f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_fjbwx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_qp5cx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_mf37w")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_h8fgx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_ieiss")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_24qjn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_ieiss")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_h8fgx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_mf37w")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_qp5cx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_fjbwx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_3mp6f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_pr8sm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_3ckho")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_bxgxw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_h2jl5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_eu0mb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_nswya")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_td2w0")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="BoxMesh" id="BoxMesh_o7r5u"]
+size = Vector3(100, 0.1, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0dvov"]
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.173887, 0.202016, 0.0856823, 1)
+normal_enabled = true
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_wwkb3"]
+data = PackedVector3Array(-50, 0.05, 50, 50, 0.05, 50, -50, -0.05, 50, 50, 0.05, 50, 50, -0.05, 50, -50, -0.05, 50, 50, 0.05, -50, -50, 0.05, -50, 50, -0.05, -50, -50, 0.05, -50, -50, -0.05, -50, 50, -0.05, -50, 50, 0.05, 50, 50, 0.05, -50, 50, -0.05, 50, 50, 0.05, -50, 50, -0.05, -50, 50, -0.05, 50, -50, 0.05, -50, -50, 0.05, 50, -50, -0.05, -50, -50, 0.05, 50, -50, -0.05, 50, -50, -0.05, -50, 50, 0.05, 50, -50, 0.05, 50, 50, 0.05, -50, -50, 0.05, 50, -50, 0.05, -50, 50, 0.05, -50, -50, -0.05, 50, 50, -0.05, 50, -50, -0.05, -50, 50, -0.05, 50, 50, -0.05, -50, -50, -0.05, -50)
+
+[node name="scenario_2" type="Node3D" node_paths=PackedStringArray("enemy_spawner")]
+script = ExtResource("1_bm4tj")
+enemy_spawner = NodePath("System_EnemySpawner")
+survivor_count = 3
+scenario_environment = ExtResource("2_vvsim")
+metadata/_custom_type_script = "uid://nv24k764rct"
+
+[node name="campfire" parent="." instance=ExtResource("3_0dvov")]
+transform = Transform3D(3.08353, 0, 0, 0, 3.08353, 0, 0, 0, 3.08353, 0, 0, 0)
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="campfire"]
+transform = Transform3D(0.324304, 0, 0, 0, 0.324304, 0, 0, 0, 0.324304, 0, 0, 0)
+lifetime = 6.8
+process_material = SubResource("ParticleProcessMaterial_0dvov")
+draw_pass_1 = SubResource("QuadMesh_0dvov")
+
+[node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="campfire"]
+transform = Transform3D(0.217301, 0, 0, 0, 0.480251, 0, 0, 0, 1, 0, 0, 0)
+billboard = 2
+sprite_frames = SubResource("SpriteFrames_0dvov")
+autoplay = "default"
+frame_progress = 0.978888
+
+[node name="OmniLight3D" type="OmniLight3D" parent="campfire"]
+transform = Transform3D(0.324304, 0, 0, 0, 0.324304, 0, 0, 0, 0.324304, 0, 0.299935, 0)
+light_color = Color(0.839216, 0.415686, 0.0392157, 1)
+light_size = 0.432
+light_specular = 2.213
+shadow_enabled = true
+shadow_opacity = 0.55
+shadow_blur = 0.973
+distance_fade_begin = 9.9
+distance_fade_shadow = 1.0
+omni_range = 15.398
+omni_attenuation = -0.803
+
+[node name="System_EnemySpawner" type="Node3D" parent="." node_paths=PackedStringArray("spawn_areas")]
+script = ExtResource("3_c6qy0")
+spawn_areas = [null, null, null]
+metadata/_custom_type_script = "uid://du3d1fs80prdm"
+
+[node name="System_Wave" type="Node3D" parent="System_EnemySpawner"]
+script = ExtResource("4_c6qy0")
+metadata/_custom_type_script = "uid://b7jdk6preu1s4"
+
+[node name="System_Wave2" type="Node3D" parent="System_EnemySpawner"]
+script = ExtResource("4_c6qy0")
+metadata/_custom_type_script = "uid://b7jdk6preu1s4"
+
+[node name="System_Wave3" type="Node3D" parent="System_EnemySpawner"]
+script = ExtResource("4_c6qy0")
+metadata/_custom_type_script = "uid://b7jdk6preu1s4"
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+mesh = SubResource("BoxMesh_o7r5u")
+surface_material_override/0 = SubResource("StandardMaterial3D_0dvov")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+collision_layer = 17
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_wwkb3")
+
+[node name="Survivor1" parent="." instance=ExtResource("5_o7r5u")]
+transform = Transform3D(0.685158, 0, -0.728396, 0, 1, 0, 0.728396, 0, 0.685158, 3.86399, 0, -3.75701)
+
+[node name="Survivor2" parent="." instance=ExtResource("5_o7r5u")]
+transform = Transform3D(-0.902466, 0, -0.430763, 0, 1, 0, 0.430763, 0, -0.902466, 1.79115, 0, 5.97182)
+
+[node name="Survivor3" parent="." instance=ExtResource("5_o7r5u")]
+transform = Transform3D(0.68358, 0, 0.729876, 0, 1, 0, -0.729876, 0, 0.68358, -5.28271, 0, -4.40293)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.518356, -0.427583, 0.740594, 2.18557e-08, 0.866025, 0.500001, -0.855165, 0.259178, -0.448909, 53.2767, 37.7537, -5.50173)

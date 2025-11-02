@@ -1,4 +1,4 @@
-[gd_resource type="Environment" format=3]
+[gd_resource type="Environment" format=3 uid="uid://lgwnmcqtuha3"]
 
 [resource]
 background_mode = 1
@@ -8,19 +8,11 @@ ambient_light_color = Color(0.15, 0.1, 0.05, 1)
 ambient_light_energy = 0.3
 tonemap_mode = 2
 tonemap_exposure = 0.8
-ssr_enabled = false
-ssao_enabled = false
-ssil_enabled = false
-sdfgi_enabled = false
 glow_enabled = true
 glow_intensity = 1.2
 glow_strength = 0.8
 glow_bloom = 0.3
 glow_blend_mode = 0
 glow_hdr_threshold = 0.9
-glow_hdr_scale = 2.0
 fog_enabled = true
 fog_light_color = Color(0.2, 0.15, 0.1, 1)
-fog_density = 0.01
-fog_aerial_perspective = 0.0
-fog_sky_affect = 1.0
