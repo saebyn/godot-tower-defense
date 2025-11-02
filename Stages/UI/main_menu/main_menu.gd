@@ -33,19 +33,20 @@ func _on_start_button_pressed():
   Logger.info("MainMenu", "Start button pressed")
   
   # Check how many scenarios are unlocked
-  var unlocked_count = 0
+  var unlocked_scenarios: Array[String] = []
   var scenario_ids = ScenarioManager.get_all_scenario_ids()
   for scenario_id in scenario_ids:
     if ScenarioManager.is_scenario_unlocked(scenario_id):
-      unlocked_count += 1
+      unlocked_scenarios.append(scenario_id)
   
-  # If only scenario_1 is unlocked, go directly to it
+  # If only one scenario is unlocked, go directly to it
   # Otherwise show scenario selection screen
-  if unlocked_count == 1:
-    Logger.info("MainMenu", "Only one scenario unlocked - starting scenario_1 directly")
+  if unlocked_scenarios.size() == 1:
+    var scenario_id = unlocked_scenarios[0]
+    Logger.info("MainMenu", "Only one scenario unlocked (%s) - starting directly" % scenario_id)
     # Ensure a save slot is loaded before starting game
     SaveManager.initialize_default_slot()
-    _start_game()
+    _start_specific_scenario(scenario_id)
   else:
     Logger.info("MainMenu", "Multiple scenarios unlocked - showing scenario select")
     # Scenario select screen will initialize save slot in its _ready() method
@@ -101,14 +102,14 @@ func _on_exit_button_pressed():
   Logger.info("MainMenu", "Exit button pressed - quitting game")
   get_tree().quit()
 
-## Starts the main game by loading the game scene
-func _start_game():
-  ScenarioManager.set_current_scenario_id("scenario_1")
+## Starts a specific scenario by loading the game scene
+func _start_specific_scenario(scenario_id: String):
+  ScenarioManager.set_current_scenario_id(scenario_id)
   GameManager.set_game_state(GameManager.GameState.PLAYING)
   
   # Load the main game scene
   var game_scene_path = "res://Stages/Game/main/main.tscn"
-  Logger.info("MainMenu", "Loading game scene: %s" % game_scene_path)
+  Logger.info("MainMenu", "Starting scenario %s - loading game scene: %s" % [scenario_id, game_scene_path])
   
   # Change to the game scene
   var error = get_tree().change_scene_to_file(game_scene_path)
