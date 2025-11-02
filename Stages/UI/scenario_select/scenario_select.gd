@@ -78,14 +78,18 @@ func _on_scenario_selected(scenario_id: String):
     _show_scenario_unavailable_message(metadata.get("name", scenario_id))
     return
   
-  # Load the scenario
-  Logger.info("ScenarioSelect", "Loading scenario: %s from %s" % [scenario_id, scene_path])
+  # Set the current scenario in ScenarioManager
+  Logger.info("ScenarioSelect", "Setting scenario: %s (scene: %s)" % [scenario_id, scene_path])
   ScenarioManager.set_current_scenario_id(scenario_id)
   GameManager.set_game_state(GameManager.GameState.PLAYING)
   
-  var error = get_tree().change_scene_to_file(scene_path)
+  # Always load the main game scene, which will dynamically load the selected scenario
+  var game_scene_path = "res://Stages/Game/main/main.tscn"
+  Logger.info("ScenarioSelect", "Loading main game scene: %s" % game_scene_path)
+  
+  var error = get_tree().change_scene_to_file(game_scene_path)
   if error != OK:
-    Logger.error("ScenarioSelect", "Failed to load scenario scene: %s (Error: %d)" % [scene_path, error])
+    Logger.error("ScenarioSelect", "Failed to load game scene: %s (Error: %d)" % [game_scene_path, error])
 
 ## Show a message when scenario is not yet available
 func _show_scenario_unavailable_message(scenario_name: String):

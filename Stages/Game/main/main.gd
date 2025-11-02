@@ -16,6 +16,7 @@ var attack: Component_Attack
 @onready var obstacle_placement: Utility_ObstaclePlacement = $ObstaclePlacement
 
 var obstacle_raycast: RayCast3D
+var current_scenario: Stage_Scenario = null
 
 func _ready() -> void:
   # Find Attack component via metadata
@@ -32,8 +33,60 @@ func _ready() -> void:
   if attack:
     attack.damage_source = "player"
 
+  # Load the appropriate scenario dynamically
+  _load_scenario()
+
   # Rebake navigation mesh periodically
   _start_navigation_rebake_timer()
+
+
+func _load_scenario() -> void:
+  # Get the current scenario from ScenarioManager
+  var scenario_id = ScenarioManager.get_current_scenario_id()
+  
+  if scenario_id.is_empty():
+    # Default to scenario_1 if no scenario is set
+    scenario_id = "scenario_1"
+    ScenarioManager.set_current_scenario_id(scenario_id)
+    Logger.info("Main", "No scenario set, defaulting to: %s" % scenario_id)
+  
+  # Get scenario metadata
+  var metadata = ScenarioManager.get_scenario_metadata(scenario_id)
+  var scene_path = metadata.get("scene_path", "")
+  
+  if scene_path.is_empty():
+    Logger.error("Main", "Scenario %s has no scene path configured" % scenario_id)
+    return
+  
+  # Check if there's already a scenario loaded (from the editor)
+  # Look for any existing child that's a Stage_Scenario
+  for child in get_children():
+    if child is Stage_Scenario:
+      Logger.info("Main", "Removing existing scenario: %s" % child.name)
+      remove_child(child)
+      child.queue_free()
+  
+  # Load the scenario scene
+  Logger.info("Main", "Loading scenario: %s from %s" % [scenario_id, scene_path])
+  var scenario_scene = load(scene_path)
+  
+  if scenario_scene == null:
+    Logger.error("Main", "Failed to load scenario scene: %s" % scene_path)
+    return
+  
+  # Instantiate and add the scenario
+  current_scenario = scenario_scene.instantiate()
+  add_child(current_scenario)
+  
+  # Apply the 45-degree rotation to align with isometric camera view
+  # This matches the rotation applied in the editor to the hardcoded scenario
+  current_scenario.rotation.y = - PI / 4 # 45 degrees in radians
+  
+  # Configure the scenario with the UI reference
+  if current_scenario.has_method("set") and current_scenario.get("ui") != null:
+    current_scenario.ui = ui
+  
+  Logger.info("Main", "Scenario loaded successfully: %s" % scenario_id)
 
 
 func rebake_navigation_mesh():
