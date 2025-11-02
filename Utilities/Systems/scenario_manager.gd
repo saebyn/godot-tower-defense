@@ -89,23 +89,31 @@ func _parse_scenario_metadata(scene_path: String, scenario_id: String) -> Dictio
     "thumbnail": "",
   }
   
-  # Parse the file line by line looking for metadata fields
-  while not file.eof_reached():
-    var line = file.get_line().strip_edges()
+  # Read entire file and parse for metadata fields
+  var content = file.get_as_text()
+  file.close()
+  
+  # Define property prefixes
+  var name_prefix = "scenario_name = "
+  var description_prefix = "scenario_description = "
+  var thumbnail_prefix = "scenario_thumbnail = "
+  
+  # Parse the content looking for metadata properties
+  for line in content.split("\n"):
+    line = line.strip_edges()
     
     # Look for exported metadata properties
-    if line.begins_with("scenario_name = "):
-      var value = line.substr(16).strip_edges().trim_prefix('"').trim_suffix('"')
+    if line.begins_with(name_prefix):
+      var value = line.substr(len(name_prefix)).strip_edges().trim_prefix('"').trim_suffix('"')
       if not value.is_empty():
         metadata["name"] = value
-    elif line.begins_with("scenario_description = "):
-      var value = line.substr(23).strip_edges().trim_prefix('"').trim_suffix('"')
+    elif line.begins_with(description_prefix):
+      var value = line.substr(len(description_prefix)).strip_edges().trim_prefix('"').trim_suffix('"')
       metadata["description"] = value
-    elif line.begins_with("scenario_thumbnail = "):
-      var value = line.substr(21).strip_edges().trim_prefix('"').trim_suffix('"')
+    elif line.begins_with(thumbnail_prefix):
+      var value = line.substr(len(thumbnail_prefix)).strip_edges().trim_prefix('"').trim_suffix('"')
       metadata["thumbnail"] = value
   
-  file.close()
   return metadata
 
 ## Runtime State Management
