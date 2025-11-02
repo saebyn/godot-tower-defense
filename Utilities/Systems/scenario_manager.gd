@@ -75,13 +75,9 @@ func _scan_scenario_scenes() -> void:
   dir.list_dir_end()
   Logger.info("ScenarioManager", "Scanned %d scenario scenes" % scenario_metadata.size())
 
-## Parse a scenario scene file to extract metadata
+## Parse a scenario scene file to extract metadata using Godot's PackedScene API
+## Falls back to text parsing if the scene can't be loaded (e.g., missing dependencies)
 func _parse_scenario_metadata(scene_path: String, scenario_id: String) -> Dictionary:
-  var file = FileAccess.open(scene_path, FileAccess.READ)
-  if not file:
-    Logger.error("ScenarioManager", "Failed to open scene file: %s" % scene_path)
-    return {}
-  
   var metadata = {
     "name": scenario_id.capitalize().replace("_", " "),  # Default name
     "scene_path": scene_path,
@@ -89,7 +85,42 @@ func _parse_scenario_metadata(scene_path: String, scenario_id: String) -> Dictio
     "thumbnail": "",
   }
   
-  # Read entire file and parse for metadata fields
+  # Try to load the scene as a PackedScene resource
+  var packed_scene = load(scene_path) as PackedScene
+  if packed_scene:
+    # Use SceneState to inspect the scene without instantiating it
+    var state = packed_scene.get_state()
+    if state.get_node_count() > 0:
+      # Look for metadata properties in the root node (index 0)
+      for i in range(state.get_node_property_count(0)):
+        var prop_name = state.get_node_property_name(0, i)
+        var prop_value = state.get_node_property_value(0, i)
+        
+        match prop_name:
+          "scenario_name":
+            if prop_value is String and not prop_value.is_empty():
+              metadata["name"] = prop_value
+          "scenario_description":
+            if prop_value is String:
+              metadata["description"] = prop_value
+          "scenario_thumbnail":
+            if prop_value is String:
+              metadata["thumbnail"] = prop_value
+      
+      return metadata
+  
+  # Fallback: Parse the scene file as text if PackedScene loading failed
+  # This handles cases where scene dependencies haven't been imported yet
+  Logger.debug("ScenarioManager", "Using fallback text parsing for: %s" % scene_path)
+  return _parse_scenario_metadata_fallback(scene_path, metadata)
+
+## Fallback text-based parser for when PackedScene.load() fails
+func _parse_scenario_metadata_fallback(scene_path: String, metadata: Dictionary) -> Dictionary:
+  var file = FileAccess.open(scene_path, FileAccess.READ)
+  if not file:
+    Logger.error("ScenarioManager", "Failed to open scene file: %s" % scene_path)
+    return metadata
+  
   var content = file.get_as_text()
   file.close()
   
