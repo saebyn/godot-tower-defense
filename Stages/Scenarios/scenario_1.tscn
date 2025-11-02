@@ -89,6 +89,9 @@ size = Vector3(113.034, 11.1602, 1)
 script = ExtResource("2_srnku")
 enemy_spawner = NodePath("EnemySpawner")
 scenario_environment = ExtResource("3_ebqns")
+scenario_name = "Car Defense"
+scenario_description = "Defend a person on top of a car."
+scenario_thumbnail = ""
 
 [node name="Target" parent="." index="0" instance=ExtResource("2_xxlxc")]
 transform = Transform3D(0.97459, 0, -0.223999, 0, 1, 0, 0.223999, 0, 0.97459, 16.1092, 2.80732, -17.0537)

@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Stages/Scenarios/scenario_3.gd" id="1"]
+
+[node name="Scenario_3" type="Node3D"]
+script = ExtResource("1")
+scenario_name = "Hammock Defense"
+scenario_description = "Guard a survivor in a hammock between two poles."
+scenario_thumbnail = ""

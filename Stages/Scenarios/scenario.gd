@@ -9,6 +9,11 @@ extends Node3D
 @export var survivor_count: int = 1
 @export var scenario_environment: Environment ## Custom environment for this scenario (optional)
 
+@export_category("Scenario Metadata")
+@export var scenario_name: String = "" ## Display name for the scenario
+@export_multiline var scenario_description: String = "" ## Description shown in scenario selection
+@export var scenario_thumbnail: String = "" ## Path to thumbnail icon (optional)
+
 # Scenario timer tracking
 var scenario_start_time: float = 0.0 # Time when first wave started (in seconds)
 var scenario_elapsed_time: float = 0.0 # Total elapsed time (pause-aware)

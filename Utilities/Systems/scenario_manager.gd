@@ -21,34 +21,8 @@ var completed_scenarios: Array[String] = [] # Array of completed scenario IDs ["
 var scenario_best_times: Dictionary = {} # scenario_id -> best time in seconds
 var scenario_best_scores: Dictionary = {} # scenario_id -> best score
 
-# Scenario metadata (can be extended to load from resources in the future)
-var scenario_metadata: Dictionary = {
-  "scenario_1": {
-    "name": "Car Defense",
-    "scene_path": "res://Stages/Scenarios/scenario_1.tscn",
-    "description": "Defend a person on top of a car.",
-    "thumbnail": "", # Optional icon path
-  },
-  # Scenario 2-4 placeholders for future content
-  "scenario_2": {
-    "name": "Campfire Survivors",
-    "scene_path": "res://Stages/Scenarios/scenario_2.tscn", # To be created
-    "description": "Protect two survivors next to a campfire.",
-    "thumbnail": "",
-  },
-  "scenario_3": {
-    "name": "Hammock Defense",
-    "scene_path": "", # To be created
-    "description": "Guard a survivor in a hammock between two poles.",
-    "thumbnail": "",
-  },
-  "scenario_4": {
-    "name": "Pool Party",
-    "scene_path": "", # To be created
-    "description": "Defend survivors in an inflatable pool.",
-    "thumbnail": "",
-  },
-}
+# Scenario metadata (dynamically loaded from scene files)
+var scenario_metadata: Dictionary = {}
 
 # Signals - Persistent progression
 signal scenario_completed(scenario_id: String)
@@ -62,10 +36,77 @@ signal wave_changed(scenario_id: String, wave: int)
 signal scenario_ended(scenario_id: String)
 
 func _ready():
+  # Scan for scenario scenes and load metadata
+  _scan_scenario_scenes()
+  
   # Register with SaveManager
   SaveManager.register_system(self)
   
-  Logger.info("ScenarioManager", "Scenario Manager initialized")
+  Logger.info("ScenarioManager", "Scenario Manager initialized with %d scenarios" % scenario_metadata.size())
+
+## Scan the Scenarios directory for scenario scene files and load their metadata
+func _scan_scenario_scenes() -> void:
+  var scenarios_dir = "res://Stages/Scenarios/"
+  var dir = DirAccess.open(scenarios_dir)
+  
+  if not dir:
+    Logger.error("ScenarioManager", "Failed to open Scenarios directory: %s" % scenarios_dir)
+    return
+  
+  dir.list_dir_begin()
+  var file_name = dir.get_next()
+  
+  while file_name != "":
+    # Look for .tscn files that match the pattern scenario_*.tscn
+    if file_name.ends_with(".tscn") and file_name.begins_with("scenario_") and file_name != "scenario.tscn":
+      var scene_path = scenarios_dir + file_name
+      var scenario_id = file_name.get_basename()  # e.g., "scenario_1"
+      
+      # Parse the scene file to extract metadata
+      var metadata = _parse_scenario_metadata(scene_path, scenario_id)
+      if not metadata.is_empty():
+        scenario_metadata[scenario_id] = metadata
+        Logger.debug("ScenarioManager", "Loaded scenario metadata: %s -> %s" % [scenario_id, metadata.get("name")])
+      else:
+        Logger.warn("ScenarioManager", "Failed to extract metadata from: %s" % scene_path)
+    
+    file_name = dir.get_next()
+  
+  dir.list_dir_end()
+  Logger.info("ScenarioManager", "Scanned %d scenario scenes" % scenario_metadata.size())
+
+## Parse a scenario scene file to extract metadata
+func _parse_scenario_metadata(scene_path: String, scenario_id: String) -> Dictionary:
+  var file = FileAccess.open(scene_path, FileAccess.READ)
+  if not file:
+    Logger.error("ScenarioManager", "Failed to open scene file: %s" % scene_path)
+    return {}
+  
+  var metadata = {
+    "name": scenario_id.capitalize().replace("_", " "),  # Default name
+    "scene_path": scene_path,
+    "description": "",
+    "thumbnail": "",
+  }
+  
+  # Parse the file line by line looking for metadata fields
+  while not file.eof_reached():
+    var line = file.get_line().strip_edges()
+    
+    # Look for exported metadata properties
+    if line.begins_with("scenario_name = "):
+      var value = line.substr(16).strip_edges().trim_prefix('"').trim_suffix('"')
+      if not value.is_empty():
+        metadata["name"] = value
+    elif line.begins_with("scenario_description = "):
+      var value = line.substr(23).strip_edges().trim_prefix('"').trim_suffix('"')
+      metadata["description"] = value
+    elif line.begins_with("scenario_thumbnail = "):
+      var value = line.substr(21).strip_edges().trim_prefix('"').trim_suffix('"')
+      metadata["thumbnail"] = value
+  
+  file.close()
+  return metadata
 
 ## Runtime State Management
 
