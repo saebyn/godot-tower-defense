@@ -97,15 +97,6 @@ text = "LOAD GAME"
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="ScenarioSelectButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-text = "LEVEL SELECT"
-
-[node name="Spacer2b" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 10)
-layout_mode = 2
-
 [node name="AchievementsButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
@@ -140,7 +131,6 @@ bus = &"Music"
 
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/LoadGameButton" to="." method="_on_load_game_button_pressed"]
-[connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/ScenarioSelectButton" to="." method="_on_scenario_select_button_pressed"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/AchievementsButton" to="." method="_on_achievements_button_pressed"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/ExitButton" to="." method="_on_exit_button_pressed"]

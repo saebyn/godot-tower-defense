@@ -30,8 +30,26 @@ func _setup_settings_menu():
   settings_menu.closed.connect(_on_settings_menu_closed)
 
 func _on_start_button_pressed():
-  Logger.info("MainMenu", "Start button pressed - transitioning to game")
-  _start_game()
+  Logger.info("MainMenu", "Start button pressed")
+  
+  # Ensure a save slot is loaded (default to slot 1)
+  SaveManager.initialize_default_slot()
+  
+  # Check how many scenarios are unlocked
+  var unlocked_count = 0
+  var scenario_ids = ScenarioManager.get_all_scenario_ids()
+  for scenario_id in scenario_ids:
+    if ScenarioManager.is_scenario_unlocked(scenario_id):
+      unlocked_count += 1
+  
+  # If only scenario_1 is unlocked, go directly to it
+  # Otherwise show scenario selection screen
+  if unlocked_count <= 1:
+    Logger.info("MainMenu", "Only one scenario unlocked - starting scenario_1 directly")
+    _start_game()
+  else:
+    Logger.info("MainMenu", "Multiple scenarios unlocked - showing scenario select")
+    _show_scenario_select()
 
 func _on_settings_button_pressed():
   Logger.info("MainMenu", "Settings button pressed")
@@ -40,10 +58,6 @@ func _on_settings_button_pressed():
 
 func _on_settings_menu_closed():
   Logger.debug("MainMenu", "Settings menu closed")
-
-func _on_scenario_select_button_pressed():
-  Logger.info("MainMenu", "Scenario Select button pressed - transitioning to scenario selection")
-  _show_scenario_select()
 
 func _on_tech_tree_button_pressed():
   Logger.info("MainMenu", "Tech Tree button pressed")
