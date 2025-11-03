@@ -508,6 +508,11 @@ func _load_json_file(path: String):
 func _save_json_file_atomic(primary_path: String, backup_path: String, data: Dictionary) -> bool:
   var temp_path = primary_path + ".tmp"
   
+  # Extract filenames once at the beginning for clarity
+  var primary_filename = primary_path.get_file()
+  var backup_filename = backup_path.get_file()
+  var temp_filename = temp_path.get_file()
+  
   # Write to temporary file
   var file = FileAccess.open(temp_path, FileAccess.WRITE)
   if not file:
@@ -534,9 +539,6 @@ func _save_json_file_atomic(primary_path: String, backup_path: String, data: Dic
   
   # Create backup of existing save before overwriting
   if FileAccess.file_exists(primary_path):
-    var primary_filename = primary_path.get_file()
-    var backup_filename = backup_path.get_file()
-    
     # Copy primary to backup - this is a best-effort operation
     # We log errors but don't fail the save since the backup is for recovery, not primary storage
     var copy_result = dir.copy(primary_filename, backup_filename)
@@ -546,9 +548,6 @@ func _save_json_file_atomic(primary_path: String, backup_path: String, data: Dic
       Logger.debug("SaveManager", "Created backup: %s" % backup_filename)
   
   # Rename temp file to primary (atomic operation on most filesystems)
-  var temp_filename = temp_path.get_file()
-  var primary_filename = primary_path.get_file()
-  
   var rename_result = dir.rename(temp_filename, primary_filename)
   if rename_result != OK:
     Logger.error("SaveManager", "Failed to rename temp file to primary (error %d): %s -> %s" % [rename_result, temp_filename, primary_filename])
