@@ -179,13 +179,16 @@ func load_save_slot(slot_number: int) -> bool:
   slot_playtime = metadata.get("playtime", 0.0)
   slot_start_time = Time.get_ticks_msec() / 1000.0
   
-  # Restore current scenario from metadata
+  # Restore current scenario from metadata (if available)
   var last_scenario = metadata.get("last_scenario", "")
-  if not last_scenario.is_empty() and ScenarioManager and ScenarioManager.has_method("set_current_scenario_id"):
+  if last_scenario.is_empty():
+    # No scenario to restore
+    pass
+  elif not ScenarioManager or not ScenarioManager.has_method("set_current_scenario_id"):
+    Logger.warn("SaveManager", "Cannot restore scenario: ScenarioManager not available")
+  else:
     ScenarioManager.set_current_scenario_id(last_scenario)
     Logger.info("SaveManager", "Restored current scenario: %s" % last_scenario)
-  elif not last_scenario.is_empty():
-    Logger.warn("SaveManager", "Cannot restore scenario: ScenarioManager not available")
   
   Logger.info("SaveManager", "Successfully loaded save slot %d" % slot_number)
   load_completed.emit()
@@ -213,9 +216,14 @@ func initialize_default_slot() -> bool:
 ## Uses temporary file + rename to ensure atomic writes
 ## Returns true on success, false on failure
 func save_current_slot() -> bool:
+  if current_save_slot == -1:
+    Logger.error("SaveManager", "Cannot save: no slot is currently loaded")
+    save_failed.emit("No save slot loaded")
+    return false
+  
   if not _is_valid_slot_number(current_save_slot):
-    Logger.error("SaveManager", "Cannot save: invalid or unloaded slot (current: %d)" % current_save_slot)
-    save_failed.emit("No valid save slot loaded")
+    Logger.error("SaveManager", "Cannot save: invalid slot number %d (valid range: 1-%d)" % [current_save_slot, MAX_SAVE_SLOTS])
+    save_failed.emit("Invalid save slot number")
     return false
   
   save_started.emit()
@@ -311,15 +319,15 @@ func delete_save_slot(slot_number: int) -> bool:
   var slot_path = SAVE_SLOT_PATH % slot_number
   var backup_path = SAVE_SLOT_BACKUP_PATH % slot_number
   
-  # If slot doesn't exist, consider it a success (idempotent operation)
-  if not FileAccess.file_exists(slot_path):
-    Logger.debug("SaveManager", "Slot %d doesn't exist, nothing to delete" % slot_number)
-    return true
-  
   # If current slot is being deleted, unload it
   if current_save_slot == slot_number:
     current_save_slot = -1
     auto_save_timer = 0.0
+  
+  # If slot doesn't exist, consider it a success (idempotent operation)
+  if not FileAccess.file_exists(slot_path):
+    Logger.debug("SaveManager", "Slot %d doesn't exist, nothing to delete" % slot_number)
+    return true
   
   var dir = DirAccess.open("user://saves/")
   if not dir:
@@ -519,7 +527,9 @@ func _save_json_file_atomic(primary_path: String, backup_path: String, data: Dic
   if not dir:
     Logger.error("SaveManager", "Could not access save directory")
     # Clean up temp file
-    DirAccess.remove_absolute(temp_path)
+    var cleanup_result = DirAccess.remove_absolute(temp_path)
+    if cleanup_result != OK:
+      Logger.warn("SaveManager", "Failed to cleanup temp file (error %d): %s" % [cleanup_result, temp_path])
     return false
   
   # Create backup of existing save before overwriting
@@ -543,7 +553,9 @@ func _save_json_file_atomic(primary_path: String, backup_path: String, data: Dic
   if rename_result != OK:
     Logger.error("SaveManager", "Failed to rename temp file to primary (error %d): %s -> %s" % [rename_result, temp_filename, primary_filename])
     # Clean up temp file
-    DirAccess.remove_absolute(temp_path)
+    var cleanup_result = DirAccess.remove_absolute(temp_path)
+    if cleanup_result != OK:
+      Logger.warn("SaveManager", "Failed to cleanup temp file (error %d): %s" % [cleanup_result, temp_path])
     return false
   
   # Final verification that the save file exists and is readable
