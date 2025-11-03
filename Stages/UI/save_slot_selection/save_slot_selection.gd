@@ -13,7 +13,7 @@ class_name UI_SaveSlotSelection
 const SaveSlotCardScene = preload("res://Stages/UI/save_slot_selection/save_slot_card.tscn")
 
 # Number of save slots to display (using SaveManager's MAX_SAVE_SLOTS, minimum 3)
-const NUM_SLOTS = 3  # Can be increased up to SaveManager.MAX_SAVE_SLOTS
+const NUM_SLOTS = 3 # Can be increased up to SaveManager.MAX_SAVE_SLOTS
 
 # Slot number pending deletion (for confirmation dialog)
 var pending_delete_slot: int = -1
@@ -98,16 +98,15 @@ func _load_game(slot_number: int):
     # Show error dialog (for now just log it)
     return
   
-  # Transition to game
-  GameManager.set_game_state(GameManager.GameState.PLAYING)
+  # Save loaded successfully - return to main menu
+  # The save data is now loaded, but we don't auto-start the game.
+  # This gives users a chance to verify the loaded data or access other menu options before starting gameplay.
+  Logger.info("SaveSlotSelection", "Save slot %d loaded successfully - returning to main menu" % slot_number)
   
-  # Load the main game scene
-  var game_scene_path = "res://Stages/Game/main/main.tscn"
-  Logger.info("SaveSlotSelection", "Loading game scene: %s" % game_scene_path)
-  
-  var error = get_tree().change_scene_to_file(game_scene_path)
+  var main_menu_path = "res://Stages/UI/main_menu/main_menu.tscn"
+  var error = get_tree().change_scene_to_file(main_menu_path)
   if error != OK:
-    Logger.error("SaveSlotSelection", "Failed to load game scene: %s (Error: %d)" % [game_scene_path, error])
+    Logger.error("SaveSlotSelection", "Failed to load main menu: %s (Error: %d)" % [main_menu_path, error])
 
 ## Handle delete button press - show confirmation dialog
 func _on_slot_delete_requested(slot_number: int):
