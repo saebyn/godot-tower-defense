@@ -11,6 +11,21 @@ extends Node
 ##   - Called from main menu and scenario select on game start
 ##   - Future: Will add slot selection UI for multiple save slots
 ##
+## Data Safety Features:
+##   - Atomic saves using temp file + rename pattern
+##   - Automatic backup creation before overwriting saves
+##   - Verification after save completion
+##   - Backup restoration on corrupted primary save
+##   - Best-effort backup creation (warns but doesn't fail save)
+##
+## Known Edge Cases:
+##   - Playtime tracking: Only saved when save_current_slot() is called, 
+##     so crashes will lose playtime since last save
+##   - Screenshot capture: Happens after save completes, so save can succeed
+##     even if screenshot fails (intentional - screenshot is non-critical)
+##   - Backup creation: May fail on very rapid consecutive saves due to
+##     filesystem timing, but this won't fail the save operation
+##
 ## Usage:
 ##   # In manager _ready():
 ##   SaveManager.register_system(self)
@@ -166,9 +181,11 @@ func load_save_slot(slot_number: int) -> bool:
   
   # Restore current scenario from metadata
   var last_scenario = metadata.get("last_scenario", "")
-  if not last_scenario.is_empty() and ScenarioManager:
+  if not last_scenario.is_empty() and ScenarioManager and ScenarioManager.has_method("set_current_scenario_id"):
     ScenarioManager.set_current_scenario_id(last_scenario)
     Logger.info("SaveManager", "Restored current scenario: %s" % last_scenario)
+  elif not last_scenario.is_empty():
+    Logger.warn("SaveManager", "Cannot restore scenario: ScenarioManager not available")
   
   Logger.info("SaveManager", "Successfully loaded save slot %d" % slot_number)
   load_completed.emit()
@@ -353,6 +370,11 @@ func get_available_slots() -> Array[int]:
   return slots
 
 ## Save global settings data (persists across all save slots)
+## 
+## NOTE: Currently a placeholder for future global data expansion.
+## SettingsManager handles its own persistence separately.
+## This method is ready for use but not currently utilized.
+## Future use cases: cross-slot achievements, global statistics, etc.
 func save_global_data() -> void:
   save_started.emit()
   
@@ -373,6 +395,9 @@ func save_global_data() -> void:
     save_failed.emit("Global data write failed")
 
 ## Load global settings data
+##
+## NOTE: Currently a placeholder for future global data expansion.
+## Returns true if global data was loaded successfully, false otherwise.
 func load_global_data() -> bool:
   load_started.emit()
   
