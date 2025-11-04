@@ -33,6 +33,9 @@ func _ready() -> void:
 	unlock_button.pressed.connect(_on_unlock_button_pressed)
 	confirmation_dialog.confirmed.connect(_on_confirmation_accepted)
 	
+	# Prevent scroll wheel events from propagating to camera
+	scroll_container.gui_input.connect(_on_scroll_container_input)
+	
 	# Hide detail panel initially
 	detail_panel.visible = false
 	
@@ -91,6 +94,7 @@ func _create_tech_node_card(tech: Resource_TechNode) -> void:
 	# Setup the card
 	card.setup(tech)
 	card.selected.connect(_on_tech_node_selected.bind(tech.id))
+	card.double_clicked.connect(_on_tech_node_double_clicked.bind(tech.id))
 	
 	# Update card state
 	_update_tech_node_card(tech.id)
@@ -118,6 +122,16 @@ func _update_tech_node_card(tech_id: String) -> void:
 func _on_tech_node_selected(tech_id: String) -> void:
 	selected_tech_id = tech_id
 	_update_detail_panel()
+
+## Handle tech node double-click (quick unlock)
+func _on_tech_node_double_clicked(tech_id: String) -> void:
+	# Select the tech first
+	selected_tech_id = tech_id
+	_update_detail_panel()
+	
+	# Attempt to unlock if possible
+	if TechTreeManager.can_unlock_tech(tech_id):
+		_on_unlock_button_pressed()
 
 ## Update the detail panel with selected tech info
 func _update_detail_panel() -> void:
@@ -238,3 +252,16 @@ func _on_tech_locked(tech_id: String) -> void:
 func _on_close_pressed() -> void:
 	closed.emit()
 	queue_free()
+
+## Handle input events for closing the tech tree
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("close_ui_screen"):
+		_on_close_pressed()
+		get_viewport().set_input_as_handled()
+
+## Prevent scroll events from propagating to the camera
+func _on_scroll_container_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP or event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			# Accept the event to prevent it from propagating
+			scroll_container.accept_event()

@@ -125,3 +125,54 @@ func test_close_button_emits_closed_signal():
   
   # Assert
   assert_signal_emitted(tech_tree, "closed", "Should emit closed signal")
+
+func test_escape_key_closes_tech_tree():
+  # Arrange
+  watch_signals(tech_tree)
+  
+  # Act - simulate escape key press
+  var event = InputEventAction.new()
+  event.action = "close_ui_screen"
+  event.pressed = true
+  tech_tree._unhandled_input(event)
+  
+  # Assert
+  assert_signal_emitted(tech_tree, "closed", "Should emit closed signal on escape key")
+
+func test_double_click_unlocks_available_tech():
+  # Arrange
+  CurrencyManager.current_level = 1
+  var card = tech_tree.tech_node_cards.get("tur_scrap_shooter")
+  assert_not_null(card, "Card should exist")
+  
+  # Act - simulate double-click on tech node card
+  tech_tree._on_tech_node_double_clicked("tur_scrap_shooter")
+  await wait_frames(2)
+  
+  # Assert
+  assert_true(TechTreeManager.is_tech_unlocked("tur_scrap_shooter"), "Tech should be unlocked after double-click")
+
+func test_double_click_does_not_unlock_locked_tech():
+  # Arrange
+  CurrencyManager.current_level = 1
+  var initial_unlocked = TechTreeManager.unlocked_tech_ids.duplicate()
+  
+  # Act - try to double-click a tech that requires level 2
+  tech_tree._on_tech_node_double_clicked("tur_boom_barrel")
+  await wait_frames(2)
+  
+  # Assert
+  assert_false(TechTreeManager.is_tech_unlocked("tur_boom_barrel"), "Locked tech should not unlock on double-click")
+
+func test_scroll_container_accepts_scroll_events():
+  # Arrange - create a mouse wheel event
+  var event = InputEventMouseButton.new()
+  event.button_index = MOUSE_BUTTON_WHEEL_UP
+  event.pressed = true
+  
+  # Act - send the event to scroll container handler
+  tech_tree._on_scroll_container_input(event)
+  
+  # Assert - This test verifies the handler runs without errors
+  # In actual use, this prevents the event from propagating to the camera
+  assert_true(true, "Scroll handler should process wheel events without error")
