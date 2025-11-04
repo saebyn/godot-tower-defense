@@ -134,7 +134,7 @@ func test_escape_key_closes_tech_tree():
   var event = InputEventAction.new()
   event.action = "close_ui_screen"
   event.pressed = true
-  tech_tree._unhandled_input(event)
+  tech_tree._input(event)
   
   # Assert
   assert_signal_emitted(tech_tree, "closed", "Should emit closed signal on escape key")

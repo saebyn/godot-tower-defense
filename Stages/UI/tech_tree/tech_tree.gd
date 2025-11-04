@@ -254,7 +254,7 @@ func _on_close_pressed() -> void:
 	queue_free()
 
 ## Handle input events for closing the tech tree
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("close_ui_screen"):
 		_on_close_pressed()
 		get_viewport().set_input_as_handled()
