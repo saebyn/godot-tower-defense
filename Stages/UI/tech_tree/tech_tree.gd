@@ -4,6 +4,11 @@ class_name UI_TechTree
 ## Tech Tree UI Screen
 ## Displays tech nodes as a visual tree, allows players to unlock techs,
 ## and shows mutually exclusive warnings
+##
+## Input Handling:
+## - Uses close_ui_screen action (Escape key) to close the tech tree
+## - Consumes the input event to prevent it from also toggling the pause menu
+## - Scroll events are isolated to prevent camera zoom when scrolling the tech tree
 
 signal closed()
 
@@ -255,13 +260,14 @@ func _on_close_pressed() -> void:
 
 ## Handle input events for closing the tech tree
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("close_ui_screen"):
+	# Only handle input if the tech tree is visible
+	if visible and event.is_action_pressed("close_ui_screen"):
 		_on_close_pressed()
 		get_viewport().set_input_as_handled()
 
 ## Prevent scroll events from propagating to the camera
 func _on_scroll_container_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
+	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP or event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			# Accept the event to prevent it from propagating
 			scroll_container.accept_event()
