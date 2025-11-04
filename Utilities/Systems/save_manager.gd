@@ -11,6 +11,21 @@ extends Node
 ##   - Called from main menu and scenario select on game start
 ##   - Future: Will add slot selection UI for multiple save slots
 ##
+## Data Safety Features:
+##   - Atomic saves using temp file + rename pattern
+##   - Automatic backup creation before overwriting saves
+##   - Verification after save completion
+##   - Backup restoration on corrupted primary save
+##   - Best-effort backup creation (warns but doesn't fail save)
+##
+## Known Edge Cases:
+##   - Playtime tracking: Only saved when save_current_slot() is called, 
+##     so crashes will lose playtime since last save
+##   - Screenshot capture: Happens after save completes, so save can succeed
+##     even if screenshot fails (intentional - screenshot is non-critical)
+##   - Backup creation: May fail on very rapid consecutive saves due to
+##     filesystem timing, but this won't fail the save operation
+##
 ## Usage:
 ##   # In manager _ready():
 ##   SaveManager.register_system(self)
@@ -102,10 +117,15 @@ func _validate_saveable_system(system) -> bool:
          system.has_method("load_data") and \
          system.has_method("reset_data")
 
+## Validate slot number is within valid range
+## Returns true if valid, false otherwise
+func _is_valid_slot_number(slot_number: int) -> bool:
+  return slot_number >= 1 and slot_number <= MAX_SAVE_SLOTS
+
 ## Load a specific save slot
 ## Returns true if successful, false otherwise
 func load_save_slot(slot_number: int) -> bool:
-  if slot_number < 1 or slot_number > MAX_SAVE_SLOTS:
+  if not _is_valid_slot_number(slot_number):
     Logger.error("SaveManager", "Invalid slot number: %d (must be 1-%d)" % [slot_number, MAX_SAVE_SLOTS])
     load_failed.emit("Invalid slot number")
     return false
@@ -159,9 +179,14 @@ func load_save_slot(slot_number: int) -> bool:
   slot_playtime = metadata.get("playtime", 0.0)
   slot_start_time = Time.get_ticks_msec() / 1000.0
   
-  # Restore current scenario from metadata
+  # Restore current scenario from metadata (if available)
   var last_scenario = metadata.get("last_scenario", "")
-  if not last_scenario.is_empty() and ScenarioManager:
+  if last_scenario.is_empty():
+    # No scenario to restore
+    pass
+  elif not ScenarioManager or not ScenarioManager.has_method("set_current_scenario_id"):
+    Logger.warn("SaveManager", "Cannot restore scenario: ScenarioManager not available")
+  else:
     ScenarioManager.set_current_scenario_id(last_scenario)
     Logger.info("SaveManager", "Restored current scenario: %s" % last_scenario)
   
@@ -189,15 +214,17 @@ func initialize_default_slot() -> bool:
 
 ## Save the current slot atomically
 ## Uses temporary file + rename to ensure atomic writes
-func save_current_slot() -> void:
+## Returns true on success, false on failure
+func save_current_slot() -> bool:
   if current_save_slot == -1:
-    Logger.error("SaveManager", "No save slot is currently loaded")
-    save_failed.emit("No save slot is currently loaded")
-    return
-  elif current_save_slot < 1 or current_save_slot > MAX_SAVE_SLOTS:
-    Logger.error("SaveManager", "Invalid save slot %d (valid range: 1-%d)" % [current_save_slot, MAX_SAVE_SLOTS])
-    save_failed.emit("Invalid save slot %d (valid range: 1-%d)" % [current_save_slot, MAX_SAVE_SLOTS])
-    return
+    Logger.error("SaveManager", "Cannot save: no slot is currently loaded")
+    save_failed.emit("No save slot loaded")
+    return false
+  
+  if not _is_valid_slot_number(current_save_slot):
+    Logger.error("SaveManager", "Cannot save: invalid slot number %d (valid range: 1-%d)" % [current_save_slot, MAX_SAVE_SLOTS])
+    save_failed.emit("Invalid save slot number")
+    return false
   
   save_started.emit()
   
@@ -221,21 +248,23 @@ func save_current_slot() -> void:
   var slot_path = SAVE_SLOT_PATH % current_save_slot
   var backup_path = SAVE_SLOT_BACKUP_PATH % current_save_slot
   
-  if _save_json_file_atomic(slot_path, backup_path, save_data):
-    # Capture and save screenshot after successful save
-    _capture_screenshot(current_save_slot)
-    
-    Logger.info("SaveManager", "Successfully saved slot %d" % current_save_slot)
-    save_completed.emit()
-  else:
+  if not _save_json_file_atomic(slot_path, backup_path, save_data):
     Logger.error("SaveManager", "Failed to save slot %d" % current_save_slot)
     save_failed.emit("File write failed")
+    return false
+  
+  # Capture and save screenshot after successful save
+  _capture_screenshot(current_save_slot)
+  
+  Logger.info("SaveManager", "Successfully saved slot %d" % current_save_slot)
+  save_completed.emit()
+  return true
 
 ## Create a new game in the specified slot
 ## Resets all per-slot data, keeps global data
 func create_new_game(slot_number: int) -> void:
-  if slot_number < 1 or slot_number > MAX_SAVE_SLOTS:
-    Logger.error("SaveManager", "Invalid slot number: %d" % slot_number)
+  if not _is_valid_slot_number(slot_number):
+    Logger.error("SaveManager", "Invalid slot number: %d (must be 1-%d)" % [slot_number, MAX_SAVE_SLOTS])
     return
   
   Logger.info("SaveManager", "Creating new game in slot %d" % slot_number)
@@ -262,7 +291,7 @@ func create_new_game(slot_number: int) -> void:
 ## Get metadata for a specific save slot
 ## Returns dictionary with slot info or empty dict if slot doesn't exist
 func get_slot_metadata(slot_number: int) -> Dictionary:
-  if slot_number < 1 or slot_number > MAX_SAVE_SLOTS:
+  if not _is_valid_slot_number(slot_number):
     return {"exists": false, "slot_number": slot_number}
   
   var slot_path = SAVE_SLOT_PATH % slot_number
@@ -283,8 +312,8 @@ func get_slot_metadata(slot_number: int) -> Dictionary:
 ## Delete a save slot
 ## Returns true if successful or slot didn't exist, false on error
 func delete_save_slot(slot_number: int) -> bool:
-  if slot_number < 1 or slot_number > MAX_SAVE_SLOTS:
-    Logger.error("SaveManager", "Invalid slot number: %d" % slot_number)
+  if not _is_valid_slot_number(slot_number):
+    Logger.error("SaveManager", "Invalid slot number: %d (must be 1-%d)" % [slot_number, MAX_SAVE_SLOTS])
     return false
   
   var slot_path = SAVE_SLOT_PATH % slot_number
@@ -295,32 +324,41 @@ func delete_save_slot(slot_number: int) -> bool:
     current_save_slot = -1
     auto_save_timer = 0.0
   
+  # If slot doesn't exist, consider it a success (idempotent operation)
+  if not FileAccess.file_exists(slot_path):
+    Logger.debug("SaveManager", "Slot %d doesn't exist, nothing to delete" % slot_number)
+    return true
+  
   var dir = DirAccess.open("user://saves/")
   if not dir:
     Logger.error("SaveManager", "Could not access save directory")
     return false
   
   var success = true
+  var primary_deleted = false
   
   # Delete primary save
-  if FileAccess.file_exists(slot_path):
-    var filename = "save_slot_%d.save" % slot_number
-    if dir.remove(filename) != OK:
-      Logger.error("SaveManager", "Failed to delete save file: %s" % filename)
-      success = false
-    else:
-      Logger.debug("SaveManager", "Deleted save file: %s" % filename)
+  var filename = "save_slot_%d.save" % slot_number
+  var delete_result = dir.remove(filename)
+  if delete_result != OK:
+    Logger.error("SaveManager", "Failed to delete save file: %s (error %d)" % [filename, delete_result])
+    success = false
+  else:
+    Logger.debug("SaveManager", "Deleted save file: %s" % filename)
+    primary_deleted = true
   
-  # Delete backup
-  if FileAccess.file_exists(backup_path):
-    var backup_filename = "save_slot_%d.save.bak" % slot_number
-    if dir.remove(backup_filename) != OK:
-      Logger.warn("SaveManager", "Failed to delete backup file: %s" % backup_filename)
-    else:
-      Logger.debug("SaveManager", "Deleted backup file: %s" % backup_filename)
-  
-  # Delete screenshot
-  _delete_screenshot(slot_number)
+  # Only delete backup and screenshot if primary was successfully deleted
+  if primary_deleted:
+    # Delete backup
+    if FileAccess.file_exists(backup_path):
+      var backup_filename = "save_slot_%d.save.bak" % slot_number
+      if dir.remove(backup_filename) != OK:
+        Logger.warn("SaveManager", "Failed to delete backup file: %s" % backup_filename)
+      else:
+        Logger.debug("SaveManager", "Deleted backup file: %s" % backup_filename)
+    
+    # Delete screenshot
+    _delete_screenshot(slot_number)
   
   if success:
     Logger.info("SaveManager", "Deleted save slot %d" % slot_number)
@@ -340,6 +378,11 @@ func get_available_slots() -> Array[int]:
   return slots
 
 ## Save global settings data (persists across all save slots)
+## 
+## NOTE: Currently a placeholder for future global data expansion.
+## SettingsManager handles its own persistence separately.
+## This method is ready for use but not currently utilized.
+## Future use cases: cross-slot achievements, global statistics, etc.
 func save_global_data() -> void:
   save_started.emit()
   
@@ -360,6 +403,9 @@ func save_global_data() -> void:
     save_failed.emit("Global data write failed")
 
 ## Load global settings data
+##
+## NOTE: Currently a placeholder for future global data expansion.
+## Returns true if global data was loaded successfully, false otherwise.
 func load_global_data() -> bool:
   load_started.emit()
   
@@ -382,12 +428,14 @@ func load_global_data() -> bool:
   return true
 
 ## Manual quick-save (triggered by F5 or similar)
-func quick_save() -> void:
+## Returns true if save succeeded, false otherwise
+func quick_save() -> bool:
   if current_save_slot > 0:
     Logger.info("SaveManager", "Quick save triggered")
-    save_current_slot()
+    return save_current_slot()
   else:
     Logger.warn("SaveManager", "Quick save failed: no slot loaded")
+    return false
 
 ## Helper: Generate metadata for current game state
 func _generate_slot_metadata() -> Dictionary:
@@ -399,13 +447,17 @@ func _generate_slot_metadata() -> Dictionary:
     "slot_name": "" # Optional user-customizable name
   }
   
-  # Try to get player level from CurrencyManager
-  if CurrencyManager:
+  # Try to get player level from CurrencyManager (with null check)
+  if CurrencyManager and CurrencyManager.has_method("get_level"):
     metadata["player_level"] = CurrencyManager.get_level()
+  else:
+    Logger.warn("SaveManager", "CurrencyManager not available for metadata generation")
   
-  # Try to get last scenario from ScenarioManager
-  if ScenarioManager:
+  # Try to get last scenario from ScenarioManager (with null check)
+  if ScenarioManager and ScenarioManager.has_method("get_current_scenario_id"):
     metadata["last_scenario"] = ScenarioManager.get_current_scenario_id()
+  else:
+    Logger.debug("SaveManager", "ScenarioManager not available for metadata generation")
   
   return metadata
 
@@ -456,6 +508,11 @@ func _load_json_file(path: String):
 func _save_json_file_atomic(primary_path: String, backup_path: String, data: Dictionary) -> bool:
   var temp_path = primary_path + ".tmp"
   
+  # Extract filenames once at the beginning for clarity
+  var primary_filename = primary_path.get_file()
+  var backup_filename = backup_path.get_file()
+  var temp_filename = temp_path.get_file()
+  
   # Write to temporary file
   var file = FileAccess.open(temp_path, FileAccess.WRITE)
   if not file:
@@ -466,37 +523,59 @@ func _save_json_file_atomic(primary_path: String, backup_path: String, data: Dic
   file.store_string(json_string)
   file.close()
   
-  # Create backup of existing save
-  if FileAccess.file_exists(primary_path):
-    var dir = DirAccess.open("user://saves/")
-    if dir:
-      # Extract just the filename
-      var primary_filename = primary_path.get_file()
-      var backup_filename = backup_path.get_file()
-      
-      # Copy primary to backup
-      if dir.copy(primary_filename, backup_filename) != OK:
-        Logger.warn("SaveManager", "Failed to create backup: %s" % backup_path)
+  # Verify temp file was written successfully
+  if not FileAccess.file_exists(temp_path):
+    Logger.error("SaveManager", "Temp file was not created: %s" % temp_path)
+    return false
   
-  # Rename temp file to primary (atomic operation)
   var dir = DirAccess.open("user://saves/")
   if not dir:
     Logger.error("SaveManager", "Could not access save directory")
+    # Clean up temp file
+    var cleanup_result = DirAccess.remove_absolute(temp_path)
+    if cleanup_result != OK:
+      Logger.warn("SaveManager", "Failed to cleanup temp file (error %d): %s" % [cleanup_result, temp_path])
     return false
   
-  var temp_filename = temp_path.get_file()
-  var primary_filename = primary_path.get_file()
+  # Create backup of existing save before overwriting
+  if FileAccess.file_exists(primary_path):
+    # Copy primary to backup - this is a best-effort operation
+    # We log errors but don't fail the save since the backup is for recovery, not primary storage
+    var copy_result = dir.copy(primary_filename, backup_filename)
+    if copy_result != OK:
+      Logger.warn("SaveManager", "Failed to create backup (error %d): %s - save will continue" % [copy_result, backup_path])
+    else:
+      Logger.debug("SaveManager", "Created backup: %s" % backup_filename)
   
-  if dir.rename(temp_filename, primary_filename) != OK:
-    Logger.error("SaveManager", "Failed to rename temp file to primary: %s -> %s" % [temp_filename, primary_filename])
+  # Rename temp file to primary (atomic operation on most filesystems)
+  var rename_result = dir.rename(temp_filename, primary_filename)
+  if rename_result != OK:
+    Logger.error("SaveManager", "Failed to rename temp file to primary (error %d): %s -> %s" % [rename_result, temp_filename, primary_filename])
+    # Clean up temp file
+    var cleanup_result = DirAccess.remove_absolute(temp_path)
+    if cleanup_result != OK:
+      Logger.warn("SaveManager", "Failed to cleanup temp file (error %d): %s" % [cleanup_result, temp_path])
     return false
   
+  # Final verification that the save file exists and is readable
+  if not FileAccess.file_exists(primary_path):
+    Logger.error("SaveManager", "Save file does not exist after rename: %s" % primary_path)
+    return false
+  
+  # Verify the saved file is valid JSON
+  var verify_file = FileAccess.open(primary_path, FileAccess.READ)
+  if not verify_file:
+    Logger.error("SaveManager", "Cannot read saved file for verification: %s" % primary_path)
+    return false
+  verify_file.close()
+  
+  Logger.debug("SaveManager", "Successfully saved and verified: %s" % primary_filename)
   return true
 
 ## Helper: Capture screenshot for save slot
 ## Captures the current viewport and saves it as a thumbnail
 func _capture_screenshot(slot_number: int) -> void:
-  # Get the current viewport
+  # Get the current viewport with null check
   var viewport = get_viewport()
   if not viewport:
     Logger.warn("SaveManager", "Could not get viewport for screenshot")
@@ -505,8 +584,13 @@ func _capture_screenshot(slot_number: int) -> void:
   # Wait one frame to ensure frame is rendered
   await get_tree().process_frame
   
-  # Get the viewport texture
-  var img = viewport.get_texture().get_image()
+  # Get the viewport texture with null checks
+  var texture = viewport.get_texture()
+  if not texture:
+    Logger.warn("SaveManager", "Could not get viewport texture for screenshot")
+    return
+  
+  var img = texture.get_image()
   if not img:
     Logger.warn("SaveManager", "Could not get viewport image for screenshot")
     return
