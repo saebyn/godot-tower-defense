@@ -51,22 +51,36 @@ func configure(slot_num: int, metadata: Dictionary):
     var level = metadata.get("player_level", 1)
     var playtime = metadata.get("playtime", 0.0)
     var timestamp = metadata.get("timestamp", 0)
-    var scenario = metadata.get("last_scenario", "")
+    var _scenario = metadata.get("last_scenario", "")
+    
+    Logger.debug("SaveSlotCard", "Slot %d metadata - Level: %d, Playtime: %.2f, Timestamp: %d" % [slot_number, level, playtime, timestamp])
     
     slot_info_label.text = "Level %d" % level
     
     # Format playtime
     var hours = int(playtime / 3600.0)
     var minutes = int((playtime - hours * 3600.0) / 60.0)
+    var seconds = int(playtime) % 60
     var playtime_str = ""
     if hours > 0:
       playtime_str = "%dh %dm" % [hours, minutes]
+    elif minutes > 0:
+      playtime_str = "%dm %ds" % [minutes, seconds]
     else:
-      playtime_str = "%dm" % minutes
+      playtime_str = "%ds" % seconds
     
-    # Format last played date
-    var datetime = Time.get_datetime_dict_from_unix_time(timestamp)
-    var date_str = "%s %d" % [_get_month_name(datetime.month), datetime.day]
+    # Format last played date - convert UTC timestamp to local time
+    var local_datetime = Time.get_datetime_dict_from_system()
+    
+    # Get the offset between UTC and local time
+    var utc_now = Time.get_unix_time_from_system()
+    var local_offset = Time.get_unix_time_from_datetime_dict(local_datetime) - utc_now
+    
+    # Apply offset to the saved timestamp to get local time
+    var local_timestamp = timestamp + local_offset
+    var local_save_datetime = Time.get_datetime_dict_from_unix_time(local_timestamp)
+    
+    var date_str = "%s %d" % [_get_month_name(local_save_datetime.month), local_save_datetime.day]
     
     slot_details_label.text = "%s | Last played: %s" % [playtime_str, date_str]
     

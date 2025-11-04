@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://djtvdl53kynpg"]
 
-[ext_resource type="Script" path="res://Stages/UI/save_slot_selection/save_slot_card.gd" id="1_card_script"]
+[ext_resource type="Script" uid="uid://b74wqot6juxbr" path="res://Stages/UI/save_slot_selection/save_slot_card.gd" id="1_card_script"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
 
 [node name="SaveSlotCard" type="PanelContainer"]
@@ -35,8 +35,8 @@ theme_override_constants/separation = 5
 
 [node name="SlotNameLabel" type="Label" parent="MarginContainer/HBoxContainer/LeftContainer"]
 layout_mode = 2
-text = "Slot 1"
 theme_type_variation = &"HeaderMedium"
+text = "Slot 1"
 
 [node name="SlotInfoLabel" type="Label" parent="MarginContainer/HBoxContainer/LeftContainer"]
 layout_mode = 2
@@ -44,7 +44,6 @@ text = "Empty Slot"
 
 [node name="SlotDetailsLabel" type="Label" parent="MarginContainer/HBoxContainer/LeftContainer"]
 layout_mode = 2
-text = ""
 theme_type_variation = &"LabelDim"
 
 [node name="ButtonContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
