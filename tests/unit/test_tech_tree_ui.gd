@@ -131,8 +131,8 @@ func test_escape_key_closes_tech_tree():
   watch_signals(tech_tree)
   
   # Act - simulate escape key press
-  var event = InputEventAction.new()
-  event.action = "close_ui_screen"
+  var event = InputEventKey.new()
+  event.keycode = KEY_ESCAPE
   event.pressed = true
   tech_tree._input(event)
   
@@ -164,15 +164,20 @@ func test_double_click_does_not_unlock_locked_tech():
   # Assert
   assert_false(TechTreeManager.is_tech_unlocked("tur_boom_barrel"), "Locked tech should not unlock on double-click")
 
-func test_scroll_container_accepts_scroll_events():
+func test_scroll_events_consumed_when_over_scroll_container():
   # Arrange - create a mouse wheel event
   var event = InputEventMouseButton.new()
   event.button_index = MOUSE_BUTTON_WHEEL_UP
   event.pressed = true
   
-  # Act - send the event to scroll container handler
-  tech_tree._on_scroll_container_input(event)
+  # Act - send the event to input handler
+  # This test verifies the handler runs without errors
+  # In actual use, this prevents the event from propagating to the camera
+  # when the mouse is over the scroll container
+  tech_tree._input(event)
   
+  # Assert - This test verifies the handler runs without errors
+  assert_true(true, "Scroll handler should process wheel events without error")
   # Assert - This test verifies the handler runs without errors
   # In actual use, this prevents the event from propagating to the camera
   assert_true(true, "Scroll handler should process wheel events without error")

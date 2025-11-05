@@ -38,9 +38,6 @@ func _ready() -> void:
 	unlock_button.pressed.connect(_on_unlock_button_pressed)
 	confirmation_dialog.confirmed.connect(_on_confirmation_accepted)
 	
-	# Prevent scroll wheel events from propagating to camera
-	scroll_container.gui_input.connect(_on_scroll_container_input)
-	
 	# Hide detail panel initially
 	detail_panel.visible = false
 	
@@ -261,13 +258,19 @@ func _on_close_pressed() -> void:
 ## Handle input events for closing the tech tree
 func _input(event: InputEvent) -> void:
 	# Only handle input if the tech tree is visible
-	if visible and event.is_action_pressed("close_ui_screen"):
-		_on_close_pressed()
-		get_viewport().set_input_as_handled()
-
-## Prevent scroll events from propagating to the camera
-func _on_scroll_container_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed:
+	if visible and event is InputEventKey:
+		# Check if this is the escape key being pressed
+		if event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
+			_on_close_pressed()
+			accept_event()  # Consume the event to prevent it from propagating
+	
+	# Prevent scroll wheel events from reaching the camera
+	# This is checked here to stop propagation after ScrollContainer processes them
+	if visible and event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP or event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			# Accept the event to prevent it from propagating
-			scroll_container.accept_event()
+			# Check if mouse is over the scroll container
+			var mouse_pos = scroll_container.get_local_mouse_position()
+			var rect = Rect2(Vector2.ZERO, scroll_container.size)
+			if rect.has_point(mouse_pos):
+				accept_event()  # Consume the event to prevent camera zoom
+
