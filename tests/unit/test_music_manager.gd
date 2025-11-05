@@ -109,3 +109,15 @@ func test_setting_music_player_multiple_times():
   
   # Cleanup
   second_player.queue_free()
+
+func test_music_does_not_resume_if_already_paused_before_game_pause():
+  # Arrange - Music is already paused for some other reason
+  SettingsManager.pause_music_on_pause = true
+  mock_music_player.stream_paused = true
+  
+  # Act - Enter and exit IN_GAME_MENU
+  GameManager.set_game_state(GameManager.GameState.IN_GAME_MENU)
+  GameManager.set_game_state(GameManager.GameState.PLAYING)
+  
+  # Assert - Music should still be paused (we didn't pause it, so we shouldn't resume it)
+  assert_true(mock_music_player.stream_paused, "Music should remain paused if it was paused before entering IN_GAME_MENU")

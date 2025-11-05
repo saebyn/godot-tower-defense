@@ -216,7 +216,7 @@ func _on_apply_pressed() -> void:
   SettingsManager.master_volume = temp_master_volume
   SettingsManager.music_volume = temp_music_volume
   SettingsManager.sfx_volume = temp_sfx_volume
-  SettingsManager.pause_music_on_pause = temp_pause_music_on_pause
+  SettingsManager.set_pause_music_on_pause(temp_pause_music_on_pause)
   SettingsManager.apply_audio_settings()
   
   if video_settings_changed:

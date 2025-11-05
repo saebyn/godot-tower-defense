@@ -5,6 +5,7 @@ extends Node
 ## Handles pausing/resuming music when the game is paused based on user preferences
 
 var music_player: AudioStreamPlayer = null
+var paused_by_manager: bool = false # Track if we paused the music
 
 func _ready() -> void:
   # Connect to GameManager state changes
@@ -23,11 +24,13 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
   
   # Check if we should pause music when entering IN_GAME_MENU
   if new_state == GameManager.GameState.IN_GAME_MENU:
-    if SettingsManager.pause_music_on_pause:
+    if SettingsManager.pause_music_on_pause and not music_player.stream_paused:
       music_player.stream_paused = true
+      paused_by_manager = true
       Logger.debug("MusicManager", "Music paused (game paused)")
   elif new_state == GameManager.GameState.PLAYING:
-    # Resume music when returning to gameplay (if it was paused)
-    if music_player.stream_paused:
+    # Only resume music if we were the ones who paused it
+    if paused_by_manager and music_player.stream_paused:
       music_player.stream_paused = false
+      paused_by_manager = false
       Logger.debug("MusicManager", "Music resumed (game resumed)")
