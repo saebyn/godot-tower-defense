@@ -158,6 +158,17 @@ text = "SFX: 100%"
 layout_mode = 2
 value = 100.0
 
+[node name="PauseMusicContainer" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer"]
+layout_mode = 2
+
+[node name="PauseMusicLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/PauseMusicContainer"]
+layout_mode = 2
+text = "Pause Music When Game Paused"
+
+[node name="PauseMusicCheck" type="CheckButton" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/PauseMusicContainer"]
+layout_mode = 2
+button_pressed = true
+
 [node name="Keybinds" type="MarginContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer"]
 visible = false
 layout_mode = 2

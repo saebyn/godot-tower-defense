@@ -19,6 +19,7 @@ var resolution_index: int = 2 # Default to 1920x1080
 var master_volume: float = 0.0
 var music_volume: float = 0.0
 var sfx_volume: float = 0.0
+var pause_music_on_pause: bool = true # Pause music when game is paused
 
 # Available resolutions
 const RESOLUTIONS: Array[Vector2i] = [
@@ -52,6 +53,7 @@ func load_settings() -> void:
   master_volume = config.get_value("audio", "master_volume", master_volume)
   music_volume = config.get_value("audio", "music_volume", music_volume)
   sfx_volume = config.get_value("audio", "sfx_volume", sfx_volume)
+  pause_music_on_pause = config.get_value("audio", "pause_music_on_pause", pause_music_on_pause)
   
   Logger.info("SettingsManager", "Settings loaded from file")
 
@@ -68,6 +70,7 @@ func save_settings() -> void:
   config.set_value("audio", "master_volume", master_volume)
   config.set_value("audio", "music_volume", music_volume)
   config.set_value("audio", "sfx_volume", sfx_volume)
+  config.set_value("audio", "pause_music_on_pause", pause_music_on_pause)
   
   var err = config.save(SETTINGS_FILE)
   if err != OK:
@@ -161,6 +164,13 @@ func set_sfx_volume(volume_db: float) -> void:
   sfx_volume = clamp(volume_db, -80.0, 0.0)
   apply_audio_settings()
   save_settings()
+
+## Set pause music on pause preference
+func set_pause_music_on_pause(enabled: bool) -> void:
+  if pause_music_on_pause != enabled:
+    pause_music_on_pause = enabled
+    save_settings()
+    audio_settings_changed.emit()
 
 ## Get resolution string for display
 func get_resolution_string(index: int) -> String:

@@ -28,6 +28,7 @@ TechTreeManager="*res://Utilities/Systems/tech_tree_manager.gd"
 ObstacleRegistry="*res://Utilities/Systems/obstacle_registry.gd"
 StatsManager="*res://Utilities/Systems/stats_manager.gd"
 AudioManager="*res://Utilities/Systems/audio_manager.gd"
+MusicManager="*res://Utilities/Systems/music_manager.gd"
 SettingsManager="*res://Utilities/Systems/settings_manager.gd"
 ScenarioManager="*res://Utilities/Systems/scenario_manager.gd"
 

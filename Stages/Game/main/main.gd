@@ -14,6 +14,7 @@ var attack: Component_Attack
 @onready var ui: Control = $UI
 
 @onready var obstacle_placement: Utility_ObstaclePlacement = $ObstaclePlacement
+@onready var bg_music_player: AudioStreamPlayer = $BgMusicAudioStreamPlayer
 
 var obstacle_raycast: RayCast3D
 var current_scenario: Stage_Scenario = null
@@ -32,6 +33,10 @@ func _ready() -> void:
   # Set player attack damage source
   if attack:
     attack.damage_source = "player"
+  
+  # Connect music player to MusicManager
+  if bg_music_player:
+    MusicManager.set_music_player(bg_music_player)
 
   # Load the appropriate scenario dynamically
   _load_scenario()
