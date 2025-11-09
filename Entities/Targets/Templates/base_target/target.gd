@@ -1,7 +1,11 @@
 extends Node3D
 
+@export var skin_material: StandardMaterial3D
+
 var health: Component_Health
 var panic_behavior: Component_PanicBehavior
+
+@onready var mesh: MeshInstance3D = $characterMedium
 
 func _ready():
   # Find Health component via metadata
@@ -18,6 +22,11 @@ func _ready():
   panic_behavior.name = "PanicBehavior"
   panic_behavior.animation_player_path = NodePath("AnimationPlayer")
   add_child(panic_behavior)
+
+  # Add texture to mesh
+  if skin_material and mesh:
+    mesh.set_surface_override_material(0, skin_material)
+
 
 func _on_died(damage_source: String = "unknown") -> void:
   Logger.info("Target", "Target has died. Source: %s" % damage_source)

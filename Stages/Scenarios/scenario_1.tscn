@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://o24bc34g5fea"]
+[gd_scene load_steps=20 format=3 uid="uid://o24bc34g5fea"]
 
 [ext_resource type="PackedScene" uid="uid://deoia86ae444c" path="res://Assets/Models/Landscape1.blend" id="1_nc8vx"]
 [ext_resource type="Script" uid="uid://ch1n0ahhy65if" path="res://Stages/Scenarios/scenario_1.gd" id="2_srnku"]
@@ -6,6 +6,7 @@
 [ext_resource type="Environment" uid="uid://gwvj2weedjhe" path="res://Config/Environments/daytime_bright.tres" id="3_ebqns"]
 [ext_resource type="Script" uid="uid://b7jdk6preu1s4" path="res://Common/Systems/spawner/wave.gd" id="4_gwcit"]
 [ext_resource type="Script" uid="uid://du3d1fs80prdm" path="res://Common/Systems/spawner/enemy_spawner.gd" id="4_vni6r"]
+[ext_resource type="Material" uid="uid://e2ebugibvdmg" path="res://Assets/Textures/survivorMaleB.material" id="5_m8tvj"]
 [ext_resource type="Script" uid="uid://veme7gd0dvne" path="res://Config/Enemies/enemy_type_resource.gd" id="6_b7d5n"]
 [ext_resource type="Resource" uid="uid://conw8uteeyyuk" path="res://Config/Enemies/BasicZombie.tres" id="7_b7d5n"]
 [ext_resource type="PackedScene" uid="uid://do57mync1tn6t" path="res://Assets/Models/canal_bridge.tscn" id="7_gwcit"]
@@ -92,6 +93,7 @@ scenario_environment = ExtResource("3_ebqns")
 
 [node name="Target" parent="." index="0" instance=ExtResource("2_xxlxc")]
 transform = Transform3D(0.97459, 0, -0.223999, 0, 1, 0, 0.223999, 0, 0.97459, 16.1092, 2.80732, -17.0537)
+skin_material = ExtResource("5_m8tvj")
 
 [node name="EnemySpawner" type="Node3D" parent="." index="1" node_paths=PackedStringArray("spawn_areas")]
 script = ExtResource("4_vni6r")
