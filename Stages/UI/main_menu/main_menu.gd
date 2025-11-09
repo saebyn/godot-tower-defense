@@ -18,6 +18,9 @@ func _ready():
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
   Logger.info("MainMenu", "Main menu loaded")
   
+  # Clear any active scenario (we're at menu, not in gameplay)
+  ScenarioManager.clear_current_scenario()
+  
   # Make sure the game is not paused
   get_tree().paused = false
   
