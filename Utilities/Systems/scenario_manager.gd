@@ -32,7 +32,7 @@ var scenario_metadata: Dictionary = {
   # Scenario 2-4 placeholders for future content
   "scenario_2": {
     "name": "Campfire Survivors",
-    "scene_path": "res://Stages/Scenarios/scenario_2.tscn", # To be created
+    "scene_path": "res://Stages/Scenarios/scenario_2.tscn",
     "description": "Protect two survivors next to a campfire.",
     "thumbnail": "",
   },

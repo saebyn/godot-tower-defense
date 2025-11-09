@@ -83,8 +83,10 @@ func _load_scenario() -> void:
   current_scenario.rotation.y = - PI / 4 # 45 degrees in radians
   
   # Configure the scenario with the UI reference
-  if current_scenario.has_method("set") and current_scenario.get("ui") != null:
-    current_scenario.ui = ui
+  current_scenario.ui = ui
+
+  # Rebake navigation mesh after loading scenario
+  rebake_navigation_mesh()
   
   Logger.info("Main", "Scenario loaded successfully: %s" % scenario_id)
 
