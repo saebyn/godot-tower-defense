@@ -6,7 +6,6 @@ extends Node3D
 @export var ui: Control
 
 @export_category("Scenario Settings")
-@export var survivor_count: int = 1
 @export var scenario_environment: Environment ## Custom environment for this scenario (optional)
 
 # Scenario timer tracking
@@ -14,6 +13,8 @@ var scenario_start_time: float = 0.0 # Time when first wave started (in seconds)
 var scenario_elapsed_time: float = 0.0 # Total elapsed time (pause-aware)
 var is_timing: bool = false # Whether timer is currently running
 var timer_started: bool = false # Whether timer has been started at all
+
+var survivor_count: int = 1
 
 
 func _ready() -> void:
@@ -28,6 +29,10 @@ func _ready() -> void:
   
   # Connect to game state changes for pause handling
   GameManager.game_state_changed.connect(_on_game_state_changed)
+
+  # Count the number of survivors at start
+  survivor_count = get_tree().get_nodes_in_group("targets").size()
+  Logger.info("Scenario", "Scenario started with %d survivors" % survivor_count)
 
 func _process(delta: float) -> void:
   # Update timer if it's running and game is not paused

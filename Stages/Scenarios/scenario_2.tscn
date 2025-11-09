@@ -175,7 +175,6 @@ data = PackedVector3Array(-50, 0.05, 50, 50, 0.05, 50, -50, -0.05, 50, 50, 0.05,
 [node name="scenario_2" type="Node3D" node_paths=PackedStringArray("enemy_spawner")]
 script = ExtResource("1_bm4tj")
 enemy_spawner = NodePath("System_EnemySpawner")
-survivor_count = 3
 scenario_environment = ExtResource("2_vvsim")
 metadata/_custom_type_script = "uid://nv24k764rct"
 
@@ -263,6 +262,30 @@ visible = false
 mesh = SubResource("PlaneMesh_bxgxw")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_mf37w")
+
+[node name="Wave3" type="Node3D" parent="System_EnemySpawner"]
+script = ExtResource("4_c6qy0")
+duration = 30.0
+start_delay = 15.0
+enemy_types = Array[ExtResource("22_3ckho")]([ExtResource("23_pr8sm"), ExtResource("24_3mp6f")])
+enemy_counts = Array[int]([30, 5])
+metadata/_custom_type_script = "uid://b7jdk6preu1s4"
+
+[node name="Wave4" type="Node3D" parent="System_EnemySpawner"]
+script = ExtResource("4_c6qy0")
+start_delay = 5.0
+enemy_types = Array[ExtResource("22_3ckho")]([ExtResource("24_3mp6f")])
+enemy_counts = Array[int]([10])
+spawn_interval = 0.5
+metadata/_custom_type_script = "uid://b7jdk6preu1s4"
+
+[node name="BossWave" type="Node3D" parent="System_EnemySpawner"]
+script = ExtResource("4_c6qy0")
+max_enemies = 1
+enemy_types = Array[ExtResource("22_3ckho")]([ExtResource("24_3mp6f")])
+enemy_counts = Array[int]([1])
+spawn_interval = 0.5
+metadata/_custom_type_script = "uid://b7jdk6preu1s4"
 
 [node name="Ground" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
