@@ -107,12 +107,15 @@ func find_random_spawn_position() -> Vector3:
     spawn_area_to_use = spawn_areas.pick_random() as MeshInstance3D
     
     # Generate a random position within the selected spawn area
-    var bounds = spawn_area_to_use.get_aabb()
-    var spawn_position = Vector3(
+    var bounds := spawn_area_to_use.get_aabb()
+
+    Logger.debug("Spawner", "Selected spawn area: %s with bounds: %s" % [spawn_area_to_use.name, bounds])
+
+    var spawn_position = spawn_area_to_use.transform.basis * (Vector3(
         randf_range(bounds.position.x, bounds.position.x + bounds.size.x),
         randf_range(bounds.position.y, bounds.position.y + bounds.size.y),
         randf_range(bounds.position.z, bounds.position.z + bounds.size.z)
-    )
+    ) + spawn_area_to_use.position)
     Logger.debug("Spawner", "Local spawn position: %s" % spawn_position)
     return spawn_position
 
