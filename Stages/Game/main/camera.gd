@@ -24,12 +24,16 @@ func _ready():
   
   # Connect to GameManager state changes to disable input during menus
   GameManager.game_state_changed.connect(_on_game_state_changed)
+
+## Handle game state changes to disable camera input during menus
 func _on_game_state_changed(new_state: GameManager.GameState):
   # Disable camera input when in any menu state
   match new_state:
     GameManager.GameState.PLAYING:
       input_enabled = true
     GameManager.GameState.IN_GAME_MENU, GameManager.GameState.MAIN_MENU, GameManager.GameState.GAME_OVER, GameManager.GameState.VICTORY:
+      input_enabled = false
+    _:
       input_enabled = false
 
 

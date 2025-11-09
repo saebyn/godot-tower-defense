@@ -134,16 +134,7 @@ func _on_tech_node_unlock_requested(tech_id: String) -> void:
   _update_detail_panel()
   
   # Trigger the same unlock logic as the unlock button
-  if tech_id.is_empty() or tech_id not in TechTreeManager.tech_nodes:
-    return
-  
-  var tech = TechTreeManager.tech_nodes[tech_id]
-  
-  # Check for mutually exclusive techs
-  if tech.mutually_exclusive_with.size() > 0:
-    _show_exclusive_warning(tech)
-  else:
-    _unlock_tech(tech_id)
+  _attempt_unlock(tech_id)
 
 ## Update the detail panel with selected tech info
 func _update_detail_panel() -> void:
@@ -209,16 +200,20 @@ func _find_what_locked_tech(tech_id: String) -> String:
 
 ## Handle unlock button press
 func _on_unlock_button_pressed() -> void:
-  if selected_tech_id.is_empty() or selected_tech_id not in TechTreeManager.tech_nodes:
+  _attempt_unlock(selected_tech_id)
+
+## Attempt to unlock a tech, handling mutually exclusive checks
+func _attempt_unlock(tech_id: String) -> void:
+  if tech_id.is_empty() or tech_id not in TechTreeManager.tech_nodes:
     return
   
-  var tech = TechTreeManager.tech_nodes[selected_tech_id]
+  var tech = TechTreeManager.tech_nodes[tech_id]
   
   # Check for mutually exclusive techs
   if tech.mutually_exclusive_with.size() > 0:
     _show_exclusive_warning(tech)
   else:
-    _unlock_tech(selected_tech_id)
+    _unlock_tech(tech_id)
 
 ## Show confirmation dialog for mutually exclusive choices
 func _show_exclusive_warning(tech: Resource_TechNode) -> void:
