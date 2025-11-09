@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://b7rnv4gqf8q7o"]
 
-[ext_resource type="Script" path="res://Stages/UI/tech_tree/tech_tree.gd" id="1_techtree"]
+[ext_resource type="Script" uid="uid://bq7n5gj2m4h8x" path="res://Stages/UI/tech_tree/tech_tree.gd" id="1_techtree"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
 
 [node name="TechTree" type="Control"]
@@ -42,8 +42,8 @@ layout_mode = 2
 [node name="TitleLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Tech Tree"
 theme_override_font_sizes/font_size = 32
+text = "Tech Tree"
 
 [node name="CloseButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -52,6 +52,8 @@ text = "Close"
 [node name="ScrollContainer" type="ScrollContainer" parent="Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+horizontal_scroll_mode = 2
+vertical_scroll_mode = 2
 
 [node name="TechGrid" type="GridContainer" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer"]
 layout_mode = 2
@@ -80,8 +82,8 @@ layout_mode = 2
 
 [node name="NameLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/DetailPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Tech Name"
 theme_override_font_sizes/font_size = 24
+text = "Tech Name"
 
 [node name="DescriptionLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/DetailPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
