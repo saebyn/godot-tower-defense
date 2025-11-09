@@ -41,6 +41,23 @@ func _ready() -> void:
 	
 	Logger.info("TechTree", "Tech Tree UI initialized")
 
+## Handle input to prevent scroll events from affecting camera
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		# Check if this is a scroll event (button_index 4 or 5)
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP or event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			# Check if mouse is over the scroll container
+			if scroll_container.get_global_rect().has_point(event.global_position):
+				# Consume the event to prevent it from reaching camera controls
+				accept_event()
+
+## Handle unhandled key inputs (ESC to close)
+func _unhandled_key_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_ESCAPE:
+			_on_close_pressed()
+			accept_event()
+
 ## Refresh the entire tech tree display
 func _refresh_tech_tree() -> void:
 	# Clear existing cards
@@ -91,6 +108,7 @@ func _create_tech_node_card(tech: Resource_TechNode) -> void:
 	# Setup the card
 	card.setup(tech)
 	card.selected.connect(_on_tech_node_selected.bind(tech.id))
+	card.unlock_requested.connect(_on_tech_node_unlock_requested.bind(tech.id))
 	
 	# Update card state
 	_update_tech_node_card(tech.id)
@@ -118,6 +136,24 @@ func _update_tech_node_card(tech_id: String) -> void:
 func _on_tech_node_selected(tech_id: String) -> void:
 	selected_tech_id = tech_id
 	_update_detail_panel()
+
+## Handle tech node unlock request (double-click)
+func _on_tech_node_unlock_requested(tech_id: String) -> void:
+	# Set as selected first
+	selected_tech_id = tech_id
+	_update_detail_panel()
+	
+	# Trigger the same unlock logic as the unlock button
+	if tech_id.is_empty() or tech_id not in TechTreeManager.tech_nodes:
+		return
+	
+	var tech = TechTreeManager.tech_nodes[tech_id]
+	
+	# Check for mutually exclusive techs
+	if tech.mutually_exclusive_with.size() > 0:
+		_show_exclusive_warning(tech)
+	else:
+		_unlock_tech(tech_id)
 
 ## Update the detail panel with selected tech info
 func _update_detail_panel() -> void:

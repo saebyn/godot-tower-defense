@@ -5,6 +5,7 @@ class_name UI_TechNodeCard
 ## Displays tech node state and basic info
 
 signal selected()
+signal unlock_requested()
 
 enum NodeState {
 	UNLOCKED,        # Green - tech is unlocked
@@ -64,5 +65,11 @@ func _set_card_color(color: Color) -> void:
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			selected.emit()
-			accept_event()
+			# Check for double-click on available tech nodes
+			if event.double_click and current_state == NodeState.AVAILABLE:
+				unlock_requested.emit()
+				accept_event()
+			else:
+				# Single click - just select
+				selected.emit()
+				accept_event()
