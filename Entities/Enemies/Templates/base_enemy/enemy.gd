@@ -79,7 +79,8 @@ func _choose_target():
     Logger.trace("Enemy", "No targets available.")
   else:
     # TODO : Implement logic to choose a target based on some criteria.
-    current_target = targets[0]
+    current_target = targets.pick_random()
+    Logger.debug("Enemy", "Chose new target: %s" % current_target.name)
     navigation_agent.set_target_position(current_target.global_position)
 
 
