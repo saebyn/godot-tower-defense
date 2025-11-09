@@ -19,9 +19,11 @@ func _ready():
   # Initialize the orbit center to the current ground projection
   _update_orbit_center()
   
+  # Set input_enabled based on current game state to avoid processing input in menus
+  input_enabled = GameManager.current_state == GameManager.GameState.PLAYING
+  
   # Connect to GameManager state changes to disable input during menus
   GameManager.game_state_changed.connect(_on_game_state_changed)
-
 func _on_game_state_changed(new_state: GameManager.GameState):
   # Disable camera input when in any menu state
   match new_state:
