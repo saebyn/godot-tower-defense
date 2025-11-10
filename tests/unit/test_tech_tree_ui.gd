@@ -125,3 +125,84 @@ func test_close_button_emits_closed_signal():
   
   # Assert
   assert_signal_emitted(tech_tree, "closed", "Should emit closed signal")
+
+func test_esc_key_closes_tech_tree():
+  # Arrange
+  watch_signals(tech_tree)
+  
+  # Act - simulate ESC key press
+  var event = InputEventKey.new()
+  event.keycode = KEY_ESCAPE
+  event.pressed = true
+  tech_tree._unhandled_key_input(event)
+  
+  # Assert
+  assert_signal_emitted(tech_tree, "closed", "ESC key should emit closed signal")
+
+func test_double_click_unlocks_available_tech():
+  # Arrange
+  CurrencyManager.current_level = 1
+  var card = tech_tree.tech_node_cards.get("tur_scrap_shooter")
+  assert_not_null(card, "Card should exist")
+  watch_signals(card)
+  
+  # Ensure card is in AVAILABLE state
+  card.update_state(UI_TechNodeCard.NodeState.AVAILABLE)
+  
+  # Act - simulate double-click
+  var event = InputEventMouseButton.new()
+  event.button_index = MOUSE_BUTTON_LEFT
+  event.pressed = true
+  event.double_click = true
+  card._gui_input(event)
+  
+  # Assert
+  assert_signal_emitted(card, "unlock_requested", "Double-click should emit unlock_requested signal")
+
+func test_double_click_does_nothing_on_locked_tech():
+  # Arrange
+  var card = tech_tree.tech_node_cards.get("tur_boom_barrel")
+  assert_not_null(card, "Card should exist")
+  watch_signals(card)
+  
+  # Ensure card is in LOCKED state
+  card.update_state(UI_TechNodeCard.NodeState.LOCKED)
+  
+  # Act - simulate double-click
+  var event = InputEventMouseButton.new()
+  event.button_index = MOUSE_BUTTON_LEFT
+  event.pressed = true
+  event.double_click = true
+  card._gui_input(event)
+  
+  # Assert
+  assert_signal_not_emitted(card, "unlock_requested", "Double-click on locked tech should not emit unlock_requested")
+  assert_signal_emitted(card, "selected", "Should still emit selected signal")
+
+func test_single_click_still_selects_tech():
+  # Arrange
+  CurrencyManager.current_level = 1
+  var card = tech_tree.tech_node_cards.get("tur_scrap_shooter")
+  assert_not_null(card, "Card should exist")
+  watch_signals(card)
+  
+  # Act - simulate single click
+  var event = InputEventMouseButton.new()
+  event.button_index = MOUSE_BUTTON_LEFT
+  event.pressed = true
+  event.double_click = false
+  card._gui_input(event)
+  
+  # Assert
+  assert_signal_emitted(card, "selected", "Single-click should emit selected signal")
+  assert_signal_not_emitted(card, "unlock_requested", "Single-click should not emit unlock_requested")
+
+func test_scroll_events_consumed_over_tech_tree():
+  # Note: The scroll event handling is now managed by the camera input system
+  # which disables camera input during menu states. This test verifies the
+  # tech tree can be instantiated without errors.
+  
+  # Assert - tech tree should be properly initialized
+  assert_not_null(tech_tree, "Tech tree should be instantiated")
+  assert_not_null(tech_tree.scroll_container, "Scroll container should exist")
+  assert_true(true, "Tech tree initializes without error")

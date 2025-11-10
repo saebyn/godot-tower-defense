@@ -10,6 +10,7 @@ extends Camera3D
 
 var zoom_tween: Tween
 var orbit_center: Vector3 # The point on the ground the camera orbits around
+var input_enabled: bool = true # Track if camera input should be processed
 
 const CAMERA_VIEW_ALIGNMENT_OFFSET := PI / 2 ## 90 degrees in radians rotation to align movement with camera view
 
@@ -17,9 +18,30 @@ const CAMERA_VIEW_ALIGNMENT_OFFSET := PI / 2 ## 90 degrees in radians rotation t
 func _ready():
   # Initialize the orbit center to the current ground projection
   _update_orbit_center()
+  
+  # Set input_enabled based on current game state to avoid processing input in menus
+  input_enabled = GameManager.current_state == GameManager.GameState.PLAYING
+  
+  # Connect to GameManager state changes to disable input during menus
+  GameManager.game_state_changed.connect(_on_game_state_changed)
+
+## Handle game state changes to disable camera input during menus
+func _on_game_state_changed(new_state: GameManager.GameState):
+  # Disable camera input when in any menu state
+  match new_state:
+    GameManager.GameState.PLAYING:
+      input_enabled = true
+    GameManager.GameState.IN_GAME_MENU, GameManager.GameState.MAIN_MENU, GameManager.GameState.GAME_OVER, GameManager.GameState.VICTORY:
+      input_enabled = false
+    _:
+      input_enabled = false
 
 
 func _process(delta: float) -> void:
+  # Skip input processing if camera input is disabled (e.g., menus are open)
+  if not input_enabled:
+    return
+    
   # Update camera position based on player input
   var input_vector := Input.get_vector("camera_move_down", "camera_move_up", "camera_move_left", "camera_move_right")
 
