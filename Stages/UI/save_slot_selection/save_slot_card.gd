@@ -111,7 +111,8 @@ func _load_screenshot():
     screenshot_rect.texture = screenshot
     screenshot_container.visible = true
   else:
-    # Hide screenshot container for empty slots to avoid showing placeholder texture
+    # Hide screenshot container when no screenshot exists
+    # This avoids showing placeholder texture for new/empty saves
     screenshot_rect.texture = null
     screenshot_container.visible = false
 
