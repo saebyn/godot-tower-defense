@@ -111,10 +111,9 @@ func _load_screenshot():
     screenshot_rect.texture = screenshot
     screenshot_container.visible = true
   else:
-    # Hide screenshot container when no screenshot exists
-    # This avoids showing placeholder texture for new/empty saves
-    screenshot_rect.texture = null
-    screenshot_container.visible = false
+    # Use placeholder for empty slots
+    screenshot_rect.texture = PLACEHOLDER_TEXTURE
+    screenshot_container.visible = true
 
 ## Handle action button press (New Game or Continue)
 func _on_action_button_pressed():
