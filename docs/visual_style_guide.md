@@ -403,5 +403,4 @@ If creating new content after initial release:
 *This is a living document. Update as style evolves during development.*
 
 **Related Documents**:
-- `docs/task_planning.md` - Issue #51 for implementation
 - `docs/zom_nom_defense_gdd.md` - Overall game vision

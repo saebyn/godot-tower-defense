@@ -48,7 +48,6 @@ Come hang out, watch the chaos unfold, and see how the sausage gets made! You mi
 
 - **[Architecture Diagrams](docs/ARCHITECTURE.md)** - Comprehensive system architecture with mermaid diagrams
 - **[Game Design Document](docs/zom_nom_defense_gdd.md)** - Complete vision for the game
-- **[Task Planning](docs/task_planning.md)** - Development roadmap (56 issues across 6 phases)
 - **[Tech Tree Design](docs/tech_tree_exclusive_branches.md)** - Mutually exclusive branch system
 - **[Tech Tree Manager Implementation](docs/TECH_TREE_MANAGER_IMPLEMENTATION.md)** - Complete tech tree system docs
 - **[Tech Tree UI Implementation](docs/TECH_TREE_UI_IMPLEMENTATION.md)** - UI implementation details
@@ -80,16 +79,6 @@ Come hang out, watch the chaos unfold, and see how the sausage gets made! You mi
 - ✅ **Save slot selection UI** (create, load, delete, manage multiple saves)
 - ✅ **Color palette** and theme standardization across UI
 
-**What's Coming Next** (see [Task Planning](docs/task_planning.md)):
-- 🔜 Multiple levels with absurd scenarios (Level 2+)
-- 🔜 Tower upgrades (3-5 tiers with visual progression)
-- 🔜 Support towers (buff nearby turrets)
-- 🔜 Challenge modes and endless mode
-- 🔜 More enemy variety (Scouts, Tanks, Sprinters, Bosses) and more complex AI
-- 🔜 Twitch integration for audience interaction
-- 🔜 Polish: sound effects, music, visual effects
-- 🔜 Tutorial/onboarding experience
-- 🔜 Lo-fi visual style pass
 
 ---
 
@@ -291,7 +280,7 @@ This is a **part-time passion project** worked on inconsistently. No timeline ex
 
 **Phase 1 Complete** ✅: Foundation systems (achievements, tech tree, save system) are fully implemented.
 
-See the [Task Planning](docs/task_planning.md) document for the complete roadmap.
+See the Github Issues for detailed task tracking.
 
 **Technical Foundation**: Solid component architecture, resource-based configuration, autoload singletons for game state management, comprehensive save system with multi-slot support.
 
