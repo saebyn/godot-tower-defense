@@ -18,6 +18,14 @@ func _ready():
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
   Logger.info("MainMenu", "Main menu loaded")
   
+  # Ensure a save slot is loaded (loads existing save or creates new game)
+  # This must happen before clearing scenario state
+  SaveManager.initialize_default_slot()
+  
+  # Clear any active scenario (we're at menu, not in gameplay)
+  # This happens after loading the save to ensure clean menu state
+  ScenarioManager.clear_current_scenario()
+  
   # Make sure the game is not paused
   get_tree().paused = false
   
@@ -44,18 +52,14 @@ func _on_start_button_pressed():
   if unlocked_scenarios.size() == 1:
     var scenario_id = unlocked_scenarios[0]
     Logger.info("MainMenu", "Only one scenario unlocked (%s) - starting directly" % scenario_id)
-    # Ensure a save slot is loaded before starting game
-    SaveManager.initialize_default_slot()
     _start_specific_scenario(scenario_id)
   elif unlocked_scenarios.size() > 1:
     Logger.info("MainMenu", "Multiple scenarios unlocked - showing scenario select")
-    # Scenario select screen will initialize save slot in its _ready() method
     _show_scenario_select()
   else:
     # Fallback: This should never happen as scenario_1 is always unlocked,
     # but handle gracefully just in case
     Logger.warn("MainMenu", "No scenarios unlocked - starting scenario_1 as fallback")
-    SaveManager.initialize_default_slot()
     _start_specific_scenario("scenario_1")
 
 func _on_settings_button_pressed():
