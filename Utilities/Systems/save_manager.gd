@@ -215,7 +215,8 @@ func initialize_default_slot() -> bool:
 ## Save the current slot atomically
 ## Uses temporary file + rename to ensure atomic writes
 ## Returns true on success, false on failure
-func save_current_slot() -> bool:
+## If capture_screenshot is false, skips screenshot capture (useful for initial saves from UI)
+func save_current_slot(capture_screenshot: bool = true) -> bool:
   if current_save_slot == -1:
     Logger.error("SaveManager", "Cannot save: no slot is currently loaded")
     save_failed.emit("No save slot loaded")
@@ -253,8 +254,11 @@ func save_current_slot() -> bool:
     save_failed.emit("File write failed")
     return false
   
-  # Capture and save screenshot after successful save
-  _capture_screenshot(current_save_slot)
+  # Capture and save screenshot after successful save (only if requested)
+  if capture_screenshot:
+    _capture_screenshot(current_save_slot)
+  else:
+    Logger.debug("SaveManager", "Skipping screenshot capture for slot %d" % current_save_slot)
   
   Logger.info("SaveManager", "Successfully saved slot %d" % current_save_slot)
   save_completed.emit()
@@ -282,8 +286,8 @@ func create_new_game(slot_number: int) -> void:
   slot_playtime = 0.0
   slot_start_time = Time.get_ticks_msec() / 1000.0
   
-  # Save the fresh state
-  save_current_slot()
+  # Save the fresh state without capturing screenshot (we're still in UI, not in game)
+  save_current_slot(false)
   
   slot_created.emit(slot_number)
   Logger.info("SaveManager", "New game created in slot %d" % slot_number)
@@ -636,3 +640,4 @@ func _delete_screenshot(slot_number: int) -> void:
         Logger.debug("SaveManager", "Deleted screenshot for slot %d" % slot_number)
       else:
         Logger.warn("SaveManager", "Failed to delete screenshot for slot %d" % slot_number)
+

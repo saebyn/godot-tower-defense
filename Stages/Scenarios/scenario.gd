@@ -82,6 +82,7 @@ func _on_all_waves_completed() -> void:
     Logger.error("Scenario", "Cannot mark scenario complete - no scenario ID set in ScenarioManager!")
   
   # Transition to victory state (UI will respond to this)
+  assert(survivor_count > 0) # Shouldn't be here if all survivors are dead
   GameManager.set_game_state(GameManager.GameState.VICTORY)
 
 

@@ -53,7 +53,6 @@ var scenario_metadata: Dictionary = {
 # Signals - Persistent progression
 signal scenario_completed(scenario_id: String)
 signal scenario_unlocked(scenario_id: String)
-signal progression_saved()
 signal progression_loaded()
 
 # Signals - Runtime state

@@ -130,6 +130,9 @@ func debug(scope: String, message: String) -> void:
 func info(scope: String, message: String) -> void:
   _log(LogLevel.INFO, scope, message)
 
+func warning(scope: String, message: String) -> void:
+  _log(LogLevel.WARN, scope, message)
+
 func warn(scope: String, message: String) -> void:
   _log(LogLevel.WARN, scope, message)
 
