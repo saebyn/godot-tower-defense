@@ -14,7 +14,6 @@ signal scrap_earned(amount: int)
 signal xp_changed(new_amount: int)
 signal xp_earned(amount: int)
 signal level_up(new_level: int)
-signal progression_saved()
 signal progression_loaded()
 
 func _ready():

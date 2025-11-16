@@ -5,7 +5,8 @@ enum GameState {
   PLAYING,
   IN_GAME_MENU,
   GAME_OVER,
-  VICTORY
+  VICTORY,
+  ALL_DONE
 }
 
 var current_state: GameState = GameState.MAIN_MENU
