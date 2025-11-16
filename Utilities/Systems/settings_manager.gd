@@ -85,29 +85,37 @@ func apply_settings() -> void:
 func apply_video_settings() -> void:
   var window = get_tree().root
   
-  # Apply fullscreen
-  if fullscreen:
-    window.mode = Window.MODE_FULLSCREEN
-  else:
-    window.mode = Window.MODE_WINDOWED
-  
   # Apply vsync
   if vsync_enabled:
     DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
   else:
     DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
-  
-  # Apply resolution (only for windowed mode)
-  if not fullscreen and resolution_index >= 0 and resolution_index < RESOLUTIONS.size():
-    var res = RESOLUTIONS[resolution_index]
-    window.size = res
-    # Center window
-    var screen_size = DisplayServer.screen_get_size()
-    var window_size = window.size
-    window.position = (screen_size - window_size) / 2
-  
+
+  # Skip window size/position changes when running in the editor's embedded window
+  # The editor manages the embedded window size, and changing it causes layout issues
+  if Engine.is_embedded_in_editor():
+    Logger.debug("SettingsManager", "Running in editor - skipping window size/position changes")
+  else:
+    # Apply fullscreen
+    if fullscreen:
+      window.mode = Window.MODE_FULLSCREEN
+    else:
+      window.mode = Window.MODE_WINDOWED
+
+    
+    # Apply resolution (only for windowed mode)
+    if not fullscreen and resolution_index >= 0 and resolution_index < RESOLUTIONS.size():
+      var res = RESOLUTIONS[resolution_index]
+      window.size = res
+      # Center window
+      var screen_size = DisplayServer.screen_get_size()
+      var window_size = window.size
+      window.position = (screen_size - window_size) / 2
+
+    Logger.debug("SettingsManager", "Video settings applied")
+
   video_settings_changed.emit()
-  Logger.debug("SettingsManager", "Video settings applied")
+
 
 ## Apply audio settings
 func apply_audio_settings() -> void:
