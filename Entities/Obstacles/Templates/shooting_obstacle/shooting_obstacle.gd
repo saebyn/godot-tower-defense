@@ -7,8 +7,11 @@ class_name Entity_ShootingObstacle
 @export var detection_range: float = 25.0
 @export var detection_interval: float = 0.5
 
+## The currently tracked target enemy, updated by detection timer
 var current_target: Node3D = null
+## Whether the obstacle is ready to attack (e.g., turret is aimed at target)
 var ready_to_attack: bool = true
+## Whether the current target is within attack range (updated by detection logic)
 var can_attack_current_target: bool = false
 var attack: Component_Attack
 @onready var detection_timer: Timer = $DetectionTimer
@@ -24,13 +27,18 @@ func _ready():
   # Set damage source for obstacle attacks
   if attack:
     attack.damage_source = "obstacle"
-  
+
+  # Validate ranges
+  if detection_range < attack_range:
+    Logger.warn("ShootingObstacle", "detection_range (%f) is less than attack_range (%f), adjusting detection_range" % [detection_range, attack_range])
+    detection_range = attack_range
+
   # Set up detection timer
   if detection_timer:
     detection_timer.wait_time = detection_interval
     detection_timer.timeout.connect(_detect_and_attack_enemies)
     detection_timer.start()
-  
+
   Logger.info("ShootingObstacle", "Shooting obstacle initialized with attack range: %f" % attack_range)
 
 func _detect_and_attack_enemies():
