@@ -20,25 +20,18 @@ func _process(delta: float) -> void:
     #  animation_player.stop()
     #  animation_player.play("RESET")
     var target_direction: Vector3 = (current_target.global_position - turret_top_mesh.global_position).normalized()
-    var aim_yaw_angle: float = atan2(target_direction.x, target_direction.z) + PI / 2
+    var aim_yaw_angle: float = atan2(-target_direction.x, -target_direction.z) + PI / 2
     var turret_yaw_angle: float = turret_top_mesh.rotation.y
 
     var rotation_delta: float = deg_to_rad(rotation_speed) * delta
-    var lerp_weight: float = clamp(rotation_delta, 0, 1)
 
-    var lerped_target_angle := lerp_angle(
-      turret_yaw_angle,
-      aim_yaw_angle,
-      # TODO this shouldn't slow down as it gets closer - fix this
-      lerp_weight
-    )
-
-    var rotation_amount: float = lerped_target_angle - turret_yaw_angle
+    var rotation_amount: float = get_angle_difference(turret_yaw_angle, aim_yaw_angle)
+    var rotation_amount_delta = clampf(rotation_amount, -rotation_delta, rotation_delta)
 
     if abs(rotation_amount) > aim_margin:
-      Logger.trace("BasicTurret", "Rotating turret by %f radians towards target." % rotation_amount)
+      Logger.trace("BasicTurret", "Rotating turret by %f radians towards target (clamped from %f)" % [rotation_amount_delta, rotation_amount])
       ready_to_attack = false
-      turret_top_mesh.rotate_y(rotation_amount)
+      turret_top_mesh.rotate_y(rotation_amount_delta)
     else:
       Logger.trace("BasicTurret", "Turret aligned with target.")
       ready_to_attack = true
@@ -46,3 +39,8 @@ func _process(delta: float) -> void:
     Logger.trace("BasicTurret", "No target detected.")
     ready_to_attack = false
     #animation_player.play(idle_animation)
+
+
+func get_angle_difference(angle1: float, angle2: float) -> float:
+  var diff: float = fmod(angle2 - angle1 + PI, TAU) - PI
+  return diff
