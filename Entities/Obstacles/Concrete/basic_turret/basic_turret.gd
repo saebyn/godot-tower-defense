@@ -38,7 +38,8 @@ func _process(delta: float) -> void:
   else:
     Logger.trace("BasicTurret", "No target detected.")
     ready_to_attack = false
-    animation_player.play(idle_animation)
+    if animation_player.current_animation != idle_animation:
+      animation_player.play(idle_animation)
 
 
 func get_angle_difference(angle1: float, angle2: float) -> float:
