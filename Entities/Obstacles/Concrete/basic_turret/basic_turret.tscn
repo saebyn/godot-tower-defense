@@ -32,13 +32,13 @@ tracks/0/keys = PackedFloat32Array(0.5, 1, 0, -0.713, 0, 0.701, 2.53333, 1, 0, -
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2a5gv"]
 _data = {
 &"RESET": SubResource("Animation_cvjpm"),
-&"idle_turret": SubResource("Animation_6y5ob")
+&"idle": SubResource("Animation_6y5ob")
 }
 
 [node name="BasicTurret" node_paths=PackedStringArray("mesh_instances") instance=ExtResource("1_turret")]
 script = ExtResource("2_6y5ob")
 rotation_speed = 360.0
-idle_animation = " idle_turret"
+idle_animation = "idle"
 aim_margin = 0.1
 detection_range = 25.0
 mesh_instances = [NodePath("turret/Base"), NodePath("turret/TurretYaw/Top")]
@@ -55,8 +55,6 @@ shape = SubResource("BoxShape3D_sl1jc")
 [node name="turret" parent="." index="4" instance=ExtResource("2_nmtda")]
 transform = Transform3D(1.74, 0, 0, 0, 1.74, 0, 0, 0, 1.74, 0, -0.0307488, 0)
 
-[node name="TurretYaw" type="Node3D" parent="turret" index="1"]
-
 [node name="Top" parent="turret/TurretYaw" index="0"]
 transform = Transform3D(0.321883, 0, 0, 0, 0.188604, 0, 0, 0, 0.321883, 0, 0.986146, 0)
 
@@ -64,5 +62,6 @@ transform = Transform3D(0.321883, 0, 0, 0, 0.188604, 0, 0, 0, 0.321883, 0, 0.986
 libraries = {
 &"": SubResource("AnimationLibrary_2a5gv")
 }
+autoplay = "idle"
 
 [editable path="turret"]
