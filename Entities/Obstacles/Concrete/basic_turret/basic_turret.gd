@@ -16,7 +16,8 @@ extends Entity_ShootingObstacle
 
 func _process(delta: float) -> void:
   if current_target:
-    animation_player.play("RESET")
+    if animation_player.current_animation != "RESET":
+      animation_player.play("RESET")
     # Calculate target direction for yaw rotation
     var target_direction: Vector3 = (current_target.global_position - turret_yaw.global_position).normalized()
     var aim_yaw_angle: float = atan2(-target_direction.x, -target_direction.z) + PI / 2
