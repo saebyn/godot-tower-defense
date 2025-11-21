@@ -1,30 +1,67 @@
-[gd_scene load_steps=4 format=3 uid="uid://bl5g2v8n3jkph"]
+[gd_scene load_steps=8 format=3 uid="uid://bl5g2v8n3jkph"]
 
 [ext_resource type="PackedScene" uid="uid://cj8x0adt0k2cd" path="res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.tscn" id="1_turret"]
+[ext_resource type="Script" uid="uid://0yy8udbhaakj" path="res://Entities/Obstacles/Concrete/basic_turret/basic_turret.gd" id="2_6y5ob"]
+[ext_resource type="PackedScene" uid="uid://cyxcfkq8p7bag" path="res://Assets/Models/turret.blend" id="2_nmtda"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_sl1jc"]
-size = Vector3(10, 5, 2)
+size = Vector3(1.26466, 1.16345, 1.03418)
 
-[sub_resource type="BoxMesh" id="BoxMesh_qoubk"]
-size = Vector3(9.95, 4.975, 1.965)
+[sub_resource type="Animation" id="Animation_cvjpm"]
+length = 0.001
+tracks/0/type = "rotation_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("turret/TurretYaw/Top")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
+
+[sub_resource type="Animation" id="Animation_6y5ob"]
+resource_name = "idle_turret"
+length = 7.069
+loop_mode = 1
+tracks/0/type = "rotation_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("turret/TurretYaw/Top")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0.5, 1, 0, -0.713, 0, 0.701, 2.53333, 1, 0, -0.013, 0, 1, 3.73333, 1, 0, -0.08, 0, -0.997, 4.6, 1, 0, 0.995, 0, 0.097, 5.96667, 1, 0, -0.25, 0, 0.968, 6.76667, 1, 0, 0.769, 0, 0.639)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_2a5gv"]
+_data = {
+&"RESET": SubResource("Animation_cvjpm"),
+&"idle": SubResource("Animation_6y5ob")
+}
 
 [node name="BasicTurret" node_paths=PackedStringArray("mesh_instances") instance=ExtResource("1_turret")]
-attack_range = 12.0
-detection_interval = 0.3
-mesh_instances = [NodePath("MeshInstance3D")]
+script = ExtResource("2_6y5ob")
+rotation_speed = 360.0
+idle_animation = "idle"
+aim_margin = 0.1
+detection_range = 25.0
+mesh_instances = [NodePath("turret/Base"), NodePath("turret/TurretYaw/Top")]
 
 [node name="Attack" parent="." index="1"]
-damage_amount = 20
+damage_amount = 1
 damage_cooldown = 1.5
 damage_source = "turret"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+transform = Transform3D(1.74, 0, 0, 0, 1.74, 0, 0, 0, 1.74, 0.234956, 0.996019, 0.0292969)
 shape = SubResource("BoxShape3D_sl1jc")
 
-[node name="DetectionTimer" parent="." index="3"]
-wait_time = 0.3
+[node name="turret" parent="." index="4" instance=ExtResource("2_nmtda")]
+transform = Transform3D(1.74, 0, 0, 0, 1.74, 0, 0, 0, 1.74, 0, -0.0307488, 0)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.96503, 0)
-mesh = SubResource("BoxMesh_qoubk")
+[node name="Top" parent="turret/TurretYaw" index="0"]
+transform = Transform3D(0.321883, 0, 0, 0, 0.188604, 0, 0, 0, 0.321883, 0, 0.986146, 0)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="5"]
+libraries = {
+&"": SubResource("AnimationLibrary_2a5gv")
+}
+autoplay = "idle"
+
+[editable path="turret"]
