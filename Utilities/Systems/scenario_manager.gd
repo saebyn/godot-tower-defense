@@ -48,6 +48,13 @@ var scenario_metadata: Dictionary = {
     "description": "Defend survivors in an inflatable pool.",
     "thumbnail": "",
   },
+
+  "scenario_test": {
+    "name": "Test Scenario",
+    "scene_path": "res://Stages/Scenarios/scenario_test.tscn",
+    "description": "A test scenario for debugging purposes.",
+    "thumbnail": "",
+  },
 }
 
 # Signals - Persistent progression
