@@ -8,10 +8,10 @@
 [ext_resource type="Script" uid="uid://du3d1fs80prdm" path="res://Common/Systems/spawner/enemy_spawner.gd" id="4_vni6r"]
 [ext_resource type="Material" uid="uid://e2ebugibvdmg" path="res://Assets/Textures/survivorMaleB.material" id="5_m8tvj"]
 [ext_resource type="Script" uid="uid://veme7gd0dvne" path="res://Config/Enemies/enemy_type_resource.gd" id="6_b7d5n"]
-[ext_resource type="Resource" uid="uid://conw8uteeyyuk" path="res://Config/Enemies/BasicZombie.tres" id="7_b7d5n"]
+[ext_resource type="Resource" uid="uid://conw8uteeyyuk" path="res://Config/Enemies/basic_zombie.tres" id="7_b7d5n"]
 [ext_resource type="PackedScene" uid="uid://do57mync1tn6t" path="res://Assets/Models/canal_bridge.tscn" id="7_gwcit"]
 [ext_resource type="PackedScene" uid="uid://duqnmq1hv1h8h" path="res://Assets/Models/tree.blend" id="8_agnyp"]
-[ext_resource type="Resource" uid="uid://b07wewlgyi6ur" path="res://Config/Enemies/SlightlyBiggerZombie.tres" id="8_k4dam"]
+[ext_resource type="Resource" uid="uid://b07wewlgyi6ur" path="res://Config/Enemies/boss_zombie.tres" id="8_k4dam"]
 [ext_resource type="PackedScene" uid="uid://dmaheitw7drsh" path="res://Entities/Scrap/pile_of_boxes.tscn" id="9_b7d5n"]
 
 [sub_resource type="Shader" id="Shader_vni6r"]
