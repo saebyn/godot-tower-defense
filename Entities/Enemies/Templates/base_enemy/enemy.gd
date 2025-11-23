@@ -13,6 +13,7 @@ var attack: Component_Attack
 var health: Component_Health
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var mesh_instance: MeshInstance3D = $characterMedium
 
 var current_target: Node3D = null
 var fallback_obstacle_target: Node3D = null # Used when direct path to target is blocked
@@ -50,6 +51,10 @@ func load_resource(resource: Resource_EnemyType) -> void:
     scrap_reward = resource.scrap_reward
     xp_reward = resource.xp_reward
     enemy_type = resource.enemy_type
+
+    # Update skin material if specified
+    if resource.skin_material and mesh_instance:
+      mesh_instance.set_surface_override_material(0, resource.skin_material)
 
     # Update navigation agent desired distance
     navigation_agent.target_desired_distance = target_desired_distance
