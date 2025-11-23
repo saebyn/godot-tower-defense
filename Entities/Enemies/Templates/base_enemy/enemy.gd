@@ -154,7 +154,7 @@ func _check_and_set_fallback_target() -> void:
   if navigation_agent.is_target_reachable():
     # Path is fine, clear any fallback
     fallback_obstacle_target = null
-    Logger.debug("Enemy.Navigation", "Path to target is reachable")
+    Logger.trace("Enemy.Navigation", "Path to target is reachable")
   else:
     # Path is blocked, find obstacle to attack
     Logger.info("Enemy.Navigation", "Cannot reach target, searching for blocking obstacle")
