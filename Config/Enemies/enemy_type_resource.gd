@@ -17,3 +17,6 @@ extends Resource
 @export var xp_reward: int = 10 ## XP awarded when enemy dies
 @export var target_desired_distance: float = 4.0 ## Desired distance to target when approaching
 @export var obstacle_attack_range: float = 6.0 ## Range at which the enemy will start attacking obstacles
+
+@export_category("Visual Properties")
+@export var skin_material: Material ## Material used for the enemy's skin
