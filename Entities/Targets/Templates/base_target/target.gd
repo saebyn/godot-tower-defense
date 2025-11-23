@@ -1,6 +1,7 @@
 extends Node3D
 
 @export var skin_material: StandardMaterial3D
+@export var hitpoints_override: int = -1 ## If set to a positive value, overrides the default health component's hitpoints
 
 var health: Component_Health
 var panic_behavior: Component_PanicBehavior
@@ -16,7 +17,11 @@ func _ready():
   if health:
     health.died.connect(_on_died)
     health.damaged.connect(_on_health_damaged)
-  
+
+    # Override health if specified
+    if hitpoints_override > 0:
+      health.hitpoints = hitpoints_override
+
   # Add panic behavior component
   panic_behavior = Component_PanicBehavior.new()
   panic_behavior.name = "PanicBehavior"
