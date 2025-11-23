@@ -91,10 +91,10 @@ achievement.hidden = false
 var achievement = AchievementResource.new()
 achievement.id = "zombie_slayer"
 achievement.name = "Zombie Slayer"
-achievement.description = "Defeat 100 BasicZombie enemies"
+achievement.description = "Defeat 100 Basic_zombie enemies"
 achievement.unlock_condition_type = AchievementResource.ConditionType.ENEMIES_DEFEATED_BY_TYPE
 achievement.threshold = 100
-achievement.condition_target = "BasicZombie"
+achievement.condition_target = "Basic_zombie"
 achievement.hidden = false
 ```
 
@@ -176,7 +176,7 @@ achievement.condition_logic = AchievementResource.ConditionLogic.AND
 var cond1 = AchievementResource.AchievementCondition.new()
 cond1.condition_type = AchievementResource.ConditionType.ENEMIES_DEFEATED_BY_TYPE
 cond1.threshold = 100
-cond1.condition_target = "BasicZombie"
+cond1.condition_target = "Basic_zombie"
 
 # Condition 2: Place obstacles
 var cond2 = AchievementResource.AchievementCondition.new()
@@ -189,7 +189,7 @@ cond3.condition_type = AchievementResource.ConditionType.SCRAP_EARNED
 cond3.threshold = 500
 
 achievement.conditions = [cond1, cond2, cond3]
-# Result: "Defeat 100 BasicZombie enemies AND Place 25 obstacles AND Earn 500 scrap"
+# Result: "Defeat 100 Basic_zombie enemies AND Place 25 obstacles AND Earn 500 scrap"
 ```
 
 ## Integrating with StatsManager and CurrencyManager
@@ -219,7 +219,7 @@ The **AchievementManager** (implemented in `Utilities/Systems/achievement_manage
 This directory includes two sample achievements:
 
 1. **first_blood.tres**: Defeat your first enemy
-2. **zombie_slayer.tres**: Defeat 100 BasicZombie enemies (with reward)
+2. **zombie_slayer.tres**: Defeat 100 Basic_zombie enemies (with reward)
 
 ## Using the Achievement System
 
