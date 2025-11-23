@@ -7,10 +7,7 @@ data = PackedVector3Array(-0.6949, 0.2658, 0.0658, -0.695, 0.2688, 0, -0.7195, 0
 
 [node name="canal bridge" instance=ExtResource("1_llhfp")]
 
-[node name="Ground" parent="." index="0"]
-visible = false
-
-[node name="StaticBody3D" type="StaticBody3D" parent="." index="4"]
+[node name="StaticBody3D" type="StaticBody3D" parent="." index="1"]
 collision_layer = 17
 collision_mask = 0
 
