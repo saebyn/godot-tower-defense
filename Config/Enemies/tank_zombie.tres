@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="Resource_EnemyType" load_steps=3 format=3 uid="uid://2veg5d3ki7h4"]
+[gd_resource type="Resource" script_class="Resource_EnemyType" load_steps=4 format=3 uid="uid://2veg5d3ki7h4"]
 
 [ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://Entities/Enemies/Templates/base_enemy/enemy.tscn" id="1_ipqdc"]
 [ext_resource type="Script" uid="uid://veme7gd0dvne" path="res://Config/Enemies/enemy_type_resource.gd" id="1_ygfi5"]
+[ext_resource type="Material" uid="uid://c5t2estxun6yh" path="res://Assets/Textures/zombieC.tres" id="3_x0neu"]
 
 [resource]
 script = ExtResource("1_ygfi5")
@@ -18,4 +19,5 @@ scrap_reward = 30
 xp_reward = 150
 target_desired_distance = 4.0
 obstacle_attack_range = 6.0
+skin_material = ExtResource("3_x0neu")
 metadata/_custom_type_script = "uid://veme7gd0dvne"
