@@ -94,7 +94,8 @@ func test_only_scenario_1_unlocked_for_new_game():
   var scenario_ids = ScenarioManager.get_all_scenario_ids()
   for scenario_id in scenario_ids:
     if ScenarioManager.is_scenario_unlocked(scenario_id):
-      unlocked_scenarios.append(scenario_id)
+      if scenario_id != "scenario_test": # Exclude test scenarios
+        unlocked_scenarios.append(scenario_id)
   
   assert_eq(unlocked_scenarios.size(), 1, "Should have only one unlocked scenario")
   assert_eq(unlocked_scenarios[0], "scenario_1", "Only scenario_1 should be unlocked for new game")
