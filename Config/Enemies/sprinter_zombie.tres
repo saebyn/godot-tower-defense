@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Resource_EnemyType" load_steps=3 format=3 uid="uid://dl5hvui4vagvg"]
 
-[ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://Entities/Enemies/Templates/base_enemy/enemy.tscn" id="1_2sqgu"]
+[ext_resource type="PackedScene" uid="uid://ck56onavfxobh" path="res://Entities/Enemies/Concrete/sprinter_zombie.tscn" id="1_2sqgu"]
 [ext_resource type="Script" uid="uid://veme7gd0dvne" path="res://Config/Enemies/enemy_type_resource.gd" id="1_8r2xe"]
 
 [resource]
