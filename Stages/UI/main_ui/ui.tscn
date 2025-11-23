@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://duje032qpuq2"]
+[gd_scene load_steps=17 format=3 uid="uid://duje032qpuq2"]
 
 [ext_resource type="Script" uid="uid://3yfu45cvudar" path="res://Stages/UI/main_ui/ui.gd" id="1_27fn8"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://b2jcxh0e7r1tv" path="res://Common/UI/stats_display/stats_display.tscn" id="11_stats_display"]
 [ext_resource type="Script" uid="uid://diix4dd6hthxj" path="res://Common/UI/achievement_notification/achievement_notification_manager.gd" id="12_achievement_notification"]
 [ext_resource type="PackedScene" uid="uid://c5m8n7qaq1r2s" path="res://Common/UI/fps_overlay/fps_overlay.tscn" id="12_fps_overlay"]
+[ext_resource type="Script" uid="uid://c7e32ra2ikf6f" path="res://Stages/UI/main_ui/debug_control.gd" id="15_y1b7e"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_b3t5h"]
 size = Vector2(16, 16)
@@ -89,4 +90,22 @@ layout_mode = 1
 [node name="AchievementNotificationManager" type="CanvasLayer" parent="."]
 script = ExtResource("12_achievement_notification")
 
+[node name="DebugControl" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchor_right = 0.135
+anchor_bottom = 0.205
+offset_left = 663.0
+offset_top = 502.0
+offset_right = 507.48
+offset_bottom = 369.16
+script = ExtResource("15_y1b7e")
+
+[node name="FreeScrap" type="Button" parent="DebugControl"]
+layout_mode = 0
+offset_right = 16.0
+offset_bottom = 12.0
+text = "Free Scrap"
+
 [connection signal="obstacle_selected" from="Hotbar" to="." method="request_obstacle_spawn"]
+[connection signal="pressed" from="DebugControl/FreeScrap" to="DebugControl" method="_on_free_scrap_pressed"]
