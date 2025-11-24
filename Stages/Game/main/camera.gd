@@ -8,6 +8,13 @@ extends Camera3D
 @export var camera_max_size: float = 100.0 # Maximum zoom (farthest)
 @export var camera_zoom_duration: float = 0.2 # Duration for smooth zoom transitions
 
+@export_group("Camera Boundaries")
+@export var enable_boundaries: bool = true # Enable camera boundary constraints
+@export var world_min_x: float = -200.0 # Minimum X boundary for camera orbit center
+@export var world_max_x: float = 200.0 # Maximum X boundary for camera orbit center
+@export var world_min_z: float = -200.0 # Minimum Z boundary for camera orbit center
+@export var world_max_z: float = 200.0 # Maximum Z boundary for camera orbit center
+
 var zoom_tween: Tween
 var orbit_center: Vector3 # The point on the ground the camera orbits around
 var input_enabled: bool = true # Track if camera input should be processed
@@ -56,6 +63,10 @@ func _process(delta: float) -> void:
     
     # Update orbit center after movement
     _update_orbit_center()
+    
+    # Apply camera boundary constraints
+    if enable_boundaries:
+      _apply_boundary_constraints()
 
   # Handle camera rotation
   if Input.is_action_just_pressed("camera_rotate_left"):
@@ -125,3 +136,21 @@ func _orbit_around_center(angle: float):
   
   # Rotate the camera itself to maintain the same viewing angle
   rotate_y(angle)
+  
+  # Apply boundary constraints after rotation
+  if enable_boundaries:
+    _update_orbit_center()
+    _apply_boundary_constraints()
+
+
+func _apply_boundary_constraints():
+  # Constrain the orbit center (where the camera is looking) to stay within world bounds
+  var constrained_center = orbit_center
+  constrained_center.x = clamp(constrained_center.x, world_min_x, world_max_x)
+  constrained_center.z = clamp(constrained_center.z, world_min_z, world_max_z)
+  
+  # If the orbit center was constrained, adjust the camera position to maintain the same offset
+  if constrained_center != orbit_center:
+    var offset = global_position - orbit_center
+    global_position = constrained_center + offset
+    orbit_center = constrained_center
