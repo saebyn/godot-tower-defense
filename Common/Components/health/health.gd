@@ -13,6 +13,7 @@ class_name Component_Health
 var max_hitpoints: int
 var dead: bool = false
 var camera: Camera3D = null
+var last_camera_size: float = 0.0
 
 signal died(damage_source: String)
 signal damaged(amount: int, hitpoints: int, damage_source: String)
@@ -61,8 +62,11 @@ func _search_for_camera(node: Node) -> Camera3D:
 func _process(_delta: float):
   # Update health bar scale based on camera size for consistent screen-space appearance
   if camera and sprite3d:
-    var scale_factor = camera.size / reference_camera_size
-    sprite3d.scale = Vector3(scale_factor, scale_factor, scale_factor)
+    # Only update scale if camera size has changed to avoid unnecessary updates
+    if camera.size != last_camera_size:
+      last_camera_size = camera.size
+      var scale_factor = camera.size / reference_camera_size
+      sprite3d.scale = Vector3(scale_factor, scale_factor, scale_factor)
 
 func _update_display():
   # Set up health display UI
