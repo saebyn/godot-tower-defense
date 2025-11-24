@@ -2,7 +2,7 @@ extends Node
 class_name Component_Health
 
 @export var hitpoints: int = 100
-## Reference camera size at which the health bar appears at the correct size
+## Reference camera size at which the health bar appears at the correct size (must be > 0)
 @export var reference_camera_size: float = 65.0
 
 @onready var health_bar := $SubViewportContainer/SubViewport/VBoxContainer/HealthBar
@@ -36,28 +36,29 @@ func _ready():
   if get_parent():
     get_parent().set_meta("health_component", self)
   
+  # Validate reference_camera_size to prevent division by zero
+  if reference_camera_size <= 0.0:
+    push_error("Health component: reference_camera_size must be greater than 0, using default value 65.0")
+    reference_camera_size = 65.0
+  
   # Find the camera in the scene
   _find_camera()
 
 func _find_camera():
-  # Look for the camera in the scene tree
-  var root = get_tree().root
-  camera = _search_for_camera(root)
+  # Try to find the current (active) camera first, then fall back to any Camera3D
+  var viewport = get_viewport()
+  if viewport:
+    camera = viewport.get_camera_3d()
+  
+  # If no current camera, use find_children for efficient search
+  if not camera:
+    var root = get_tree().root
+    var cameras = root.find_children("*", "Camera3D", true, false)
+    if cameras.size() > 0:
+      camera = cameras[0]
+  
   if not camera:
     push_warning("Health component could not find Camera3D in scene tree")
-
-func _search_for_camera(node: Node) -> Camera3D:
-  # Check if this node is a Camera3D
-  if node is Camera3D:
-    return node
-  
-  # Recursively search children
-  for child in node.get_children():
-    var result = _search_for_camera(child)
-    if result:
-      return result
-  
-  return null
 
 func _process(_delta: float):
   # Update health bar scale based on camera size for consistent screen-space appearance
