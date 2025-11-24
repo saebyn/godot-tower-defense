@@ -79,10 +79,10 @@ Main (Node3D)
 │   │   └── FlatGroundBody (StaticBody3D)
 │   │       └── CollisionShape3D (BoxShape3D)
 │   └── Boundaries (Node3D)
-│       ├── NorthBoundary (CSGBox3D)
-│       ├── SouthBoundary (CSGBox3D)
-│       ├── EastBoundary (CSGBox3D)
-│       └── WestBoundary (CSGBox3D)
+│       ├── NorthBoundary (MeshInstance3D with BoxMesh)
+│       ├── SouthBoundary (MeshInstance3D with BoxMesh)
+│       ├── EastBoundary (MeshInstance3D with BoxMesh)
+│       └── WestBoundary (MeshInstance3D with BoxMesh)
 ├── Camera3D [script: camera.gd with boundary constraints]
 ├── NavigationRegion3D
 ├── [Scenario loaded here at runtime - rotated -45°]

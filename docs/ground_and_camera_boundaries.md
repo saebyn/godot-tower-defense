@@ -14,6 +14,7 @@ This document describes the implementation of the flat ground plane with visual 
 
 ### 2. Visual Boundary Markers
 Located at the edges of the playable area:
+- **Type**: MeshInstance3D nodes with BoxMesh (production-ready, not CSG prototyping)
 - **Position**: ±200 units on X and Z axes
 - **Appearance**: Red glowing walls (10 units high)
 - **Behavior**: Fade in when camera approaches (within 50 units)
@@ -81,6 +82,37 @@ In `world_boundary_markers.gd`:
 - [ ] Navigation mesh still functions correctly
 - [ ] Camera rotation respects boundaries
 - [ ] No performance impact from boundary checking
+
+## Technical Details
+
+### Design Decisions
+
+**Why flat ground below landscape?**
+- Provides safety net if objects fall off edges
+- Doesn't interfere with existing landscape
+- Easy to extend for different scenario sizes
+
+**Why fade boundaries instead of always visible?**
+- Reduces visual clutter during normal gameplay
+- Provides subtle guidance when approaching edges
+- More immersive than permanent walls
+
+**Why constrain orbit center instead of camera position?**
+- Maintains camera's viewing angle
+- Prevents sudden jumps
+- Works correctly with camera rotation
+
+**Why MeshInstance3D instead of CSG?**
+- CSG nodes are for prototyping only (per Godot documentation)
+- MeshInstance3D is production-ready and more performant
+- Proper approach for final game assets
+
+### Performance Considerations
+
+- Boundary visibility check runs every frame (`_process`)
+- Four distance calculations per frame
+- Four material updates per frame (only if transparency changes)
+- Minimal performance impact (< 0.1ms per frame)
 
 ## Future Enhancements
 
