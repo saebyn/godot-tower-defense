@@ -139,7 +139,6 @@ func _orbit_around_center(angle: float):
   
   # Apply boundary constraints after rotation
   if enable_boundaries:
-    _update_orbit_center()
     _apply_boundary_constraints()
 
 

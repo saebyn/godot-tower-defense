@@ -7,6 +7,7 @@ extends Node3D
 @export var world_max_x: float = 200.0
 @export var world_min_z: float = -200.0
 @export var world_max_z: float = 200.0
+@export var max_boundary_opacity: float = 0.5 ## Maximum opacity for boundary markers (0.0 to 1.0)
 
 @onready var north_boundary = $Boundaries/NorthBoundary
 @onready var south_boundary = $Boundaries/SouthBoundary
@@ -40,7 +41,7 @@ func _process(_delta: float):
   if intersection:
     camera_ground_pos = intersection
   else:
-    # Fallback
+    # Fallback when camera ray doesn't intersect ground plane (camera pointing away from ground)
     camera_ground_pos = Vector3(camera.global_position.x, 0, camera.global_position.z)
   
   # Calculate distance to each boundary and update transparency
@@ -83,7 +84,7 @@ func _set_boundary_transparency(boundary: CSGBox3D, transparency: float):
     # Enable transparency if needed
     if transparency > 0:
       mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-      mat.albedo_color.a = transparency * 0.5 # Max at 50% opacity for visibility without obscuring
+      mat.albedo_color.a = transparency * max_boundary_opacity
     else:
       mat.albedo_color.a = 0.0
       mat.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
