@@ -145,18 +145,26 @@ func connect_to_health_component(health_component: Component_Health):
 
 func connect_to_enemy(enemy: Node3D):
   """Connect to an enemy's health component and death signal"""
-  # Find health component
+  # Find health component - first try metadata, then look for child
   var health_component = null
   if enemy.has_meta("health_component"):
     health_component = enemy.get_meta("health_component")
+  else:
+    # Fallback: search for Component_Health child
+    for child in enemy.get_children():
+      if child is Component_Health:
+        health_component = child
+        break
   
   if health_component:
     connect_to_health_component(health_component)
   
   # Connect to death for scrap display
-  if health_component and enemy.has("scrap_reward"):
+  var scrap_reward = enemy.get("scrap_reward")
+  if health_component and scrap_reward != null:
     health_component.died.connect(func(_damage_source: String):
-      if scrap_numbers_enabled and enemy.scrap_reward > 0:
+      var reward = enemy.get("scrap_reward")
+      if scrap_numbers_enabled and reward and reward > 0:
         var world_pos = enemy.global_position + Vector3.UP * 2.5
-        show_scrap_gain(enemy.scrap_reward, world_pos)
+        show_scrap_gain(reward, world_pos)
     )

@@ -89,9 +89,8 @@ func _process(delta: float):
     deactivate()
     return
   
-  # Float upward
-  var offset = float_speed * elapsed_time
-  global_position = start_position + Vector3.UP * offset
+  # Float upward with predictable animation
+  global_position = start_position + Vector3.UP * (float_distance * progress)
   
   # Fade out
   var alpha = 1.0 - progress
