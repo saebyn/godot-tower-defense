@@ -51,6 +51,8 @@ func _find_camera():
     camera = viewport.get_camera_3d()
   
   # If no current camera, use find_children for efficient search
+  # Note: In multi-camera setups, this will use the first Camera3D found
+  # For specific camera selection, ensure the correct camera is active in the viewport
   if not camera:
     var root = get_tree().root
     var cameras = root.find_children("*", "Camera3D", true, false)
@@ -62,6 +64,10 @@ func _find_camera():
 
 func _process(_delta: float):
   # Update health bar scale based on camera size for consistent screen-space appearance
+  # Using _process is appropriate here because:
+  # 1. The check is very lightweight (single float comparison)
+  # 2. Work only happens when camera size changes (infrequent)
+  # 3. Visual updates are typically done in _process, not _physics_process
   if camera and sprite3d:
     # Only update scale if camera size has changed to avoid unnecessary updates
     # Use is_equal_approx for reliable floating-point comparison
