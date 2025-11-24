@@ -14,7 +14,7 @@ extends Node3D
 @onready var east_boundary = $Boundaries/EastBoundary
 @onready var west_boundary = $Boundaries/WestBoundary
 
-var boundaries: Array[CSGBox3D] = []
+var boundaries: Array[MeshInstance3D] = []
 
 
 func _ready():
@@ -51,7 +51,7 @@ func _process(_delta: float):
   _update_boundary_visibility(west_boundary, camera_ground_pos.x, world_min_x, true)
 
 
-func _update_boundary_visibility(boundary: CSGBox3D, camera_pos: float, boundary_pos: float, is_min_boundary: bool):
+func _update_boundary_visibility(boundary: MeshInstance3D, camera_pos: float, boundary_pos: float, is_min_boundary: bool):
   # Calculate distance from camera to boundary
   var distance: float
   if is_min_boundary:
@@ -74,12 +74,12 @@ func _update_boundary_visibility(boundary: CSGBox3D, camera_pos: float, boundary
   _set_boundary_transparency(boundary, transparency)
 
 
-func _set_boundary_transparency(boundary: CSGBox3D, transparency: float):
-  if not boundary or not boundary.material:
+func _set_boundary_transparency(boundary: MeshInstance3D, transparency: float):
+  if not boundary:
     return
   
-  # Update the material's transparency
-  var mat = boundary.material as StandardMaterial3D
+  # Get the material from the mesh instance
+  var mat = boundary.get_surface_override_material(0) as StandardMaterial3D
   if mat:
     # Enable transparency if needed
     if transparency > 0:
