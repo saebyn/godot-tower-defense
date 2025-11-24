@@ -1,0 +1,147 @@
+Ground and Camera Boundaries - Architecture Diagram
+====================================================
+
+Top-Down View (looking down at Y axis):
+========================================
+
+                         North Boundary (Z = -200)
+                    ╔════════════════════════════════╗
+                    ║ (Red glowing wall, fades in)   ║
+                    ╚════════════════════════════════╝
+                                  │
+                                  │
+                                  ▼
+    West Boundary ═══════════════════════════════════════════ East Boundary
+    (X = -200)                                                 (X = +200)
+        ║                                                           ║
+        ║           ┌─────────────────────────┐                   ║
+        ║           │                         │                   ║
+        ║           │   Landscape/Scenario    │                   ║
+        ║           │   (varies by level)     │                   ║
+        ║           │                         │                   ║
+        ║           │      Camera Orbit       │                   ║
+        ║           │      Center (*)         │                   ║
+        ║           │   (constrained area)    │                   ║
+        ║           │                         │                   ║
+        ║           └─────────────────────────┘                   ║
+        ║                                                           ║
+        ║               Flat Ground Plane                          ║
+        ║              (500x500, Y=-2)                             ║
+        ║                                                           ║
+    West Boundary ═══════════════════════════════════════════ East Boundary
+                                  ▲
+                                  │
+                                  │
+                    ╔════════════════════════════════╗
+                    ║ (Red glowing wall, fades in)   ║
+                    ╚════════════════════════════════╝
+                         South Boundary (Z = +200)
+
+
+Side View (looking from East, along X axis):
+============================================
+
+                         Camera (orthographic)
+                              /│\
+                             / │ \
+                            /  │  \
+                           /   │   \
+                          /    │    \
+                         /     │     \
+                        /      │      \
+                       /       │       \
+                      /        │        \
+                     /         │         \
+                    /          │          \
+                   /           │           \
+                  /            │            \
+                 /          Orbit Center     \
+    ════════════════════════════════════════════════  Y=10 (Boundary Wall Top)
+    ║                        (*)              ║
+    ║                                         ║
+    ╚═════════════════════════════════════════╝       Y=0  (Boundary Wall Base)
+                         │
+    ┌────────────────────┼────────────────────┐       Y=0  (Ground level)
+    │                    │                    │
+    │    Landscape/      │    (varies)        │
+    │    Scenario        │                    │
+    └────────────────────┴────────────────────┘       Y=-2 (varies)
+    ─────────────────────────────────────────────     Y=-2 (Flat Ground Plane)
+    ═════════════════════════════════════════════     Y=-4 (Ground collision bottom)
+
+
+Component Hierarchy:
+====================
+
+Main (Node3D)
+├── GroundWithBoundaries (Node3D) [script: world_boundary_markers.gd]
+│   ├── FlatGround (MeshInstance3D)
+│   │   └── FlatGroundBody (StaticBody3D)
+│   │       └── CollisionShape3D (BoxShape3D)
+│   └── Boundaries (Node3D)
+│       ├── NorthBoundary (CSGBox3D)
+│       ├── SouthBoundary (CSGBox3D)
+│       ├── EastBoundary (CSGBox3D)
+│       └── WestBoundary (CSGBox3D)
+├── Camera3D [script: camera.gd with boundary constraints]
+├── NavigationRegion3D
+├── [Scenario loaded here at runtime - rotated -45°]
+└── [Other game systems...]
+
+
+Boundary Fade Behavior:
+========================
+
+Distance from Boundary (units)
+ 100  75   50   25   0  (boundary position)
+  │   │    │    │    │
+  │   │    │    │    │
+  ▼   ▼    ▼    ▼    ▼
+  ┌───┬────┬────┬────┐
+  │   │░░░░│████│████│  Boundary Wall Visibility
+  └───┴────┴────┴────┘
+  0%  0%   50%  100% 100%  (transparency)
+
+  [Fully        [Fade       [Fully
+  Invisible]    In Zone]    Visible]
+
+
+Camera Constraint Algorithm:
+=============================
+
+1. User Input → Camera Movement
+                    │
+                    ▼
+2. Update Orbit Center (where camera looks at ground)
+                    │
+                    ▼
+3. Check Boundaries
+   ┌────────────────┴────────────────┐
+   │                                  │
+   ▼                                  ▼
+   Within Bounds?                 Outside Bounds?
+   │                                  │
+   │                                  ▼
+   ▼                              Clamp to Boundary
+   No Change                          │
+                                      ▼
+                              Adjust Camera Position
+                              (maintain same offset)
+
+
+Coordinate Reference:
+=====================
+
+World Center: (0, 0, 0)
+Ground Level: Y = 0
+Flat Ground:  Y = -2
+Boundaries:   ±200 on X and Z
+
+Camera Orbit Center Constraints:
+  X: -200 to +200
+  Z: -200 to +200
+  Y: 0 (calculated from ground intersection)
+
+Fade Zone: 50 units from boundary
+  Starts fading at: boundary ± 50
+  Fully visible at: boundary ± 0
