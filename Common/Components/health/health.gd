@@ -64,7 +64,8 @@ func _process(_delta: float):
   # Update health bar scale based on camera size for consistent screen-space appearance
   if camera and sprite3d:
     # Only update scale if camera size has changed to avoid unnecessary updates
-    if camera.size != last_camera_size:
+    # Use is_equal_approx for reliable floating-point comparison
+    if not is_equal_approx(camera.size, last_camera_size):
       last_camera_size = camera.size
       var scale_factor = camera.size / reference_camera_size
       sprite3d.scale = Vector3(scale_factor, scale_factor, scale_factor)
