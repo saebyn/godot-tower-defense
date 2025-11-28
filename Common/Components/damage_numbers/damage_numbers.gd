@@ -17,8 +17,6 @@ enum NumberType {
 
 ## Maximum number of damage numbers in the pool
 @export var max_pool_size: int = 10
-## Speed at which numbers float upward
-@export var float_speed: float = 1.0
 ## Duration of the fade out animation in seconds
 @export var fade_duration: float = 1.5
 ## Distance the number travels upward
@@ -171,12 +169,18 @@ func _get_or_create_label() -> Label3D:
 		_number_pool.append(new_label)
 		return new_label
 	
-	# Pool full - reuse oldest active one
-	if not _active_numbers.is_empty():
-		var oldest_data = _active_numbers[0]
-		_active_numbers.remove_at(0)
-		_deactivate_number(oldest_data.label)
-		return oldest_data.label
+	# Pool full - find and recycle the oldest (first in the list)
+	# Note: We don't remove from _active_numbers here, the _process loop handles that
+	if not _number_pool.is_empty():
+		# Find any label and force-deactivate it for reuse
+		for label in _number_pool:
+			_deactivate_number(label)
+			# Also remove from active list if present
+			for i in range(_active_numbers.size() - 1, -1, -1):
+				if _active_numbers[i].label == label:
+					_active_numbers.remove_at(i)
+					break
+			return label
 	
 	return null
 
@@ -202,7 +206,10 @@ func _create_label() -> Label3D:
 	
 	# Use fixed_size so it's visible regardless of zoom level
 	label.fixed_size = true
-	label.pixel_size = 1.0 / fixed_size_pixels
+	if fixed_size_pixels > 0:
+		label.pixel_size = 1.0 / fixed_size_pixels
+	else:
+		label.pixel_size = 0.02  # Default fallback
 	
 	# Start invisible
 	label.visible = false
