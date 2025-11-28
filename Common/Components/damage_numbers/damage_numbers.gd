@@ -34,42 +34,14 @@ enum NumberType {
 
 # Pool of damage number Label3D nodes
 var _number_pool: Array[Label3D] = []
-# Active numbers being animated
-var _active_numbers: Array[Dictionary] = []
+# Track active tweens for cleanup
+var _active_tweens: Dictionary = {}  # Label3D -> Tween
 
 
 func _ready():
 	# Register this component in parent's metadata for discovery
 	if get_parent():
 		get_parent().set_meta("damage_numbers_component", self)
-
-
-func _process(delta: float):
-	# Animate active numbers
-	var to_remove: Array[int] = []
-	
-	for i in range(_active_numbers.size()):
-		var data = _active_numbers[i]
-		data.elapsed_time += delta
-		
-		var progress = data.elapsed_time / fade_duration
-		
-		if progress >= 1.0:
-			# Animation complete, deactivate
-			_deactivate_number(data.label)
-			to_remove.append(i)
-		else:
-			# Float upward
-			data.label.global_position = data.start_position + Vector3.UP * (float_distance * progress)
-			
-			# Fade out
-			var alpha = 1.0 - progress
-			var current_color = data.label.modulate
-			data.label.modulate = Color(current_color.r, current_color.g, current_color.b, alpha)
-	
-	# Remove completed animations (in reverse order to maintain indices)
-	for i in range(to_remove.size() - 1, -1, -1):
-		_active_numbers.remove_at(to_remove[i])
 
 
 ## Display a damage number at the entity's position
@@ -141,19 +113,41 @@ func _display_number(amount: int, world_position: Vector3, number_type: NumberTy
 	
 	label.font_size = label_font_size
 	
+	# Store the base color for the fade animation
+	var base_color = label.modulate
+	
 	# Position and activate
 	label.global_position = world_position
 	label.visible = true
 	
-	# Add to active list for animation
-	_active_numbers.append({
-		"label": label,
-		"start_position": world_position,
-		"elapsed_time": 0.0,
-		"number_type": number_type
-	})
+	# Kill any existing tween for this label
+	if _active_tweens.has(label) and is_instance_valid(_active_tweens[label]):
+		_active_tweens[label].kill()
+	
+	# Create tween for animation
+	var tween = create_tween()
+	tween.set_parallel(true)
+	
+	# Float upward
+	var end_position = world_position + Vector3.UP * float_distance
+	tween.tween_property(label, "global_position", end_position, fade_duration).set_ease(Tween.EASE_OUT)
+	
+	# Fade out (animate modulate alpha)
+	var end_color = Color(base_color.r, base_color.g, base_color.b, 0.0)
+	tween.tween_property(label, "modulate", end_color, fade_duration).set_ease(Tween.EASE_IN)
+	
+	# Track tween and deactivate when complete
+	_active_tweens[label] = tween
+	tween.finished.connect(_on_tween_finished.bind(label))
 	
 	Logger.trace("DamageNumbers", "Displaying %s at position %v" % [label.text, world_position])
+
+
+## Called when a tween animation finishes
+func _on_tween_finished(label: Label3D):
+	_deactivate_number(label)
+	if _active_tweens.has(label):
+		_active_tweens.erase(label)
 
 
 ## Get an available label from pool or create a new one
@@ -169,17 +163,15 @@ func _get_or_create_label() -> Label3D:
 		_number_pool.append(new_label)
 		return new_label
 	
-	# Pool full - find and recycle the oldest (first in the list)
-	# Note: We don't remove from _active_numbers here, the _process loop handles that
+	# Pool full - find and recycle the oldest
 	if not _number_pool.is_empty():
 		# Find any label and force-deactivate it for reuse
 		for label in _number_pool:
+			# Kill the tween if active
+			if _active_tweens.has(label) and is_instance_valid(_active_tweens[label]):
+				_active_tweens[label].kill()
+				_active_tweens.erase(label)
 			_deactivate_number(label)
-			# Also remove from active list if present
-			for i in range(_active_numbers.size() - 1, -1, -1):
-				if _active_numbers[i].label == label:
-					_active_numbers.remove_at(i)
-					break
 			return label
 	
 	return null
@@ -225,8 +217,14 @@ func _deactivate_number(label: Label3D):
 
 ## Clean up pool when component is removed
 func _exit_tree():
+	# Kill all active tweens
+	for tween in _active_tweens.values():
+		if is_instance_valid(tween):
+			tween.kill()
+	_active_tweens.clear()
+	
+	# Free all pooled labels
 	for label in _number_pool:
 		if is_instance_valid(label):
 			label.queue_free()
 	_number_pool.clear()
-	_active_numbers.clear()
