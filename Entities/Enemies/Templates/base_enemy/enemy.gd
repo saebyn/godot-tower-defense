@@ -66,6 +66,7 @@ func load_resource(resource: Resource_EnemyType) -> void:
     if health:
       health.hitpoints = resource.hitpoints
       health.max_hitpoints = resource.hitpoints
+      health._update_display()
 
     # Update attack component
     if attack:
