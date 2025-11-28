@@ -13,6 +13,7 @@ extends Node3D
 @onready var camera: Camera3D = $Camera3D
 @onready var navigation_region: NavigationRegion3D = $NavigationRegion3D
 @onready var enemy_raycast: RayCast3D = $EnemyRayCast3D
+@onready var ground_with_boundaries: Node3D = $GroundWithBoundaries
 var attack: Component_Attack
 @onready var ui: Control = $UI
 
@@ -113,11 +114,39 @@ func _load_scenario() -> void:
   
   # Configure the scenario with the UI reference
   current_scenario.ui = ui
+  
+  # Configure boundaries based on scenario settings
+  _configure_boundaries_from_scenario()
 
   # Rebake navigation mesh after loading scenario
   rebake_navigation_mesh()
   
   MyLogger.info("Main", "Scenario loaded successfully: %s" % scenario_id)
+
+
+func _configure_boundaries_from_scenario() -> void:
+  if not current_scenario:
+    Logger.warning("Main", "Cannot configure boundaries - no scenario loaded")
+    return
+  
+  # Get boundary values from the scenario
+  var min_x = current_scenario.boundary_min_x
+  var max_x = current_scenario.boundary_max_x
+  var min_z = current_scenario.boundary_min_z
+  var max_z = current_scenario.boundary_max_z
+  
+  Logger.info("Main", "Configuring boundaries from scenario: X[%d, %d] Z[%d, %d]" % [int(min_x), int(max_x), int(min_z), int(max_z)])
+  
+  # Update the visual boundary markers
+  if ground_with_boundaries and ground_with_boundaries.has_method("set_boundaries"):
+    ground_with_boundaries.set_boundaries(min_x, max_x, min_z, max_z)
+  
+  # Update camera boundary constraints
+  if camera:
+    camera.world_min_x = min_x
+    camera.world_max_x = max_x
+    camera.world_min_z = min_z
+    camera.world_max_z = max_z
 
 
 func rebake_navigation_mesh():
