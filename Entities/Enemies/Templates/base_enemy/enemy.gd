@@ -13,6 +13,10 @@ extends CharacterBody3D
 var attack: Component_Attack
 var health: Component_Health
 
+# Cached scene for scrap gain display
+var _scrap_number_scene: PackedScene
+const DAMAGE_NUMBER_SCENE_PATH: String = "res://Common/UI/damage_numbers/damage_number.tscn"
+
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var mesh_instance: MeshInstance3D = $characterMedium
 
@@ -37,6 +41,10 @@ func _ready():
   if health:
     health.died.connect(_on_died)
     health.damaged.connect(_on_health_damaged)
+
+  # Load scrap number scene for caching
+  if show_scrap_gain and ResourceLoader.exists(DAMAGE_NUMBER_SCENE_PATH):
+    _scrap_number_scene = load(DAMAGE_NUMBER_SCENE_PATH)
 
   # Make sure to not await during _ready.
   _actor_setup.call_deferred()
@@ -281,17 +289,17 @@ func _on_died(damage_source: String = "unknown"):
   
   queue_free()
 
+
+## Display floating scrap gain number above the enemy
 func _show_scrap_gain(amount: int):
-  """Display floating scrap gain number above the enemy"""
   if amount <= 0:
     return
   
-  # Load the damage number scene
-  var damage_number_scene = load("res://Common/UI/damage_numbers/damage_number.tscn")
-  if not damage_number_scene:
+  # Use cached scene
+  if not _scrap_number_scene:
     return
   
-  var damage_number = damage_number_scene.instantiate() as UI_DamageNumber
+  var damage_number = _scrap_number_scene.instantiate() as UI_DamageNumber
   if not damage_number:
     return
   
