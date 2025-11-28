@@ -6,25 +6,32 @@ This document describes the implementation of the flat ground plane with visual 
 ## Components
 
 ### 1. Flat Ground Plane (`Common/World/ground_with_boundaries.tscn`)
-- **Size**: 500x500 units (much larger than the visible landscape)
+- **Size**: 5000x5000 units (much larger than any scenario landscape)
 - **Position**: Y = -2 (beneath the main landscape)
 - **Purpose**: Provides a fallback ground that catches anything that falls off the main landscape
 - **Collision**: Part of the navigation mesh source group for pathfinding
 - **Material**: Brown/earth-toned to blend with the landscape
 
 ### 2. Visual Boundary Markers
-Located at the edges of the playable area:
+Located at the edges of the playable area, **dynamically positioned based on loaded scenario**:
 - **Type**: MeshInstance3D nodes with BoxMesh (production-ready, not CSG prototyping)
-- **Position**: ±200 units on X and Z axes
+- **Position**: Adjusted dynamically based on scenario's boundary settings
 - **Appearance**: Red glowing walls (10 units high)
 - **Behavior**: Fade in when camera approaches (within 50 units)
 - **Material**: Semi-transparent red with emission for visibility
 
-### 3. Camera Boundary Constraints (`Stages/Game/main/camera.gd`)
-New export parameters:
+### 3. Scenario Boundary Settings (`Stages/Scenarios/scenario.gd`)
+Each scenario defines its own boundaries:
+- `boundary_min_x`: West edge (default: -50)
+- `boundary_max_x`: East edge (default: 50)
+- `boundary_min_z`: North edge (default: -50)
+- `boundary_max_z`: South edge (default: 50)
+
+### 4. Camera Boundary Constraints (`Stages/Game/main/camera.gd`)
+Export parameters (dynamically updated when scenario loads):
 - `enable_boundaries`: Toggle camera constraints on/off (default: true)
-- `world_min_x`, `world_max_x`: X-axis boundaries (default: -200 to 200)
-- `world_min_z`, `world_max_z`: Z-axis boundaries (default: -200 to 200)
+- `world_min_x`, `world_max_x`: X-axis boundaries
+- `world_min_z`, `world_max_z`: Z-axis boundaries
 
 #### How it works:
 1. Camera movement is tracked via the "orbit center" (where the camera looks at the ground)
@@ -32,11 +39,12 @@ New export parameters:
 3. The orbit center is clamped to stay within defined world boundaries
 4. Camera position is adjusted to maintain the same offset from the constrained orbit center
 
-### 4. Boundary Marker Visibility (`Common/World/world_boundary_markers.gd`)
+### 5. Boundary Marker Visibility (`Common/World/world_boundary_markers.gd`)
 - Tracks camera position relative to boundaries
 - Calculates distance to each boundary (North, South, East, West)
 - Fades markers from transparent to 50% opacity based on distance
 - `fade_distance`: 50 units - distance at which fade begins
+- `set_boundaries()`: Method to dynamically update boundary positions
 
 ## Integration
 
@@ -48,20 +56,24 @@ camera = NodePath("../Camera3D")
 
 The ground and boundaries are added as a child of the Main node, with the camera reference passed for visibility tracking.
 
+### Scenario Loading (`main.gd`):
+When a scenario is loaded, `_configure_boundaries_from_scenario()` is called to:
+1. Read boundary settings from the loaded scenario
+2. Update visual boundary marker positions via `set_boundaries()`
+3. Update camera boundary constraints
+
 ## Configuration
 
-### Adjusting World Size
-To change the playable area size:
+### Per-Scenario Boundaries
+Each scenario scene file should define its boundaries:
 
-1. **In `camera.gd`**: Update the boundary export parameters
-2. **In `ground_with_boundaries.tscn`**: Adjust boundary positions to match
-3. **In `world_boundary_markers.gd`**: Update the export parameters for world bounds
-
-Example for 300x300 world:
-- `world_min_x/z = -300.0`
-- `world_max_x/z = 300.0`
-- Boundary positions in scene: ±300 units
-- Ground plane size can be 600x600 or larger
+```gdscript
+# In scenario_X.tscn
+boundary_min_x = -60.0
+boundary_max_x = 60.0
+boundary_min_z = -60.0
+boundary_max_z = 60.0
+```
 
 ### Adjusting Boundary Appearance
 In `ground_with_boundaries.tscn`, modify `StandardMaterial3D_boundary`:
@@ -81,6 +93,7 @@ In `world_boundary_markers.gd`:
 - [ ] Flat ground is visible if camera looks outside landscape area
 - [ ] Navigation mesh still functions correctly
 - [ ] Camera rotation respects boundaries
+- [ ] Boundaries adjust correctly for different scenarios
 - [ ] No performance impact from boundary checking
 
 ## Technical Details
@@ -107,6 +120,11 @@ In `world_boundary_markers.gd`:
 - MeshInstance3D is production-ready and more performant
 - Proper approach for final game assets
 
+**Why dynamic boundaries per scenario?**
+- Each scenario has different playable ground areas
+- Allows buildable space to match the actual scenario ground
+- Prevents camera from viewing areas outside the scenario
+
 ### Performance Considerations
 
 - Boundary visibility check runs every frame (`_process`)
@@ -116,8 +134,7 @@ In `world_boundary_markers.gd`:
 
 ## Future Enhancements
 
-1. **Dynamic Boundaries**: Allow different scenarios to define their own boundary sizes
-2. **Boundary Collision**: Add physical barriers at boundaries for physics objects
-3. **Boundary Effects**: Add visual effects (particles, fog) at boundaries
-4. **Per-Scenario Ground**: Different ground textures for different scenarios
-5. **Minimap Indicators**: Show boundaries on the minimap
+1. **Boundary Collision**: Add physical barriers at boundaries for physics objects
+2. **Boundary Effects**: Add visual effects (particles, fog) at boundaries
+3. **Per-Scenario Ground**: Different ground textures for different scenarios
+4. **Minimap Indicators**: Show boundaries on the minimap
