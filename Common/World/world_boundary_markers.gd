@@ -39,7 +39,7 @@ func set_boundaries(min_x: float, max_x: float, min_z: float, max_z: float) -> v
   var center_x = (min_x + max_x) / 2.0
   var center_z = (min_z + max_z) / 2.0
   
-  # Update horizontal boundaries (north/south - along X axis)
+  # Update north and south boundaries (walls at min_z and max_z, stretching along X axis)
   if north_boundary:
     north_boundary.position = Vector3(center_x, 5, min_z)
     var mesh = north_boundary.mesh as BoxMesh
@@ -52,7 +52,7 @@ func set_boundaries(min_x: float, max_x: float, min_z: float, max_z: float) -> v
     if mesh:
       mesh.size = Vector3(width, 10, 1)
   
-  # Update vertical boundaries (east/west - along Z axis)
+  # Update east and west boundaries (walls at min_x and max_x, stretching along Z axis)
   if east_boundary:
     east_boundary.position = Vector3(max_x, 5, center_z)
     var mesh = east_boundary.mesh as BoxMesh

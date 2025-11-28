@@ -11,8 +11,8 @@ extends Node3D
 @export_category("Boundary Settings")
 @export var boundary_min_x: float = -50.0 ## Minimum X boundary (west edge)
 @export var boundary_max_x: float = 50.0 ## Maximum X boundary (east edge)
-@export var boundary_min_z: float = -50.0 ## Minimum Z boundary (north edge)
-@export var boundary_max_z: float = 50.0 ## Maximum Z boundary (south edge)
+@export var boundary_min_z: float = -50.0 ## Minimum Z boundary
+@export var boundary_max_z: float = 50.0 ## Maximum Z boundary
 
 # Scenario timer tracking
 var scenario_start_time: float = 0.0 # Time when first wave started (in seconds)
