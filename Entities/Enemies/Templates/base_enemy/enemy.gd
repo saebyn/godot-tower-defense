@@ -8,6 +8,7 @@ extends CharacterBody3D
 @export var scrap_reward: int = 10 ## Scrap awarded when enemy dies (can be 0)
 @export var xp_reward: int = 10 ## XP awarded when enemy dies (always given)
 @export var enemy_type: String = "base_enemy" ## Type identifier for stats tracking
+@export var show_scrap_gain: bool = true ## Whether to display floating scrap gain numbers
 
 var attack: Component_Attack
 var health: Component_Health
@@ -274,8 +275,36 @@ func _on_died(damage_source: String = "unknown"):
   # Award scrap if the enemy gives any
   if scrap_reward > 0:
     CurrencyManager.earn_scrap(scrap_reward)
+    # Show floating scrap gain feedback
+    if show_scrap_gain:
+      _show_scrap_gain(scrap_reward)
   
   queue_free()
+
+func _show_scrap_gain(amount: int):
+  """Display floating scrap gain number above the enemy"""
+  if amount <= 0:
+    return
+  
+  # Load the damage number scene
+  var damage_number_scene = load("res://Common/UI/damage_numbers/damage_number.tscn")
+  if not damage_number_scene:
+    return
+  
+  var damage_number = damage_number_scene.instantiate() as UI_DamageNumber
+  if not damage_number:
+    return
+  
+  # Add to current scene
+  var current_scene = get_tree().current_scene
+  if current_scene:
+    current_scene.add_child(damage_number)
+  else:
+    get_tree().root.add_child(damage_number)
+  
+  # Position slightly higher than damage numbers and display
+  var world_pos = global_position + Vector3.UP * 2.5
+  damage_number.display_damage(amount, world_pos, UI_DamageNumber.NumberType.SCRAP_GAIN)
 
 func _on_health_damaged(amount: int, hitpoints: int, damage_source: String = "unknown") -> void:
   MyLogger.debug("Enemy.Combat", "Enemy (%s) took %d damage from %s. Remaining HP: %d" % [enemy_type, amount, damage_source, hitpoints])
