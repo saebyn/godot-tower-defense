@@ -11,6 +11,7 @@ script = ExtResource("1_ledv5")
 [node name="Sprite3D" type="Sprite3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.86329, 0)
 billboard = 1
+fixed_size = true
 texture_filter = 0
 texture = SubResource("ViewportTexture_1e8io")
 
