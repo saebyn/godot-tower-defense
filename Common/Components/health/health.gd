@@ -21,7 +21,7 @@ var dead: bool = false
 
 # Damage number pooling
 var _damage_number_scene: PackedScene
-var _damage_number_pool: Array[Node] = []
+var _damage_number_pool: Array[UI_DamageNumber] = []
 const MAX_POOL_SIZE: int = 10
 const DAMAGE_NUMBER_SCENE_PATH: String = "res://Common/UI/damage_numbers/damage_number.tscn"
 
@@ -113,7 +113,7 @@ func _show_damage_number(amount: int, damage_source: String = "unknown"):
   
   damage_number.display_damage(amount, world_pos, damage_type)
 
-func _get_pooled_damage_number() -> Node:
+func _get_pooled_damage_number() -> UI_DamageNumber:
   """Get an available damage number from pool or create new one"""
   # Try to find an inactive one in the pool
   for dn in _damage_number_pool:
@@ -122,17 +122,20 @@ func _get_pooled_damage_number() -> Node:
   
   # Create new if pool not full
   if _damage_number_pool.size() < MAX_POOL_SIZE:
-    var new_dn = _damage_number_scene.instantiate()
-    # Add to scene tree root to avoid movement with parent
-    get_tree().root.add_child(new_dn)
+    var new_dn = _damage_number_scene.instantiate() as UI_DamageNumber
+    # Add to current scene to keep organized (not scene root)
+    var current_scene = get_tree().current_scene
+    if current_scene:
+      current_scene.add_child(new_dn)
+    else:
+      get_tree().root.add_child(new_dn)
     _damage_number_pool.append(new_dn)
     return new_dn
   
   # Pool full - reuse oldest
   if not _damage_number_pool.is_empty():
     var oldest = _damage_number_pool[0]
-    if oldest.has_method("deactivate"):
-      oldest.deactivate()
+    oldest.deactivate()
     return oldest
   
   return null
