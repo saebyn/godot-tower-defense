@@ -4,77 +4,89 @@
 
 The damage numbers system provides visual feedback when entities take damage or when scrap is earned. Numbers float upward and fade out, with different colors indicating different types of feedback.
 
-## Component Integration
+## Component Architecture
 
-### Damage Numbers (Component_Health)
+The system uses `Component_DamageNumbers`, a standalone component that can be added to any entity that needs visual damage/currency feedback. It creates Label3D nodes dynamically - no scene file required.
 
-The damage number functionality is built directly into the `Component_Health` component for simplicity and maintainability.
+### Component_DamageNumbers (`Common/Components/damage_numbers/damage_numbers.gd`)
+
+A Node-based component that displays floating damage numbers and scrap gain feedback.
 
 **Features:**
-- Automatic damage number spawning when `take_damage()` is called
-- Color-coded by damage source (fire=orange, ice=cyan, poison=purple, etc.)
-- Object pooling for performance (max 10 instances per health component)
-- Configurable via `show_damage_numbers` export variable
+- Creates Label3D nodes dynamically in `_ready()` (no scene file needed)
+- Registers itself in parent's metadata for discovery
+- Color-coded by damage type (fire=orange, ice=cyan, poison=purple, etc.)
+- Object pooling for performance (configurable max pool size)
+- Uses `fixed_size` on Label3D for visibility at any zoom level
+- Separate toggles for damage numbers and scrap gain
 
 **Configuration:**
-- `show_damage_numbers: bool = true` - Toggle damage numbers on/off per entity
-
-### Scrap Gain Feedback (Enemy)
-
-The scrap gain feedback is integrated into the enemy death handler.
-
-**Features:**
-- Gold-colored "+X" text appears above defeated enemies
-- Shows the scrap reward value when enemy dies
-- Configurable via `show_scrap_gain` export variable
-- Reuses the same `UI_DamageNumber` infrastructure
-
-**Configuration:**
-- `show_scrap_gain: bool = true` - Toggle scrap gain display per enemy
-
-### UI_DamageNumber (`Common/UI/damage_numbers/damage_number.gd`)
-
-A Node3D-based component that displays a single floating number.
-
-**Features:**
-- 3D billboarded Label3D that faces the camera
-- Color-coded by type:
-  - White: Normal damage
-  - Red: Critical damage (larger font)
-  - Orange: Fire damage
-  - Cyan: Ice damage
-  - Purple: Poison damage
-  - Gold: Scrap gain (with "+" prefix)
-- Floating animation (moves upward)
-- Fade-out animation (becomes transparent)
-- Self-deactivates after animation completes
+- `max_pool_size: int = 10` - Maximum number of labels in the pool
+- `float_speed: float = 1.0` - Speed of upward movement
+- `fade_duration: float = 1.5` - Duration of fade animation
+- `float_distance: float = 2.0` - Distance traveled upward
+- `vertical_offset: float = 2.0` - Height offset above entity
+- `show_damage_numbers: bool = true` - Toggle damage numbers
+- `show_scrap_gain: bool = true` - Toggle scrap gain numbers
+- `font_size: int = 32` - Base font size
+- `fixed_size_pixels: float = 48.0` - Fixed size for visibility at any zoom
 
 **Key Methods:**
-- `display_damage(amount, world_position, damage_type)`: Show a number
-- `deactivate()`: Stop animation and mark as available for reuse
-- `is_available()`: Check if ready for reuse
+- `show_damage(amount, damage_source)` - Display a damage number
+- `show_scrap(amount)` - Display a scrap gain number
 
-**Configuration:**
-- `float_speed`: Speed of upward movement (default: 1.0)
-- `fade_duration`: Duration of fade animation (default: 1.5 seconds)
-- `float_distance`: Distance traveled upward (default: 2.0)
+## Integration with Health Component
 
-## How It Works
+The `Component_Health` component checks for a damage numbers component via the parent's metadata:
 
-### Damage Numbers
-1. **Entity Takes Damage**: When `Component_Health.take_damage()` is called
-2. **Check Setting**: If `show_damage_numbers` is true, proceed
-3. **Get/Create Number**: Get available number from pool or create new (up to 10)
-4. **Display**: Position above entity, set color based on damage source
-5. **Animate**: Float upward and fade out over 1.5 seconds
-6. **Recycle**: Mark as available for reuse
+```gdscript
+# In health.gd take_damage():
+var parent = get_parent()
+if parent and parent.has_meta("damage_numbers_component"):
+  var damage_numbers = parent.get_meta("damage_numbers_component")
+  if damage_numbers and damage_numbers.has_method("show_damage"):
+    damage_numbers.show_damage(amount, damage_source)
+```
 
-### Scrap Gain
-1. **Enemy Dies**: When enemy's `_on_died()` is triggered
-2. **Check Scrap**: If `scrap_reward > 0` and `show_scrap_gain` is true
-3. **Create Number**: Instantiate damage number scene
-4. **Display**: Position above enemy, use gold color with "+" prefix
-5. **Animate**: Float upward and fade out over 1.5 seconds
+## Integration with Enemy
+
+The enemy script checks for the damage numbers component on death:
+
+```gdscript
+# In enemy.gd _on_died():
+if has_meta("damage_numbers_component"):
+  var damage_numbers = get_meta("damage_numbers_component")
+  if damage_numbers and damage_numbers.has_method("show_scrap"):
+    damage_numbers.show_scrap(scrap_reward)
+```
+
+## How to Use
+
+### Adding to an Entity
+
+Add `Component_DamageNumbers` as a child of any entity that needs damage feedback:
+
+1. **For enemies**: Add as a child node, it will auto-register in metadata
+2. **For targets**: Add as a child node
+3. **For obstacles**: Add as a child node  
+4. **For scrap boxes**: Add as a child node
+
+The component will automatically register itself in the parent's metadata as `damage_numbers_component`.
+
+### Manual Usage
+
+```gdscript
+# Get the component from metadata
+if has_meta("damage_numbers_component"):
+  var damage_numbers = get_meta("damage_numbers_component")
+  
+  # Show damage
+  damage_numbers.show_damage(25, "fire")  # Orange number
+  damage_numbers.show_damage(10, "normal")  # White number
+  
+  # Show scrap gain
+  damage_numbers.show_scrap(50)  # Gold "+50" number
+```
 
 ## Color Mapping
 
@@ -85,29 +97,24 @@ A Node3D-based component that displays a single floating number.
 | Ice damage | Cyan | `"ice"`, `"frost"`, `"cold"` |
 | Poison damage | Purple | `"poison"`, `"toxic"` |
 | Critical damage | Red | `"critical"`, `"crit"` |
-| Scrap gain | Gold | Enemy death with scrap reward |
+| Scrap gain | Gold | Via `show_scrap()` method |
 
 ## Performance
 
-### Object Pooling (Damage Numbers)
+### Object Pooling
 
-Each health component maintains its own pool of damage numbers:
-- Max pool size: 10 instances per entity
+Each component maintains its own pool of Label3D nodes:
+- Default max pool size: 10 instances per entity
 - Inactive instances are reused
-- When pool is full, oldest is recycled
+- When pool is full, oldest active is recycled
+- Labels cleaned up when component exits tree
 
-### Scrap Gain Numbers
+### Fixed Size Labels
 
-Scrap gain numbers are instantiated on-demand since:
-- Enemies die less frequently than taking damage
-- Each enemy only shows one scrap number when dying
-- The node is automatically cleaned up after animation
-
-### Memory Budget
-
-- ~2KB per damage number instance
-- Max ~20KB per entity for damage numbers (10 instances)
-- Numbers are added to current scene to avoid parent movement issues
+Labels use `fixed_size = true` with a configured pixel size, ensuring:
+- Consistent visibility at any camera zoom level
+- No scaling issues with entity transform
+- Readable text regardless of distance
 
 ## Testing
 
@@ -118,55 +125,33 @@ Unit tests are available in `tests/unit/test_damage_number_manager.gd`:
 ```
 
 Tests cover:
-- Scene loading and instantiation
+- Component registration in metadata
+- Label creation and pooling
 - Color coding for damage types
-- Activation and deactivation
-- Scrap gain "+" prefix
-- Health component integration
-
-## Usage Examples
-
-### Damage Numbers
-```gdscript
-# Damage numbers are automatic when using the health component
-health_component.take_damage(25, "fire")  # Shows orange "25"
-health_component.take_damage(10, "player") # Shows white "10"
-health_component.take_damage(50, "critical") # Shows red "50"
-
-# Disable damage numbers for an entity
-health_component.show_damage_numbers = false
-```
-
-### Scrap Gain
-```gdscript
-# Scrap gain is automatic when enemy dies with scrap_reward > 0
-# To disable for a specific enemy:
-enemy.show_scrap_gain = false
-
-# Manual display (advanced usage)
-var damage_number = damage_number_scene.instantiate()
-damage_number.display_damage(10, world_pos, UI_DamageNumber.NumberType.SCRAP_GAIN)
-```
+- Scrap gain formatting
+- Toggle settings
+- Pool size limits
+- Integration with health component
 
 ## Troubleshooting
 
 ### Numbers not appearing
 
-1. Check that `show_damage_numbers` is true on the health component
-2. For scrap, check that `show_scrap_gain` is true and `scrap_reward > 0`
-3. Verify the damage number scene exists at the expected path
-4. Check that the entity has a valid parent with `global_position`
+1. Check that the entity has `Component_DamageNumbers` as a child
+2. Check that `show_damage_numbers` or `show_scrap_gain` is enabled
+3. Verify the entity is a Node3D (required for positioning)
+4. Check that the component registered in metadata
 
 ### Performance issues
 
-1. Each entity has its own damage pool (max 10)
-2. Scrap numbers are created on-demand (only one per death)
-3. Numbers are added to current scene to avoid transform updates
+1. Reduce `max_pool_size` if too many entities
+2. Check that labels are being recycled (not accumulating)
+3. Verify `_exit_tree()` is cleaning up properly
 
-## Architecture Notes
+## Architecture Benefits
 
-The system uses a simple, integrated approach:
-- **Damage numbers**: Integrated into health component with per-entity pooling
-- **Scrap gain**: Integrated into enemy death handler
-- **Shared visuals**: Both use the same `UI_DamageNumber` scene
-- **Easy configuration**: Toggle per entity via export variables
+- **No scene file needed**: Component creates nodes programmatically
+- **Flexible**: Can be added to any entity type
+- **Discoverable**: Uses metadata for component lookup
+- **Zoom-independent**: Fixed size labels visible at any distance
+- **Easy configuration**: All settings exposed as exports
