@@ -4,7 +4,6 @@ extends Node3D
 @export_category("References")
 @export var enemy_spawner: System_EnemySpawner
 @export var ui: Control
-@export var damage_number_manager: UI_DamageNumberManager
 
 @export_category("Scenario Settings")
 @export var scenario_environment: Environment ## Custom environment for this scenario (optional)
@@ -29,10 +28,6 @@ func _ready() -> void:
   if scenario_environment:
     _apply_environment()
   
-  # Create damage number manager if not set
-  if not damage_number_manager:
-    _create_damage_number_manager()
-  
   enemy_spawner.enemy_spawned.connect(_on_enemy_spawned)
   enemy_spawner.wave_started.connect(_on_wave_started)
   enemy_spawner.wave_completed.connect(_on_wave_completed)
@@ -44,14 +39,6 @@ func _ready() -> void:
   # Count the number of survivors at start
   survivor_count = get_tree().get_nodes_in_group("targets").size()
   MyLogger.info("Scenario", "Scenario started with %d survivors" % survivor_count)
-
-func _create_damage_number_manager():
-  """Create a damage number manager if one doesn't exist"""
-  var manager_scene = load("res://Common/UI/damage_numbers/damage_number_manager.tscn")
-  if manager_scene:
-    damage_number_manager = manager_scene.instantiate()
-    add_child(damage_number_manager)
-    Logger.info("Scenario", "Created DamageNumberManager")
 
 func _process(delta: float) -> void:
   # Update timer if it's running and game is not paused
@@ -66,10 +53,6 @@ func _is_paused() -> bool:
 func _on_enemy_spawned(enemy: Node3D) -> void:
   if ui:
     ui._on_enemy_spawned(enemy)
-  
-  # Connect damage number manager to the enemy
-  if damage_number_manager:
-    damage_number_manager.connect_to_enemy(enemy)
 
 func _on_wave_started(wave: System_Wave) -> void:
   var wave_number = enemy_spawner.get_current_wave_number()

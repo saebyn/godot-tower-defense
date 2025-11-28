@@ -1,92 +1,25 @@
 extends GutTest
 
-## Unit tests for the damage number manager
+## Unit tests for damage number functionality in health component
 
-var damage_number_manager: UI_DamageNumberManager
+func test_damage_number_scene_exists():
+  # Verify the damage number scene can be loaded
+  var scene = load("res://Common/UI/damage_numbers/damage_number.tscn")
+  assert_not_null(scene, "Damage number scene should exist")
 
-func before_each():
-  # Create a fresh damage number manager for each test
-  var manager_scene = load("res://Common/UI/damage_numbers/damage_number_manager.tscn")
-  damage_number_manager = manager_scene.instantiate()
-  add_child_autofree(damage_number_manager)
-  # Wait a frame for _ready to complete
-  await get_tree().process_frame
-
-func test_manager_initializes_with_pool():
-  # Assert
-  assert_not_null(damage_number_manager, "Damage number manager should be created")
-  assert_eq(damage_number_manager.damage_number_pool.size(), damage_number_manager.initial_pool_size, 
-    "Pool should be initialized with correct size")
-
-func test_show_damage_creates_active_number():
+func test_damage_number_displays_correctly():
   # Arrange
-  var initial_active_count = damage_number_manager.active_damage_numbers.size()
-  
-  # Act
-  damage_number_manager.show_damage(50, Vector3(0, 0, 0))
-  
-  # Assert
-  assert_gt(damage_number_manager.active_damage_numbers.size(), initial_active_count, 
-    "Should have more active damage numbers")
-
-func test_show_damage_respects_settings():
-  # Arrange
-  damage_number_manager.damage_numbers_enabled = false
-  
-  # Act
-  damage_number_manager.show_damage(50, Vector3(0, 0, 0))
-  
-  # Assert
-  assert_eq(damage_number_manager.active_damage_numbers.size(), 0, 
-    "Should not create damage numbers when disabled")
-
-func test_show_scrap_respects_settings():
-  # Arrange
-  damage_number_manager.scrap_numbers_enabled = false
-  
-  # Act
-  damage_number_manager.show_scrap_gain(10, Vector3(0, 0, 0))
-  
-  # Assert
-  assert_eq(damage_number_manager.active_damage_numbers.size(), 0, 
-    "Should not create scrap numbers when disabled")
-
-func test_pool_expands_when_needed():
-  # Arrange
-  var initial_pool_size = damage_number_manager.damage_number_pool.size()
-  
-  # Act - Use up all numbers in the pool
-  for i in range(initial_pool_size + 5):
-    damage_number_manager.show_damage(10, Vector3(i, 0, 0))
-  
-  # Assert
-  assert_gt(damage_number_manager.damage_number_pool.size(), initial_pool_size, 
-    "Pool should expand when needed")
-
-func test_pool_does_not_exceed_max_size():
-  # Arrange
-  var max_size = damage_number_manager.max_pool_size
-  
-  # Act - Try to create more numbers than max pool size
-  for i in range(max_size + 10):
-    damage_number_manager.show_damage(10, Vector3(i, 0, 0))
-  
-  # Assert
-  assert_lte(damage_number_manager.damage_number_pool.size(), max_size, 
-    "Pool should not exceed max size")
-
-func test_connect_to_enemy_succeeds():
-  # Arrange
-  var enemy_scene = load("res://Entities/Enemies/Templates/base_enemy/enemy.tscn")
-  var enemy = enemy_scene.instantiate()
-  add_child_autofree(enemy)
+  var damage_number_scene = load("res://Common/UI/damage_numbers/damage_number.tscn")
+  var damage_number = damage_number_scene.instantiate()
+  add_child_autofree(damage_number)
   await get_tree().process_frame
   
   # Act
-  damage_number_manager.connect_to_enemy(enemy)
+  damage_number.display_damage(50, Vector3.ZERO)
   
-  # No assertion needed - just verify it doesn't crash
-  pass_test("Successfully connected to enemy")
+  # Assert
+  assert_true(damage_number.is_active, "Number should be active after display")
+  assert_true(damage_number.visible, "Number should be visible after display")
 
 func test_damage_number_deactivates_after_duration():
   # Arrange
@@ -104,3 +37,63 @@ func test_damage_number_deactivates_after_duration():
   
   # Assert
   assert_false(damage_number.is_active, "Number should deactivate after fade duration")
+
+func test_damage_number_color_coding():
+  # Arrange
+  var damage_number_scene = load("res://Common/UI/damage_numbers/damage_number.tscn")
+  var damage_number = damage_number_scene.instantiate()
+  add_child_autofree(damage_number)
+  await get_tree().process_frame
+  
+  # Test normal damage (white)
+  damage_number.display_damage(10, Vector3.ZERO, UI_DamageNumber.NumberType.DAMAGE_NORMAL)
+  assert_eq(damage_number.label_3d.modulate.r, Color.WHITE.r, "Normal damage should be white")
+  damage_number.deactivate()
+  
+  # Test fire damage (orange)
+  damage_number.display_damage(10, Vector3.ZERO, UI_DamageNumber.NumberType.DAMAGE_FIRE)
+  assert_eq(damage_number.label_3d.modulate.r, Color.ORANGE.r, "Fire damage should be orange")
+  damage_number.deactivate()
+  
+  # Test scrap gain (gold)
+  damage_number.display_damage(10, Vector3.ZERO, UI_DamageNumber.NumberType.SCRAP_GAIN)
+  assert_eq(damage_number.label_3d.modulate.r, Color.GOLD.r, "Scrap gain should be gold")
+
+func test_health_component_has_damage_number_option():
+  # Arrange
+  var health_scene = load("res://Common/Components/health/health.tscn")
+  var health = health_scene.instantiate()
+  add_child_autofree(health)
+  await get_tree().process_frame
+  
+  # Assert
+  assert_true("show_damage_numbers" in health, "Health component should have show_damage_numbers property")
+
+func test_scrap_gain_shows_plus_prefix():
+  # Arrange
+  var damage_number_scene = load("res://Common/UI/damage_numbers/damage_number.tscn")
+  var damage_number = damage_number_scene.instantiate()
+  add_child_autofree(damage_number)
+  await get_tree().process_frame
+  
+  # Act
+  damage_number.display_damage(25, Vector3.ZERO, UI_DamageNumber.NumberType.SCRAP_GAIN)
+  
+  # Assert
+  assert_eq(damage_number.label_3d.text, "+25", "Scrap gain should show + prefix")
+
+func test_damage_number_is_available_after_deactivate():
+  # Arrange
+  var damage_number_scene = load("res://Common/UI/damage_numbers/damage_number.tscn")
+  var damage_number = damage_number_scene.instantiate()
+  add_child_autofree(damage_number)
+  await get_tree().process_frame
+  
+  # Act
+  damage_number.display_damage(50, Vector3.ZERO)
+  assert_false(damage_number.is_available(), "Should not be available while active")
+  
+  damage_number.deactivate()
+  
+  # Assert
+  assert_true(damage_number.is_available(), "Should be available after deactivate")
