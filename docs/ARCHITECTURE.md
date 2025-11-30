@@ -20,7 +20,7 @@ The game uses several autoloaded singleton systems for global state management a
 ```mermaid
 graph TB
     subgraph "Autoload Systems (Singletons)"
-        Logger[Logger<br/>Centralized logging with scope filtering]
+        MyLogger[MyLogger<br/>Centralized logging with scope filtering]
         SaveManager[SaveManager<br/>Multi-slot save system]
         CurrencyManager[CurrencyManager<br/>Scrap, XP, levels]
         GameManager[GameManager<br/>Game state & speed control]
@@ -87,7 +87,7 @@ graph TB
     %% Purple (#f5e1ff) - Content Management
     %% Orange (#ffe1cc) - Audio/Settings
     
-    style Logger fill:#e1f5ff
+    style MyLogger fill:#e1f5ff
     style SaveManager fill:#ffe1f5
     style CurrencyManager fill:#e1ffe1
     style StatsManager fill:#e1ffe1
@@ -101,7 +101,7 @@ graph TB
 ```
 
 **Color Legend:**
-- 🔵 **Blue** - Debugging/Infrastructure systems (Logger)
+- 🔵 **Blue** - Debugging/Infrastructure systems (MyLogger)
 - 🩷 **Pink** - Persistence/Save systems (SaveManager)
 - 🟢 **Green** - Economy/Progression systems (CurrencyManager, StatsManager, AchievementManager)
 - 🟡 **Yellow** - Game State Management (GameManager)
@@ -618,7 +618,7 @@ This architecture provides:
 ✅ **Intelligent Pathfinding**: Dynamic navigation with obstacle avoidance
 
 **Key Architectural Patterns:**
-- **Singleton Pattern**: Autoload systems (Logger, SaveManager, etc.)
+- **Singleton Pattern**: Autoload systems (MyLogger, SaveManager, etc.)
 - **Component Pattern**: Health, Attack as reusable components
 - **Observer Pattern**: Signals for event communication
 - **Strategy Pattern**: SaveableSystem interface for persistence

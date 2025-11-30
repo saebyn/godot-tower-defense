@@ -32,7 +32,7 @@ func _ready() -> void:
 
   # Count the number of survivors at start
   survivor_count = get_tree().get_nodes_in_group("targets").size()
-  Logger.info("Scenario", "Scenario started with %d survivors" % survivor_count)
+  MyLogger.info("Scenario", "Scenario started with %d survivors" % survivor_count)
 
 func _process(delta: float) -> void:
   # Update timer if it's running and game is not paused
@@ -57,7 +57,7 @@ func _on_wave_started(wave: System_Wave) -> void:
   if not timer_started:
     _start_timer()
     timer_started = true
-    Logger.debug("Scenario", "Scenario timer started at wave %d" % wave_number)
+    MyLogger.debug("Scenario", "Scenario timer started at wave %d" % wave_number)
 
 func _on_wave_completed(wave: System_Wave) -> void:
   var wave_number = enemy_spawner.get_current_wave_number()
@@ -67,19 +67,19 @@ func _on_wave_completed(wave: System_Wave) -> void:
 
 
 func _on_all_waves_completed() -> void:
-  Logger.info("Scenario", "All waves completed. Processing scenario completion...")
+  MyLogger.info("Scenario", "All waves completed. Processing scenario completion...")
   
   # Stop the timer
   var completion_time = _stop_timer()
-  Logger.info("Scenario", "Scenario completed in %.2f seconds" % completion_time)
+  MyLogger.info("Scenario", "Scenario completed in %.2f seconds" % completion_time)
   
   # Mark the scenario as complete in the progression system
   var scenario_id = ScenarioManager.get_current_scenario_id()
   if not scenario_id.is_empty():
     ScenarioManager.mark_scenario_complete(scenario_id, completion_time)
-    Logger.info("Scenario", "Scenario '%s' marked as complete" % scenario_id)
+    MyLogger.info("Scenario", "Scenario '%s' marked as complete" % scenario_id)
   else:
-    Logger.error("Scenario", "Cannot mark scenario complete - no scenario ID set in ScenarioManager!")
+    MyLogger.error("Scenario", "Cannot mark scenario complete - no scenario ID set in ScenarioManager!")
   
   # Transition to victory state (UI will respond to this)
   assert(survivor_count > 0) # Shouldn't be here if all survivors are dead
@@ -88,14 +88,14 @@ func _on_all_waves_completed() -> void:
 
 func on_target_died(_target: Node3D, _damage_source: String) -> void:
   if survivor_count <= 0:
-    Logger.warning("Scenario", "All survivors already dead, ignoring target death.")
+    MyLogger.warning("Scenario", "All survivors already dead, ignoring target death.")
     return
 
   survivor_count -= 1
-  Logger.trace("Scenario", "A survivor has died. Remaining survivors: %d" % survivor_count)
+  MyLogger.trace("Scenario", "A survivor has died. Remaining survivors: %d" % survivor_count)
 
   if survivor_count <= 0:
-    Logger.info("Scenario", "All survivors have died. Triggering game over.")
+    MyLogger.info("Scenario", "All survivors have died. Triggering game over.")
     # Stop timer on game over (but don't save the time)
     _stop_timer()
     GameManager.set_game_state(GameManager.GameState.GAME_OVER)
@@ -108,13 +108,13 @@ func _start_timer() -> void:
   scenario_start_time = Time.get_ticks_msec() / 1000.0
   scenario_elapsed_time = 0.0
   is_timing = true
-  Logger.debug("Scenario", "Timer started")
+  MyLogger.debug("Scenario", "Timer started")
 
 ## Stop the scenario timer and return elapsed time
 func _stop_timer() -> float:
   if is_timing:
     is_timing = false
-    Logger.debug("Scenario", "Timer stopped - Elapsed: %.2f seconds" % scenario_elapsed_time)
+    MyLogger.debug("Scenario", "Timer stopped - Elapsed: %.2f seconds" % scenario_elapsed_time)
   return scenario_elapsed_time
 
 ## Get current elapsed time without stopping the timer
@@ -126,9 +126,9 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
   # Timer automatically pauses/resumes via is_paused() check in _process
   # This is just for logging/debugging if needed
   if new_state == GameManager.GameState.IN_GAME_MENU:
-    Logger.trace("Scenario", "Game paused - timer paused at %.2f seconds" % scenario_elapsed_time)
+    MyLogger.trace("Scenario", "Game paused - timer paused at %.2f seconds" % scenario_elapsed_time)
   elif new_state == GameManager.GameState.PLAYING and timer_started:
-    Logger.trace("Scenario", "Game resumed - timer continuing from %.2f seconds" % scenario_elapsed_time)
+    MyLogger.trace("Scenario", "Game resumed - timer continuing from %.2f seconds" % scenario_elapsed_time)
 
 
 ## Apply custom environment to the scene's WorldEnvironment
@@ -138,6 +138,6 @@ func _apply_environment() -> void:
   
   if world_env and world_env is WorldEnvironment:
     world_env.environment = scenario_environment
-    Logger.info("Scenario", "Applied custom environment to WorldEnvironment")
+    MyLogger.info("Scenario", "Applied custom environment to WorldEnvironment")
   else:
-    Logger.warn("Scenario", "No WorldEnvironment found at 'Main/WorldEnvironment' - cannot apply scenario environment")
+    MyLogger.warn("Scenario", "No WorldEnvironment found at 'Main/WorldEnvironment' - cannot apply scenario environment")

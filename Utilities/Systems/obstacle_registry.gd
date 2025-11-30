@@ -13,13 +13,13 @@ var available_obstacle_types: Array[Resource_ObstacleType] = []
 
 
 func _ready() -> void:
-  Logger.info("ObstacleRegistry", "Initializing ObstacleRegistry...")
+  MyLogger.info("ObstacleRegistry", "Initializing ObstacleRegistry...")
   _load_obstacle_types()
   
   # Connect to TechTreeManager (autoload singleton)
   TechTreeManager.tech_unlocked.connect(_on_tech_unlocked)
   TechTreeManager.tech_locked.connect(_on_tech_locked)
-  Logger.info("ObstacleRegistry", "Connected to TechTreeManager")
+  MyLogger.info("ObstacleRegistry", "Connected to TechTreeManager")
   
   # Connect to SaveManager to update obstacles after save data is loaded
   SaveManager.load_completed.connect(_on_save_loaded)
@@ -27,7 +27,7 @@ func _ready() -> void:
   # Do initial update of available obstacles
   # This will be updated again when save data loads
   _update_available_obstacles()
-  Logger.info("ObstacleRegistry", "ObstacleRegistry initialized with %d total obstacles, %d available" % [_obstacle_types.size(), available_obstacle_types.size()])
+  MyLogger.info("ObstacleRegistry", "ObstacleRegistry initialized with %d total obstacles, %d available" % [_obstacle_types.size(), available_obstacle_types.size()])
 
 
 ## Load all obstacle type resources from the obstacles directory
@@ -35,7 +35,7 @@ func _load_obstacle_types() -> void:
   _obstacle_types.clear()
   var dir = DirAccess.open(obstacle_types_directory)
   if not dir:
-    Logger.error("ObstacleRegistry", "Could not open obstacles directory: %s" % obstacle_types_directory)
+    MyLogger.error("ObstacleRegistry", "Could not open obstacles directory: %s" % obstacle_types_directory)
     return
   
   dir.list_dir_begin()
@@ -46,9 +46,9 @@ func _load_obstacle_types() -> void:
       var resource = ResourceLoader.load(file_path)
       if resource and resource is Resource_ObstacleType:
         _obstacle_types.append(resource)
-        Logger.debug("ObstacleRegistry", "Loaded obstacle type: %s (%s)" % [resource.id, resource.name])
+        MyLogger.debug("ObstacleRegistry", "Loaded obstacle type: %s (%s)" % [resource.id, resource.name])
       else:
-        Logger.warn("ObstacleRegistry", "Failed to load obstacle type from: %s" % file_path)
+        MyLogger.warn("ObstacleRegistry", "Failed to load obstacle type from: %s" % file_path)
     file_name = dir.get_next()
 
 
@@ -66,10 +66,10 @@ func _update_available_obstacles() -> void:
       updated_available.append(obstacle_type)
       if not was_available:
         added_types.append(obstacle_type)
-        Logger.info("ObstacleRegistry", "Obstacle unlocked: %s (%s)" % [obstacle_type.id, obstacle_type.name])
+        MyLogger.info("ObstacleRegistry", "Obstacle unlocked: %s (%s)" % [obstacle_type.id, obstacle_type.name])
     elif was_available:
       removed_types.append(obstacle_type)
-      Logger.info("ObstacleRegistry", "Obstacle locked: %s (%s)" % [obstacle_type.id, obstacle_type.name])
+      MyLogger.info("ObstacleRegistry", "Obstacle locked: %s (%s)" % [obstacle_type.id, obstacle_type.name])
   
   available_obstacle_types = updated_available
   
@@ -93,19 +93,19 @@ func _is_obstacle_unlocked(obstacle_type: Resource_ObstacleType) -> bool:
 
 ## Called when a tech is unlocked
 func _on_tech_unlocked(tech_id: String) -> void:
-  Logger.debug("ObstacleRegistry", "Tech unlocked: %s - checking for new obstacles" % tech_id)
+  MyLogger.debug("ObstacleRegistry", "Tech unlocked: %s - checking for new obstacles" % tech_id)
   _update_available_obstacles()
 
 
 ## Called when a tech is locked (mutually exclusive)
 func _on_tech_locked(tech_id: String) -> void:
-  Logger.debug("ObstacleRegistry", "Tech locked: %s - checking for removed obstacles" % tech_id)
+  MyLogger.debug("ObstacleRegistry", "Tech locked: %s - checking for removed obstacles" % tech_id)
   _update_available_obstacles()
 
 
 ## Called when save data is loaded - refresh obstacle availability
 func _on_save_loaded() -> void:
-  Logger.info("ObstacleRegistry", "Save data loaded - updating available obstacles")
+  MyLogger.info("ObstacleRegistry", "Save data loaded - updating available obstacles")
   _update_available_obstacles()
 
 

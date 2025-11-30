@@ -43,7 +43,7 @@ func earn_scrap(amount: int) -> void:
   current_scrap += amount
   scrap_earned.emit(amount)
   scrap_changed.emit(current_scrap)
-  Logger.info("Economy", "Earned %d scrap. Total: %d" % [amount, current_scrap])
+  MyLogger.info("Economy", "Earned %d scrap. Total: %d" % [amount, current_scrap])
 
 ## Add XP to the player's total
 func earn_xp(amount: int) -> void:
@@ -53,7 +53,7 @@ func earn_xp(amount: int) -> void:
   current_xp += amount
   xp_earned.emit(amount)
   xp_changed.emit(current_xp)
-  Logger.info("Economy", "Earned %d XP. Total: %d" % [amount, current_xp])
+  MyLogger.info("Economy", "Earned %d XP. Total: %d" % [amount, current_xp])
   _check_level_up()
 
 ## Calculates the XP required for the next level.
@@ -72,7 +72,7 @@ func _check_level_up() -> void:
     current_xp -= xp_for_next_level
     current_level += 1
     level_up.emit(current_level)
-    Logger.info("Economy", "Leveled up to level %d!" % current_level)
+    MyLogger.info("Economy", "Leveled up to level %d!" % current_level)
     xp_changed.emit(current_xp)
     xp_for_next_level = _get_xp_for_next_level()
 
@@ -84,10 +84,10 @@ func spend_scrap(amount: int) -> bool:
   if current_scrap >= amount:
     current_scrap -= amount
     scrap_changed.emit(current_scrap)
-    Logger.info("Economy", "Spent %d scrap. Remaining: %d" % [amount, current_scrap])
+    MyLogger.info("Economy", "Spent %d scrap. Remaining: %d" % [amount, current_scrap])
     return true
   else:
-    Logger.warn("Economy", "Not enough scrap. Need %d but only have %d" % [amount, current_scrap])
+    MyLogger.warn("Economy", "Not enough scrap. Need %d but only have %d" % [amount, current_scrap])
     return false
 
 ## Get current scrap amount
@@ -126,7 +126,7 @@ func load_data(data: Dictionary) -> void:
   scrap_changed.emit(current_scrap)
   xp_changed.emit(current_xp)
   
-  Logger.info("CurrencyManager", "Progression loaded - Level: %d, XP: %d, Scrap: %d" % [current_level, current_xp, current_scrap])
+  MyLogger.info("CurrencyManager", "Progression loaded - Level: %d, XP: %d, Scrap: %d" % [current_level, current_xp, current_scrap])
   progression_loaded.emit()
 
 ## Reset to default state (for new game)
@@ -135,7 +135,7 @@ func reset_data() -> void:
   current_xp = 0
   current_scrap = starting_scrap
   
-  Logger.info("CurrencyManager", "Progression reset to defaults")
+  MyLogger.info("CurrencyManager", "Progression reset to defaults")
 
 ## Legacy Methods (deprecated, kept for backward compatibility)
 

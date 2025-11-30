@@ -16,19 +16,19 @@ The logging framework provides:
 ### Simple Logging
 ```gdscript
 # Basic logging at different levels
-Logger.debug("Combat", "Calculating damage: %d" % damage)
-Logger.info("Player", "Player spawned with %d health" % health)
-Logger.warn("Economy", "Currency running low: %d remaining" % currency)
-Logger.error("System", "Failed to load config: %s" % config_path)
+MyLogger.debug("Combat", "Calculating damage: %d" % damage)
+MyLogger.info("Player", "Player spawned with %d health" % health)
+MyLogger.warn("Economy", "Currency running low: %d remaining" % currency)
+MyLogger.error("System", "Failed to load config: %s" % config_path)
 ```
 
 ### Hierarchical Scopes
 ```gdscript
 # Use dot notation for hierarchical scopes
-Logger.debug("Enemy.AI", "Choosing target")
-Logger.debug("Enemy.Combat", "Attacking target")
-Logger.debug("Enemy.Animation", "Playing attack animation")
-Logger.info("UI.Health", "Updating health display")
+MyLogger.debug("Enemy.AI", "Choosing target")
+MyLogger.debug("Enemy.Combat", "Attacking target")
+MyLogger.debug("Enemy.Animation", "Playing attack animation")
+MyLogger.info("UI.Health", "Updating health display")
 ```
 
 ## Log Levels
@@ -46,15 +46,15 @@ Logger.info("UI.Health", "Updating health display")
 ### Wildcard Patterns
 ```gdscript
 # Enable all Combat-related logging
-Logger.set_enabled_scopes(["Combat*"])
+MyLogger.set_enabled_scopes(["Combat*"])
 # This will show: "Combat", "Combat.Attack", "Combat.Defense", etc.
 
 # Enable specific scopes
-Logger.set_enabled_scopes(["Player", "Economy", "UI"])
+MyLogger.set_enabled_scopes(["Player", "Economy", "UI"])
 # Only these exact scopes will be shown
 
 # Enable everything
-Logger.set_enabled_scopes(["*"])
+MyLogger.set_enabled_scopes(["*"])
 ```
 
 ### Common Scope Conventions
@@ -86,7 +86,7 @@ enabled_scopes="*"  # Comma-separated scopes or "*" for all
 
 ### Console Commands
 
-The Logger provides console commands for runtime configuration:
+The MyLogger provides console commands for runtime configuration:
 
 | Command | Example | Description |
 |---------|---------|-------------|
@@ -98,24 +98,24 @@ The Logger provides console commands for runtime configuration:
 
 ```gdscript
 # Change log level at runtime
-Logger.set_log_level(Logger.LogLevel.DEBUG)
+MyLogger.set_log_level(MyLogger.LogLevel.DEBUG)
 
 # Change enabled scopes
-Logger.set_enabled_scopes(["Economy", "Combat"])
+MyLogger.set_enabled_scopes(["Economy", "Combat"])
 
 # Add/remove individual scopes
-Logger.enable_scope("NewFeature")
-Logger.disable_scope("OldFeature")
+MyLogger.enable_scope("NewFeature")
+MyLogger.disable_scope("OldFeature")
 
 # Get current configuration
-var config = Logger.get_config()
+var config = MyLogger.get_config()
 print("Current level: ", config.log_level_name)
 print("Enabled scopes: ", config.enabled_scopes)
 ```
 
 ## Integration Example
 
-Here's how to integrate the Logger with your existing console system:
+Here's how to integrate the MyLogger with your existing console system:
 
 ```gdscript
 extends Node
@@ -125,8 +125,8 @@ func handle_console_input(command_line: String):
     var command = parts[0]
     var args = PackedStringArray(parts.slice(1))
     
-    # Try Logger commands first
-    if Logger.handle_console_command(command, args):
+    # Try MyLogger commands first
+    if MyLogger.handle_console_command(command, args):
         return true
     
     # Handle other game commands
@@ -158,8 +158,8 @@ print("Enemy spawned at: ", position)
 print("Currency earned: ", amount)
 
 # After  
-Logger.info("Spawner", "Enemy spawned at: %s" % position)
-Logger.info("Economy", "Currency earned: %d" % amount)
+MyLogger.info("Spawner", "Enemy spawned at: %s" % position)
+MyLogger.info("Economy", "Currency earned: %d" % amount)
 ```
 
 ## Advanced Features
@@ -168,9 +168,9 @@ Logger.info("Economy", "Currency earned: %d" % amount)
 ```gdscript
 func _ready():
     # Connect to log signals for custom handling
-    Logger.log_message_emitted.connect(_on_log_message)
+    MyLogger.log_message_emitted.connect(_on_log_message)
 
-func _on_log_message(level: Logger.LogLevel, scope: String, message: String, timestamp: String):
+func _on_log_message(level: MyLogger.LogLevel, scope: String, message: String, timestamp: String):
     # Custom handling (save to file, send to server, etc.)
     pass
 ```
@@ -178,20 +178,20 @@ func _on_log_message(level: Logger.LogLevel, scope: String, message: String, tim
 ### Conditional Logging
 ```gdscript
 # Expensive operations only when debug logging is enabled
-if Logger.current_log_level <= Logger.LogLevel.DEBUG:
+if MyLogger.current_log_level <= MyLogger.LogLevel.DEBUG:
     var detailed_info = expensive_debug_calculation()
-    Logger.debug("System", "Detailed info: %s" % detailed_info)
+    MyLogger.debug("System", "Detailed info: %s" % detailed_info)
 ```
 
 ## Examples from Codebase
 
 The framework is already integrated throughout the codebase:
 
-- **Currency System**: `Logger.info("Economy", "Earned %d currency")` 
-- **Enemy Spawning**: `Logger.info("Spawner", "Starting wave %d")`
-- **Combat**: `Logger.debug("Enemy.Combat", "Enemy took %d damage")`
-- **Navigation**: `Logger.debug("Navigation", "Rebaking navigation mesh")`
-- **Placement**: `Logger.warn("Placement", "Cannot place obstacle")`
+- **Currency System**: `MyLogger.info("Economy", "Earned %d currency")` 
+- **Enemy Spawning**: `MyLogger.info("Spawner", "Starting wave %d")`
+- **Combat**: `MyLogger.debug("Enemy.Combat", "Enemy took %d damage")`
+- **Navigation**: `MyLogger.debug("Navigation", "Rebaking navigation mesh")`
+- **Placement**: `MyLogger.warn("Placement", "Cannot place obstacle")`
 
 ## Testing
 

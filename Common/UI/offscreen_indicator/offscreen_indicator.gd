@@ -56,11 +56,11 @@ func _find_game_components() -> void:
   enemy_spawner = _find_enemy_spawner(get_tree().root)
   
   if not camera:
-    Logger.error("OffscreenIndicator", "Could not find camera")
+    MyLogger.error("OffscreenIndicator", "Could not find camera")
   if not enemy_spawner:
-    Logger.error("OffscreenIndicator", "Could not find enemy spawner")
+    MyLogger.error("OffscreenIndicator", "Could not find enemy spawner")
   else:
-    Logger.info("OffscreenIndicator", "Found camera and enemy spawner successfully")
+    MyLogger.info("OffscreenIndicator", "Found camera and enemy spawner successfully")
 
 func _find_camera(node: Node) -> Camera3D:
   if node is Camera3D:

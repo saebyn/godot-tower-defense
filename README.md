@@ -54,7 +54,7 @@ Come hang out, watch the chaos unfold, and see how the sausage gets made! You mi
 - **[Achievement UI Implementation](docs/ACHIEVEMENT_UI_IMPLEMENTATION.md)** - Achievement system UI
 - **[Obstacle Tech Tree Integration](docs/obstacle_tech_tree_integration.md)** - How obstacles unlock via tech
 - **[Color Palette](docs/COLOR_PALETTE.md)** - UI color scheme and theme
-- **[Logging System](docs/LOGGING.md)** - How the Logger autoload works
+- **[Logging System](docs/LOGGING.md)** - How the MyLogger autoload works
 
 ---
 
@@ -103,7 +103,7 @@ Controls are fully rebindable in-game via the Settings menu.
 
 ### Prerequisites
 
-- [Godot Engine 4.4](https://godotengine.org/download) or later
+- [Godot Engine 4.5](https://godotengine.org/download) or later
 
 ### Running the Game
 
@@ -180,7 +180,7 @@ Game entities use a composition approach:
 
 #### 4. **Centralized Game State Management**
 Game state and coordination is handled through autoloaded singletons:
-- **Logger** - Centralized logging with scope-based filtering
+- **MyLogger** - Centralized logging with scope-based filtering
 - **CurrencyManager** - Player currency tracking and transactions
 - **GameManager** - Game state transitions and high-level coordination
 - **SaveManager** - Centralized save system with multi-slot support (see [Save System](#-save-system) below)
@@ -314,4 +314,4 @@ Because zombies go "nom nom nom" and puns are mandatory in lighthearted apocalyp
 
 ---
 
-**Built with** [Godot 4.4](https://godotengine.org/) | **Repo**: [github.com/saebyn/zom-nom-defense](https://github.com/saebyn/zom-nom-defense)
+**Built with** [Godot 4.5](https://godotengine.org/) | **Repo**: [github.com/saebyn/zom-nom-defense](https://github.com/saebyn/zom-nom-defense)

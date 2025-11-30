@@ -34,7 +34,7 @@ func _ready():
 
 
 func _on_died(damage_source: String = "unknown") -> void:
-  Logger.info("Target", "Target has died. Source: %s" % damage_source)
+  MyLogger.info("Target", "Target has died. Source: %s" % damage_source)
   var parent := get_parent()
   if parent and parent.has_method("on_target_died"):
     parent.on_target_died(self, damage_source)
@@ -42,4 +42,4 @@ func _on_died(damage_source: String = "unknown") -> void:
 
 
 func _on_health_damaged(amount: int, hitpoints: int, damage_source: String = "unknown") -> void:
-  Logger.debug("Target.Combat", "Target took %d damage from %s. Remaining HP: %d" % [amount, damage_source, hitpoints])
+  MyLogger.debug("Target.Combat", "Target took %d damage from %s. Remaining HP: %d" % [amount, damage_source, hitpoints])

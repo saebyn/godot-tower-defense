@@ -1,6 +1,6 @@
 # Settings Menu
 
-A comprehensive settings UI system for Godot 4.4 tower defense game.
+A comprehensive settings UI system for Godot 4.5 tower defense game.
 
 ## Overview
 
@@ -55,8 +55,8 @@ func show_settings():
 
 This component requires:
 - SettingsManager singleton (autoloaded)
-- Logger system (for logging)
-- Godot 4.4+
+- MyLogger system (for logging)
+- Godot 4.5+
 
 ## Documentation
 

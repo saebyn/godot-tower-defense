@@ -85,11 +85,11 @@ func _find_game_components() -> void:
   enemy_spawner = _find_enemy_spawner(get_tree().root)
   
   if not camera:
-    Logger.error("Minimap", "Could not find camera")
+    MyLogger.error("Minimap", "Could not find camera")
   if not enemy_spawner:
-    Logger.error("Minimap", "Could not find enemy spawner")
+    MyLogger.error("Minimap", "Could not find enemy spawner")
   else:
-    Logger.info("Minimap", "Found camera and enemy spawner successfully")
+    MyLogger.info("Minimap", "Found camera and enemy spawner successfully")
 
 func _find_camera(node: Node) -> Camera3D:
   if node is Camera3D:
@@ -236,4 +236,4 @@ func _on_minimap_clicked(event: InputEvent) -> void:
     # Move camera to clicked position
     camera.global_position = Vector3(world_pos.x, camera.global_position.y, world_pos.z)
     
-    Logger.info("Minimap", "Camera moved to: %s" % world_pos)
+    MyLogger.info("Minimap", "Camera moved to: %s" % world_pos)

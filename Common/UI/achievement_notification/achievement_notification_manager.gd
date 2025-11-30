@@ -14,9 +14,9 @@ func _ready() -> void:
   # Connect to AchievementManager
   if AchievementManager:
     AchievementManager.achievement_unlocked.connect(_on_achievement_unlocked)
-    Logger.info("AchievementNotificationManager", "Connected to AchievementManager")
+    MyLogger.info("AchievementNotificationManager", "Connected to AchievementManager")
   else:
-    Logger.error("AchievementNotificationManager", "AchievementManager not found!")
+    MyLogger.error("AchievementNotificationManager", "AchievementManager not found!")
 
 ## Handle achievement unlock events
 func _on_achievement_unlocked(achievement: Resource_Achievement) -> void:
@@ -25,7 +25,7 @@ func _on_achievement_unlocked(achievement: Resource_Achievement) -> void:
   
   # Add to queue
   notification_queue.append(achievement)
-  Logger.debug("AchievementNotificationManager", "Queued achievement: %s" % achievement.name)
+  MyLogger.debug("AchievementNotificationManager", "Queued achievement: %s" % achievement.name)
   
   # Try to show next notification
   _show_next_notification()

@@ -32,7 +32,7 @@ const RESOLUTIONS: Array[Vector2i] = [
 func _ready() -> void:
   load_settings()
   apply_settings()
-  Logger.info("SettingsManager", "Settings Manager initialized")
+  MyLogger.info("SettingsManager", "Settings Manager initialized")
 
 ## Load settings from file
 func load_settings() -> void:
@@ -40,7 +40,7 @@ func load_settings() -> void:
   var err = config.load(SETTINGS_FILE)
   
   if err != OK:
-    Logger.info("SettingsManager", "No settings file found, using defaults")
+    MyLogger.info("SettingsManager", "No settings file found, using defaults")
     return
   
   # Load video settings
@@ -53,7 +53,7 @@ func load_settings() -> void:
   music_volume = config.get_value("audio", "music_volume", music_volume)
   sfx_volume = config.get_value("audio", "sfx_volume", sfx_volume)
   
-  Logger.info("SettingsManager", "Settings loaded from file")
+  MyLogger.info("SettingsManager", "Settings loaded from file")
 
 ## Save settings to file
 func save_settings() -> void:
@@ -71,9 +71,9 @@ func save_settings() -> void:
   
   var err = config.save(SETTINGS_FILE)
   if err != OK:
-    Logger.error("SettingsManager", "Failed to save settings: %d" % err)
+    MyLogger.error("SettingsManager", "Failed to save settings: %d" % err)
   else:
-    Logger.info("SettingsManager", "Settings saved to file")
+    MyLogger.info("SettingsManager", "Settings saved to file")
 
 ## Apply all current settings
 func apply_settings() -> void:
@@ -94,7 +94,7 @@ func apply_video_settings() -> void:
   # Skip window size/position changes when running in the editor's embedded window
   # The editor manages the embedded window size, and changing it causes layout issues
   if Engine.is_embedded_in_editor():
-    Logger.debug("SettingsManager", "Running in editor - skipping window size/position changes")
+    MyLogger.debug("SettingsManager", "Running in editor - skipping window size/position changes")
   else:
     # Apply fullscreen
     if fullscreen:
@@ -112,7 +112,7 @@ func apply_video_settings() -> void:
       var window_size = window.size
       window.position = (screen_size - window_size) / 2
 
-    Logger.debug("SettingsManager", "Video settings applied")
+    MyLogger.debug("SettingsManager", "Video settings applied")
 
   video_settings_changed.emit()
 
@@ -129,7 +129,7 @@ func apply_audio_settings() -> void:
   AudioServer.set_bus_volume_db(sfx_bus, sfx_volume)
   
   audio_settings_changed.emit()
-  Logger.debug("SettingsManager", "Audio settings applied")
+  MyLogger.debug("SettingsManager", "Audio settings applied")
 
 ## Set fullscreen mode
 func set_fullscreen(enabled: bool) -> void:

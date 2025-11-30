@@ -47,7 +47,7 @@ func _ready():
   if get_parent():
     get_parent().set_meta("dot_effect_component", self)
   
-  Logger.debug("DotEffect", "DotEffect component initialized (tick interval: %fs)" % tick_interval)
+  MyLogger.debug("DotEffect", "DotEffect component initialized (tick interval: %fs)" % tick_interval)
 
 
 func _on_body_entered(body: Node):
@@ -57,7 +57,7 @@ func _on_body_entered(body: Node):
   if body.is_in_group(target_group):
     _active_targets[body] = true
     target_entered.emit(body)
-    Logger.debug("DotEffect", "Target entered DoT area: %s" % body.name)
+    MyLogger.debug("DotEffect", "Target entered DoT area: %s" % body.name)
 
 
 func _on_body_exited(body: Node):
@@ -67,7 +67,7 @@ func _on_body_exited(body: Node):
   if body in _active_targets:
     _active_targets.erase(body)
     target_exited.emit(body)
-    Logger.debug("DotEffect", "Target exited DoT area: %s" % body.name)
+    MyLogger.debug("DotEffect", "Target exited DoT area: %s" % body.name)
 
 
 func _on_tick():
@@ -89,7 +89,7 @@ func _on_tick():
     if health and health is Component_Health:
       health.take_damage(damage_per_tick, damage_source)
       dot_applied.emit(target, damage_per_tick)
-      Logger.trace("DotEffect", "Applied %d DoT damage to %s" % [damage_per_tick, target.name])
+      MyLogger.trace("DotEffect", "Applied %d DoT damage to %s" % [damage_per_tick, target.name])
       
       if enable_sound and audio_player:
         AudioManager.play_sound(audio_player, tick_sound)

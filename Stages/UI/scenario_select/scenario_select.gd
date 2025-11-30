@@ -17,7 +17,7 @@ func _ready():
   
   # Set the game state
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
-  Logger.info("ScenarioSelect", "Scenario selection screen loaded")
+  MyLogger.info("ScenarioSelect", "Scenario selection screen loaded")
   
   # Make sure the game is not paused
   get_tree().paused = false
@@ -68,38 +68,38 @@ func _on_scenario_selected(scenario_id: String):
   
   # Check if scenario is unlocked
   if not ScenarioManager.is_scenario_unlocked(scenario_id):
-    Logger.warn("ScenarioSelect", "Attempted to select locked scenario: %s" % scenario_id)
+    MyLogger.warn("ScenarioSelect", "Attempted to select locked scenario: %s" % scenario_id)
     return
   
   # Check if scene path exists
   if scene_path.is_empty():
-    Logger.error("ScenarioSelect", "Scenario %s has no scene path configured" % scenario_id)
+    MyLogger.error("ScenarioSelect", "Scenario %s has no scene path configured" % scenario_id)
     # Show a message to the user
     _show_scenario_unavailable_message(metadata.get("name", scenario_id))
     return
   
   # Set the current scenario in ScenarioManager
-  Logger.info("ScenarioSelect", "Setting scenario: %s (scene: %s)" % [scenario_id, scene_path])
+  MyLogger.info("ScenarioSelect", "Setting scenario: %s (scene: %s)" % [scenario_id, scene_path])
   ScenarioManager.set_current_scenario_id(scenario_id)
   GameManager.set_game_state(GameManager.GameState.PLAYING)
   
   # Always load the main game scene, which will dynamically load the selected scenario
   var game_scene_path = "res://Stages/Game/main/main.tscn"
-  Logger.info("ScenarioSelect", "Loading main game scene: %s" % game_scene_path)
+  MyLogger.info("ScenarioSelect", "Loading main game scene: %s" % game_scene_path)
   
   var error = get_tree().change_scene_to_file(game_scene_path)
   if error != OK:
-    Logger.error("ScenarioSelect", "Failed to load game scene: %s (Error: %d)" % [game_scene_path, error])
+    MyLogger.error("ScenarioSelect", "Failed to load game scene: %s (Error: %d)" % [game_scene_path, error])
 
 ## Show a message when scenario is not yet available
 func _show_scenario_unavailable_message(scenario_name: String):
   # For now, just log it - could be enhanced with a popup dialog in the future
-  Logger.info("ScenarioSelect", "Scenario '%s' is coming soon!" % scenario_name)
+  MyLogger.info("ScenarioSelect", "Scenario '%s' is coming soon!" % scenario_name)
 
 ## Handle back button press - return to main menu
 func _on_back_button_pressed():
-  Logger.info("ScenarioSelect", "Back button pressed - returning to main menu")
+  MyLogger.info("ScenarioSelect", "Back button pressed - returning to main menu")
   var main_menu_path = "res://Stages/UI/main_menu/main_menu.tscn"
   var error = get_tree().change_scene_to_file(main_menu_path)
   if error != OK:
-    Logger.error("ScenarioSelect", "Failed to load main menu: %s (Error: %d)" % [main_menu_path, error])
+    MyLogger.error("ScenarioSelect", "Failed to load main menu: %s (Error: %d)" % [main_menu_path, error])

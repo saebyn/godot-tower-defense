@@ -19,20 +19,20 @@ func set_game_state(new_state: GameState):
     if current_state != new_state:
         current_state = new_state
         game_state_changed.emit(new_state)
-        Logger.info("GameManager", "Game state changed to: %s" % GameState.keys()[new_state])
+        MyLogger.info("GameManager", "Game state changed to: %s" % GameState.keys()[new_state])
 
 func pause_game():
-    Logger.debug("GameManager", "Pausing game...")
+    MyLogger.debug("GameManager", "Pausing game...")
     get_tree().paused = true
     speed_changed.emit(0.0)
 
 func resume_game():
-    Logger.debug("GameManager", "Resuming game...")
+    MyLogger.debug("GameManager", "Resuming game...")
     get_tree().paused = false
     speed_changed.emit(current_speed_multiplier)
 
 func toggle_pause():
-    Logger.debug("GameManager", "Toggling pause state...")
+    MyLogger.debug("GameManager", "Toggling pause state...")
     var tree = get_tree()
     tree.paused = not tree.paused
     speed_changed.emit(0.0 if tree.paused else current_speed_multiplier)
@@ -42,14 +42,14 @@ func is_paused() -> bool:
 
 func set_game_speed(speed_multiplier: float):
     if speed_multiplier <= 0:
-        Logger.error("GameManager", "Speed multiplier must be greater than 0.")
+        MyLogger.error("GameManager", "Speed multiplier must be greater than 0.")
         return
 
     if speed_multiplier != current_speed_multiplier:
         current_speed_multiplier = speed_multiplier
         speed_changed.emit(speed_multiplier)
         Engine.time_scale = speed_multiplier
-        Logger.info("GameManager", "Game speed changed to: %.1fx" % speed_multiplier)
+        MyLogger.info("GameManager", "Game speed changed to: %.1fx" % speed_multiplier)
 
 func get_game_speed() -> float:
     return current_speed_multiplier
@@ -64,7 +64,7 @@ func toggle_in_game_menu():
 
 ## Returns to the main menu from any game state
 func return_to_main_menu():
-  Logger.info("GameManager", "Returning to main menu")
+  MyLogger.info("GameManager", "Returning to main menu")
   resume_game() # Ensure the game is unpaused
   set_game_state(GameState.MAIN_MENU)
   
@@ -75,4 +75,4 @@ func return_to_main_menu():
   var main_menu_path = "res://Stages/UI/main_menu/main_menu.tscn"
   var error = get_tree().change_scene_to_file(main_menu_path)
   if error != OK:
-    Logger.error("GameManager", "Failed to load main menu scene: %s (Error: %d)" % [main_menu_path, error])
+    MyLogger.error("GameManager", "Failed to load main menu scene: %s (Error: %d)" % [main_menu_path, error])

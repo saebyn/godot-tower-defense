@@ -18,15 +18,15 @@ func _ready():
     push_error("StatsManager not found! Make sure it's loaded as an autoload.")
 
 func _on_stats_loaded():
-  Logger.info("StatsDisplay", "Stats loaded from persistent storage")
+  MyLogger.info("StatsDisplay", "Stats loaded from persistent storage")
   _update_display()
 
 func _on_stats_saved():
-  Logger.debug("StatsDisplay", "Stats saved to persistent storage")
+  MyLogger.debug("StatsDisplay", "Stats saved to persistent storage")
 
 func _update_display():
   if not stats_label:
-    Logger.warn("StatsDisplay", "Stats label not found, cannot update display")
+    MyLogger.warn("StatsDisplay", "Stats label not found, cannot update display")
     return
   
   if not StatsManager:
@@ -85,13 +85,13 @@ func _reset_stats_with_confirmation():
   # Simple confirmation by requiring double-tap
   if not get_meta("reset_confirmation", false):
     set_meta("reset_confirmation", true)
-    Logger.info("StatsDisplay", "Press R again to confirm stats reset")
+    MyLogger.info("StatsDisplay", "Press R again to confirm stats reset")
     # Clear confirmation after 3 seconds
     get_tree().create_timer(3.0).timeout.connect(func(): set_meta("reset_confirmation", false))
   else:
     set_meta("reset_confirmation", false)
     StatsManager.reset_stats()
-    Logger.info("StatsDisplay", "All stats have been reset")
+    MyLogger.info("StatsDisplay", "All stats have been reset")
 
 ## Toggle visibility of stats display
 func toggle_visibility():

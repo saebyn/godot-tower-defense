@@ -15,7 +15,7 @@ func _create_mesh_from_obstacle_type() -> void:
   var temp_meshes = temp_obstacle.mesh_instances
 
   if not temp_meshes or temp_meshes.is_empty():
-    Logger.error("ObstaclePreview", "Could not find MeshInstance3D in obstacle scene: %s" % obstacle_type.name)
+    MyLogger.error("ObstaclePreview", "Could not find MeshInstance3D in obstacle scene: %s" % obstacle_type.name)
     temp_obstacle.queue_free()
     return
   
@@ -35,7 +35,7 @@ func _create_mesh_from_obstacle_type() -> void:
   # Clean up temporary obstacle
   temp_obstacle.queue_free()
   
-  Logger.debug("ObstaclePreview", "Created preview for obstacle: %s" % obstacle_type.name)
+  MyLogger.debug("ObstaclePreview", "Created preview for obstacle: %s" % obstacle_type.name)
 
 func set_preview_material(material: Material) -> void:
   if placement_preview_node:

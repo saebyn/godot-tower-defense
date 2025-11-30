@@ -67,7 +67,7 @@ func _connect_signals() -> void:
 
 func _populate_default_hotbar() -> void:
   """Populate hotbar with default obstacles from registry"""
-  Logger.info("Hotbar", "Populating hotbar with default obstacles")
+  MyLogger.info("Hotbar", "Populating hotbar with default obstacles")
   
   # Initialize the slot_obstacle_ids array
   slot_obstacle_ids.clear()
@@ -77,7 +77,7 @@ func _populate_default_hotbar() -> void:
     for i in range(max_slots):
       if i < available.size():
         slot_obstacle_ids.append(available[i].id)
-        Logger.info("Hotbar", "Setting slot %d to %s" % [i, available[i].name])
+        MyLogger.info("Hotbar", "Setting slot %d to %s" % [i, available[i].name])
       else:
         slot_obstacle_ids.append("") # Empty slot
   else:
@@ -131,7 +131,7 @@ func _on_slot_pressed(slot_index: int) -> void:
   var obstacle = _get_obstacle_by_id(obstacle_id)
   
   if obstacle:
-    Logger.info("Hotbar", "Selected obstacle: %s from slot %d" % [obstacle.name, slot_index + 1])
+    MyLogger.info("Hotbar", "Selected obstacle: %s from slot %d" % [obstacle.name, slot_index + 1])
     obstacle_selected.emit(obstacle)
 
 func _on_slot_gui_input(event: InputEvent, slot_index: int) -> void:
@@ -184,25 +184,25 @@ func _show_obstacle_selection_menu(slot_index: int) -> void:
   # Show the popup menu
   obstacle_selection_menu.popup_on_parent(Rect2i(menu_position, Vector2i(200, 0)))
   
-  Logger.info("Hotbar", "Showing obstacle selection menu for slot %d" % (slot_index + 1))
+  MyLogger.info("Hotbar", "Showing obstacle selection menu for slot %d" % (slot_index + 1))
 
 func _on_obstacle_menu_item_selected(id: int) -> void:
   """Handle selection from the obstacle popup menu"""
   if current_configuring_slot < 0:
-    Logger.warn("Hotbar", "No slot is currently being configured")
+    MyLogger.warn("Hotbar", "No slot is currently being configured")
     return
   
   if id == 0:
     # Clear slot option selected
     set_slot_obstacle(current_configuring_slot, null)
-    Logger.info("Hotbar", "Cleared slot %d" % (current_configuring_slot + 1))
+    MyLogger.info("Hotbar", "Cleared slot %d" % (current_configuring_slot + 1))
   else:
     # Obstacle selected
     var available = ObstacleRegistry.available_obstacle_types
     if id <= available.size():
       var selected_obstacle = available[id - 1] # -1 to account for "Clear Slot" at index 0
       set_slot_obstacle(current_configuring_slot, selected_obstacle)
-      Logger.info("Hotbar", "Assigned %s to slot %d" % [selected_obstacle.name, current_configuring_slot + 1])
+      MyLogger.info("Hotbar", "Assigned %s to slot %d" % [selected_obstacle.name, current_configuring_slot + 1])
   
   # Reset the configuring slot
   current_configuring_slot = -1
@@ -210,7 +210,7 @@ func _on_obstacle_menu_item_selected(id: int) -> void:
 func set_slot_obstacle(slot_index: int, obstacle: Resource_ObstacleType) -> void:
   """Set an obstacle for a specific slot"""
   if slot_index < 0 or slot_index >= max_slots:
-    Logger.warn("Hotbar", "Invalid slot index: %d" % slot_index)
+    MyLogger.warn("Hotbar", "Invalid slot index: %d" % slot_index)
     return
   
   # Ensure array is large enough
@@ -247,7 +247,7 @@ func _input(event: InputEvent) -> void:
       _on_slot_pressed(slot_index)
 
 func _on_obstacle_types_updated(added_types: Array[Resource_ObstacleType], removed_types: Array[Resource_ObstacleType]) -> void:
-  Logger.info("Hotbar", "Obstacle types updated. Added: %d, Removed: %d" % [added_types.size(), removed_types.size()])
+  MyLogger.info("Hotbar", "Obstacle types updated. Added: %d, Removed: %d" % [added_types.size(), removed_types.size()])
   
   # Update visuals for all slots to reflect changes
   for i in range(max_slots):

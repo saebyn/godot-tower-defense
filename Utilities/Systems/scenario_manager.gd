@@ -71,7 +71,7 @@ func _ready():
   # Register with SaveManager
   SaveManager.register_system(self)
   
-  Logger.info("ScenarioManager", "Scenario Manager initialized")
+  MyLogger.info("ScenarioManager", "Scenario Manager initialized")
 
 ## Runtime State Management
 
@@ -81,7 +81,7 @@ func set_current_scenario_id(scenario_id: String) -> void:
     current_scenario_id = scenario_id
     current_wave = 0 # Reset wave when changing scenarios
     scenario_started.emit(scenario_id)
-    Logger.info("ScenarioManager", "Current scenario set to: %s" % scenario_id)
+    MyLogger.info("ScenarioManager", "Current scenario set to: %s" % scenario_id)
 
 ## Get the current scenario ID being played
 func get_current_scenario_id() -> String:
@@ -94,14 +94,14 @@ func clear_current_scenario() -> void:
     current_scenario_id = ""
     current_wave = 0
     scenario_ended.emit(old_scenario)
-    Logger.info("ScenarioManager", "Cleared current scenario: %s" % old_scenario)
+    MyLogger.info("ScenarioManager", "Cleared current scenario: %s" % old_scenario)
 
 ## Set the current wave number (within the current scenario)
 func set_current_wave(wave: int) -> void:
   if current_wave != wave:
     current_wave = wave
     wave_changed.emit(current_scenario_id, wave)
-    Logger.info("ScenarioManager", "Wave changed to %d in scenario %s" % [wave, current_scenario_id])
+    MyLogger.info("ScenarioManager", "Wave changed to %d in scenario %s" % [wave, current_scenario_id])
 
 ## Get the current wave number
 func get_current_wave() -> int:
@@ -114,7 +114,7 @@ func mark_scenario_complete(scenario_id: String, time: float = 0.0, score: int =
   if scenario_id not in completed_scenarios:
     completed_scenarios.append(scenario_id)
     scenario_completed.emit(scenario_id)
-    Logger.info("ScenarioManager", "Scenario %s marked as complete" % scenario_id)
+    MyLogger.info("ScenarioManager", "Scenario %s marked as complete" % scenario_id)
     
     # Check if we unlocked the next scenario
     var next_scenario = _get_next_scenario_id(scenario_id)
@@ -125,13 +125,13 @@ func mark_scenario_complete(scenario_id: String, time: float = 0.0, score: int =
   if time > 0.0:
     if scenario_id not in scenario_best_times or time < scenario_best_times[scenario_id]:
       scenario_best_times[scenario_id] = time
-      Logger.info("ScenarioManager", "New best time for %s: %.2f seconds" % [scenario_id, time])
+      MyLogger.info("ScenarioManager", "New best time for %s: %.2f seconds" % [scenario_id, time])
   
   # Update best score (if better or first time)
   if score > 0:
     if scenario_id not in scenario_best_scores or score > scenario_best_scores[scenario_id]:
       scenario_best_scores[scenario_id] = score
-      Logger.info("ScenarioManager", "New best score for %s: %d" % [scenario_id, score])
+      MyLogger.info("ScenarioManager", "New best score for %s: %d" % [scenario_id, score])
 
 ## Check if a scenario is unlocked
 func is_scenario_unlocked(scenario_id: String) -> bool:
@@ -210,7 +210,7 @@ func load_data(data: Dictionary) -> void:
   # Backwards compatibility: migrate from old "completed_levels" key
   if loaded_completed.is_empty() and data.has("completed_levels"):
     loaded_completed = data.get("completed_levels", [])
-    Logger.info("ScenarioManager", "Migrating old save data from 'completed_levels' to 'completed_scenarios'")
+    MyLogger.info("ScenarioManager", "Migrating old save data from 'completed_levels' to 'completed_scenarios'")
   
   completed_scenarios.clear()
   for scenario in loaded_completed:
@@ -220,7 +220,7 @@ func load_data(data: Dictionary) -> void:
   scenario_best_times = data.get("scenario_best_times", data.get("level_best_times", {}))
   scenario_best_scores = data.get("scenario_best_scores", data.get("level_best_scores", {}))
   
-  Logger.info("ScenarioManager", "Scenario progression loaded - Completed: %s" % str(completed_scenarios))
+  MyLogger.info("ScenarioManager", "Scenario progression loaded - Completed: %s" % str(completed_scenarios))
   progression_loaded.emit()
 
 ## Reset to default state (for new game)
@@ -229,7 +229,7 @@ func reset_data() -> void:
   scenario_best_times.clear()
   scenario_best_scores.clear()
   
-  Logger.info("ScenarioManager", "Scenario progression reset")
+  MyLogger.info("ScenarioManager", "Scenario progression reset")
 
 ## Legacy Methods (deprecated, kept for backward compatibility)
 

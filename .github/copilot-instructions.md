@@ -1,13 +1,13 @@
 # GitHub Copilot Instructions for Godot Tower Defense
 
-This document provides comprehensive instructions for GitHub Copilot to work effectively with this Godot 4.4 tower defense game project.
+This document provides comprehensive instructions for GitHub Copilot to work effectively with this Godot 4.5 tower defense game project.
 
 ## Project Overview
 
-This is a **3D tower defense game** built with **Godot 4.4**. The project uses a feature-based folder structure with clear separation of concerns and follows a Template + Config pattern for game entities.
+This is a **3D tower defense game** built with **Godot 4.5**. The project uses a feature-based folder structure with clear separation of concerns and follows a Template + Config pattern for game entities.
 
 ### Key Project Details
-- **Engine**: Godot 4.4
+- **Engine**: Godot 4.5
 - **Project Type**: 3D Tower Defense Game
 - **Main Scene**: `Stages/Game/main/main.tscn`
 - **Total Scenes**: 17 scenes
@@ -19,20 +19,20 @@ This is a **3D tower defense game** built with **Godot 4.4**. The project uses a
 ### ⚠️ CRITICAL: Asset Import Timing
 **NEVER cancel the initial asset import process!** The first-time asset import takes **15+ minutes minimum**. Cancelling this process will break 3D model rendering and require starting over.
 
-### Godot 4.4 Installation
+### Godot 4.5 Installation
 
-1. **Download Godot 4.4** (verified URL):
+1. **Download Godot 4.5** (verified URL):
    ```bash
-   wget https://github.com/godotengine/godot/releases/download/4.4-stable/Godot_v4.4-stable_linux.x86_64.zip
-   unzip Godot_v4.4-stable_linux.x86_64.zip
-   chmod +x Godot_v4.4-stable_linux.x86_64
-   mv Godot_v4.4-stable_linux.x86_64 ./godot
+   wget https://github.com/godotengine/godot/releases/download/4.5-stable/Godot_v4.5-stable_linux.x86_64.zip
+   unzip Godot_v4.5-stable_linux.x86_64.zip
+   chmod +x Godot_v4.5-stable_linux.x86_64
+   mv Godot_v4.5-stable_linux.x86_64 ./godot
    ```
 
 2. **Verify Installation**:
    ```bash
    ./godot --version
-   # Expected output: 4.4.stable.official
+   # Expected output: 4.5.stable.official
    ```
 
 ### Project Setup
@@ -155,13 +155,13 @@ The project uses a Template + Config architecture:
 
 ### Autoloaded Systems
 The project uses several autoloaded singletons for global state management:
-- **Logger**: Comprehensive logging with scope-based filtering (`Utilities/Systems/logger.gd`)
+- **MyLogger**: Comprehensive logging with scope-based filtering (`Utilities/Systems/logger.gd`)
 - **CurrencyManager**: Player currency tracking and transactions (`Utilities/Systems/currency_manager.gd`)
 - **GameManager**: Game state transitions and high-level coordination (`Utilities/Systems/game_manager.gd`)
 
 Access these systems from anywhere in the codebase:
 ```gdscript
-Logger.info("System", "Message")
+MyLogger.info("System", "Message")
 CurrencyManager.earn_scrap(10)
 GameManager.set_game_state(GameManager.GameState.IN_GAME_MENU)
 ```
@@ -232,7 +232,7 @@ func _on_game_state_changed(new_state: GameManager.GameState):
    - Scene loading: < 1 second (normal)
 
 4. **Autoload System Issues**:
-   - If Logger, CurrencyManager, or GameManager not found: Check project.godot autoload section
+   - If MyLogger, CurrencyManager, or GameManager not found: Check project.godot autoload section
    - Verify singleton scripts are properly accessible with their class names
    - Restart Godot if autoload changes don't take effect
 
@@ -272,4 +272,4 @@ func _on_game_state_changed(new_state: GameManager.GameState):
 4. **Class Registration**: Happens during asset import
 5. **3D Models**: Require complete import for rendering
 
-This project requires patience during setup but provides a solid foundation for 3D tower defense development with Godot 4.4.
+This project requires patience during setup but provides a solid foundation for 3D tower defense development with Godot 4.5.

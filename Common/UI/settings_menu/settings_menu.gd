@@ -216,17 +216,17 @@ func _on_apply_pressed() -> void:
     SettingsManager.apply_video_settings()
     
     # Show confirmation dialog for video settings
-    Logger.info("SettingsMenu", "Video settings changed, showing confirmation dialog")
+    MyLogger.info("SettingsMenu", "Video settings changed, showing confirmation dialog")
     video_confirm_dialog.show_dialog()
   else:
     # No video changes, just save and close
     SettingsManager.save_settings()
-    Logger.info("SettingsMenu", "Settings applied and saved")
+    MyLogger.info("SettingsMenu", "Settings applied and saved")
     hide_menu()
     closed.emit()
 
 func _on_cancel_pressed() -> void:
-  Logger.debug("SettingsMenu", "Settings cancelled")
+  MyLogger.debug("SettingsMenu", "Settings cancelled")
   _restore_original_keybinds()
   _restore_original_audio_settings()
   hide_menu()
@@ -235,7 +235,7 @@ func _on_cancel_pressed() -> void:
 func _on_video_settings_confirmed() -> void:
   # User confirmed the video settings, save everything
   SettingsManager.save_settings()
-  Logger.info("SettingsMenu", "Video settings confirmed and saved")
+  MyLogger.info("SettingsMenu", "Video settings confirmed and saved")
   hide_menu()
   closed.emit()
 
@@ -256,7 +256,7 @@ func _on_video_settings_reverted() -> void:
   vsync_check.button_pressed = temp_vsync
   resolution_option.selected = temp_resolution
   
-  Logger.info("SettingsMenu", "Video settings reverted to previous state")
+  MyLogger.info("SettingsMenu", "Video settings reverted to previous state")
   
   # Audio settings were already applied, so save those
   SettingsManager.save_settings()
@@ -296,7 +296,7 @@ func _restore_original_keybinds() -> void:
       if child.has_method("_update_display"):
         child._update_display()
   
-  Logger.debug("SettingsMenu", "Keybinds restored to original state")
+  MyLogger.debug("SettingsMenu", "Keybinds restored to original state")
 
 func _restore_original_audio_settings() -> void:
   SettingsManager.master_volume = previous_master_volume

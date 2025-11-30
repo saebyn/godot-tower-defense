@@ -1,7 +1,7 @@
 # Tech Tree UI Manual Testing Guide
 
 ## Prerequisites
-- Godot 4.4 must be installed
+- Godot 4.5 must be installed
 - Project must be fully imported (run `./godot --headless --import --path .` first)
 
 ## Test Scenarios

@@ -52,7 +52,7 @@ func test_scenario_handles_missing_scenario_id_gracefully():
   var scenario_id = ScenarioManager.get_current_scenario_id()
   if scenario_id.is_empty():
     # Level should log error but continue to victory state
-    Logger.error("Test", "Simulating error: no scenario ID set")
+    MyLogger.error("Test", "Simulating error: no scenario ID set")
   else:
     ScenarioManager.mark_scenario_complete(scenario_id)
   

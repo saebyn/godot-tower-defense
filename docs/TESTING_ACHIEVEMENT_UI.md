@@ -1,7 +1,7 @@
 # Testing the Achievement UI
 
 ## Prerequisites
-- Godot 4.4 installed
+- Godot 4.5 installed
 - Repository cloned with submodules (`git submodule update --init --recursive`)
 - Assets imported (run `./godot --headless --import --path .` and wait 15+ minutes)
 
@@ -84,7 +84,7 @@ Expected: All tests pass with green checkmarks
 - [ ] No hardcoded values where configuration should be used
 - [ ] Consistent with existing UI component patterns
 - [ ] Proper error handling for edge cases
-- [ ] Logger statements for debugging
+- [ ] MyLogger statements for debugging
 - [ ] Comments for complex logic
 
 ## Expected Visual Behavior

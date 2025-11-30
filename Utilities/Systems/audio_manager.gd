@@ -24,11 +24,11 @@ func play_sound(audio_player: AudioStreamPlayer, effect: SoundEffect) -> void:
   if effect in sound_effects:
     var samples = sound_effects[effect]
     if samples.is_empty():
-      Logger.warn("AudioManager", "No samples configured for effect %s" % str(effect))
+      MyLogger.warn("AudioManager", "No samples configured for effect %s" % str(effect))
       return
     var random_sample_index = randi() % samples.size()
     audio_player.stream = samples[random_sample_index]
     audio_player.pitch_scale = 0.5 + randf() * 0.5 # Randomize pitch slightly
     audio_player.play()
   else:
-    Logger.warn("AudioManager", "Sound effect %s not found!" % str(effect))
+    MyLogger.warn("AudioManager", "Sound effect %s not found!" % str(effect))

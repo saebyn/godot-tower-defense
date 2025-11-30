@@ -28,19 +28,19 @@ func _ready():
     health.damaged.connect(_on_health_damaged)
 
 func _on_died(damage_source: String = "unknown") -> void:
-  Logger.info("Obstacle", "Obstacle destroyed by: %s" % damage_source)
+  MyLogger.info("Obstacle", "Obstacle destroyed by: %s" % damage_source)
   queue_free()
 
 func _on_health_damaged(amount: int, hitpoints: int, _source: String) -> void:
-  Logger.debug("Obstacle.Combat", "Obstacle took %d damage. Remaining HP: %d" % [amount, hitpoints])
+  MyLogger.debug("Obstacle.Combat", "Obstacle took %d damage. Remaining HP: %d" % [amount, hitpoints])
 
 func place(navigation_region: NavigationRegion3D) -> void:
-    Logger.info("Obstacle", "place() called. obstacle_type: %s" % ("null" if not obstacle_type else obstacle_type.name))
+    MyLogger.info("Obstacle", "place() called. obstacle_type: %s" % ("null" if not obstacle_type else obstacle_type.name))
     if not is_inside_tree():
-        Logger.error("Obstacle", "PlaceableObstacle must be added to the scene tree before placing.")
+        MyLogger.error("Obstacle", "PlaceableObstacle must be added to the scene tree before placing.")
         return
 
-    Logger.info("Obstacle", "Placing obstacle at: %s" % global_position)
+    MyLogger.info("Obstacle", "Placing obstacle at: %s" % global_position)
     # Here you would implement the logic to finalize the placement of the obstacle
     var obstacle := NavigationObstacle3D.new()
 
@@ -67,20 +67,20 @@ func place(navigation_region: NavigationRegion3D) -> void:
 
 ## Remove this obstacle and return currency based on remaining health
 func remove() -> int:
-  Logger.info("Obstacle", "Attempting to remove obstacle. obstacle_type: %s" % ("null" if not obstacle_type else obstacle_type.name))
+  MyLogger.info("Obstacle", "Attempting to remove obstacle. obstacle_type: %s" % ("null" if not obstacle_type else obstacle_type.name))
   
   # If obstacle_type is null, try to find it by matching the scene
   if not obstacle_type and ObstacleRegistry:
-    Logger.info("Obstacle", "obstacle_type is null, attempting to find it in registry...")
+    MyLogger.info("Obstacle", "obstacle_type is null, attempting to find it in registry...")
     var scene_path = scene_file_path
     for obstacle_resource in ObstacleRegistry.available_obstacle_types:
       if obstacle_resource.scene and obstacle_resource.scene.resource_path == scene_path:
         obstacle_type = obstacle_resource
-        Logger.info("Obstacle", "Found matching obstacle_type: %s" % obstacle_type.name)
+        MyLogger.info("Obstacle", "Found matching obstacle_type: %s" % obstacle_type.name)
         break
   
   if not obstacle_type:
-    Logger.warn("Obstacle", "Cannot remove obstacle: No obstacle type data")
+    MyLogger.warn("Obstacle", "Cannot remove obstacle: No obstacle type data")
     return 0
   
   # Calculate refund based on remaining health percentage
@@ -91,7 +91,7 @@ func remove() -> int:
   # Refund is based on remaining health (damaged obstacles give less refund)
   var refund_amount = int(obstacle_type.cost * health_percentage)
   
-  Logger.info("Obstacle", "Removing obstacle. Health: %d%%, Refund: %d/%d" % [
+  MyLogger.info("Obstacle", "Removing obstacle. Health: %d%%, Refund: %d/%d" % [
     health_percentage * 100, refund_amount, obstacle_type.cost
   ])
   

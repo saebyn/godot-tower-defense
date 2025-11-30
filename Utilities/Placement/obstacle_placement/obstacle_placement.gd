@@ -103,21 +103,21 @@ func _is_placement_valid(target_position: Vector3) -> bool:
   var result = _validate_placement(target_position)
   # TODO enhance feedback to user
   if not result.is_valid:
-    Logger.debug("Placement", "Invalid placement: %s" % result.error_message)
+    MyLogger.debug("Placement", "Invalid placement: %s" % result.error_message)
     # Debug information about why placement failed
     match result.error:
       Utility_PlacementResult.ValidationError.NO_PLACEABLE_OBSTACLE:
-        Logger.debug("Placement", "  - No placeable obstacle selected")
+        MyLogger.debug("Placement", "  - No placeable obstacle selected")
       Utility_PlacementResult.ValidationError.OUTSIDE_NAVIGATION_REGION:
-        Logger.debug("Placement", "  - Outside navigation region")
+        MyLogger.debug("Placement", "  - Outside navigation region")
       Utility_PlacementResult.ValidationError.OBSTACLE_COLLISION:
-        Logger.debug("Placement", "  - Collision with existing obstacle")
+        MyLogger.debug("Placement", "  - Collision with existing obstacle")
       Utility_PlacementResult.ValidationError.NO_TERRAIN_SUPPORT:
-        Logger.debug("Placement", "  - Invalid terrain support")
+        MyLogger.debug("Placement", "  - Invalid terrain support")
       Utility_PlacementResult.ValidationError.INSUFFICIENT_CLEARANCE:
-        Logger.debug("Placement", "  - Insufficient clearance")
+        MyLogger.debug("Placement", "  - Insufficient clearance")
       Utility_PlacementResult.ValidationError.INSUFFICIENT_FUNDS:
-        Logger.debug("Placement", "  - Insufficient funds")
+        MyLogger.debug("Placement", "  - Insufficient funds")
 
   return result.is_valid
 
@@ -206,15 +206,15 @@ func _has_sufficient_clearance(target_position: Vector3) -> bool:
   return space_state.intersect_shape(query).size() == 0
 
 func _on_obstacle_spawn_requested(obstacle: Resource_ObstacleType) -> void:
-  Logger.info("Placement", "Spawn obstacle button pressed for: %s" % obstacle.name)
+  MyLogger.info("Placement", "Spawn obstacle button pressed for: %s" % obstacle.name)
 
   if busy:
-    Logger.info("Placement", "Already placing an obstacle, cancelling previous placement")
+    MyLogger.info("Placement", "Already placing an obstacle, cancelling previous placement")
     _cancel_obstacle_placement()
 
   _place_obstacle_type = obstacle
   _preview = ObstaclePreviewScene.new(obstacle)
-  Logger.info("Placement", "Created preview for obstacle: %s" % obstacle.name)
+  MyLogger.info("Placement", "Created preview for obstacle: %s" % obstacle.name)
   raycast.enabled = true
   add_child(_preview)
 
@@ -231,7 +231,7 @@ func _place_obstacle() -> void:
   # Deduct cost
   if not CurrencyManager.spend_scrap(_place_obstacle_type.cost):
     # This should not happen due to prior validation, but just in case
-    Logger.error("Placement", "Cannot place obstacle: Insufficient funds")
+    MyLogger.error("Placement", "Cannot place obstacle: Insufficient funds")
     return
   
   # Store preview position and rotation before cleanup
@@ -248,8 +248,8 @@ func _place_obstacle() -> void:
   real_obstacle.rotation = preview_rotation
   real_obstacle.obstacle_type = _place_obstacle_type
   
-  Logger.info("Placement", "Setting obstacle_type to: %s (cost: %d)" % [_place_obstacle_type.name, _place_obstacle_type.cost])
-  Logger.info("Placement", "Obstacle now has obstacle_type: %s" % ("null" if not real_obstacle.obstacle_type else real_obstacle.obstacle_type.name))
+  MyLogger.info("Placement", "Setting obstacle_type to: %s (cost: %d)" % [_place_obstacle_type.name, _place_obstacle_type.cost])
+  MyLogger.info("Placement", "Obstacle now has obstacle_type: %s" % ("null" if not real_obstacle.obstacle_type else real_obstacle.obstacle_type.name))
   
   # Add to scene and place
   get_parent().add_child(real_obstacle)

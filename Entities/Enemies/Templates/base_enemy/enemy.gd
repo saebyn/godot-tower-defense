@@ -43,7 +43,7 @@ func _ready():
 # Resource_EnemyType
 func load_resource(resource: Resource_EnemyType) -> void:
   ready.connect(func() -> void:
-    Logger.debug("Enemy", "Loading enemy resource: %s" % resource.name)
+    MyLogger.debug("Enemy", "Loading enemy resource: %s" % resource.name)
     # Override properties from resource
     movement_speed = resource.speed
     target_desired_distance = resource.target_desired_distance
@@ -82,11 +82,11 @@ func _choose_target():
     attack.cancel()
     # No targets available, stop the agent.
     navigation_agent.set_target_position(global_position)
-    Logger.trace("Enemy", "No targets available.")
+    MyLogger.trace("Enemy", "No targets available.")
   else:
     # TODO : Implement logic to choose a target based on some criteria.
     current_target = targets.pick_random()
-    Logger.debug("Enemy", "Chose new target: %s" % current_target.name)
+    MyLogger.debug("Enemy", "Chose new target: %s" % current_target.name)
     navigation_agent.set_target_position(current_target.global_position)
 
 
@@ -155,29 +155,29 @@ func _check_and_set_fallback_target() -> void:
   if navigation_agent.is_target_reachable():
     # Path is fine, clear any fallback
     fallback_obstacle_target = null
-    Logger.trace("Enemy.Navigation", "Path to target is reachable")
+    MyLogger.trace("Enemy.Navigation", "Path to target is reachable")
   else:
     # Path is blocked, find obstacle to attack
-    Logger.info("Enemy.Navigation", "Cannot reach target, searching for blocking obstacle")
+    MyLogger.info("Enemy.Navigation", "Cannot reach target, searching for blocking obstacle")
     var blocking_obstacle = _find_obstacle_closest_to_target()
     
     if blocking_obstacle:
       fallback_obstacle_target = blocking_obstacle
       navigation_agent.set_target_position(blocking_obstacle.global_position)
-      Logger.info("Enemy.Navigation", "Found blocking obstacle, switching to fallback target")
+      MyLogger.info("Enemy.Navigation", "Found blocking obstacle, switching to fallback target")
     else:
-      Logger.warn("Enemy.Navigation", "No path to target and no obstacles found to attack!")
+      MyLogger.warn("Enemy.Navigation", "No path to target and no obstacles found to attack!")
 
 
 func _attack_target():
   if not current_target:
-    Logger.trace("Enemy", "No current target to attack.")
+    MyLogger.trace("Enemy", "No current target to attack.")
     _choose_target()
     if not current_target:
       return
   
   if not current_target.is_in_group(target_group):
-    Logger.warn("Enemy", "Current target is not in the target group.")
+    MyLogger.warn("Enemy", "Current target is not in the target group.")
     _choose_target()
     if not current_target:
       return
@@ -188,13 +188,13 @@ func _attack_target():
     
     # Attack the fallback obstacle if in range
     if distance_to_fallback <= obstacle_attack_range:
-      Logger.debug("Enemy", "Attacking fallback obstacle at distance: %f" % distance_to_fallback)
+      MyLogger.debug("Enemy", "Attacking fallback obstacle at distance: %f" % distance_to_fallback)
       attack.perform_attack(fallback_obstacle_target)
       return
   else:
     # Fallback target was destroyed or is invalid, recheck path
     if fallback_obstacle_target != null:
-      Logger.info("Enemy.Navigation", "Fallback obstacle destroyed, rechecking path to target")
+      MyLogger.info("Enemy.Navigation", "Fallback obstacle destroyed, rechecking path to target")
       fallback_obstacle_target = null
       navigation_agent.set_target_position(current_target.global_position)
       _check_and_set_fallback_target()
@@ -208,7 +208,7 @@ func _attack_target():
   # If no targets in range, check for nearby obstacles to attack
   var nearby_obstacle = _find_nearest_obstacle_in_range()
   if nearby_obstacle:
-    Logger.trace("Enemy", "Attacking nearby obstacle at distance: %f" % global_position.distance_to(nearby_obstacle.global_position))
+    MyLogger.trace("Enemy", "Attacking nearby obstacle at distance: %f" % global_position.distance_to(nearby_obstacle.global_position))
     attack.perform_attack(nearby_obstacle)
     return
 
@@ -226,7 +226,7 @@ func _process(_delta: float) -> void:
 func _physics_process(_delta):
   # Do not query when the map has never synchronized and is empty.
   if NavigationServer3D.map_get_iteration_id(navigation_agent.get_navigation_map()) == 0:
-    Logger.debug("Enemy.Navigation", "Navigation map is empty, cannot navigate.")
+    MyLogger.debug("Enemy.Navigation", "Navigation map is empty, cannot navigate.")
     return
 
   _update_navigation()
@@ -239,7 +239,7 @@ func _update_navigation():
     # Check if we reached the fallback obstacle or if we need to recheck path
     if fallback_obstacle_target and is_instance_valid(fallback_obstacle_target):
       # We've reached the fallback obstacle, stay here and attack it
-      Logger.trace("Enemy.Navigation", "Reached fallback obstacle target.")
+      MyLogger.trace("Enemy.Navigation", "Reached fallback obstacle target.")
     else:
       # Check if we can now reach the main target
       if current_target:
@@ -260,7 +260,7 @@ func _update_navigation():
 
 
 func _on_died(damage_source: String = "unknown"):
-  Logger.info("Enemy", "Enemy (%s) died from %s, removing from scene" % [enemy_type, damage_source])
+  MyLogger.info("Enemy", "Enemy (%s) died from %s, removing from scene" % [enemy_type, damage_source])
   
   # Track the defeat in stats system
   if StatsManager:
@@ -277,4 +277,4 @@ func _on_died(damage_source: String = "unknown"):
   queue_free()
 
 func _on_health_damaged(amount: int, hitpoints: int, damage_source: String = "unknown") -> void:
-  Logger.debug("Enemy.Combat", "Enemy (%s) took %d damage from %s. Remaining HP: %d" % [enemy_type, amount, damage_source, hitpoints])
+  MyLogger.debug("Enemy.Combat", "Enemy (%s) took %d damage from %s. Remaining HP: %d" % [enemy_type, amount, damage_source, hitpoints])

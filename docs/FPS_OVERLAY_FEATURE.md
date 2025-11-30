@@ -45,7 +45,7 @@ Both overlays can be shown simultaneously if desired.
 - Has high z-index (100) to ensure it's always on top of other UI elements
 - Background has semi-transparent black (0, 0, 0, 0.7) for readability
 - Minimal performance impact - only processes when visible
-- Compatible with Godot 4.4
+- Compatible with Godot 4.5
 
 ## Key Benefits
 1. **Performance Monitoring**: Quickly check game performance without external tools

@@ -48,30 +48,30 @@ func _load_scenario() -> void:
     # Default to scenario_1 if no scenario is set
     scenario_id = "scenario_1"
     ScenarioManager.set_current_scenario_id(scenario_id)
-    Logger.info("Main", "No scenario set, defaulting to: %s" % scenario_id)
+    MyLogger.info("Main", "No scenario set, defaulting to: %s" % scenario_id)
   
   # Get scenario metadata
   var metadata = ScenarioManager.get_scenario_metadata(scenario_id)
   var scene_path = metadata.get("scene_path", "")
   
   if scene_path.is_empty():
-    Logger.error("Main", "Scenario %s has no scene path configured" % scenario_id)
+    MyLogger.error("Main", "Scenario %s has no scene path configured" % scenario_id)
     return
   
   # Check if there's already a scenario loaded (from the editor)
   # Look for any existing child that's a Stage_Scenario
   for child in get_children():
     if child is Stage_Scenario:
-      Logger.info("Main", "Removing existing scenario: %s" % child.name)
+      MyLogger.info("Main", "Removing existing scenario: %s" % child.name)
       remove_child(child)
       child.queue_free()
   
   # Load the scenario scene
-  Logger.info("Main", "Loading scenario: %s from %s" % [scenario_id, scene_path])
+  MyLogger.info("Main", "Loading scenario: %s from %s" % [scenario_id, scene_path])
   var scenario_scene = load(scene_path)
   
   if scenario_scene == null:
-    Logger.error("Main", "Failed to load scenario scene: %s" % scene_path)
+    MyLogger.error("Main", "Failed to load scenario scene: %s" % scene_path)
     return
   
   # Instantiate and add the scenario
@@ -88,19 +88,19 @@ func _load_scenario() -> void:
   # Rebake navigation mesh after loading scenario
   rebake_navigation_mesh()
   
-  Logger.info("Main", "Scenario loaded successfully: %s" % scenario_id)
+  MyLogger.info("Main", "Scenario loaded successfully: %s" % scenario_id)
 
 
 func rebake_navigation_mesh():
-  Logger.info("Navigation", "Rebaking navigation mesh...")
+  MyLogger.info("Navigation", "Rebaking navigation mesh...")
   if navigation_region and navigation_region.navigation_mesh:
     if navigation_region.is_baking():
       # Wait and retry if already baking
-      Logger.debug("Navigation", "Navigation mesh is already baking, waiting...")
+      MyLogger.debug("Navigation", "Navigation mesh is already baking, waiting...")
       await navigation_region.bake_finished
 
     navigation_region.bake_navigation_mesh()
-    Logger.info("Navigation", "Navigation mesh rebaked!")
+    MyLogger.info("Navigation", "Navigation mesh rebaked!")
 
 func _start_navigation_rebake_timer() -> void:
   var timer = Timer.new()
@@ -133,7 +133,7 @@ func _handle_enemy_click(click_position: Vector2):
   
   if enemy_raycast.is_colliding():
     var collider = enemy_raycast.get_collider()
-    Logger.debug("Player", "Clicked on: %s" % collider.name)
+    MyLogger.debug("Player", "Clicked on: %s" % collider.name)
     # If the collider is an enemy, perform an attack
     attack.perform_attack(collider)
   
@@ -157,14 +157,14 @@ func _handle_obstacle_remove_click(click_position: Vector2):
   
   if obstacle_raycast.is_colliding():
     var collider = obstacle_raycast.get_collider()
-    Logger.info("Player", "Right-clicked on: %s (type: %s)" % [collider.name, collider.get_class()])
+    MyLogger.info("Player", "Right-clicked on: %s (type: %s)" % [collider.name, collider.get_class()])
     
     # Check if the collider is a Entity_PlaceableObstacle
     if collider is Entity_PlaceableObstacle:
       var obstacle = collider as Entity_PlaceableObstacle
-      Logger.info("Player", "Confirmed Entity_PlaceableObstacle, calling remove()")
+      MyLogger.info("Player", "Confirmed Entity_PlaceableObstacle, calling remove()")
       var refund = obstacle.remove()
-      Logger.info("Player", "Removed obstacle and recovered %d scrap" % refund)
+      MyLogger.info("Player", "Removed obstacle and recovered %d scrap" % refund)
       
       # Show UI feedback
       if ui and ui.has_method("show_obstacle_removed"):
@@ -173,9 +173,9 @@ func _handle_obstacle_remove_click(click_position: Vector2):
       # Rebake navigation mesh after removal
       rebake_navigation_mesh()
     else:
-      Logger.info("Player", "Clicked object is not a removable obstacle")
+      MyLogger.info("Player", "Clicked object is not a removable obstacle")
   else:
-    Logger.info("Player", "Right-click raycast did not hit anything")
+    MyLogger.info("Player", "Right-click raycast did not hit anything")
   
   # Disable the obstacle raycast after use
   obstacle_raycast.enabled = false

@@ -14,7 +14,7 @@ Successfully implemented the TechTreeManager autoload singleton that manages tec
 1. **`Utilities/Systems/tech_tree_manager.gd`** (6,487 bytes)
    - Main autoload singleton
    - 197 lines of code
-   - Full integration with Logger and CurrencyManager
+   - Full integration with MyLogger and CurrencyManager
 
 2. **`Config/TechTree/tech_node_resource.gd`** (1,651 bytes)
    - Resource class for tech tree nodes
@@ -43,7 +43,7 @@ Successfully implemented the TechTreeManager autoload singleton that manages tec
 - ✅ **Mutual Exclusivity**: Locks alternative tech paths when choice is made
 - ✅ **Branch Completion**: Tracks completion status for branch-gated techs
 - ✅ **Signal System**: Emits tech_unlocked and tech_locked signals
-- ✅ **Logger Integration**: All operations logged with appropriate levels
+- ✅ **MyLogger Integration**: All operations logged with appropriate levels
 
 ### TechNodeResource Fields
 ```gdscript
@@ -96,7 +96,7 @@ Successfully implemented the TechTreeManager autoload singleton that manages tec
 ### Test Results
 ```
 Scripts:  4
-Tests:    31 (18 TechTreeManager + 5 Logger + 6 CurrencyManager + 2 Integration)
+Tests:    31 (18 TechTreeManager + 5 MyLogger + 6 CurrencyManager + 2 Integration)
 Passing:  31
 Asserts:  51
 Time:     0.019s
@@ -104,12 +104,12 @@ Status:   All tests passed ✅
 ```
 
 ### Manual Verification
-- ✅ Godot 4.4 asset import successful
+- ✅ Godot 4.5 asset import successful
 - ✅ Script class registration working
 - ✅ Autoload initialization working
 - ✅ Tech nodes loading correctly
 - ✅ CurrencyManager integration working
-- ✅ Logger integration working
+- ✅ MyLogger integration working
 
 ## Integration Points
 
@@ -119,7 +119,7 @@ Status:   All tests passed ✅
    - `CurrencyManager.get_scrap()` - Scrap cost validation
    - `CurrencyManager.spend_scrap()` - Scrap deduction
 
-2. **Logger** - Comprehensive logging
+2. **MyLogger** - Comprehensive logging
    - DEBUG: Validation failures, requirement checks
    - INFO: Tech unlocks, locks, initialization, resets
    - WARN: Invalid operations, missing resources
@@ -161,7 +161,7 @@ Status:   All tests passed ✅
 - Easy to edit in Godot editor
 - No code changes needed for new techs or balance adjustments
 
-### 5. Logger Integration
+### 5. MyLogger Integration
 - All operations logged with appropriate scope: "TechTreeManager"
 - Helps with debugging and gameplay flow understanding
 - Different log levels for different severity
@@ -242,7 +242,7 @@ All acceptance criteria from issue #116 have been met:
   - ✅ Lock mutually exclusive techs
   - ✅ Emit tech_unlocked signal
 - ✅ Emit signals: `tech_unlocked`, `tech_locked`
-- ✅ Add integration with Logger for all operations
+- ✅ Add integration with MyLogger for all operations
 
 ## Conclusion
 

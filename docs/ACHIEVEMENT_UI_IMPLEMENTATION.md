@@ -171,5 +171,5 @@ The implementation follows the project's existing patterns:
 - Signal-based communication with AchievementManager
 - Proper cleanup and queue_free() usage
 - GutTest-based unit tests
-- Logger usage for debugging
+- MyLogger usage for debugging
 - Integration with existing autoload systems (AchievementManager, AudioManager)

@@ -50,4 +50,4 @@ func _update_display() -> void:
 ## Toggle visibility of FPS overlay
 func toggle_visibility() -> void:
   visible = not visible
-  Logger.info("FpsOverlay", "FPS overlay toggled: %s" % ("visible" if visible else "hidden"))
+  MyLogger.info("FpsOverlay", "FPS overlay toggled: %s" % ("visible" if visible else "hidden"))

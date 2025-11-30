@@ -16,7 +16,7 @@ var achievement_list_ui = null
 func _ready():
   # Set the initial game state when the main menu loads
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
-  Logger.info("MainMenu", "Main menu loaded")
+  MyLogger.info("MainMenu", "Main menu loaded")
   
   # Ensure a save slot is loaded (loads existing save or creates new game)
   # This must happen before clearing scenario state
@@ -38,7 +38,7 @@ func _setup_settings_menu():
   settings_menu.closed.connect(_on_settings_menu_closed)
 
 func _on_start_button_pressed():
-  Logger.info("MainMenu", "Start button pressed")
+  MyLogger.info("MainMenu", "Start button pressed")
   
   # Check how many scenarios are unlocked
   var unlocked_scenarios: Array[String] = []
@@ -51,27 +51,27 @@ func _on_start_button_pressed():
   # Otherwise show scenario selection screen
   if unlocked_scenarios.size() == 1:
     var scenario_id = unlocked_scenarios[0]
-    Logger.info("MainMenu", "Only one scenario unlocked (%s) - starting directly" % scenario_id)
+    MyLogger.info("MainMenu", "Only one scenario unlocked (%s) - starting directly" % scenario_id)
     _start_specific_scenario(scenario_id)
   elif unlocked_scenarios.size() > 1:
-    Logger.info("MainMenu", "Multiple scenarios unlocked - showing scenario select")
+    MyLogger.info("MainMenu", "Multiple scenarios unlocked - showing scenario select")
     _show_scenario_select()
   else:
     # Fallback: This should never happen as scenario_1 is always unlocked,
     # but handle gracefully just in case
-    Logger.warn("MainMenu", "No scenarios unlocked - starting scenario_1 as fallback")
+    MyLogger.warn("MainMenu", "No scenarios unlocked - starting scenario_1 as fallback")
     _start_specific_scenario("scenario_1")
 
 func _on_settings_button_pressed():
-  Logger.info("MainMenu", "Settings button pressed")
+  MyLogger.info("MainMenu", "Settings button pressed")
   if settings_menu:
     settings_menu.show_menu()
 
 func _on_settings_menu_closed():
-  Logger.debug("MainMenu", "Settings menu closed")
+  MyLogger.debug("MainMenu", "Settings menu closed")
 
 func _on_tech_tree_button_pressed():
-  Logger.info("MainMenu", "Tech Tree button pressed")
+  MyLogger.info("MainMenu", "Tech Tree button pressed")
   _show_tech_tree()
 
 func _show_tech_tree():
@@ -84,11 +84,11 @@ func _show_tech_tree():
     tech_tree_ui.visible = true
 
 func _on_tech_tree_closed():
-  Logger.debug("MainMenu", "Tech tree closed")
+  MyLogger.debug("MainMenu", "Tech tree closed")
   tech_tree_ui = null
 
 func _on_achievements_button_pressed():
-  Logger.info("MainMenu", "Achievements button pressed")
+  MyLogger.info("MainMenu", "Achievements button pressed")
   _show_achievements()
 
 func _show_achievements():
@@ -101,15 +101,15 @@ func _show_achievements():
     achievement_list_ui.visible = true
 
 func _on_achievement_list_closed():
-  Logger.debug("MainMenu", "Achievement list closed")
+  MyLogger.debug("MainMenu", "Achievement list closed")
   achievement_list_ui = null
 
 func _on_load_game_button_pressed():
-  Logger.info("MainMenu", "Load Game button pressed - transitioning to save slot selection")
+  MyLogger.info("MainMenu", "Load Game button pressed - transitioning to save slot selection")
   _show_save_slot_selection()
 
 func _on_exit_button_pressed():
-  Logger.info("MainMenu", "Exit button pressed - quitting game")
+  MyLogger.info("MainMenu", "Exit button pressed - quitting game")
   get_tree().quit()
 
 ## Starts a specific scenario by loading the game scene
@@ -119,27 +119,27 @@ func _start_specific_scenario(scenario_id: String):
   
   # Load the main game scene
   var game_scene_path = "res://Stages/Game/main/main.tscn"
-  Logger.info("MainMenu", "Starting scenario %s - loading game scene: %s" % [scenario_id, game_scene_path])
+  MyLogger.info("MainMenu", "Starting scenario %s - loading game scene: %s" % [scenario_id, game_scene_path])
   
   # Change to the game scene
   var error = get_tree().change_scene_to_file(game_scene_path)
   if error != OK:
-    Logger.error("MainMenu", "Failed to load game scene: %s (Error: %d)" % [game_scene_path, error])
+    MyLogger.error("MainMenu", "Failed to load game scene: %s (Error: %d)" % [game_scene_path, error])
 
 ## Show scenario selection screen
 func _show_scenario_select():
   var scenario_select_path = "res://Stages/UI/scenario_select/scenario_select.tscn"
-  Logger.info("MainMenu", "Loading scenario select scene: %s" % scenario_select_path)
+  MyLogger.info("MainMenu", "Loading scenario select scene: %s" % scenario_select_path)
   
   var error = get_tree().change_scene_to_file(scenario_select_path)
   if error != OK:
-    Logger.error("MainMenu", "Failed to load scenario select scene: %s (Error: %d)" % [scenario_select_path, error])
+    MyLogger.error("MainMenu", "Failed to load scenario select scene: %s (Error: %d)" % [scenario_select_path, error])
 
 ## Show save slot selection screen
 func _show_save_slot_selection():
   var save_slot_path = "res://Stages/UI/save_slot_selection/save_slot_selection.tscn"
-  Logger.info("MainMenu", "Loading save slot selection scene: %s" % save_slot_path)
+  MyLogger.info("MainMenu", "Loading save slot selection scene: %s" % save_slot_path)
   
   var error = get_tree().change_scene_to_file(save_slot_path)
   if error != OK:
-    Logger.error("MainMenu", "Failed to load save slot selection scene: %s (Error: %d)" % [save_slot_path, error])
+    MyLogger.error("MainMenu", "Failed to load save slot selection scene: %s (Error: %d)" % [save_slot_path, error])

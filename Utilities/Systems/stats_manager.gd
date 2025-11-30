@@ -36,7 +36,7 @@ signal stats_loaded()
 signal stats_saved()
 
 func _ready():
-  Logger.info("StatsManager", "Stats tracking system initialized")
+  MyLogger.info("StatsManager", "Stats tracking system initialized")
   
   # Register with SaveManager
   SaveManager.register_system(self)
@@ -51,17 +51,17 @@ func _ready():
     if current_scrap > max_scrap_held:
       max_scrap_held = current_scrap
   else:
-    Logger.error("StatsManager", "CurrencyManager not found!")
+    MyLogger.error("StatsManager", "CurrencyManager not found!")
 
   if GameManager:
     GameManager.game_state_changed.connect(_on_game_state_changed)
   else:
-    Logger.error("StatsManager", "GameManager not found!")
+    MyLogger.error("StatsManager", "GameManager not found!")
 
   if ScenarioManager:
     ScenarioManager.wave_changed.connect(_on_wave_changed)
   else:
-    Logger.error("StatsManager", "ScenarioManager not found!")
+    MyLogger.error("StatsManager", "ScenarioManager not found!")
 
 func _on_game_state_changed(new_state: GameManager.GameState) -> void:
   # Reset wave completion count on new game start
@@ -82,7 +82,7 @@ func track_enemy_defeated(enemy_type: String, defeated_by_hand: bool = false) ->
   if defeated_by_hand:
     enemies_defeated_by_hand += 1
   
-  Logger.debug("Stats", "Enemy defeated: %s (by hand: %s). Total: %d" % [enemy_type, defeated_by_hand, enemies_defeated_total])
+  MyLogger.debug("Stats", "Enemy defeated: %s (by hand: %s). Total: %d" % [enemy_type, defeated_by_hand, enemies_defeated_total])
   
   enemy_defeated.emit(enemy_type, defeated_by_hand)
   stats_updated.emit()
@@ -97,7 +97,7 @@ func track_obstacle_placed(obstacle_type: String) -> void:
   else:
     obstacles_placed_by_type[obstacle_type] = 1
   
-  Logger.debug("Stats", "Obstacle placed: %s. Total: %d" % [obstacle_type, obstacles_placed_total])
+  MyLogger.debug("Stats", "Obstacle placed: %s. Total: %d" % [obstacle_type, obstacles_placed_total])
   
   obstacle_placed.emit(obstacle_type)
   stats_updated.emit()
@@ -105,27 +105,27 @@ func track_obstacle_placed(obstacle_type: String) -> void:
 ## Scrap earned callback
 func _on_scrap_earned(amount: int) -> void:
   total_scrap_earned += amount
-  Logger.debug("Stats", "Scrap earned: %d. Total earned: %d" % [amount, total_scrap_earned])
+  MyLogger.debug("Stats", "Scrap earned: %d. Total earned: %d" % [amount, total_scrap_earned])
 
 ## Scrap changed callback - track maximum held
 func _on_scrap_changed(new_amount: int) -> void:
   if new_amount > max_scrap_held:
     max_scrap_held = new_amount
-    Logger.debug("Stats", "New max scrap held: %d" % max_scrap_held)
+    MyLogger.debug("Stats", "New max scrap held: %d" % max_scrap_held)
     max_scrap_held_updated.emit(max_scrap_held)
     stats_updated.emit()
 
 ## XP earned callback
 func _on_xp_earned(amount: int) -> void:
   total_xp_earned += amount
-  Logger.debug("Stats", "XP earned: %d. Total earned: %d" % [amount, total_xp_earned])
+  MyLogger.debug("Stats", "XP earned: %d. Total earned: %d" % [amount, total_xp_earned])
 
 ## Max waves completed callback
 func _on_wave_changed(_scenario_id: String, _wave: int) -> void:
   waves_completed += 1
   if waves_completed > max_waves_completed:
     max_waves_completed = waves_completed
-    Logger.debug("Stats", "New max waves completed: %d" % max_waves_completed)
+    MyLogger.debug("Stats", "New max waves completed: %d" % max_waves_completed)
     stats_updated.emit()
 
 ## Get stats data
@@ -189,7 +189,7 @@ func reset_stats() -> void:
   total_xp_earned = 0
   max_waves_completed = 0
   
-  Logger.info("StatsManager", "All stats reset")
+  MyLogger.info("StatsManager", "All stats reset")
   stats_updated.emit()
 
 ## SaveableSystem Interface Implementation
@@ -224,7 +224,7 @@ func load_data(data: Dictionary) -> void:
   total_xp_earned = data.get("total_xp_earned", 0)
   max_waves_completed = data.get("max_waves_completed", 0)
   
-  Logger.info("StatsManager", "Stats loaded - Enemies defeated: %d, Obstacles placed: %d, Scrap earned: %d, XP earned: %d" % [enemies_defeated_total, obstacles_placed_total, total_scrap_earned, total_xp_earned])
+  MyLogger.info("StatsManager", "Stats loaded - Enemies defeated: %d, Obstacles placed: %d, Scrap earned: %d, XP earned: %d" % [enemies_defeated_total, obstacles_placed_total, total_scrap_earned, total_xp_earned])
   stats_loaded.emit()
 
 ## Reset to default state (for new game)

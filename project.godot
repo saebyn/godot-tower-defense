@@ -14,12 +14,12 @@ config/name="Nom Zom Defense - Click. Aim. Survive."
 config/description="A lighthearted zombie tower defense game with a click-to-kill twist, built with Godot 4. "
 config/version="0.1.0"
 run/main_scene="res://Stages/UI/main_menu/main_menu.tscn"
-config/features=PackedStringArray("4.4", "GL Compatibility")
+config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="res://Assets/Icons/icon.svg"
 
 [autoload]
 
-Logger="*res://Utilities/Systems/logger.gd"
+MyLogger="*res://Utilities/Systems/logger.gd"
 SaveManager="*res://Utilities/Systems/save_manager.gd"
 CurrencyManager="*res://Utilities/Systems/currency_manager.gd"
 GameManager="*res://Utilities/Systems/game_manager.gd"

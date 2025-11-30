@@ -30,7 +30,7 @@ func _detect_mode() -> void:
         if child is System_Wave:
             _waves.append(child)
     
-    Logger.info("Spawner", "Using wave mode with %d waves" % _waves.size())
+    MyLogger.info("Spawner", "Using wave mode with %d waves" % _waves.size())
     _setup_wave_mode()
 
 func _setup_wave_mode() -> void:
@@ -47,11 +47,11 @@ func _setup_wave_mode() -> void:
 func _start_next_wave() -> void:
     if _current_wave_index >= _waves.size():
         all_waves_completed.emit()
-        Logger.info("Spawner", "All waves completed")
+        MyLogger.info("Spawner", "All waves completed")
         return
     
     var wave = _waves[_current_wave_index]
-    Logger.info("Spawner", "Starting wave %d" % (_current_wave_index + 1))
+    MyLogger.info("Spawner", "Starting wave %d" % (_current_wave_index + 1))
     wave.start_wave()
 
 func _on_wave_started(wave: System_Wave) -> void:
@@ -90,7 +90,7 @@ func get_spawned_enemy_count() -> int:
 
 func _on_child_exiting_tree(node: Node) -> void:
     if node in current_enemies:
-        Logger.debug("Spawner", "Enemy exited tree")
+        MyLogger.debug("Spawner", "Enemy exited tree")
         current_enemies.erase(node)
         _spawned_enemies -= 1
 
@@ -100,7 +100,7 @@ func find_random_spawn_position() -> Vector3:
     var spawn_area_to_use: MeshInstance3D = null
     
     if spawn_areas.is_empty():
-        Logger.error("Spawner", "No spawn areas configured!")
+        MyLogger.error("Spawner", "No spawn areas configured!")
         return Vector3.ZERO
 
     # Randomly select one of the spawn areas
@@ -109,14 +109,14 @@ func find_random_spawn_position() -> Vector3:
     # Generate a random position within the selected spawn area
     var bounds := spawn_area_to_use.get_aabb()
 
-    Logger.debug("Spawner", "Selected spawn area: %s with bounds: %s" % [spawn_area_to_use.name, bounds])
+    MyLogger.debug("Spawner", "Selected spawn area: %s with bounds: %s" % [spawn_area_to_use.name, bounds])
 
     var spawn_position = spawn_area_to_use.transform.basis * (Vector3(
         randf_range(bounds.position.x, bounds.position.x + bounds.size.x),
         randf_range(bounds.position.y, bounds.position.y + bounds.size.y),
         randf_range(bounds.position.z, bounds.position.z + bounds.size.z)
     ) + spawn_area_to_use.position)
-    Logger.debug("Spawner", "Local spawn position: %s" % spawn_position)
+    MyLogger.debug("Spawner", "Local spawn position: %s" % spawn_position)
     return spawn_position
 
 func get_current_wave_number() -> int:

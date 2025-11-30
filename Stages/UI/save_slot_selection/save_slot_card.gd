@@ -53,7 +53,7 @@ func configure(slot_num: int, metadata: Dictionary):
     var timestamp = metadata.get("timestamp", 0)
     var _scenario = metadata.get("last_scenario", "")
     
-    Logger.debug("SaveSlotCard", "Slot %d metadata - Level: %d, Playtime: %.2f, Timestamp: %d" % [slot_number, level, playtime, timestamp])
+    MyLogger.debug("SaveSlotCard", "Slot %d metadata - Level: %d, Playtime: %.2f, Timestamp: %d" % [slot_number, level, playtime, timestamp])
     
     slot_info_label.text = "Level %d" % level
     
@@ -117,10 +117,10 @@ func _load_screenshot():
 
 ## Handle action button press (New Game or Continue)
 func _on_action_button_pressed():
-  Logger.info("SaveSlotCard", "Action button pressed for slot %d (occupied: %s)" % [slot_number, is_occupied])
+  MyLogger.info("SaveSlotCard", "Action button pressed for slot %d (occupied: %s)" % [slot_number, is_occupied])
   slot_selected.emit(slot_number)
 
 ## Handle delete button press
 func _on_delete_button_pressed():
-  Logger.info("SaveSlotCard", "Delete button pressed for slot %d" % slot_number)
+  MyLogger.info("SaveSlotCard", "Delete button pressed for slot %d" % slot_number)
   slot_deleted.emit(slot_number)

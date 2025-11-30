@@ -33,7 +33,7 @@ func _ready() -> void:
 ## Show notification with achievement data
 func show_notification(achievement: Resource_Achievement) -> void:
   if not achievement:
-    Logger.warn("AchievementNotification", "Attempted to show notification with null achievement")
+    MyLogger.warn("AchievementNotification", "Attempted to show notification with null achievement")
     return
   
   # Set achievement data
@@ -59,7 +59,7 @@ func show_notification(achievement: Resource_Achievement) -> void:
   # Animate slide in
   _slide_in()
   
-  Logger.info("AchievementNotification", "Showing notification: %s" % achievement.name)
+  MyLogger.info("AchievementNotification", "Showing notification: %s" % achievement.name)
 
 ## Animate the notification sliding in from the top-right
 func _slide_in() -> void:

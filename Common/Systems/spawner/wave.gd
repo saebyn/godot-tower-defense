@@ -100,7 +100,7 @@ func _spawn_next_enemy() -> void:
     return
 
   if get_parent().get_spawned_enemy_count() >= max_enemies:
-    Logger.debug("Spawner.Wave", "Max enemies reached, cannot spawn more right now")
+    MyLogger.debug("Spawner.Wave", "Max enemies reached, cannot spawn more right now")
     return
 
   var enemy_type := _enemies_to_spawn.pop_front() as Resource_EnemyType
@@ -117,7 +117,7 @@ func _end_wave() -> void:
     return
 
   if not allow_overlap and get_parent().get_spawned_enemy_count() > 0:
-    Logger.debug("Spawner.Wave", "Waiting for all spawned enemies to be cleared before completing wave")
+    MyLogger.debug("Spawner.Wave", "Waiting for all spawned enemies to be cleared before completing wave")
     # Wait until all spawned enemies are gone before completing the wave
     _wave_timer.start(WAVE_OVERLAP_RECHECK_TIME)
     return

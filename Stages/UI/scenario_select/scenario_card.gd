@@ -90,5 +90,5 @@ func configure(
 ## Handle play button press
 func _on_play_button_pressed():
   if is_unlocked:
-    Logger.info("ScenarioCard", "Scenario selected: %s" % scenario_id)
+    MyLogger.info("ScenarioCard", "Scenario selected: %s" % scenario_id)
     scenario_selected.emit(scenario_id)

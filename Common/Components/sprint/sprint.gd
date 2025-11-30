@@ -27,7 +27,7 @@ func _on_decision_timer_timeout() -> void:
 
 
 func _start_sprint() -> void:
-  Logger.debug("Sprint", "Entity %s is starting to sprint." % get_parent().name)
+  MyLogger.debug("Sprint", "Entity %s is starting to sprint." % get_parent().name)
   is_sprinting = true
   original_speed = get_parent().movement_speed
   get_parent().movement_speed = original_speed * sprint_speed_multiplier
@@ -36,6 +36,6 @@ func _start_sprint() -> void:
 
 
 func _end_sprint() -> void:
-  Logger.debug("Sprint", "Entity %s has ended sprinting." % get_parent().name)
+  MyLogger.debug("Sprint", "Entity %s has ended sprinting." % get_parent().name)
   is_sprinting = false
   get_parent().movement_speed = original_speed

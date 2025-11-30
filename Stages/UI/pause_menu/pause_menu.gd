@@ -51,12 +51,12 @@ func _on_resume_pressed():
   GameManager.toggle_in_game_menu()
 
 func _on_settings_pressed():
-  Logger.info("PauseMenu", "Settings button pressed")
+  MyLogger.info("PauseMenu", "Settings button pressed")
   if settings_menu:
     settings_menu.show_menu()
 
 func _on_tech_tree_pressed():
-  Logger.info("PauseMenu", "Tech Tree button pressed")
+  MyLogger.info("PauseMenu", "Tech Tree button pressed")
   _show_tech_tree()
 
 func _show_tech_tree():
@@ -69,11 +69,11 @@ func _show_tech_tree():
     tech_tree_ui.visible = true
 
 func _on_tech_tree_closed():
-  Logger.debug("PauseMenu", "Tech tree closed")
+  MyLogger.debug("PauseMenu", "Tech tree closed")
   tech_tree_ui = null
 
 func _on_achievements_pressed():
-  Logger.info("PauseMenu", "Achievements button pressed")
+  MyLogger.info("PauseMenu", "Achievements button pressed")
   _show_achievements()
 
 func _show_achievements():
@@ -86,11 +86,11 @@ func _show_achievements():
     achievement_list_ui.visible = true
 
 func _on_achievement_list_closed():
-  Logger.debug("PauseMenu", "Achievement list closed")
+  MyLogger.debug("PauseMenu", "Achievement list closed")
   achievement_list_ui = null
 
 func _on_settings_menu_closed():
-  Logger.debug("PauseMenu", "Settings menu closed")
+  MyLogger.debug("PauseMenu", "Settings menu closed")
 
 func _on_restart_pressed():
   GameManager.resume_game() # Unpause first

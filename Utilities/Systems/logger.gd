@@ -5,10 +5,10 @@ extends Node
 ## Provides scoped logging with configurable log levels similar to debug npm package
 ## 
 ## Usage:
-##   Logger.info("Player", "Game started with %d enemies" % enemy_count)
-##   Logger.debug("Combat", "Attack dealt %d damage" % damage)
-##   Logger.warn("Economy", "Currency running low: %d remaining" % currency)
-##   Logger.error("System", "Failed to load enemy config: %s" % config_path)
+##   MyLogger.info("Player", "Game started with %d enemies" % enemy_count)
+##   MyLogger.debug("Combat", "Attack dealt %d damage" % damage)
+##   MyLogger.warn("Economy", "Currency running low: %d remaining" % currency)
+##   MyLogger.error("System", "Failed to load enemy config: %s" % config_path)
 
 enum LogLevel {
   TRACE,
@@ -43,7 +43,7 @@ func _ready() -> void:
   _register_console_commands()
   
   # Log framework initialization
-  info("Logger", "Logging framework initialized - Level: %s, Scopes: %s" % [
+  info("MyLogger", "Logging framework initialized - Level: %s, Scopes: %s" % [
     _log_level_names[current_log_level],
     ", ".join(enabled_scopes)
   ])
@@ -144,25 +144,25 @@ func error(scope: String, message: String) -> void:
 ## Set the current log level
 func set_log_level(level: LogLevel) -> void:
   current_log_level = level
-  info("Logger", "Log level changed to: %s" % _log_level_names[level])
+  info("MyLogger", "Log level changed to: %s" % _log_level_names[level])
 
 ## Set enabled scopes (array of scope names or wildcard patterns)
 func set_enabled_scopes(scopes: PackedStringArray) -> void:
   enabled_scopes = scopes
-  info("Logger", "Enabled scopes changed to: %s" % ", ".join(scopes))
+  info("MyLogger", "Enabled scopes changed to: %s" % ", ".join(scopes))
 
 ## Add a scope to the enabled scopes list
 func enable_scope(scope: String) -> void:
   if scope not in enabled_scopes:
     enabled_scopes.append(scope)
-    info("Logger", "Enabled scope: %s" % scope)
+    info("MyLogger", "Enabled scope: %s" % scope)
 
 ## Remove a scope from the enabled scopes list
 func disable_scope(scope: String) -> void:
   var index = enabled_scopes.find(scope)
   if index >= 0:
     enabled_scopes.remove_at(index)
-    info("Logger", "Disabled scope: %s" % scope)
+    info("MyLogger", "Disabled scope: %s" % scope)
 
 ## Console command handlers
 
@@ -196,7 +196,7 @@ func _cmd_set_scopes(args: PackedStringArray) -> void:
     set_enabled_scopes(new_scopes)
 
 func _cmd_show_info(_args: PackedStringArray) -> void:
-  print("=== Logger Configuration ===")
+  print("=== MyLogger Configuration ===")
   print("Current Log Level: %s" % _log_level_names[current_log_level])
   print("Enabled Scopes: %s" % ", ".join(enabled_scopes))
   print("Available Commands:")

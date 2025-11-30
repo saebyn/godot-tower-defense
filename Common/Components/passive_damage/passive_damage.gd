@@ -38,7 +38,7 @@ func _ready():
   if get_parent():
     get_parent().set_meta("passive_damage_component", self)
   
-  Logger.debug("PassiveDamage", "PassiveDamage component initialized")
+  MyLogger.debug("PassiveDamage", "PassiveDamage component initialized")
 
 
 func _process(delta: float):
@@ -67,7 +67,7 @@ func _on_body_entered(body: Node):
   
   if body.is_in_group(target_group):
     _enemies_in_area.append(body)
-    Logger.trace("PassiveDamage", "Enemy entered damage area: %s" % body.name)
+    MyLogger.trace("PassiveDamage", "Enemy entered damage area: %s" % body.name)
     _try_damage_enemy(body)
 
 
@@ -77,7 +77,7 @@ func _on_body_exited(body: Node):
   
   if body in _enemies_in_area:
     _enemies_in_area.erase(body)
-    Logger.trace("PassiveDamage", "Enemy exited damage area: %s" % body.name)
+    MyLogger.trace("PassiveDamage", "Enemy exited damage area: %s" % body.name)
   
   if body in _enemy_cooldowns:
     _enemy_cooldowns.erase(body)
@@ -100,7 +100,7 @@ func _try_damage_enemy(enemy: Node):
     health.take_damage(damage_amount, damage_source)
     _enemy_cooldowns[enemy] = damage_cooldown
     damage_dealt.emit(enemy, damage_amount)
-    Logger.debug("PassiveDamage", "Dealt %d damage to %s" % [damage_amount, enemy.name])
+    MyLogger.debug("PassiveDamage", "Dealt %d damage to %s" % [damage_amount, enemy.name])
     
     if enable_sound and audio_player:
       AudioManager.play_sound(audio_player, damage_sound)

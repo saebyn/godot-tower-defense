@@ -50,7 +50,7 @@ class AchievementState:
     )
 
 func _ready():
-  Logger.info("AchievementManager", "Achievement system initialized")
+  MyLogger.info("AchievementManager", "Achievement system initialized")
   
   # Register with SaveManager
   SaveManager.register_system(self)
@@ -67,7 +67,7 @@ func _load_achievements() -> void:
   var dir = DirAccess.open(achievements_dir)
   
   if not dir:
-    Logger.error("AchievementManager", "Failed to open achievements directory: %s" % achievements_dir)
+    MyLogger.error("AchievementManager", "Failed to open achievements directory: %s" % achievements_dir)
     return
   
   dir.list_dir_begin()
@@ -88,33 +88,33 @@ func _load_achievements() -> void:
           achievement_states[achievement.id] = AchievementState.new()
         
         loaded_count += 1
-        Logger.debug("AchievementManager", "Loaded achievement: %s" % achievement.name)
+        MyLogger.debug("AchievementManager", "Loaded achievement: %s" % achievement.name)
       elif achievement:
-        Logger.warn("AchievementManager", "Invalid achievement resource: %s" % file_name)
+        MyLogger.warn("AchievementManager", "Invalid achievement resource: %s" % file_name)
     
     file_name = dir.get_next()
   
   dir.list_dir_end()
   
-  Logger.info("AchievementManager", "Loaded %d achievements" % loaded_count)
+  MyLogger.info("AchievementManager", "Loaded %d achievements" % loaded_count)
 
 ## Connect to game systems for tracking achievement progress
 func _connect_to_systems() -> void:
   # Connect to StatsManager for stat-based achievements
   if StatsManager:
     StatsManager.stats_updated.connect(_check_all_achievements)
-    Logger.debug("AchievementManager", "Connected to StatsManager")
+    MyLogger.debug("AchievementManager", "Connected to StatsManager")
   else:
-    Logger.error("AchievementManager", "StatsManager not found!")
+    MyLogger.error("AchievementManager", "StatsManager not found!")
   
   # Connect to CurrencyManager for level-based achievements
   if CurrencyManager:
     CurrencyManager.level_up.connect(_on_level_up)
     CurrencyManager.scrap_earned.connect(_on_scrap_earned)
     CurrencyManager.xp_earned.connect(_on_xp_earned)
-    Logger.debug("AchievementManager", "Connected to CurrencyManager")
+    MyLogger.debug("AchievementManager", "Connected to CurrencyManager")
   else:
-    Logger.error("AchievementManager", "CurrencyManager not found!")
+    MyLogger.error("AchievementManager", "CurrencyManager not found!")
 
 ## Check all achievements for progress and unlocks
 func _check_all_achievements() -> void:
@@ -227,7 +227,7 @@ func _get_stat_value(condition_type: Resource_Achievement.ConditionType, target:
 func _unlock_achievement(achievement_id: String) -> void:
   var achievement = achievements.get(achievement_id)
   if not achievement:
-    Logger.warn("AchievementManager", "Attempted to unlock non-existent achievement: %s" % achievement_id)
+    MyLogger.warn("AchievementManager", "Attempted to unlock non-existent achievement: %s" % achievement_id)
     return
   
   var state = achievement_states.get(achievement_id)
@@ -244,7 +244,7 @@ func _unlock_achievement(achievement_id: String) -> void:
   state.progress = 1.0
   state.unlock_date = Time.get_datetime_string_from_system(false, true)
   
-  Logger.info("AchievementManager", "Achievement unlocked: %s" % achievement.name)
+  MyLogger.info("AchievementManager", "Achievement unlocked: %s" % achievement.name)
   
   # Emit unlock signal
   achievement_unlocked.emit(achievement)
@@ -296,7 +296,7 @@ func get_all_achievements() -> Array[Resource_Achievement]:
 ## If the achievement_id does not exist, returns null and logs a warning.
 func get_achievement(achievement_id: String) -> Resource_Achievement:
   if not achievements.has(achievement_id):
-    Logger.warn("AchievementManager", "Requested achievement_id '%s' does not exist." % achievement_id)
+    MyLogger.warn("AchievementManager", "Requested achievement_id '%s' does not exist." % achievement_id)
     return null
   return achievements.get(achievement_id)
 
@@ -328,7 +328,7 @@ func load_data(data: Dictionary) -> void:
       if state_data is Dictionary:
         achievement_states[achievement_id] = AchievementState.from_dict(state_data)
   
-  Logger.info("AchievementManager", "Achievement states loaded - %d achievements tracked" % achievement_states.size())
+  MyLogger.info("AchievementManager", "Achievement states loaded - %d achievements tracked" % achievement_states.size())
   achievements_loaded.emit()
 
 ## Reset to default state (for new game)
@@ -339,7 +339,7 @@ func reset_data() -> void:
   for achievement_id in achievements:
     achievement_states[achievement_id] = AchievementState.new()
   
-  Logger.info("AchievementManager", "Achievement states reset")
+  MyLogger.info("AchievementManager", "Achievement states reset")
 
 ## Legacy Methods (deprecated, kept for backward compatibility)
 

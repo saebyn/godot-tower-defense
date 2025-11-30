@@ -23,7 +23,7 @@ func _ready() -> void:
   # Refresh the achievement list
   refresh_achievements()
   
-  Logger.info("AchievementList", "Achievement list UI initialized")
+  MyLogger.info("AchievementList", "Achievement list UI initialized")
 
 ## Refresh the entire achievement list
 func refresh_achievements() -> void:
@@ -36,7 +36,7 @@ func refresh_achievements() -> void:
     child.queue_free()
   
   if not AchievementManager:
-    Logger.error("AchievementList", "AchievementManager not found!")
+    MyLogger.error("AchievementList", "AchievementManager not found!")
     return
   
   # Get all achievements
@@ -88,6 +88,6 @@ func _update_stats(all_achievements: Array[Resource_Achievement]) -> void:
   stats_label.text = "Achievements Unlocked: %d / %d (%d%%)" % [unlocked_count, total_count, percentage]
 
 func _on_close_pressed() -> void:
-  Logger.info("AchievementList", "Closing achievement list")
+  MyLogger.info("AchievementList", "Closing achievement list")
   closed.emit()
   queue_free()

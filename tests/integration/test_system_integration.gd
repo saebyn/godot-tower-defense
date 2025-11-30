@@ -4,12 +4,11 @@ extends GutTest
 ## Integration tests verify that multiple components work together correctly
 
 func test_currency_and_logger_integration():
-  # This test verifies that CurrencyManager and Logger work together
+  # This test verifies that CurrencyManager and MyLogger work together
   # by checking that currency operations trigger appropriate logging
-  
   # Arrange
-  Logger.set_log_level(Logger.LogLevel.INFO)
-  Logger.set_enabled_scopes(["*"])
+  MyLogger.set_log_level(MyLogger.LogLevel.INFO)
+  MyLogger.set_enabled_scopes(["*"])
   CurrencyManager.current_scrap = 0
   
   # Act
@@ -22,7 +21,6 @@ func test_currency_and_logger_integration():
 
 func test_game_manager_state_transitions():
   # Test that GameManager properly handles state transitions
-  
   # Arrange
   var initial_state = GameManager.current_state
   

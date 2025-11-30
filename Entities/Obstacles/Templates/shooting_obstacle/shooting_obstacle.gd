@@ -30,7 +30,7 @@ func _ready():
 
   # Validate ranges
   if detection_range < attack_range:
-    Logger.warn("ShootingObstacle", "detection_range (%f) is less than attack_range (%f), adjusting detection_range" % [detection_range, attack_range])
+    MyLogger.warn("ShootingObstacle", "detection_range (%f) is less than attack_range (%f), adjusting detection_range" % [detection_range, attack_range])
     detection_range = attack_range
 
   # Set up detection timer
@@ -39,14 +39,14 @@ func _ready():
     detection_timer.timeout.connect(_detect_and_attack_enemies)
     detection_timer.start()
 
-  Logger.info("ShootingObstacle", "Shooting obstacle initialized with attack range: %f" % attack_range)
+  MyLogger.info("ShootingObstacle", "Shooting obstacle initialized with attack range: %f" % attack_range)
 
 func _detect_and_attack_enemies():
   var result = find_nearest_enemy_in_range()
   current_target = result[0]
   can_attack_current_target = result[1]
   if current_target and can_attack_current_target and ready_to_attack:
-    Logger.debug("ShootingObstacle", "Attacking enemy at distance: %f" % global_position.distance_to(current_target.global_position))
+    MyLogger.debug("ShootingObstacle", "Attacking enemy at distance: %f" % global_position.distance_to(current_target.global_position))
     attack.perform_attack(current_target)
 
 func find_nearest_enemy_in_range() -> Array:
@@ -69,7 +69,7 @@ func find_nearest_enemy_in_range() -> Array:
   return [nearest_enemy, can_attack]
 
 func _on_died(damage_source: String = "unknown") -> void:
-  Logger.info("ShootingObstacle", "Shooting obstacle destroyed by: %s" % damage_source)
+  MyLogger.info("ShootingObstacle", "Shooting obstacle destroyed by: %s" % damage_source)
   # Stop detection timer before destruction
   if detection_timer:
     detection_timer.stop()

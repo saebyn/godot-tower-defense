@@ -204,5 +204,5 @@ assert_called(spy, 'my_method')
 
 ### Autoload Issues
 
-- Tests have access to autoloaded singletons (Logger, CurrencyManager, etc.)
+- Tests have access to autoloaded singletons (MyLogger, CurrencyManager, etc.)
 - Reset autoload state in `before_each()` to ensure test isolation

@@ -18,7 +18,7 @@ func _process(_delta: float) -> void:
 
 
 func request_obstacle_spawn(obstacle: Resource_ObstacleType) -> void:
-  Logger.info("UI", "Requesting obstacle spawn: %s" % obstacle.name)
+  MyLogger.info("UI", "Requesting obstacle spawn: %s" % obstacle.name)
   obstacle_spawn_requested.emit(obstacle)
 
 ## Called when an enemy spawns to show the spawn indicator (legacy)
@@ -48,10 +48,10 @@ func show_obstacle_removed(refund_amount: int) -> void:
 func _toggle_stats_display() -> void:
   if stats_display:
     stats_display.toggle_visibility()
-    Logger.info("UI", "Stats display toggled: %s" % ("visible" if stats_display.visible else "hidden"))
+    MyLogger.info("UI", "Stats display toggled: %s" % ("visible" if stats_display.visible else "hidden"))
 
 ## Toggle the FPS overlay visibility
 func _toggle_fps_overlay() -> void:
   if fps_overlay:
     fps_overlay.toggle_visibility()
-    Logger.info("UI", "FPS overlay toggled: %s" % ("visible" if fps_overlay.visible else "hidden"))
+    MyLogger.info("UI", "FPS overlay toggled: %s" % ("visible" if fps_overlay.visible else "hidden"))

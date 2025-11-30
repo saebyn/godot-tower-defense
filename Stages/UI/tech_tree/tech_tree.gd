@@ -39,7 +39,7 @@ func _ready() -> void:
   # Refresh the tech tree display
   _refresh_tech_tree()
   
-  Logger.info("TechTree", "Tech Tree UI initialized")
+  MyLogger.info("TechTree", "Tech Tree UI initialized")
 
 ## Handle unhandled key inputs (ESC to close)
 func _unhandled_key_input(event: InputEvent) -> void:
@@ -237,20 +237,20 @@ func _on_confirmation_accepted() -> void:
 ## Actually unlock the tech
 func _unlock_tech(tech_id: String) -> void:
   if TechTreeManager.unlock_tech(tech_id):
-    Logger.info("TechTree", "Successfully unlocked tech: %s" % tech_id)
+    MyLogger.info("TechTree", "Successfully unlocked tech: %s" % tech_id)
     # UI will update via signals
   else:
-    Logger.warn("TechTree", "Failed to unlock tech: %s" % tech_id)
+    MyLogger.warn("TechTree", "Failed to unlock tech: %s" % tech_id)
 
 ## Handle tech unlocked signal
 func _on_tech_unlocked(tech_id: String) -> void:
-  Logger.debug("TechTree", "Tech unlocked: %s" % tech_id)
+  MyLogger.debug("TechTree", "Tech unlocked: %s" % tech_id)
   _update_tech_node_card(tech_id)
   _update_detail_panel()
 
 ## Handle tech locked signal
 func _on_tech_locked(tech_id: String) -> void:
-  Logger.debug("TechTree", "Tech locked: %s" % tech_id)
+  MyLogger.debug("TechTree", "Tech locked: %s" % tech_id)
   _update_tech_node_card(tech_id)
   if selected_tech_id == tech_id:
     _update_detail_panel()

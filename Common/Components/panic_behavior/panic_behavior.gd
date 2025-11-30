@@ -30,7 +30,7 @@ func _ready() -> void:
   # Get reference to parent target
   target = get_parent() as Node3D
   if not target:
-    Logger.error("PanicBehavior", "Parent must be a Node3D! PanicBehavior disabled.")
+    MyLogger.error("PanicBehavior", "Parent must be a Node3D! PanicBehavior disabled.")
     set_process(false) # Disable processing if parent is invalid
     return
   
@@ -42,9 +42,9 @@ func _ready() -> void:
   if not animation_player_path.is_empty():
     animation_player = get_node_or_null(animation_player_path)
     if not animation_player:
-      Logger.warn("PanicBehavior", "AnimationPlayer not found at path: %s" % animation_player_path)
+      MyLogger.warn("PanicBehavior", "AnimationPlayer not found at path: %s" % animation_player_path)
   
-  Logger.debug("PanicBehavior", "PanicBehavior initialized successfully for target: %s" % target.name)
+  MyLogger.debug("PanicBehavior", "PanicBehavior initialized successfully for target: %s" % target.name)
 
 func _process(delta: float) -> void:
   # Check for nearby enemies
@@ -84,12 +84,12 @@ func _check_for_nearby_enemies() -> bool:
   return false
 
 func _start_panic() -> void:
-  Logger.trace("PanicBehavior", "Survivor started panicking!")
+  MyLogger.trace("PanicBehavior", "Survivor started panicking!")
   _choose_new_panic_destination()
   panic_timer = 0.0
 
 func _stop_panic() -> void:
-  Logger.trace("PanicBehavior", "Survivor stopped panicking")
+  MyLogger.trace("PanicBehavior", "Survivor stopped panicking")
   current_panic_destination = spawn_position
   
   # Play idle animation
@@ -147,4 +147,4 @@ func _choose_new_panic_destination() -> void:
   )
   
   current_panic_destination = spawn_position + offset
-  Logger.trace("PanicBehavior", "Chose new panic destination: %v" % current_panic_destination)
+  MyLogger.trace("PanicBehavior", "Chose new panic destination: %v" % current_panic_destination)

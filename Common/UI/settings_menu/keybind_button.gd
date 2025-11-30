@@ -19,7 +19,7 @@ var pending_modifier_event: InputEventKey = null
 func _ready() -> void:
   _update_display()
   key_button.pressed.connect(_on_key_button_pressed)
-  set_process(false)  # Disable process by default
+  set_process(false) # Disable process by default
 
 func _update_display() -> void:
   if not action_label or not key_button:
@@ -65,7 +65,7 @@ func _is_modifier_key(keycode: int) -> bool:
   # Check if the key is a modifier key (Shift, Ctrl, Alt, Meta, etc.)
   return keycode in [
     KEY_SHIFT,
-    KEY_CTRL, 
+    KEY_CTRL,
     KEY_ALT,
     KEY_META,
     KEY_CAPSLOCK,
@@ -167,7 +167,7 @@ func _rebind_action(event: InputEvent) -> void:
   elif event is InputEventMouseButton:
     binding_name = _get_mouse_button_name(event.button_index)
   
-  Logger.info("KeybindButton", "Rebound '%s' to %s" % [action_name, binding_name])
+  MyLogger.info("KeybindButton", "Rebound '%s' to %s" % [action_name, binding_name])
   
   # Note: We don't save keybinds to file in this version
   # This could be added later if needed

@@ -29,14 +29,14 @@ func _process(delta: float) -> void:
     var rotation_amount_delta = clampf(rotation_amount, -rotation_delta, rotation_delta)
 
     if abs(rotation_amount) > aim_margin:
-      Logger.trace("BasicTurret", "Rotating turret by %f radians towards target (clamped from %f)" % [rotation_amount_delta, rotation_amount])
+      MyLogger.trace("BasicTurret", "Rotating turret by %f radians towards target (clamped from %f)" % [rotation_amount_delta, rotation_amount])
       ready_to_attack = false
       turret_yaw.rotate_y(rotation_amount_delta)
     else:
-      Logger.trace("BasicTurret", "Turret aligned with target.")
+      MyLogger.trace("BasicTurret", "Turret aligned with target.")
       ready_to_attack = true
   else:
-    Logger.trace("BasicTurret", "No target detected.")
+    MyLogger.trace("BasicTurret", "No target detected.")
     ready_to_attack = false
     if animation_player.current_animation != idle_animation:
       animation_player.play(idle_animation)
