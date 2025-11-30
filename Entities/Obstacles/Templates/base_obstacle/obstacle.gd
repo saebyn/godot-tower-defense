@@ -9,7 +9,6 @@
 ##  - Create a NavigationObstacle3D to affect navigation mesh
 ##  - Handle removal logic, refunding currency based on remaining health
 
-@tool
 extends StaticBody3D
 class_name Entity_PlaceableObstacle
 
@@ -26,12 +25,6 @@ var navigation_obstacle: NavigationObstacle3D
 var placement_preview_node: Node3D
 
 var _saved_collision_layers: int
-
-func _get_configuration_warnings():
-  var warnings = []
-  if mesh_instances.size() == 0:
-    warnings.append("MeshInstance3D is not assigned.")
-  return warnings
 
 func _ready():
   # Find Health component via metadata
@@ -65,7 +58,7 @@ func _enter_placement_mode() -> void:
   add_child(placement_preview_node)
   _saved_collision_layers = collision_layer
   collision_layer = 0 # Disable collisions in preview mode
-  
+
   if health:
     health.disabled = true
 

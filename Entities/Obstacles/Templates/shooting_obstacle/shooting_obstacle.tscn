@@ -8,7 +8,7 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ovxtv"]
 transparency = 1
-albedo_color = Color(1, 0.1764706, 0, 0.29803923)
+albedo_color = Color(0.6968942, 0.5214344, 0, 0.29803923)
 
 [node name="ShootingObstacle" instance=ExtResource("1_shooting")]
 script = ExtResource("2_shooting")

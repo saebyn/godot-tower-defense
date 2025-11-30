@@ -19,6 +19,10 @@ texture = SubResource("ViewportTexture_1e8io")
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 offset_right = 40.0
 offset_bottom = 40.0
+offset_left = -407.0
+offset_top = -163.0
+offset_right = -411.0
+offset_bottom = -167.0
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
 transparent_bg = true
@@ -38,10 +42,6 @@ grow_vertical = 2
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -407.0
-offset_top = -163.0
-offset_right = -411.0
-offset_bottom = -167.0
 grow_horizontal = 2
 grow_vertical = 2
 

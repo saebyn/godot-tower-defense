@@ -1,4 +1,3 @@
-@tool
 extends Entity_PlaceableObstacle
 class_name Entity_ShootingObstacle
 
