@@ -1,3 +1,14 @@
+## Obstacle.gd
+## Base class for placeable obstacles in the game world
+## Handles placement preview, health management, and removal/refund logic
+##
+## When instantiated, this entity will:
+##  - Enter placement mode, showing a preview of the obstacle
+##  - Disable collisions and health component during placement
+##  - Upon placement, re-enable collisions and health component
+##  - Create a NavigationObstacle3D to affect navigation mesh
+##  - Handle removal logic, refunding currency based on remaining health
+
 @tool
 extends StaticBody3D
 class_name Entity_PlaceableObstacle
