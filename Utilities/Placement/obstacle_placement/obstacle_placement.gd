@@ -206,7 +206,7 @@ func _on_obstacle_spawn_requested(obstacle_type: Resource_ObstacleType) -> void:
   MyLogger.info("Placement", "Spawn obstacle button pressed for: %s" % obstacle_type.name)
 
   if busy:
-    MyLogger.info("Placement", "Already placing an obstacle_type, cancelling previous placement")
+    MyLogger.info("Placement", "Already placing an obstacle, cancelling previous placement")
     _cancel_obstacle_placement()
 
   _place_obstacle_type = obstacle_type
