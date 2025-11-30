@@ -54,20 +54,13 @@ shape = SubResource("BoxShape3D_sl1jc")
 [node name="turret" parent="." index="4" instance=ExtResource("2_nmtda")]
 transform = Transform3D(1.74, 0, 0, 0, 1.74, 0, 0, 0, 1.74, 0, -0.0307488, 0)
 
-[node name="Base" parent="turret" index="0"]
-visible = false
-
 [node name="Top" parent="turret/TurretYaw" index="0"]
 transform = Transform3D(0.321883, 0, 0, 0, 0.188604, 0, 0, 0, 0.321883, 0, 0.986146, 0)
-visible = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." index="5"]
 libraries = {
 &"": SubResource("AnimationLibrary_2a5gv")
 }
 autoplay = "idle"
-
-[node name="RangePreview" parent="." index="6"]
-visible = false
 
 [editable path="turret"]
