@@ -65,8 +65,7 @@ func _enter_placement_mode() -> void:
   add_child(placement_preview_node)
   _saved_collision_layers = collision_layer
   collision_layer = 0 # Disable collisions in preview mode
-  MyLogger.debug("Obstacle", "Created preview for obstacle: %s" % obstacle_type)
-
+  
   if health:
     health.disabled = true
 
