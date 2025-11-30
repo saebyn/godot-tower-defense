@@ -149,8 +149,12 @@ func place(navigation_region: NavigationRegion3D) -> void:
 
   # Reparent to the right place in the scene tree
   var parent_node = get_parent()
+  var grandparent_node = parent_node.get_parent() if parent_node else null
+  if not grandparent_node:
+    MyLogger.error("Obstacle", "Failed to reparent obstacle: parent or grandparent node missing. Scene tree structure may be invalid.")
+    return
   parent_node.remove_child(self)
-  parent_node.get_parent().add_child(self)
+  grandparent_node.add_child(self)
 
   _exit_placement_mode()
 
