@@ -15,6 +15,7 @@ var ready_to_attack: bool = true
 var can_attack_current_target: bool = false
 var attack: Component_Attack
 @onready var detection_timer: Timer = $DetectionTimer
+@onready var attack_range_indicator: MeshInstance3D = $RangePreview
 
 func _ready():
   # Call parent _ready first
@@ -40,6 +41,21 @@ func _ready():
     detection_timer.start()
 
   MyLogger.info("ShootingObstacle", "Shooting obstacle initialized with attack range: %f" % attack_range)
+
+
+func _enter_placement_mode() -> void:
+  super._enter_placement_mode()
+
+  # add placement_preview_node range indicator
+  attack_range_indicator.scale = Vector3(attack_range, attack_range, attack_range)
+  attack_range_indicator.visible = true
+  placement_preview_node.add_child(attack_range_indicator)
+
+func _exit_placement_mode() -> void:
+  super._exit_placement_mode()
+
+  attack_range_indicator.visible = false
+
 
 func _detect_and_attack_enemies():
   var result = find_nearest_enemy_in_range()
