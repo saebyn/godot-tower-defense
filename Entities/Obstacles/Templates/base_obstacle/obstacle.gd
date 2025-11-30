@@ -153,6 +153,7 @@ func place(navigation_region: NavigationRegion3D) -> void:
   if not grandparent_node:
     MyLogger.error("Obstacle", "Failed to reparent obstacle: parent or grandparent node missing. Scene tree structure may be invalid.")
     return
+
   parent_node.remove_child(self)
   grandparent_node.add_child(self)
 
@@ -167,10 +168,10 @@ func place(navigation_region: NavigationRegion3D) -> void:
   # set the vertices based on the mesh size
   var size: Vector3 = Vector3.ONE
   for mesh_instance in mesh_instances:
-      var aabb = mesh_instance.get_aabb()
-      size.x = max(size.x, aabb.size.x * 0.5)
-      size.y = max(size.y, aabb.size.y * 0.5)
-      size.z = max(size.z, aabb.size.z * 0.5)
+    var aabb = mesh_instance.get_aabb()
+    size.x = max(size.x, aabb.size.x * 0.5)
+    size.y = max(size.y, aabb.size.y * 0.5)
+    size.z = max(size.z, aabb.size.z * 0.5)
 
   nav_obstacle.vertices.append_array([
     Vector3(-size.x, 0, -size.z),
