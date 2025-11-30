@@ -17,7 +17,6 @@ texture_filter = 0
 texture = SubResource("ViewportTexture_1e8io")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
-visible = false
 offset_right = 40.0
 offset_bottom = 40.0
 
@@ -26,7 +25,7 @@ transparent_bg = true
 handle_input_locally = false
 canvas_cull_mask = 4293918721
 size = Vector2i(200, 100)
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="Background" type="NinePatchRect" parent="SubViewportContainer/SubViewport"]
 anchors_preset = 15
@@ -39,8 +38,10 @@ grow_vertical = 2
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -4.0
-offset_bottom = -4.0
+offset_left = -407.0
+offset_top = -163.0
+offset_right = -411.0
+offset_bottom = -167.0
 grow_horizontal = 2
 grow_vertical = 2
 
