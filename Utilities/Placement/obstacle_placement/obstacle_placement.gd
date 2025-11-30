@@ -1,14 +1,11 @@
 extends Node3D
 class_name Utility_ObstaclePlacement
 
-const ObstaclePreviewScene = preload("res://Utilities/Placement/obstacle_preview.gd")
-
 signal rebake_navigation_mesh
 
 @export_group("Placement Settings")
 @export var placement_clearance: float = 3.0 ## Minimum distance from other obstacles
 @export var border_margin: float = 2.0 ## Minimum distance from navigation region border
-@export var obstacle_group: String = "navigation_mesh_source_group" ## Group to indicate the obstacle should affect navigation
 
 @export_group("Raycast Settings")
 @export var raycast_length: float = 1000.0 ## Length of the raycast for obstacle placement
@@ -27,7 +24,7 @@ var busy: bool:
     return _preview != null
 
 var _place_obstacle_type: Resource_ObstacleType = null
-var _preview: Utility_ObstaclePreview = null
+var _preview: Entity_PlaceableObstacle = null
 var _valid_material: StandardMaterial3D
 var _invalid_material: StandardMaterial3D
 
@@ -69,7 +66,7 @@ func _physics_process(_delta: float) -> void:
     var collision_point = raycast.get_collision_point()
     
     # Position preview properly above ground based on its bounds
-    var bounds = _preview.get_bounds()
+    var bounds = _preview.get_aabb()
     var height_offset = - bounds.position.y # Offset to put bottom of mesh at ground level
     _preview.global_position = collision_point + Vector3(0, height_offset, 0)
     
@@ -205,16 +202,17 @@ func _has_sufficient_clearance(target_position: Vector3) -> bool:
 
   return space_state.intersect_shape(query).size() == 0
 
-func _on_obstacle_spawn_requested(obstacle: Resource_ObstacleType) -> void:
-  MyLogger.info("Placement", "Spawn obstacle button pressed for: %s" % obstacle.name)
+func _on_obstacle_spawn_requested(obstacle_type: Resource_ObstacleType) -> void:
+  MyLogger.info("Placement", "Spawn obstacle button pressed for: %s" % obstacle_type.name)
 
   if busy:
-    MyLogger.info("Placement", "Already placing an obstacle, cancelling previous placement")
+    MyLogger.info("Placement", "Already placing an obstacle_type, cancelling previous placement")
     _cancel_obstacle_placement()
 
-  _place_obstacle_type = obstacle
-  _preview = ObstaclePreviewScene.new(obstacle)
-  MyLogger.info("Placement", "Created preview for obstacle: %s" % obstacle.name)
+  _place_obstacle_type = obstacle_type
+  _preview = obstacle_type.scene.instantiate()
+  _preview.obstacle_type = obstacle_type
+  MyLogger.info("Placement", "Created preview for obstacle: %s" % obstacle_type.name)
   raycast.enabled = true
   add_child(_preview)
 
@@ -222,10 +220,8 @@ func _place_obstacle() -> void:
   if not _preview:
     return
   
-  var target_position = _preview.global_position
-  
   # Check if placement is valid
-  if not _is_placement_valid(target_position):
+  if not _is_placement_valid(_preview.global_position):
     return
 
   # Deduct cost
@@ -234,29 +230,7 @@ func _place_obstacle() -> void:
     MyLogger.error("Placement", "Cannot place obstacle: Insufficient funds")
     return
   
-  # Store preview position and rotation before cleanup
-  var preview_position = _preview.global_position
-  var preview_rotation = _preview.rotation
-  
-  # Clean up preview BEFORE adding real obstacle
-  _preview.queue_free()
-  _preview = null
-  
-  # Now instantiate the real obstacle
-  var real_obstacle = _place_obstacle_type.scene.instantiate() as Entity_PlaceableObstacle
-  real_obstacle.global_position = preview_position
-  real_obstacle.rotation = preview_rotation
-  real_obstacle.obstacle_type = _place_obstacle_type
-  
-  MyLogger.info("Placement", "Setting obstacle_type to: %s (cost: %d)" % [_place_obstacle_type.name, _place_obstacle_type.cost])
-  MyLogger.info("Placement", "Obstacle now has obstacle_type: %s" % ("null" if not real_obstacle.obstacle_type else real_obstacle.obstacle_type.name))
-  
-  # Add to scene and place
-  get_parent().add_child(real_obstacle)
-  real_obstacle.place(navigation_region)
-
-  # Ensure the obstacle is in the correct group for navigation
-  real_obstacle.add_to_group(obstacle_group)
+  _preview.place(navigation_region)
 
   rebake_navigation_mesh.emit()
   
