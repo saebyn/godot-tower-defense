@@ -32,6 +32,10 @@ func _ready():
     health.died.connect(_on_died)
     health.damaged.connect(_on_health_damaged)
 
+  _enter_placement_mode()
+
+## Create a visual preview of the obstacle for placement mode
+func _enter_placement_mode() -> void:
   if not mesh_instances or mesh_instances.is_empty():
     MyLogger.error("Obstacle", "Could not find MeshInstance3D in obstacle scene")
     return
@@ -55,7 +59,7 @@ func _ready():
   if health:
     health.disabled = true
 
-func _restore_from_placement_preview() -> void:
+func _exit_placement_mode() -> void:
   if placement_preview_node:
     placement_preview_node.queue_free()
     placement_preview_node = null
@@ -148,7 +152,7 @@ func place(navigation_region: NavigationRegion3D) -> void:
   parent_node.remove_child(self)
   parent_node.get_parent().add_child(self)
 
-  _restore_from_placement_preview()
+  _exit_placement_mode()
 
   # Create NavigationObstacle3D to affect navigation mesh
   var nav_obstacle := NavigationObstacle3D.new()
