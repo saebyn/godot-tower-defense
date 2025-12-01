@@ -1,14 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://cj8x0adt0k2cd"]
+[gd_scene load_steps=7 format=3 uid="uid://cj8x0adt0k2cd"]
 
 [ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://Entities/Obstacles/Templates/base_obstacle/obstacle.tscn" id="1_shooting"]
 [ext_resource type="Script" uid="uid://cjf3cwgo3gtsa" path="res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.gd" id="2_shooting"]
 [ext_resource type="PackedScene" uid="uid://d2nt6gtj5g3cm" path="res://Common/Components/attack/attack.tscn" id="3_shooting"]
+[ext_resource type="Shader" uid="uid://03qkf3qo6xsh" path="res://Assets/Shaders/dithered_transparency.gdshader" id="4_shader"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_wmkuw"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ovxtv"]
-transparency = 1
-albedo_color = Color(0.6968942, 0.5214344, 0, 0.29803923)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_range"]
+render_priority = 10
+shader = ExtResource("4_shader")
+shader_parameter/albedo_color = Color(0.697, 0.521, 0, 1)
+shader_parameter/transparency = 0.1670000079325
+shader_parameter/dither_scale = 1.00000004424012
 
 [node name="ShootingObstacle" instance=ExtResource("1_shooting")]
 script = ExtResource("2_shooting")
@@ -27,4 +31,4 @@ wait_time = 0.5
 [node name="RangePreview" type="MeshInstance3D" parent="." index="3"]
 visible = false
 mesh = SubResource("SphereMesh_wmkuw")
-surface_material_override/0 = SubResource("StandardMaterial3D_ovxtv")
+surface_material_override/0 = SubResource("ShaderMaterial_range")
