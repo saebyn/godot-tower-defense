@@ -22,7 +22,6 @@ A Node-based component that displays floating damage numbers and scrap gain feed
 
 **Configuration:**
 - `max_pool_size: int = 10` - Maximum number of labels in the pool
-- `float_speed: float = 1.0` - Speed of upward movement
 - `fade_duration: float = 1.5` - Duration of fade animation
 - `float_distance: float = 2.0` - Distance traveled upward
 - `vertical_offset: float = 2.0` - Height offset above entity
