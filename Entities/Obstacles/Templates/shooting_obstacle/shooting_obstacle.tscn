@@ -25,5 +25,6 @@ damage_cooldown = 2.0
 wait_time = 0.5
 
 [node name="RangePreview" type="MeshInstance3D" parent="." index="3"]
+visible = false
 mesh = SubResource("SphereMesh_wmkuw")
 surface_material_override/0 = SubResource("StandardMaterial3D_ovxtv")
