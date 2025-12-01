@@ -48,8 +48,8 @@ func _enter_placement_mode() -> void:
   super._enter_placement_mode()
 
   # Show and scale the range indicator during placement mode
-  # SphereMesh has a default radius of 0.5 (diameter 1.0). To get a sphere with radius = attack_range,
-  # we need to scale it by attack_range * 2 (since default_diameter * scale = 1.0 * (attack_range * 2) = attack_range * 2 diameter).
+  # SphereMesh has a default radius of 0.5. To get a sphere with radius = attack_range,
+  # we need to scale it by attack_range / 0.5 = attack_range * 2.
   attack_range_indicator.scale = Vector3(attack_range * 2, attack_range * 2, attack_range * 2)
   attack_range_indicator.visible = true
 
