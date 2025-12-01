@@ -42,14 +42,17 @@ func _ready():
   MyLogger.info("ShootingObstacle", "Shooting obstacle initialized with attack range: %f" % attack_range)
 
 
+## Overrides the parent method to set up the attack range indicator for placement preview.
+## Scales and displays the attack_range_indicator mesh to show the attack range during placement.
 func _enter_placement_mode() -> void:
   super._enter_placement_mode()
 
-  # add placement_preview_node range indicator
-  attack_range_indicator.scale = Vector3(attack_range, attack_range, attack_range)
+  # Show and scale the range indicator during placement mode
+  # Multiply by 2 since SphereMesh has a default radius of 0.5, and we need diameter = attack_range * 2
+  attack_range_indicator.scale = Vector3(attack_range * 2, attack_range * 2, attack_range * 2)
   attack_range_indicator.visible = true
-  placement_preview_node.add_child(attack_range_indicator)
 
+## Hides the range indicator when exiting placement mode.
 func _exit_placement_mode() -> void:
   super._exit_placement_mode()
 

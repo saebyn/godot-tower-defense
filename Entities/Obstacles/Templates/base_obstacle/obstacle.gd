@@ -62,6 +62,10 @@ func _enter_placement_mode() -> void:
   if health:
     health.disabled = true
 
+## Clean up after placement mode:
+##  - Removes the placement preview node
+##  - Restores original collision layers
+##  - Re-enables the health component
 func _exit_placement_mode() -> void:
   if placement_preview_node:
     placement_preview_node.queue_free()
@@ -132,6 +136,10 @@ func get_aabb() -> AABB:
     combined_aabb = combined_aabb.merge(mesh_instance.get_aabb())
   return combined_aabb
 
+## Sets a material override for all meshes in the placement preview node.
+## Used by the placement system to visually indicate valid or invalid placement (e.g., green/red highlight).
+## 
+## @param material The Material to apply as an override to all preview mesh surfaces.
 func set_preview_material(material: Material) -> void:
   if not placement_preview_node:
     MyLogger.warn("Obstacle", "set_preview_material() called but not in placement mode.")
@@ -144,6 +152,21 @@ func set_preview_material(material: Material) -> void:
         mesh_instance.set_surface_override_material(i, material)
 
 
+## Finalizes placement of the obstacle in the game world.
+##
+## This method performs several critical operations:
+## 1. **Reparents the obstacle**: Moves this node from its placement utility parent to the main scene (grandparent node).
+##    - **Requires**: The obstacle must have both a parent and grandparent node in the scene tree.
+##    - **Errors**: If the scene tree structure is invalid, placement will fail and log an error.
+## 2. **Exits placement mode**: Enables collisions and the health component, and hides the placement preview.
+## 3. **Creates a NavigationObstacle3D**: Instantiates and configures a NavigationObstacle3D to affect the navigation mesh.
+##    - The obstacle's shape is determined by the combined AABB of its mesh instances.
+##    - The NavigationObstacle3D is added as a child of the provided `navigation_region`.
+## 4. **Adds to navigation group**: Adds this obstacle to the group specified by `obstacle_group` for navigation mesh updates.
+##
+## Call this method after the obstacle has been positioned and is ready to be placed in the world.
+##
+## @param navigation_region The NavigationRegion3D to which the navigation obstacle will be added.
 func place(navigation_region: NavigationRegion3D) -> void:
   MyLogger.info("Obstacle", "place() called. obstacle_type: %s" % ("null" if not obstacle_type else obstacle_type.name))
   if not is_inside_tree():
