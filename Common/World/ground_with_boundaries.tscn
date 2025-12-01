@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://csgj8g6xkyj8x"]
+[gd_scene load_steps=11 format=3 uid="uid://csgj8g6xkyj8x"]
 
 [ext_resource type="Script" uid="uid://6rgb4g1qit8t" path="res://Common/World/world_boundary_markers.gd" id="1_boundary"]
 
@@ -10,12 +10,36 @@ albedo_color = Color(0.3, 0.25, 0.2, 1)
 roughness = 0.9
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
-size = Vector3(500, 2, 500)
+size = Vector3(5000, 2, 5000)
 
 [sub_resource type="BoxMesh" id="BoxMesh_boundary_horizontal"]
 size = Vector3(500, 10, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_boundary"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_boundary_north"]
+transparency = 1
+albedo_color = Color(0.8, 0.2, 0.2, 0.5)
+roughness = 0.5
+emission_enabled = true
+emission = Color(0.8, 0.2, 0.2, 1)
+emission_energy_multiplier = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_boundary_south"]
+transparency = 1
+albedo_color = Color(0.8, 0.2, 0.2, 0.5)
+roughness = 0.5
+emission_enabled = true
+emission = Color(0.8, 0.2, 0.2, 1)
+emission_energy_multiplier = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_boundary_east"]
+transparency = 1
+albedo_color = Color(0.8, 0.2, 0.2, 0.5)
+roughness = 0.5
+emission_enabled = true
+emission = Color(0.8, 0.2, 0.2, 1)
+emission_energy_multiplier = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_boundary_west"]
 transparency = 1
 albedo_color = Color(0.8, 0.2, 0.2, 0.5)
 roughness = 0.5
@@ -47,19 +71,19 @@ shape = SubResource("BoxShape3D_ground")
 [node name="NorthBoundary" type="MeshInstance3D" parent="Boundaries"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -200)
 mesh = SubResource("BoxMesh_boundary_horizontal")
-surface_material_override/0 = SubResource("StandardMaterial3D_boundary")
+surface_material_override/0 = SubResource("StandardMaterial3D_boundary_north")
 
 [node name="SouthBoundary" type="MeshInstance3D" parent="Boundaries"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 200)
 mesh = SubResource("BoxMesh_boundary_horizontal")
-surface_material_override/0 = SubResource("StandardMaterial3D_boundary")
+surface_material_override/0 = SubResource("StandardMaterial3D_boundary_south")
 
 [node name="EastBoundary" type="MeshInstance3D" parent="Boundaries"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 5, 0)
 mesh = SubResource("BoxMesh_boundary_vertical")
-surface_material_override/0 = SubResource("StandardMaterial3D_boundary")
+surface_material_override/0 = SubResource("StandardMaterial3D_boundary_east")
 
 [node name="WestBoundary" type="MeshInstance3D" parent="Boundaries"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -200, 5, 0)
 mesh = SubResource("BoxMesh_boundary_vertical")
-surface_material_override/0 = SubResource("StandardMaterial3D_boundary")
+surface_material_override/0 = SubResource("StandardMaterial3D_boundary_west")
