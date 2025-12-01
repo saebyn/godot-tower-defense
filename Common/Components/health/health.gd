@@ -43,12 +43,23 @@ func _ready():
     get_parent().set_meta("health_component", self)
 
 func _update_display():
+  if not is_node_ready():
+    return
+  
   sprite.visible = not disabled
 
   # Set up health display UI
   health_bar.max_value = max_hitpoints
   health_bar.value = hitpoints
   health_label.text = str(hitpoints) + " / " + str(max_hitpoints)
+
+
+## Triggers death for this entity, emitting the died signal.
+## Can be called directly to trigger instant death (e.g., instant-kill mechanics or scripted sequences).
+##
+## @param damage_source A string describing what caused the death.
+func die(damage_source: String = "unknown"):
+  _die(damage_source)
 
 func _die(damage_source: String = "unknown"):
   if dead:
