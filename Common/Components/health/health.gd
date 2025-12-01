@@ -53,7 +53,6 @@ func _update_display():
   health_bar.value = hitpoints
   health_label.text = str(hitpoints) + " / " + str(max_hitpoints)
 
-
 ## Triggers death for this entity, emitting the died signal.
 ## Can be called directly to trigger instant death (e.g., instant-kill mechanics or scripted sequences).
 ##
