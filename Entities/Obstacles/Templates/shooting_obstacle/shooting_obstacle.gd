@@ -81,9 +81,10 @@ func show_range_indicator() -> void:
 
 ## Hides the attack range indicator for this shooting obstacle.
 ## Used when exiting placement mode or when mouse stops hovering.
-func hide_range_indicator() -> void:
-  # Don't hide if currently being hovered
-  if _is_hovered:
+## @param force When true, hides the indicator even if currently being hovered (used for placement mode exit)
+func hide_range_indicator(force: bool = false) -> void:
+  # Don't hide if currently being hovered, unless forced
+  if _is_hovered and not force:
     return
   if attack_range_indicator:
     attack_range_indicator.visible = false
