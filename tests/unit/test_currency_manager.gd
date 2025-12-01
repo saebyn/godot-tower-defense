@@ -74,3 +74,93 @@ func test_multiple_level_ups_from_large_xp_gain():
   # Assert
   assert_eq(CurrencyManager.current_level, 3, "Should level up to level 3")
   assert_eq(CurrencyManager.current_xp, 0, "XP should reset to 0 after leveling up")
+
+func test_reset_scrap_sets_to_starting_amount():
+  # Arrange
+  CurrencyManager.current_scrap = 500
+  var starting_scrap = CurrencyManager.starting_scrap
+  
+  # Act
+  CurrencyManager.reset_scrap()
+  
+  # Assert
+  assert_eq(CurrencyManager.current_scrap, starting_scrap, "Scrap should reset to starting_scrap value")
+
+func test_convert_remaining_scrap_to_xp_with_valid_scrap():
+  # Arrange
+  CurrencyManager.current_scrap = 200
+  CurrencyManager.current_xp = 0
+  CurrencyManager.current_level = 1
+  CurrencyManager.scrap_to_xp_conversion_rate = 2.0
+  var starting_scrap = CurrencyManager.starting_scrap
+  
+  # Act
+  var result = CurrencyManager.convert_remaining_scrap_to_xp()
+  
+  # Assert
+  assert_eq(result.scrap_converted, 200, "Should convert 200 scrap")
+  assert_eq(result.xp_gained, 100, "Should gain 100 XP (200 / 2.0)")
+  assert_eq(CurrencyManager.current_xp, 100, "Current XP should be 100")
+  assert_eq(CurrencyManager.current_scrap, starting_scrap, "Scrap should reset to starting amount")
+
+func test_convert_remaining_scrap_to_xp_with_zero_scrap():
+  # Arrange
+  CurrencyManager.current_scrap = 0
+  CurrencyManager.current_xp = 50
+  CurrencyManager.current_level = 1
+  var starting_scrap = CurrencyManager.starting_scrap
+  
+  # Act
+  var result = CurrencyManager.convert_remaining_scrap_to_xp()
+  
+  # Assert
+  assert_eq(result.scrap_converted, 0, "Should convert 0 scrap")
+  assert_eq(result.xp_gained, 0, "Should gain 0 XP")
+  assert_eq(CurrencyManager.current_xp, 50, "Current XP should remain unchanged")
+  assert_eq(CurrencyManager.current_scrap, starting_scrap, "Scrap should reset to starting amount")
+
+func test_convert_remaining_scrap_to_xp_with_insufficient_scrap_for_conversion():
+  # Arrange
+  CurrencyManager.current_scrap = 1  # Less than conversion rate
+  CurrencyManager.current_xp = 0
+  CurrencyManager.current_level = 1
+  CurrencyManager.scrap_to_xp_conversion_rate = 2.0
+  var starting_scrap = CurrencyManager.starting_scrap
+  
+  # Act
+  var result = CurrencyManager.convert_remaining_scrap_to_xp()
+  
+  # Assert
+  assert_eq(result.scrap_converted, 1, "Should attempt to convert 1 scrap")
+  assert_eq(result.xp_gained, 0, "Should gain 0 XP (1 / 2.0 = 0 when converted to int)")
+  assert_eq(CurrencyManager.current_xp, 0, "Current XP should remain 0")
+  assert_eq(CurrencyManager.current_scrap, starting_scrap, "Scrap should reset to starting amount")
+
+func test_convert_remaining_scrap_causes_level_up():
+  # Arrange
+  CurrencyManager.current_scrap = 200
+  CurrencyManager.current_xp = 0
+  CurrencyManager.current_level = 1
+  CurrencyManager.scrap_to_xp_conversion_rate = 2.0
+  
+  # Act
+  CurrencyManager.convert_remaining_scrap_to_xp()
+  
+  # Assert - 200 scrap = 100 XP, which should level up from 1 to 2
+  assert_eq(CurrencyManager.current_level, 2, "Should level up to level 2")
+  assert_eq(CurrencyManager.current_xp, 0, "XP should be 0 after leveling up (100 XP used for level up)")
+
+func test_get_xp_for_next_level():
+  # Arrange
+  CurrencyManager.current_level = 1
+  
+  # Act
+  var xp_needed = CurrencyManager.get_xp_for_next_level()
+  
+  # Assert
+  assert_eq(xp_needed, 100, "Level 1 should need 100 XP to reach level 2")
+  
+  # Test level 3
+  CurrencyManager.current_level = 3
+  xp_needed = CurrencyManager.get_xp_for_next_level()
+  assert_eq(xp_needed, 300, "Level 3 should need 300 XP to reach level 4")
