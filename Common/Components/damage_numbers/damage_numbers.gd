@@ -163,7 +163,7 @@ func _get_or_create_label() -> Label3D:
 		_number_pool.append(new_label)
 		return new_label
 	
-	# Pool full - find and recycle the oldest
+	# Pool full - recycle an existing label
 	if not _number_pool.is_empty():
 		# Find any label and force-deactivate it for reuse
 		for label in _number_pool:
