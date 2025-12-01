@@ -79,8 +79,24 @@ func _on_all_waves_completed() -> void:
   var completion_time = _stop_timer()
   MyLogger.info("Scenario", "Scenario completed in %.2f seconds" % completion_time)
   
-  # Mark the scenario as complete in the progression system
+  # Reclaim all placed obstacles and get refund
+  var reclaim_data = _reclaim_all_obstacles()
+  
+  # Convert remaining scrap to XP
+  var conversion_data = CurrencyManager.convert_remaining_scrap_to_xp()
+  
+  # Store victory statistics for UI display
   var scenario_id = ScenarioManager.get_current_scenario_id()
+  ScenarioManager.last_scenario_stats = {
+    "scenario_id": scenario_id,
+    "completion_time": completion_time,
+    "obstacles_reclaimed": reclaim_data.obstacle_count,
+    "scrap_reclaimed": reclaim_data.total_refund,
+    "scrap_converted": conversion_data.scrap_converted,
+    "xp_gained_from_conversion": conversion_data.xp_gained,
+  }
+  
+  # Mark the scenario as complete in the progression system
   if not scenario_id.is_empty():
     ScenarioManager.mark_scenario_complete(scenario_id, completion_time)
     MyLogger.info("Scenario", "Scenario '%s' marked as complete" % scenario_id)
@@ -103,7 +119,25 @@ func on_target_died(_target: Node3D, _damage_source: String) -> void:
   if survivor_count <= 0:
     MyLogger.info("Scenario", "All survivors have died. Triggering game over.")
     # Stop timer on game over (but don't save the time)
-    _stop_timer()
+    var elapsed_time = _stop_timer()
+    
+    # Reclaim all placed obstacles and get refund (same as victory)
+    var reclaim_data = _reclaim_all_obstacles()
+    
+    # Convert remaining scrap to XP (same as victory)
+    var conversion_data = CurrencyManager.convert_remaining_scrap_to_xp()
+    
+    # Store stats for game over screen
+    var scenario_id = ScenarioManager.get_current_scenario_id()
+    ScenarioManager.last_scenario_stats = {
+      "scenario_id": scenario_id,
+      "elapsed_time": elapsed_time,
+      "obstacles_reclaimed": reclaim_data.obstacle_count,
+      "scrap_reclaimed": reclaim_data.total_refund,
+      "scrap_converted": conversion_data.scrap_converted,
+      "xp_gained_from_conversion": conversion_data.xp_gained,
+    }
+    
     GameManager.set_game_state(GameManager.GameState.GAME_OVER)
 
 
@@ -135,6 +169,30 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
     MyLogger.trace("Scenario", "Game paused - timer paused at %.2f seconds" % scenario_elapsed_time)
   elif new_state == GameManager.GameState.PLAYING and timer_started:
     MyLogger.trace("Scenario", "Game resumed - timer continuing from %.2f seconds" % scenario_elapsed_time)
+
+
+## Reclaim all placed obstacles and refund scrap based on their remaining health
+## Returns a dictionary with reclaim details: {obstacle_count, total_refund}
+func _reclaim_all_obstacles() -> Dictionary:
+  var obstacles = get_tree().get_nodes_in_group("navigation_mesh_source_group")
+  var obstacle_count = 0
+  var total_refund = 0
+  
+  MyLogger.info("Scenario", "Reclaiming %d obstacles..." % obstacles.size())
+  
+  for node in obstacles:
+    if node is Entity_PlaceableObstacle:
+      var refund = node.remove()
+      total_refund += refund
+      obstacle_count += 1
+      MyLogger.debug("Scenario", "Reclaimed obstacle, refunded %d scrap" % refund)
+  
+  MyLogger.info("Scenario", "Reclaimed %d obstacles for %d total scrap" % [obstacle_count, total_refund])
+  
+  return {
+    "obstacle_count": obstacle_count,
+    "total_refund": total_refund
+  }
 
 
 ## Apply custom environment to the scene's WorldEnvironment

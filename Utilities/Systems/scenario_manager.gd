@@ -15,6 +15,7 @@ extends Node
 # Runtime state (resets each session)
 var current_scenario_id: String = "" # Currently active scenario (e.g., "scenario_1")
 var current_wave: int = 0 # Current wave number within the active scenario
+var last_scenario_stats: Dictionary = {} # Stats from the last completed/failed scenario for UI display
 
 # Persistent state (saved across sessions)
 var completed_scenarios: Array[String] = [] # Array of completed scenario IDs ["scenario_1", "scenario_2"]

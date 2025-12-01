@@ -5,6 +5,8 @@ extends Node
 ## Implements SaveableSystem interface for centralized save management
 
 @export var starting_scrap: int = 100 # TODO change back to 0 before release
+@export var scrap_to_xp_conversion_rate: float = 2.0 ## How much scrap converts to 1 XP (e.g., 2.0 means 2 scrap = 1 XP)
+
 var current_scrap: int = 0
 var current_xp: int = 0
 var current_level: int = 1
@@ -101,6 +103,40 @@ func get_xp() -> int:
 ## Get current player level
 func get_level() -> int:
   return current_level
+
+## Convert all remaining scrap to XP and reset scrap to starting amount
+## Returns a dictionary with conversion details: {scrap_converted, xp_gained, starting_scrap}
+func convert_remaining_scrap_to_xp() -> Dictionary:
+  var scrap_to_convert = current_scrap
+  var xp_gained = 0
+  
+  if scrap_to_convert > 0 and scrap_to_xp_conversion_rate > 0:
+    xp_gained = int(scrap_to_convert / scrap_to_xp_conversion_rate)
+    
+    if xp_gained > 0:
+      earn_xp(xp_gained)
+      MyLogger.info("Economy", "Converted %d scrap to %d XP (rate: %.1f:1)" % [scrap_to_convert, xp_gained, scrap_to_xp_conversion_rate])
+    else:
+      MyLogger.info("Economy", "Scrap amount (%d) too low to convert to XP (rate: %.1f:1)" % [scrap_to_convert, scrap_to_xp_conversion_rate])
+  
+  # Reset scrap to starting amount
+  reset_scrap()
+  
+  return {
+    "scrap_converted": scrap_to_convert,
+    "xp_gained": xp_gained,
+    "starting_scrap": starting_scrap
+  }
+
+## Reset scrap to starting amount for a new scenario
+func reset_scrap() -> void:
+  current_scrap = starting_scrap
+  scrap_changed.emit(current_scrap)
+  MyLogger.info("Economy", "Scrap reset to starting amount: %d" % starting_scrap)
+
+## Get XP required for next level
+func get_xp_for_next_level() -> int:
+  return _get_xp_for_next_level()
 
 ## SaveableSystem Interface Implementation
 
