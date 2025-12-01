@@ -21,6 +21,10 @@ var current_scenario: Stage_Scenario = null
 var _hovered_shooting_obstacle: Entity_ShootingObstacle = null
 ## Raycast for detecting shooting obstacles on hover
 var _hover_raycast: RayCast3D
+## Last mouse position to avoid redundant hover checks
+var _last_hover_check_position: Vector2 = Vector2(-1, -1)
+## Minimum distance mouse must move before triggering hover check (in pixels)
+const HOVER_CHECK_THRESHOLD: float = 5.0
 
 func _ready() -> void:
   # Find Attack component via metadata
@@ -222,11 +226,16 @@ func _on_placement_mode_exited() -> void:
   var shooting_obstacles = get_tree().get_nodes_in_group(Entity_ShootingObstacle.SHOOTING_OBSTACLES_GROUP)
   for obstacle in shooting_obstacles:
     if obstacle is Entity_ShootingObstacle:
-      obstacle.hide_range_indicator()
+      obstacle.hide_range_indicator(true)  # Force hide even if hovered
 
 
 ## Handles hover detection for shooting obstacles to show their range indicators.
 func _handle_shooting_obstacle_hover(mouse_position: Vector2) -> void:
+  # Skip if mouse hasn't moved enough to warrant a new raycast
+  if _last_hover_check_position.distance_to(mouse_position) < HOVER_CHECK_THRESHOLD:
+    return
+  _last_hover_check_position = mouse_position
+  
   var ray_origin = camera.project_ray_origin(mouse_position)
   var ray_direction = camera.project_ray_normal(mouse_position)
   
