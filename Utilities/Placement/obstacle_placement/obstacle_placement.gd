@@ -2,6 +2,8 @@ extends Node3D
 class_name Utility_ObstaclePlacement
 
 signal rebake_navigation_mesh
+signal placement_mode_entered  ## Emitted when entering obstacle placement mode
+signal placement_mode_exited   ## Emitted when exiting obstacle placement mode
 
 @export_group("Placement Settings")
 @export var placement_clearance: float = 3.0 ## Minimum distance from other obstacles
@@ -215,6 +217,7 @@ func _on_obstacle_spawn_requested(obstacle_type: Resource_ObstacleType) -> void:
   MyLogger.info("Placement", "Created preview for obstacle: %s" % obstacle_type.name)
   raycast.enabled = true
   add_child(_preview)
+  placement_mode_entered.emit()
 
 func _place_obstacle() -> void:
   if not _preview:
@@ -251,6 +254,7 @@ func _clear_obstacle_placement() -> void:
     _preview = null
   _place_obstacle_type = null
   raycast.enabled = false
+  placement_mode_exited.emit()
 
 func _update_visual_feedback(target_position: Vector3) -> void:
   if not _preview:

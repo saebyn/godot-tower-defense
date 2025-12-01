@@ -17,6 +17,10 @@ var attack: Component_Attack
 
 var obstacle_raycast: RayCast3D
 var current_scenario: Stage_Scenario = null
+## Currently hovered shooting obstacle for range preview
+var _hovered_shooting_obstacle: Entity_ShootingObstacle = null
+## Raycast for detecting shooting obstacles on hover
+var _hover_raycast: RayCast3D
 
 func _ready() -> void:
   # Find Attack component via metadata
@@ -29,9 +33,19 @@ func _ready() -> void:
   obstacle_raycast.collision_mask = 2 # Only detect obstacles (layer 2)
   add_child(obstacle_raycast)
   
+  # Create hover detection raycast
+  _hover_raycast = RayCast3D.new()
+  _hover_raycast.enabled = false
+  _hover_raycast.collision_mask = 2 # Only detect obstacles (layer 2)
+  add_child(_hover_raycast)
+  
   # Set player attack damage source
   if attack:
     attack.damage_source = "player"
+  
+  # Connect to obstacle placement signals for showing all shooting obstacle ranges
+  obstacle_placement.placement_mode_entered.connect(_on_placement_mode_entered)
+  obstacle_placement.placement_mode_exited.connect(_on_placement_mode_exited)
 
   # Load the appropriate scenario dynamically
   _load_scenario()
@@ -116,6 +130,8 @@ func _input(event: InputEvent) -> void:
       _handle_enemy_click(event.position)
     elif event.button_index == MOUSE_BUTTON_RIGHT:
       _handle_obstacle_remove_click(event.position)
+  elif event is InputEventMouseMotion and not obstacle_placement.busy:
+    _handle_shooting_obstacle_hover(event.position)
 
 
 func _handle_enemy_click(click_position: Vector2):
@@ -191,3 +207,50 @@ func _on_attack_cooldown_started():
 
 func _on_attack_cooldown_ended():
   Input.set_custom_mouse_cursor(null)
+
+
+## Shows range indicators on all shooting obstacles when placement mode is entered.
+func _on_placement_mode_entered() -> void:
+  var shooting_obstacles = get_tree().get_nodes_in_group(Entity_ShootingObstacle.SHOOTING_OBSTACLES_GROUP)
+  for obstacle in shooting_obstacles:
+    if obstacle is Entity_ShootingObstacle:
+      obstacle.show_range_indicator()
+
+
+## Hides range indicators on all shooting obstacles when placement mode is exited.
+func _on_placement_mode_exited() -> void:
+  var shooting_obstacles = get_tree().get_nodes_in_group(Entity_ShootingObstacle.SHOOTING_OBSTACLES_GROUP)
+  for obstacle in shooting_obstacles:
+    if obstacle is Entity_ShootingObstacle:
+      obstacle.hide_range_indicator()
+
+
+## Handles hover detection for shooting obstacles to show their range indicators.
+func _handle_shooting_obstacle_hover(mouse_position: Vector2) -> void:
+  var ray_origin = camera.project_ray_origin(mouse_position)
+  var ray_direction = camera.project_ray_normal(mouse_position)
+  
+  _hover_raycast.enabled = true
+  _hover_raycast.position = ray_origin
+  _hover_raycast.target_position = ray_direction * raycast_length
+  _hover_raycast.force_raycast_update()
+  
+  var new_hovered_obstacle: Entity_ShootingObstacle = null
+  
+  if _hover_raycast.is_colliding():
+    var collider = _hover_raycast.get_collider()
+    if collider is Entity_ShootingObstacle:
+      new_hovered_obstacle = collider
+  
+  _hover_raycast.enabled = false
+  
+  # Update hover state if changed
+  if new_hovered_obstacle != _hovered_shooting_obstacle:
+    # Exit old hover
+    if _hovered_shooting_obstacle and is_instance_valid(_hovered_shooting_obstacle):
+      _hovered_shooting_obstacle.on_mouse_exit()
+    
+    # Enter new hover
+    _hovered_shooting_obstacle = new_hovered_obstacle
+    if _hovered_shooting_obstacle:
+      _hovered_shooting_obstacle.on_mouse_enter()
