@@ -123,10 +123,6 @@ func _set_boundary_transparency(boundary: MeshInstance3D, transparency: float):
   # Get the material from the mesh instance
   var mat = boundary.get_surface_override_material(0) as StandardMaterial3D
   if mat:
-    # Enable transparency if needed
-    if transparency > 0:
-      mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-      mat.albedo_color.a = transparency * max_boundary_opacity
-    else:
-      mat.albedo_color.a = 0.0
-      mat.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
+    # Keep transparency mode enabled always - just update alpha value
+    # This avoids unnecessary material mode updates every frame
+    mat.albedo_color.a = transparency * max_boundary_opacity

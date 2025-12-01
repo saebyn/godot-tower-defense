@@ -132,7 +132,7 @@
 - West: X = -200
 
 ### Expected Measurements
-- Ground plane size: 500x500 units
+- Ground plane size: 5000x5000 units
 - Ground plane position: Y = -2
 - Boundary wall height: 10 units
 - Fade distance: 50 units

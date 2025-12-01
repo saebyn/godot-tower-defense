@@ -1,10 +1,16 @@
 Ground and Camera Boundaries - Architecture Diagram
 ====================================================
 
+Note: Boundary positions shown below are example values.
+Actual boundaries are dynamically set per scenario:
+- scenario.gd defaults: ±50 units
+- scenario_1.tscn: ±60 units
+- Camera defaults (before scenario load): ±200 units
+
 Top-Down View (looking down at Y axis):
 ========================================
 
-                         North Boundary (Z = -200)
+                         North Boundary (Z = scenario.boundary_min_z)
                     ╔════════════════════════════════╗
                     ║ (Red glowing wall, fades in)   ║
                     ╚════════════════════════════════╝
@@ -12,7 +18,8 @@ Top-Down View (looking down at Y axis):
                                   │
                                   ▼
     West Boundary ═══════════════════════════════════════════ East Boundary
-    (X = -200)                                                 (X = +200)
+    (X = scenario.     (X = scenario.
+     boundary_min_x)                                           boundary_max_x)
         ║                                                           ║
         ║           ┌─────────────────────────┐                   ║
         ║           │                         │                   ║
@@ -26,7 +33,7 @@ Top-Down View (looking down at Y axis):
         ║           └─────────────────────────┘                   ║
         ║                                                           ║
         ║               Flat Ground Plane                          ║
-        ║              (500x500, Y=-2)                             ║
+        ║              (5000x5000, Y=-2)                           ║
         ║                                                           ║
     West Boundary ═══════════════════════════════════════════ East Boundary
                                   ▲
@@ -35,7 +42,7 @@ Top-Down View (looking down at Y axis):
                     ╔════════════════════════════════╗
                     ║ (Red glowing wall, fades in)   ║
                     ╚════════════════════════════════╝
-                         South Boundary (Z = +200)
+                         South Boundary (Z = scenario.boundary_max_z)
 
 
 Side View (looking from East, along X axis):
@@ -135,11 +142,11 @@ Coordinate Reference:
 World Center: (0, 0, 0)
 Ground Level: Y = 0
 Flat Ground:  Y = -2
-Boundaries:   ±200 on X and Z
+Boundaries:   Defined per scenario (default ±50, scenario_1 uses ±60)
 
 Camera Orbit Center Constraints:
-  X: -200 to +200
-  Z: -200 to +200
+  X: scenario.boundary_min_x to scenario.boundary_max_x
+  Z: scenario.boundary_min_z to scenario.boundary_max_z
   Y: 0 (calculated from ground intersection)
 
 Fade Zone: 50 units from boundary
