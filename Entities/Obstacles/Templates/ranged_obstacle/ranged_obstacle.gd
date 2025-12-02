@@ -52,6 +52,7 @@ func _exit_placement_mode() -> void:
 ## Shows the attack range indicator for this ranged obstacle.
 ## Used during placement mode to show all existing turret ranges, or on hover.
 func show_range_indicator() -> void:
+  MyLogger.debug("RangedObstacle", "Showing range indicator with range: %f" % effect_range)
   if effect_range_indicator:
     effect_range_indicator.visible = true
 
@@ -78,12 +79,19 @@ func on_mouse_exit() -> void:
   _is_hovered = false
   hide_range_indicator()
 
-func _handle_add_buff(buff_type: Entity_BuffObstacle.BuffType, buff_amount: float) -> void:
-  match buff_type:
-    Entity_BuffObstacle.BuffType.RANGE:
-      effect_range += buff_amount
+## Keep original effect range to handle buff stacking
+var _original_effect_range: float = 0
 
-func _handle_remove_buff(buff_type: Entity_BuffObstacle.BuffType, buff_amount: float) -> void:
+func _stack_buffs(amounts: Array[float]) -> float:
+  if _original_effect_range == 0:
+    _original_effect_range = effect_range
+
+  var result = _original_effect_range
+  for buff in amounts:
+    result *= (1.0 + buff)
+  return result
+
+func _handle_buffs(buff_type: Entity_BuffObstacle.BuffType, amounts: Array[float]) -> void:
   match buff_type:
     Entity_BuffObstacle.BuffType.RANGE:
-      effect_range = max(0.0, effect_range - buff_amount)
+      effect_range = _stack_buffs(amounts)
