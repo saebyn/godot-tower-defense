@@ -12,7 +12,9 @@
 extends StaticBody3D
 class_name Entity_PlaceableObstacle
 
-@export var obstacle_group: String = "navigation_mesh_source_group" ## Group to indicate the obstacle should affect navigation
+const OBSTACLE_GROUP: String = "obstacles"
+
+@export var navigation_obstacle_group: String = "navigation_mesh_source_group" ## Group to indicate the obstacle should affect navigation
 
 @export var mesh_instances: Array[MeshInstance3D] = []:
   set(values):
@@ -162,7 +164,7 @@ func set_preview_material(material: Material) -> void:
 ## 3. **Creates a NavigationObstacle3D**: Instantiates and configures a NavigationObstacle3D to affect the navigation mesh.
 ##    - The obstacle's shape is determined by the combined AABB of its mesh instances.
 ##    - The NavigationObstacle3D is added as a child of the provided `navigation_region`.
-## 4. **Adds to navigation group**: Adds this obstacle to the group specified by `obstacle_group` for navigation mesh updates.
+## 4. **Adds to navigation group**: Adds this obstacle to the group specified by `navigation_obstacle_group` for navigation mesh updates.
 ##
 ## Call this method after the obstacle has been positioned and is ready to be placed in the world.
 ##
@@ -210,4 +212,63 @@ func place(navigation_region: NavigationRegion3D) -> void:
   navigation_obstacle = nav_obstacle
 
   # Ensure the obstacle is in the correct group for navigation
-  add_to_group(obstacle_group)
+  add_to_group(navigation_obstacle_group)
+
+
+## Dictionary to track active buffs on this obstacle.
+## Key: source_id (int) of the buff obstacle applying the buff
+## Value: Dictionary with keys "timeout_timer"
+var buffs: Dictionary = {}
+
+## Internal handler to apply the buff effects to this obstacle.
+## For this base class, we do not implement any specific buff logic.
+## Subclasses should override this method to handle specific buff types.
+func _handle_add_buff(buff_type: Entity_BuffObstacle.BuffType, buff_amount: float) -> void:
+  pass
+
+## Internal handler to remove the buff effects from this obstacle.
+## For this base class, we do not implement any specific buff logic.
+## Subclasses should override this method to handle specific buff types.
+func _handle_remove_buff(buff_type: Entity_BuffObstacle.BuffType, buff_amount: float) -> void:
+  pass
+
+## Receive a buff from a buff obstacle.
+##
+## This method is called by a buff obstacle to apply a buff to this obstacle.
+## We should keep track of buffs applied so they can be removed after timeout, and
+## so that they are not stacked multiple times from the same source.
+##
+## @param buff_type The type of buff being applied.
+## @param buff_amount The amount of the buff.
+## @param source_id The instance ID of the buff obstacle applying the buff.
+## @param timeout The duration the buff should last (in seconds).
+func receive_buff(buff_type: Entity_BuffObstacle.BuffType, buff_amount: float, source_id: int, timeout: float) -> void:
+  # If we already have a buff from this source, reset the timer
+  # This assumes that the buff effects from `source_id` are always the same
+  if buffs.has(source_id):
+    var existing_buff = buffs[source_id]
+    if existing_buff.timeout_timer:
+      existing_buff.timeout_timer.stop()
+      existing_buff.timeout_timer.wait_time = timeout
+      existing_buff.timeout_timer.start()
+    return
+  
+  # Apply the buff effects
+  _handle_add_buff(buff_type, buff_amount)
+  
+  # Set up a timer to remove the buff after timeout
+  var timeout_timer = Timer.new()
+  timeout_timer.wait_time = timeout
+  timeout_timer.one_shot = true
+  timeout_timer.autostart = true
+  timeout_timer.timeout.connect(func():
+    _handle_remove_buff(buff_type, buff_amount)
+    buffs.erase(source_id)
+    timeout_timer.queue_free()
+  )
+  add_child(timeout_timer)
+  
+  # Store the buff info
+  buffs[source_id] = {
+    "timeout_timer": timeout_timer
+  }

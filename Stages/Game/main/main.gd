@@ -17,9 +17,9 @@ var attack: Component_Attack
 
 var obstacle_raycast: RayCast3D
 var current_scenario: Stage_Scenario = null
-## Currently hovered shooting obstacle for range preview
-var _hovered_shooting_obstacle: Entity_ShootingObstacle = null
-## Raycast for detecting shooting obstacles on hover
+## Currently hovered ranged obstacle for range preview
+var _hovered_ranged_obstacle: Entity_RangedObstacle = null
+## Raycast for detecting ranged obstacles on hover
 var _hover_raycast: RayCast3D
 ## Last mouse position to avoid redundant hover checks
 var _last_hover_check_position: Vector2 = Vector2(-1, -1)
@@ -135,7 +135,7 @@ func _input(event: InputEvent) -> void:
     elif event.button_index == MOUSE_BUTTON_RIGHT:
       _handle_obstacle_remove_click(event.position)
   elif event is InputEventMouseMotion and not obstacle_placement.busy:
-    _handle_shooting_obstacle_hover(event.position)
+    _handle_ranged_obstacle_hover(event.position)
 
 
 func _handle_enemy_click(click_position: Vector2):
@@ -229,8 +229,8 @@ func _on_placement_mode_exited() -> void:
       obstacle.hide_range_indicator(true) # Force hide even if hovered
 
 
-## Handles hover detection for shooting obstacles to show their range indicators.
-func _handle_shooting_obstacle_hover(mouse_position: Vector2) -> void:
+## Handles hover detection for ranged obstacles to show their range indicators.
+func _handle_ranged_obstacle_hover(mouse_position: Vector2) -> void:
   # Skip if mouse hasn't moved enough to warrant a new raycast
   if _last_hover_check_position.distance_to(mouse_position) < HOVER_CHECK_THRESHOLD:
     return
@@ -244,22 +244,22 @@ func _handle_shooting_obstacle_hover(mouse_position: Vector2) -> void:
   _hover_raycast.target_position = ray_direction * raycast_length
   _hover_raycast.force_raycast_update()
   
-  var new_hovered_obstacle: Entity_ShootingObstacle = null
+  var new_hovered_obstacle: Entity_RangedObstacle = null
   
   if _hover_raycast.is_colliding():
     var collider = _hover_raycast.get_collider()
-    if collider is Entity_ShootingObstacle:
+    if collider is Entity_RangedObstacle:
       new_hovered_obstacle = collider
   
   _hover_raycast.enabled = false
   
   # Update hover state if changed
-  if new_hovered_obstacle != _hovered_shooting_obstacle:
+  if new_hovered_obstacle != _hovered_ranged_obstacle:
     # Exit old hover
-    if _hovered_shooting_obstacle and is_instance_valid(_hovered_shooting_obstacle):
-      _hovered_shooting_obstacle.on_mouse_exit()
+    if _hovered_ranged_obstacle and is_instance_valid(_hovered_ranged_obstacle):
+      _hovered_ranged_obstacle.on_mouse_exit()
     
     # Enter new hover
-    _hovered_shooting_obstacle = new_hovered_obstacle
-    if _hovered_shooting_obstacle:
-      _hovered_shooting_obstacle.on_mouse_enter()
+    _hovered_ranged_obstacle = new_hovered_obstacle
+    if _hovered_ranged_obstacle:
+      _hovered_ranged_obstacle.on_mouse_enter()

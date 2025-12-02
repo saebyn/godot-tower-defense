@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://bjlvdmndqn0hw"]
+
+[ext_resource type="PackedScene" uid="uid://cj8x0adt0k2cd" path="res://Entities/Obstacles/Templates/ranged_obstacle/ranged_obstacle.tscn" id="1_15fnt"]
+[ext_resource type="Script" uid="uid://kwd7lup807u6" path="res://Entities/Obstacles/Templates/buff_obstacle/buff_obstacle.gd" id="2_occd2"]
+
+[node name="BuffObstacle" instance=ExtResource("1_15fnt")]
+script = ExtResource("2_occd2")
+effect_range = 15.0
