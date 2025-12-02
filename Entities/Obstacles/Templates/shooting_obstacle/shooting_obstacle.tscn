@@ -1,34 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://cj8x0adt0k2cd"]
+[gd_scene load_steps=3 format=3 uid="uid://dhxe3f6ho8qma"]
 
-[ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://Entities/Obstacles/Templates/base_obstacle/obstacle.tscn" id="1_shooting"]
-[ext_resource type="Script" uid="uid://cjf3cwgo3gtsa" path="res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.gd" id="2_shooting"]
-[ext_resource type="PackedScene" uid="uid://d2nt6gtj5g3cm" path="res://Common/Components/attack/attack.tscn" id="3_shooting"]
-[ext_resource type="Shader" uid="uid://03qkf3qo6xsh" path="res://Assets/Shaders/dithered_transparency.gdshader" id="4_shader"]
+[ext_resource type="PackedScene" uid="uid://cj8x0adt0k2cd" path="res://Entities/Obstacles/Templates/ranged_obstacle/ranged_obstacle.tscn" id="1_anll1"]
+[ext_resource type="Script" uid="uid://d3pwau0rnoxtb" path="res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.gd" id="2_shooting"]
 
-[sub_resource type="SphereMesh" id="SphereMesh_wmkuw"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_range"]
-render_priority = 10
-shader = ExtResource("4_shader")
-shader_parameter/albedo_color = Color(0.697, 0.521, 0, 1)
-shader_parameter/transparency = 0.1670000079325
-shader_parameter/dither_scale = 1.00000004424012
-
-[node name="ShootingObstacle" instance=ExtResource("1_shooting")]
+[node name="ShootingObstacle" instance=ExtResource("1_anll1")]
 script = ExtResource("2_shooting")
-enemy_group = "enemies"
-attack_range = 15.0
-detection_range = 25.0
-detection_interval = 0.5
-
-[node name="Attack" parent="." index="1" instance=ExtResource("3_shooting")]
-damage_amount = 15
-damage_cooldown = 2.0
-
-[node name="DetectionTimer" type="Timer" parent="." index="2"]
-wait_time = 0.5
-
-[node name="RangePreview" type="MeshInstance3D" parent="." index="3"]
-visible = false
-mesh = SubResource("SphereMesh_wmkuw")
-surface_material_override/0 = SubResource("ShaderMaterial_range")
