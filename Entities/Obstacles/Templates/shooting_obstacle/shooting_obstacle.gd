@@ -72,3 +72,15 @@ func _on_died(damage_source: String = "unknown") -> void:
   if detection_timer:
     detection_timer.stop()
   queue_free()
+
+
+func _handle_buffs(buff_type: Entity_BuffObstacle.BuffType, amounts: Array[float]) -> void:
+  match buff_type:
+    Entity_BuffObstacle.BuffType.ATTACK_SPEED:
+      if attack:
+        attack.attack_cooldown = _stack_buffs(buff_type, attack.attack_cooldown, amounts)
+    Entity_BuffObstacle.BuffType.DAMAGE:
+      if attack:
+        attack.damage = _stack_buffs(buff_type, attack.damage_amount, amounts)
+    _:
+      super._handle_buffs(buff_type, amounts)

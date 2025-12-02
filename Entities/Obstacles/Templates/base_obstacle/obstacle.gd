@@ -220,6 +220,17 @@ func place(navigation_region: NavigationRegion3D) -> void:
 ## Value: Dictionary with keys "timeout_timer"
 var buffs: Dictionary = {}
 
+var _original_values: Dictionary[Entity_BuffObstacle.BuffType, float] = {}
+
+func _stack_buffs(buff_type: Entity_BuffObstacle.BuffType, current_value: float, amounts: Array[float]) -> float:
+  if not _original_values.has(buff_type):
+    _original_values[buff_type] = current_value
+
+  var result = _original_values[buff_type]
+  for buff in amounts:
+    result *= (1.0 + buff)
+  return result
+
 ## Internal handler to apply the buff effects to this obstacle.
 ## For this base class, we do not implement any specific buff logic.
 ## Subclasses should override this method to handle specific buff types.

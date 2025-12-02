@@ -79,19 +79,7 @@ func on_mouse_exit() -> void:
   _is_hovered = false
   hide_range_indicator()
 
-## Keep original effect range to handle buff stacking
-var _original_effect_range: float = 0
-
-func _stack_buffs(amounts: Array[float]) -> float:
-  if _original_effect_range == 0:
-    _original_effect_range = effect_range
-
-  var result = _original_effect_range
-  for buff in amounts:
-    result *= (1.0 + buff)
-  return result
-
 func _handle_buffs(buff_type: Entity_BuffObstacle.BuffType, amounts: Array[float]) -> void:
   match buff_type:
     Entity_BuffObstacle.BuffType.RANGE:
-      effect_range = _stack_buffs(amounts)
+      effect_range = _stack_buffs(buff_type, effect_range, amounts)
