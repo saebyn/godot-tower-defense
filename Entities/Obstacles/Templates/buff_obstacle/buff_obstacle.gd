@@ -8,7 +8,7 @@ enum BuffType {
 }
 
 @export var buff_type: BuffType = BuffType.ATTACK_SPEED
-@export_range(0.0, 1.0, 0.01) var buff_amount: float = 0.1 # e.g., 0.1 for 10% increase
+@export_range(-1.0, 1.0, 0.01) var buff_amount: float = 0.1 # e.g., 0.1 for 10% increase
 @export var buff_interval: float = 1.0 # seconds between applying buffs
 
 
