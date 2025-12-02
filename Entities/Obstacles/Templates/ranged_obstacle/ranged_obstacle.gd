@@ -3,7 +3,13 @@ class_name Entity_RangedObstacle
 
 const RANGED_OBSTACLES_GROUP: String = "ranged_obstacles"
 
-@export var effect_range: float = 15.0
+@export var effect_range: float = 15.0:
+  get:
+    return effect_range
+  set(value):
+    effect_range = value
+    if effect_range_indicator:
+      effect_range_indicator.scale = Vector3(effect_range * 2, effect_range * 2, effect_range * 2)
 
 ## Whether this obstacle is currently being hovered over by the mouse
 var _is_hovered: bool = false
@@ -71,3 +77,13 @@ func on_mouse_enter() -> void:
 func on_mouse_exit() -> void:
   _is_hovered = false
   hide_range_indicator()
+
+func _handle_add_buff(buff_type: Entity_BuffObstacle.BuffType, buff_amount: float) -> void:
+  match buff_type:
+    Entity_BuffObstacle.BuffType.RANGE:
+      effect_range += buff_amount
+
+func _handle_remove_buff(buff_type: Entity_BuffObstacle.BuffType, buff_amount: float) -> void:
+  match buff_type:
+    Entity_BuffObstacle.BuffType.RANGE:
+      effect_range = max(0.0, effect_range - buff_amount)
