@@ -29,7 +29,7 @@ func _ready():
   if effect_range_indicator:
     effect_range_indicator.scale = Vector3(effect_range * 2, effect_range * 2, effect_range * 2)
 
-  MyLogger.info("RangedObstacle", "Ranged obstacle initialized with attack range: %f" % effect_range)
+  MyLogger.info("RangedObstacle", "Ranged obstacle initialized with effect range: %f" % effect_range)
 
 
 ## Overrides the parent method to set up the attack range indicator for placement preview.
