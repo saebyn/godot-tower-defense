@@ -223,14 +223,9 @@ var buffs: Dictionary = {}
 ## Internal handler to apply the buff effects to this obstacle.
 ## For this base class, we do not implement any specific buff logic.
 ## Subclasses should override this method to handle specific buff types.
-func _handle_add_buff(buff_type: Entity_BuffObstacle.BuffType, buff_amount: float) -> void:
+func _handle_buffs(buff_type: Entity_BuffObstacle.BuffType, buff_amounts: Array[float]) -> void:
   pass
 
-## Internal handler to remove the buff effects from this obstacle.
-## For this base class, we do not implement any specific buff logic.
-## Subclasses should override this method to handle specific buff types.
-func _handle_remove_buff(buff_type: Entity_BuffObstacle.BuffType, buff_amount: float) -> void:
-  pass
 
 ## Receive a buff from a buff obstacle.
 ##
@@ -252,23 +247,33 @@ func receive_buff(buff_type: Entity_BuffObstacle.BuffType, buff_amount: float, s
       existing_buff.timeout_timer.wait_time = timeout
       existing_buff.timeout_timer.start()
     return
-  
-  # Apply the buff effects
-  _handle_add_buff(buff_type, buff_amount)
-  
+
   # Set up a timer to remove the buff after timeout
   var timeout_timer = Timer.new()
+
+  # Store the buff info
+  buffs[source_id] = {
+    "timeout_timer": timeout_timer,
+    "buff_type": buff_type,
+    "buff_amount": buff_amount
+  }
+
+  # Apply the buff effects
+  _handle_buffs(buff_type, _get_buffs_of_type(buff_type))
+  
   timeout_timer.wait_time = timeout
   timeout_timer.one_shot = true
   timeout_timer.autostart = true
   timeout_timer.timeout.connect(func():
-    _handle_remove_buff(buff_type, buff_amount)
     buffs.erase(source_id)
+    _handle_buffs(buff_type, _get_buffs_of_type(buff_type))
     timeout_timer.queue_free()
   )
   add_child(timeout_timer)
   
-  # Store the buff info
-  buffs[source_id] = {
-    "timeout_timer": timeout_timer
-  }
+func _get_buffs_of_type(buff_type: Entity_BuffObstacle.BuffType) -> Array[float]:
+  var result: Array[float] = []
+  for buff in buffs.values():
+    if buff.buff_type == buff_type:
+      result.append(buff.buff_amount)
+  return result

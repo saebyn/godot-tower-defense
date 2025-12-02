@@ -8,7 +8,7 @@ size = Vector3(2.0137024, 3.1646423, 2.0134277)
 
 [node name="RangeAmplifier" node_paths=PackedStringArray("mesh_instances") instance=ExtResource("1_y00lx")]
 buff_type = 2
-buff_amount = 15.0
+buff_amount = 0.3
 buff_interval = 1.0
 mesh_instances = [NodePath("tower/Tower")]
 
