@@ -215,18 +215,18 @@ func _on_attack_cooldown_ended():
 
 ## Shows range indicators on all shooting obstacles when placement mode is entered.
 func _on_placement_mode_entered() -> void:
-  var shooting_obstacles = get_tree().get_nodes_in_group(Entity_ShootingObstacle.SHOOTING_OBSTACLES_GROUP)
+  var shooting_obstacles = get_tree().get_nodes_in_group(Entity_RangedObstacle.RANGED_OBSTACLES_GROUP)
   for obstacle in shooting_obstacles:
-    if obstacle is Entity_ShootingObstacle:
+    if obstacle is Entity_RangedObstacle:
       obstacle.show_range_indicator()
 
 
 ## Hides range indicators on all shooting obstacles when placement mode is exited.
 func _on_placement_mode_exited() -> void:
-  var shooting_obstacles = get_tree().get_nodes_in_group(Entity_ShootingObstacle.SHOOTING_OBSTACLES_GROUP)
+  var shooting_obstacles = get_tree().get_nodes_in_group(Entity_RangedObstacle.RANGED_OBSTACLES_GROUP)
   for obstacle in shooting_obstacles:
-    if obstacle is Entity_ShootingObstacle:
-      obstacle.hide_range_indicator(true)  # Force hide even if hovered
+    if obstacle is Entity_RangedObstacle:
+      obstacle.hide_range_indicator(true) # Force hide even if hovered
 
 
 ## Handles hover detection for shooting obstacles to show their range indicators.

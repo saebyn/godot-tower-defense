@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://bl5g2v8n3jkph"]
 
-[ext_resource type="PackedScene" uid="uid://cj8x0adt0k2cd" path="res://Entities/Obstacles/Templates/ranged_obstacle/ranged_obstacle.tscn" id="1_turret"]
+[ext_resource type="PackedScene" uid="uid://dhxe3f6ho8qma" path="res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.tscn" id="1_turret"]
 [ext_resource type="Script" uid="uid://0yy8udbhaakj" path="res://Entities/Obstacles/Concrete/basic_turret/basic_turret.gd" id="2_6y5ob"]
 [ext_resource type="PackedScene" uid="uid://cyxcfkq8p7bag" path="res://Assets/Models/turret.blend" id="2_nmtda"]
 
