@@ -12,9 +12,14 @@
 extends StaticBody3D
 class_name Entity_PlaceableObstacle
 
+## Group name for all placeable obstacles
+## This group is automatically applied by the base scene,
+## but is defined here for use in other scripts to find obstacles.
 const OBSTACLE_GROUP: String = "obstacles"
 
-@export var navigation_obstacle_group: String = "navigation_mesh_source_group" ## Group to indicate the obstacle should affect navigation
+## Group to indicate the obstacle should affect navigation
+## We add obstacles to this group upon placement for navigation mesh updates.
+@export var navigation_obstacle_group: String = "navigation_mesh_source_group"
 
 @export var mesh_instances: Array[MeshInstance3D] = []:
   set(values):
