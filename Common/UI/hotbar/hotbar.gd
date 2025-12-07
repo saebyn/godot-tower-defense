@@ -11,14 +11,14 @@ class_name UI_Hotbar
 signal obstacle_selected(obstacle: Resource_ObstacleType)
 
 @export var max_slots: int = 6 # Maximum number of hotbar slots
-@export var slot_size: Vector2 = Vector2(64, 64) # Size of each hotbar slot
 @export var spacing: int = 8 # Spacing between slots
+@export var button_scene: PackedScene # Scene for individual hotbar buttons
 
 @onready var slots_container: HBoxContainer = $SlotsContainer
 @onready var obstacle_selection_menu: PopupMenu = $ObstacleSelectionMenu
 
 var slot_obstacle_ids: Array[String] = [] ## Obstacle IDs for each slot
-var slot_buttons: Array[Button] = [] ## Button references for each slot
+var slot_buttons: Array[HotbarButton] = [] ## Button references for each slot
 var current_configuring_slot: int = -1 ## Track which slot was last right-clicked for configuration (-1 if none, may not be valid index or current if no menu open)
 
 func _ready() -> void:
@@ -48,10 +48,7 @@ func _create_slots() -> void:
   
   # Create new slots
   for i in range(max_slots):
-    var slot_button = Button.new()
-    slot_button.custom_minimum_size = slot_size
-    slot_button.expand_icon = true
-    slot_button.flat = false
+    var slot_button = button_scene.instantiate() as HotbarButton
     
     # Connect button signals for both left and right click
     slot_button.pressed.connect(_on_slot_pressed.bind(i))
@@ -108,22 +105,8 @@ func _update_slot_visual(slot_index: int) -> void:
   var button = slot_buttons[slot_index]
   var obstacle_id = slot_obstacle_ids[slot_index]
   var obstacle = _get_obstacle_by_id(obstacle_id)
-  
-  if obstacle:
-    # Set button icon and tooltip
-    button.icon = obstacle.icon if obstacle.icon else null
-    button.tooltip_text = "%s\nCost: %d\n%s\n\nLeft click: Select\nRight click: Choose different obstacle" % [obstacle.name, obstacle.cost, obstacle.description]
-    button.disabled = false
-    button.focus_mode = Control.FOCUS_NONE
-    
-    # Show cost and slot number on button
-    button.text = "%d\n$%d" % [slot_index + 1, obstacle.cost]
-  else:
-    # Empty slot
-    button.icon = null
-    button.tooltip_text = "Empty slot %d\n\nRight click to choose an obstacle" % (slot_index + 1)
-    button.disabled = true
-    button.text = str(slot_index + 1)
+
+  button.load(slot_index, obstacle)
 
 func _on_slot_pressed(slot_index: int) -> void:
   """Handle left click on slot - select obstacle for placement"""
