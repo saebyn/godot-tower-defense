@@ -239,7 +239,7 @@ func _stack_buffs(buff_type: Entity_BuffObstacle.BuffType, current_value: float,
 ## Internal handler to apply the buff effects to this obstacle.
 ## For this base class, we do not implement any specific buff logic.
 ## Subclasses should override this method to handle specific buff types.
-func _handle_buffs(buff_type: Entity_BuffObstacle.BuffType, buff_amounts: Array[float]) -> void:
+func _handle_buffs(_buff_type: Entity_BuffObstacle.BuffType, _buff_amounts: Array[float]) -> void:
   pass
 
 
