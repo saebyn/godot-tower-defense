@@ -71,7 +71,7 @@ func load_resource(resource: Resource_EnemyType) -> void:
     # Update attack component
     if attack:
       attack.damage_amount = resource.damage_amount
-      attack.damage_cooldown = resource.damage_cooldown
+      attack.attack_speed = resource.attack_speed
       attack.damage_source = resource.enemy_type
   , Object.CONNECT_ONE_SHOT)
 

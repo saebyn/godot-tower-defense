@@ -12,7 +12,7 @@ signal damage_dealt(target: Node, damage: int)
 
 @export_group("Damage Settings")
 @export var damage_amount: int = 10 ## Damage dealt per hit
-@export var damage_cooldown: float = 1.0 ## Cooldown between damage ticks per enemy
+@export var attack_speed: float = 1.0 ## Cooldown between damage ticks per enemy
 @export var damage_source: String = "passive_damage" ## Source identifier for tracking
 @export var target_group: String = "enemies" ## Which group to damage
 
@@ -98,7 +98,7 @@ func _try_damage_enemy(enemy: Node):
   
   if health and health is Component_Health:
     health.take_damage(damage_amount, damage_source)
-    _enemy_cooldowns[enemy] = damage_cooldown
+    _enemy_cooldowns[enemy] = attack_speed
     damage_dealt.emit(enemy, damage_amount)
     MyLogger.debug("PassiveDamage", "Dealt %d damage to %s" % [damage_amount, enemy.name])
     

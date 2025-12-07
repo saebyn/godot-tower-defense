@@ -78,7 +78,7 @@ func _handle_buffs(buff_type: Entity_BuffObstacle.BuffType, amounts: Array[float
   match buff_type:
     Entity_BuffObstacle.BuffType.ATTACK_SPEED:
       if attack:
-        attack.damage_cooldown = _stack_buffs(buff_type, attack.damage_cooldown, amounts)
+        attack.attack_speed = _stack_buffs(buff_type, attack.attack_speed, amounts)
     Entity_BuffObstacle.BuffType.DAMAGE:
       if attack:
         attack.damage_amount = _stack_buffs(buff_type, attack.damage_amount, amounts) as int

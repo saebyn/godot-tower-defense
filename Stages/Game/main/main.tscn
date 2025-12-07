@@ -33,7 +33,7 @@ attack_waiting_cursor_image = ExtResource("2_wy7n0")
 
 [node name="Attack" parent="." node_paths=PackedStringArray("audio_player") instance=ExtResource("2_kek77")]
 damage_amount = 1
-damage_cooldown = 0.1
+attack_speed = 10
 damage_source = "player"
 audio_player = NodePath("../AudioStreamPlayer")
 

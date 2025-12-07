@@ -44,7 +44,7 @@ mesh_instances = [NodePath("turret/Base"), NodePath("turret/TurretYaw/Top")]
 
 [node name="Attack" parent="." index="1"]
 damage_amount = 1
-damage_cooldown = 1.5
+attack_speed = 0.75
 damage_source = "turret"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." index="2"]

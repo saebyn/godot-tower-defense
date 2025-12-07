@@ -12,7 +12,7 @@ extends Resource
 @export var hitpoints: int = 100 ## Health of the enemy
 @export var speed: float = 2.0 ## Movement speed of the enemy
 @export var damage_amount: int = 10 ## Damage dealt by the enemy
-@export var damage_cooldown: float = 1.0 ## Cooldown between enemy attacks
+@export var attack_speed: float = 1.0 ## Cooldown between enemy attacks
 @export var scrap_reward: int = 10 ## Scrap awarded when enemy dies
 @export var xp_reward: int = 10 ## XP awarded when enemy dies
 @export var target_desired_distance: float = 4.0 ## Desired distance to target when approaching
