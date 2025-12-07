@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_xxxxx")
 id = "sup_cooldown_beacon"
-display_name = "Cooldown Beacon"
-description = "Aura that reduces reload times and cooldowns of nearby defenses."
+display_name = "Attack Speed Beacon"
+description = "Deploys a beacon that increases the attack speed of nearby towers."
 branch_name = "Support"
 level_requirement = 3
 scrap_cost = 0

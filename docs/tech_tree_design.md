@@ -147,8 +147,8 @@ Legend: **T#** = Tier; **[EXC]** = mutually exclusive pair; **⟂** = exclusivit
 | --------------------- | ----------------- | ---------------------------- | ----: | --------------------- | --------------------- | ----------------------- | ----------- | --------------------- | -------------------------- | ----- |
 | `sup_overcharger`     | Overcharger       | Aura: +fire rate to turrets. |     2 | []                    | []                    | []                      | Support     | [overcharger]         | []                         | |
 | `sup_range_amp`       | Range Amplifier   | Aura: +range to turrets.     |     3 | [sup_overcharger]     | []                    | []                      | Support     | [range_amplifier]     | []                         | |
-| `sup_cooldown_beacon` | Cooldown Beacon   | Aura: −reload/cooldowns.     |     3 | [sup_overcharger]     | []                    | []                      | Support     | [cooldown_beacon]     | []                         | |
-| `sup_repair_drone`    | Auto‑Repair Drone | Repairs nearby defenses.     |     4 | [sup_cooldown_beacon] | [ach_lose_5_defenses] | []                      | Support     | [repair_drone]        | []                         | |
+| `sup_attack_speed_beacon` | Cooldown Beacon   | Aura: −reload/cooldowns.     |     3 | [sup_overcharger]     | []                    | []                      | Support     | [attack_speed_beacon]     | []                         | |
+| `sup_repair_drone`    | Auto‑Repair Drone | Repairs nearby defenses.     |     4 | [sup_attack_speed_beacon] | [ach_lose_5_defenses] | []                      | Support     | [repair_drone]        | []                         | |
 
 ### Click
 
@@ -173,7 +173,7 @@ Legend: **T#** = Tier; **[EXC]** = mutually exclusive pair; **⟂** = exclusivit
 
 * **Walls/Obstacles:** `ob_crates`, `ob_spike_barricade`, `ob_oil_slick`, `ob_electric_fence`, `ob_zombie_bait_sign`, `adv_fortification_mastery` (reinforced_wall, kill_zone)
 * **Turrets/Damage:** `tur_scrap_shooter`, `tur_boom_barrel`, `tur_saw_spitter`, `tur_zed_zapper`, `tur_molotov_mortar`, `adv_experimental_weapons` (railgun_turret, emp_mine)
-* **Support:** `sup_overcharger`, `sup_range_amp`, `sup_cooldown_beacon`, `sup_repair_drone`, `adv_synergy_hub` (power_grid)
+* **Support:** `sup_overcharger`, `sup_range_amp`, `sup_attack_speed_beacon`, `sup_repair_drone`, `adv_synergy_hub` (power_grid)
 * **Economy:** `eco_scrap_recycler`, `eco_industrial_recycler`, `eco_drone_salvager`, `eco_harvest_boost`, `adv_synergy_hub` (resource_amplifier)
 * **Click Upgrades:** `clk_hydraulic_mouse`, `clk_shock_click`, `clk_double_tap`, `clk_recoil_dampener`
 * **Advanced Cross-Branch:** `adv_experimental_weapons`, `adv_fortification_mastery`, `adv_synergy_hub`

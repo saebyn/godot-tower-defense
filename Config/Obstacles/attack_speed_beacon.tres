@@ -9,8 +9,8 @@ size = Vector2(16, 16)
 [resource]
 script = ExtResource("1_bhnkn")
 id = "sup_cooldown_beacon"
-name = "Cooldown Beacon"
-description = "Reduces attack cooldown of nearby turrets and other things"
+name = "Attack Speed Beacon"
+description = "Deploys a beacon that increases the attack speed of nearby towers."
 icon = SubResource("PlaceholderTexture2D_gi3ak")
 color = Color(0, 0.3764706, 0.78431374, 1)
 cost = 10
