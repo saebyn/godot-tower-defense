@@ -32,8 +32,8 @@ func _ready():
   MyLogger.info("RangedObstacle", "Ranged obstacle initialized with effect range: %f" % effect_range)
 
 
-## Overrides the parent method to set up the attack range indicator for placement preview.
-## Scales and displays the effect_range_indicator mesh to show the attack range during placement.
+## Overrides the parent method to set up the effect range indicator for placement preview.
+## Scales and displays the effect_range_indicator mesh to show the effect range during placement.
 func _enter_placement_mode() -> void:
   super._enter_placement_mode()
 
@@ -49,7 +49,7 @@ func _exit_placement_mode() -> void:
     effect_range_indicator.visible = false
 
 
-## Shows the attack range indicator for this ranged obstacle.
+## Shows the effect range indicator for this ranged obstacle.
 ## Used during placement mode to show all existing turret ranges, or on hover.
 func show_range_indicator() -> void:
   MyLogger.debug("RangedObstacle", "Showing range indicator with range: %f" % effect_range)
@@ -57,7 +57,7 @@ func show_range_indicator() -> void:
     effect_range_indicator.visible = true
 
 
-## Hides the attack range indicator for this ranged obstacle.
+## Hides the effect range indicator for this ranged obstacle.
 ## Used when exiting placement mode or when mouse stops hovering.
 ## @param force When true, hides the indicator even if currently being hovered (used for placement mode exit)
 func hide_range_indicator(force: bool = false) -> void:
