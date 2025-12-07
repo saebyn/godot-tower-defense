@@ -23,7 +23,7 @@ detection_interval = 0.5
 
 [node name="Attack" parent="." index="1" instance=ExtResource("3_shooting")]
 damage_amount = 15
-damage_cooldown = 2.0
+attack_speed = 0.5
 
 [node name="DetectionTimer" type="Timer" parent="." index="2"]
 wait_time = 0.5

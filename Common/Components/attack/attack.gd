@@ -20,7 +20,7 @@ enum AttackResult {
 
 @export_group("Damage Settings")
 @export var damage_amount: int = 10
-@export var damage_cooldown: float = 1.0
+@export var attack_speed: float = 1.0 ## How many attacks per second
 @export var damage_source: String = "unknown" ## Source identifier for damage tracking
 
 @export_group("Effects")
@@ -48,7 +48,9 @@ func perform_attack(target: Node) -> AttackResult:
         AudioManager.play_sound(audio_player, hit_sound)
       # Start cooldown
       is_on_cooldown = true
-      attack_timer.start(damage_cooldown)
+      # if attack_speed is 10 attacks/second,
+      # then the attack cooldown is 0.1 seconds/attack
+      attack_timer.start(1.0 / attack_speed)
       cooldown_started.emit()
       return AttackResult.SUCCESS
     else:

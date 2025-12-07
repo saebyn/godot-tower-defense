@@ -118,7 +118,7 @@ Entities use a composition pattern with reusable components attached as child no
 graph TB
     subgraph "Component Types"
         Health[Health Component<br/>- hitpoints<br/>- max_hitpoints<br/>- died signal<br/>- damaged signal]
-        Attack[Attack Component<br/>- damage_amount<br/>- damage_cooldown<br/>- damage_source<br/>- perform_attack]
+        Attack[Attack Component<br/>- damage_amount<br/>- attack_speed<br/>- damage_source<br/>- perform_attack]
     end
     
     subgraph "Entity: Enemy"
