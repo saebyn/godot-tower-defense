@@ -54,6 +54,9 @@ func _enter_placement_mode() -> void:
   # Create our own mesh instances based on the temporary obstacle's meshes
   placement_preview_node = Node3D.new()
   for mesh_instance in mesh_instances:
+    if not mesh_instance or not mesh_instance.mesh:
+      MyLogger.warn("Obstacle", "Skipping invalid MeshInstance3D in placement preview")
+      continue
     mesh_instance.hide()
     var preview_mesh = MeshInstance3D.new()
     preview_mesh.mesh = mesh_instance.mesh
