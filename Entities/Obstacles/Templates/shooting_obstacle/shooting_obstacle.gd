@@ -84,3 +84,20 @@ func _handle_buffs(buff_type: Entity_BuffObstacle.BuffType, amounts: Array[float
         attack.damage_amount = _stack_buffs(buff_type, attack.damage_amount, amounts) as int
     _:
       super._handle_buffs(buff_type, amounts)
+
+## Override to add shooting-specific stats
+func get_tooltip_info() -> Dictionary:
+  var info = super.get_tooltip_info()
+  
+  if attack:
+    # Attack speed
+    var base_speed = _original_values.get(Entity_BuffObstacle.BuffType.ATTACK_SPEED, attack.attack_speed)
+    info.base_stats["attack_speed"] = base_speed
+    info.current_stats["attack_speed"] = attack.attack_speed
+    
+    # Damage
+    var base_damage = _original_values.get(Entity_BuffObstacle.BuffType.DAMAGE, attack.damage_amount)
+    info.base_stats["damage"] = base_damage
+    info.current_stats["damage"] = attack.damage_amount
+  
+  return info

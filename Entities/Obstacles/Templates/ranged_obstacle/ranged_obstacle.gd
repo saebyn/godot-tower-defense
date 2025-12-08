@@ -83,3 +83,14 @@ func _handle_buffs(buff_type: Entity_BuffObstacle.BuffType, amounts: Array[float
   match buff_type:
     Entity_BuffObstacle.BuffType.RANGE:
       effect_range = _stack_buffs(buff_type, effect_range, amounts)
+
+## Override to add range stat
+func get_tooltip_info() -> Dictionary:
+  var info = super.get_tooltip_info()
+  
+  # Range
+  var base_range = _original_values.get(Entity_BuffObstacle.BuffType.RANGE, effect_range)
+  info.base_stats["range"] = base_range
+  info.current_stats["range"] = effect_range
+  
+  return info

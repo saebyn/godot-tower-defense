@@ -296,3 +296,38 @@ func _get_buffs_of_type(buff_type: Entity_BuffObstacle.BuffType) -> Array[float]
     if buff.buff_type == buff_type:
       result.append(buff.buff_amount)
   return result
+
+## Get display information for the tooltip
+## Subclasses should override this to add their specific stats
+func get_tooltip_info() -> Dictionary:
+  var info = {
+    "name": obstacle_type.name if obstacle_type else "Unknown",
+    "base_stats": {},
+    "current_stats": {},
+    "active_buffs": []
+  }
+  
+  # Add health if present
+  if health:
+    var base_health = health.max_hitpoints
+    info.base_stats["health"] = base_health
+    info.current_stats["health"] = health.hitpoints
+  
+  return info
+
+## Get list of active buff sources with details
+func get_active_buff_sources() -> Array[Dictionary]:
+  var sources: Array[Dictionary] = []
+  for source_id in buffs.keys():
+    var buff = buffs[source_id]
+    var source_node = instance_from_id(source_id)
+    if source_node and is_instance_valid(source_node):
+      var source_name = "Support"
+      if source_node.has_method("get") and source_node.obstacle_type:
+        source_name = source_node.obstacle_type.name
+      sources.append({
+        "name": source_name,
+        "type": buff.buff_type,
+        "amount": buff.buff_amount
+      })
+  return sources

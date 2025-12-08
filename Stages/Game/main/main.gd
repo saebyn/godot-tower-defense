@@ -4,6 +4,9 @@ extends Node3D
 @export var raycast_length: float = 1000.0
 @export var attack_waiting_cursor_image: Texture2D
 
+@export_group("UI")
+@export var obstacle_tooltip_scene: PackedScene
+
 @export_group("Navigation")
 @export var navigation_rebake_interval: float = 5.0 # Seconds between rebakes
 
@@ -21,6 +24,8 @@ var current_scenario: Stage_Scenario = null
 var _hovered_ranged_obstacle: Entity_RangedObstacle = null
 ## Raycast for detecting ranged obstacles on hover
 var _hover_raycast: RayCast3D
+## Obstacle tooltip for displaying stats on hover
+var _obstacle_tooltip = null # UI_ObstacleTooltip
 ## Last mouse position to avoid redundant hover checks
 var _last_hover_check_position: Vector2 = Vector2(-1, -1)
 ## Minimum distance mouse must move before triggering hover check (in pixels)
@@ -46,6 +51,12 @@ func _ready() -> void:
   # Set player attack damage source
   if attack:
     attack.damage_source = "player"
+  
+  # Create obstacle tooltip if scene is assigned
+  if obstacle_tooltip_scene and ui:
+    _obstacle_tooltip = obstacle_tooltip_scene.instantiate()
+    ui.add_child(_obstacle_tooltip)
+    _obstacle_tooltip.visible = false
   
   # Connect to obstacle placement signals for showing all shooting obstacle ranges
   obstacle_placement.placement_mode_entered.connect(_on_placement_mode_entered)
@@ -258,8 +269,12 @@ func _handle_ranged_obstacle_hover(mouse_position: Vector2) -> void:
     # Exit old hover
     if _hovered_ranged_obstacle and is_instance_valid(_hovered_ranged_obstacle):
       _hovered_ranged_obstacle.on_mouse_exit()
+      if _obstacle_tooltip:
+        _obstacle_tooltip.hide_tooltip()
     
     # Enter new hover
     _hovered_ranged_obstacle = new_hovered_obstacle
     if _hovered_ranged_obstacle:
       _hovered_ranged_obstacle.on_mouse_enter()
+      if _obstacle_tooltip:
+        _obstacle_tooltip.show_tooltip(_hovered_ranged_obstacle, mouse_position)

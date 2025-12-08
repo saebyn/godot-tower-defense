@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://b47ma4awlxcq0"]
+[gd_scene load_steps=23 format=3 uid="uid://b47ma4awlxcq0"]
 
 [ext_resource type="PackedScene" uid="uid://bjlvdmndqn0hw" path="res://Entities/Obstacles/Templates/buff_obstacle/buff_obstacle.tscn" id="1_lsym5"]
 [ext_resource type="PackedScene" uid="uid://c3ipc1a0uike" path="res://Assets/Models/fire_tower.blend" id="2_xjdhn"]
@@ -17,7 +17,6 @@
 [ext_resource type="Texture2D" uid="uid://bbe4uhmabb4m5" path="res://Assets/Textures/fire/0121.png" id="15_ig0ua"]
 [ext_resource type="Texture2D" uid="uid://d0188f00s1i7k" path="res://Assets/Textures/fire/0131.png" id="16_oe51f"]
 [ext_resource type="Texture2D" uid="uid://babxb6r2b2fct" path="res://Assets/Textures/fire/0141.png" id="17_peneh"]
-[ext_resource type="AudioStream" uid="uid://nw1wvgrqckbp" path="res://Assets/Audio/SFX/crackling.wav" id="18_reh0d"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ianvi"]
 emission_shape = 3
@@ -165,13 +164,6 @@ distance_fade_begin = 9.9
 distance_fade_shadow = 1.0
 omni_range = 15.398
 omni_attenuation = -0.803
-
-[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="fire_tower" index="5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0249043, 0)
-stream = ExtResource("18_reh0d")
-volume_db = 17.0
-autoplay = true
-bus = &"Sound Effects"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." index="5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0034637451, 1.6103668, -0.00061035156)
