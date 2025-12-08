@@ -9,7 +9,7 @@ const RANGED_OBSTACLES_GROUP: String = "ranged_obstacles"
   set(value):
     effect_range = value
     if effect_range_indicator:
-      effect_range_indicator.scale = Vector3(effect_range * 2, effect_range * 2, effect_range * 2)
+      effect_range_indicator.scale = Vector3(effect_range * 2, 0.1, effect_range * 2)
 
 ## Whether this obstacle is currently being hovered over by the mouse
 var _is_hovered: bool = false
@@ -24,10 +24,11 @@ func _ready():
   add_to_group(RANGED_OBSTACLES_GROUP)
 
   # Scale the range indicator properly (do this once at ready)
-  # SphereMesh has a default radius of 0.5. To get a sphere with radius = effect_range,
-  # we need to scale it by effect_range / 0.5 = effect_range * 2.
+  # CylinderMesh has a default radius of 0.5 and height of 2.0. To get a cylinder with radius = effect_range,
+  # we need to scale X and Z by effect_range / 0.5 = effect_range * 2.
+  # For height, we use a small value (0.1) to create a thin disc showing ground coverage.
   if effect_range_indicator:
-    effect_range_indicator.scale = Vector3(effect_range * 2, effect_range * 2, effect_range * 2)
+    effect_range_indicator.scale = Vector3(effect_range * 2, 0.1, effect_range * 2)
 
   MyLogger.info("RangedObstacle", "Ranged obstacle initialized with effect range: %f" % effect_range)
 
