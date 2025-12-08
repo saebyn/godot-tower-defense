@@ -6,22 +6,28 @@ class_name Component_BuffLineEffect
 extends Node3D
 
 ## Base opacity for buff lines (pulsing animation adds variation)
-@export_range(0.0, 1.0) var line_opacity: float = 0.4
+@export_range(0.0, 1.0) var line_opacity: float = 0.6
 
 ## Speed of pulsing animation (higher = faster pulse)
 @export var pulse_speed: float = 3.0
 
+## Line width (achieved by drawing multiple parallel lines)
+@export_range(0.0, 1.0) var line_width: float = 0.15
+
 ## Vertical offset from buff tower's position (start of line)
-@export var line_offset_start: float = 1.5
+@export var line_offset_start: float = 0.1
 
 ## Vertical offset at target obstacle's position (end of line)
-@export var line_offset_end: float = 1.0
+@export var line_offset_end: float = 0.1
 
 ## Update interval in seconds (0 = every frame, 0.1 = 10fps for performance)
 @export var update_interval: float = 0.0
 
 ## Optional color override (uses buff type color if transparent)
 @export var override_color: Color = Color.TRANSPARENT
+
+## Maximum number of lines to draw (helps reduce visual clutter)
+@export var max_lines_displayed: int = 16
 
 var mesh_instance: MeshInstance3D
 var material: StandardMaterial3D
@@ -45,10 +51,14 @@ func _setup_mesh():
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	material.vertex_color_use_as_albedo = true
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	material.no_depth_test = true # Always visible through geometry
+	material.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_DISABLED # Don't write to depth buffer
 	material.disable_receive_shadows = true
 	
+	# Render behind other objects (lower render priority)
+	material.render_priority = -10
+	
 	mesh_instance.material_override = material
+	mesh_instance.layers = 1 # Ensure it's on default render layer
 	add_child(mesh_instance)
 
 func _process(delta):
@@ -70,9 +80,19 @@ func _draw_buff_lines():
 	if buffed_obstacles.is_empty():
 		return
 	
+	# Limit displayed lines to reduce visual clutter
+	var obstacles_to_draw = buffed_obstacles
+	if buffed_obstacles.size() > max_lines_displayed:
+		# Sort by distance, show closest ones
+		buffed_obstacles.sort_custom(func(a, b):
+			return buff_obstacle.global_position.distance_squared_to(a.global_position) < \
+				   buff_obstacle.global_position.distance_squared_to(b.global_position)
+		)
+		obstacles_to_draw = buffed_obstacles.slice(0, max_lines_displayed)
+	
 	im.surface_begin(Mesh.PRIMITIVE_LINES, material)
 	
-	for obstacle in buffed_obstacles:
+	for obstacle in obstacles_to_draw:
 		_draw_line_to_obstacle(im, obstacle)
 	
 	im.surface_end()
@@ -99,16 +119,33 @@ func _draw_line_to_obstacle(im: ImmediateMesh, obstacle: Node3D):
 	var start_pos = buff_obstacle.global_position
 	var end_pos = obstacle.global_position
 	
-	# Offset vertically for visibility
-	start_pos.y += line_offset_start
-	end_pos.y += line_offset_end
+	# Project to ground plane (low Y value)
+	start_pos.y = line_offset_start
+	end_pos.y = line_offset_end
 	
 	var color = _get_buff_color()
 	var alpha = _calculate_alpha()
+	var final_color = Color(color.r, color.g, color.b, alpha)
 	
-	im.surface_set_color(Color(color.r, color.g, color.b, alpha))
+	# Draw main line
+	im.surface_set_color(final_color)
 	im.surface_add_vertex(to_local(start_pos))
 	im.surface_add_vertex(to_local(end_pos))
+	
+	# Draw parallel lines for width (if width > 0)
+	if line_width > 0.01:
+		var direction = (end_pos - start_pos).normalized()
+		var perpendicular = Vector3(-direction.z, 0, direction.x) * line_width
+		
+		# Left parallel line
+		im.surface_set_color(final_color)
+		im.surface_add_vertex(to_local(start_pos + perpendicular))
+		im.surface_add_vertex(to_local(end_pos + perpendicular))
+		
+		# Right parallel line
+		im.surface_set_color(final_color)
+		im.surface_add_vertex(to_local(start_pos - perpendicular))
+		im.surface_add_vertex(to_local(end_pos - perpendicular))
 
 func _get_buff_color() -> Color:
 	# Use override color if specified
