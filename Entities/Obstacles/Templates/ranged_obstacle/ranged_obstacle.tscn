@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://d2nt6gtj5g3cm" path="res://Common/Components/attack/attack.tscn" id="3_shooting"]
 [ext_resource type="Shader" uid="uid://03qkf3qo6xsh" path="res://Assets/Shaders/dithered_transparency.gdshader" id="4_shader"]
 
-[sub_resource type="SphereMesh" id="SphereMesh_wmkuw"]
+[sub_resource type="CylinderMesh" id="CylinderMesh_wmkuw"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_range"]
 render_priority = 10
@@ -30,5 +30,5 @@ wait_time = 0.5
 
 [node name="RangePreview" type="MeshInstance3D" parent="." index="3"]
 visible = false
-mesh = SubResource("SphereMesh_wmkuw")
+mesh = SubResource("CylinderMesh_wmkuw")
 surface_material_override/0 = SubResource("ShaderMaterial_range")
