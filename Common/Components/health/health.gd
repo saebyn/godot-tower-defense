@@ -9,7 +9,6 @@ class_name Component_Health
     disabled = value
     _update_display()
 
-@export var show_damage_numbers: bool = true ## Whether to display floating damage numbers
 
 @onready var health_bar := $SubViewportContainer/SubViewport/VBoxContainer/HealthBar
 @onready var health_label := $SubViewportContainer/SubViewport/VBoxContainer/HealthLabel
