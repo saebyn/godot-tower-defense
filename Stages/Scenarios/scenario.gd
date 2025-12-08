@@ -87,6 +87,11 @@ func _on_all_waves_completed() -> void:
   
   # Store victory statistics for UI display
   var scenario_id = ScenarioManager.get_current_scenario_id()
+  
+  # Check if this is a new record BEFORE updating the best time
+  var previous_best_time = ScenarioManager.get_best_time(scenario_id)
+  var is_new_record = previous_best_time == 0.0 or completion_time < previous_best_time
+  
   ScenarioManager.last_scenario_stats = {
     "scenario_id": scenario_id,
     "completion_time": completion_time,
@@ -94,6 +99,7 @@ func _on_all_waves_completed() -> void:
     "scrap_reclaimed": reclaim_data.total_refund,
     "scrap_converted": conversion_data.scrap_converted,
     "xp_gained_from_conversion": conversion_data.xp_gained,
+    "is_new_record": is_new_record,
   }
   
   # Mark the scenario as complete in the progression system

@@ -47,7 +47,7 @@ func _update_stats() -> void:
   remaining_scrap_label.text = "Remaining Scrap: %d" % scrap_converted
   
   var xp_from_conversion = stats.get("xp_gained_from_conversion", 0)
-  converted_to_xp_label.text = "Converted to XP: +%d" % xp_from_conversion
+  converted_to_xp_label.text = "Converted to XP: +%d ✨" % xp_from_conversion
   
   # Display current level and progress
   var current_level = CurrencyManager.get_level()
