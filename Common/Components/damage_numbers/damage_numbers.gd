@@ -140,7 +140,7 @@ func _display_number(amount: int, world_position: Vector3, number_type: NumberTy
 	_active_tweens[label] = tween
 	tween.finished.connect(_on_tween_finished.bind(label))
 	
-	Logger.trace("DamageNumbers", "Displaying %s at position %v" % [label.text, world_position])
+	MyLogger.trace("DamageNumbers", "Displaying %s at position %v" % [label.text, world_position])
 
 
 ## Called when a tween animation finishes
