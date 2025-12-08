@@ -977,7 +977,7 @@ height = 4.10729
 [node name="enemy" type="CharacterBody3D" groups=["enemies"]]
 collision_layer = 4
 collision_mask = 7
-safe_margin = 0.1
+safe_margin = 0.5
 script = ExtResource("2_4gyqm")
 movement_speed = 20.0
 
@@ -1417,7 +1417,7 @@ libraries = {
 autoplay = "Idle"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0118122, 1.89408, 0.171304)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0118122, 2.05365, 0.171304)
 shape = SubResource("CapsuleShape3D_s6e6n")
 
 [node name="ShakeEffect" type="Node" parent="."]
