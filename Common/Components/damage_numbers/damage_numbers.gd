@@ -198,10 +198,6 @@ func _create_label() -> Label3D:
 	
 	# Use fixed_size so it's visible regardless of zoom level
 	label.fixed_size = true
-	if fixed_size_pixels > 0:
-		label.pixel_size = 1.0 / fixed_size_pixels
-	else:
-		label.pixel_size = 0.02  # Default fallback
 	
 	# Start invisible
 	label.visible = false
