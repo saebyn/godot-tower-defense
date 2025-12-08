@@ -1,5 +1,6 @@
-[gd_scene load_steps=23 format=3 uid="uid://b47ma4awlxcq0"]
+[gd_scene load_steps=24 format=3 uid="uid://b47ma4awlxcq0"]
 
+[ext_resource type="Script" uid="uid://dxpmn7q530akc" path="res://Common/Effects/buff_line_effect/buff_line_effect.gd" id="1_buff_line"]
 [ext_resource type="PackedScene" uid="uid://bjlvdmndqn0hw" path="res://Entities/Obstacles/Templates/buff_obstacle/buff_obstacle.tscn" id="1_lsym5"]
 [ext_resource type="PackedScene" uid="uid://c3ipc1a0uike" path="res://Assets/Models/fire_tower.blend" id="2_xjdhn"]
 [ext_resource type="Texture2D" uid="uid://cj1d4nm3dx27e" path="res://Assets/Textures/fire/0001.png" id="3_ae7w6"]
@@ -152,21 +153,11 @@ sprite_frames = SubResource("SpriteFrames_ltj3s")
 autoplay = "default"
 frame_progress = 0.24577485
 
-[node name="OmniLight3D" type="OmniLight3D" parent="fire_tower" index="4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3248392, 0)
-light_color = Color(0.839216, 0.415686, 0.0392157, 1)
-light_size = 0.432
-light_specular = 2.213
-shadow_enabled = true
-shadow_opacity = 0.55
-shadow_blur = 0.973
-distance_fade_begin = 9.9
-distance_fade_shadow = 1.0
-omni_range = 15.398
-omni_attenuation = -0.803
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." index="5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0034637451, 1.6103668, -0.00061035156)
 shape = SubResource("BoxShape3D_10y5i")
+
+[node name="BuffLineEffect" type="Node3D" parent="." index="6"]
+script = ExtResource("1_buff_line")
 
 [editable path="fire_tower"]
