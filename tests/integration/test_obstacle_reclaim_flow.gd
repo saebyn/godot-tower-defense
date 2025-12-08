@@ -106,6 +106,10 @@ func test_scenario_stats_stored_for_victory():
 	# Convert remaining scrap to XP
 	var conversion_data = CurrencyManager.convert_remaining_scrap_to_xp()
 	
+	# Check if this is a new record (simulate scenario.gd logic)
+	var previous_best_time = ScenarioManager.get_best_time("scenario_1")
+	var is_new_record = previous_best_time == 0.0 or completion_time < previous_best_time
+	
 	# Store stats (as done in scenario.gd)
 	ScenarioManager.last_scenario_stats = {
 		"scenario_id": "scenario_1",
@@ -114,6 +118,7 @@ func test_scenario_stats_stored_for_victory():
 		"scrap_reclaimed": reclaim_data.total_refund,
 		"scrap_converted": conversion_data.scrap_converted,
 		"xp_gained_from_conversion": conversion_data.xp_gained,
+		"is_new_record": is_new_record,
 	}
 	
 	# Assert - Verify stats are stored correctly
@@ -125,6 +130,7 @@ func test_scenario_stats_stored_for_victory():
 	assert_eq(stats.scrap_reclaimed, 150, "Should track 150 scrap reclaimed")
 	assert_eq(stats.scrap_converted, 300, "Should convert total 300 scrap (150 initial + 150 reclaimed)")
 	assert_eq(stats.xp_gained_from_conversion, 150, "Should gain 150 XP (300 / 2.0)")
+	assert_true(stats.has("is_new_record"), "Stats should include is_new_record flag")
 
 func test_game_over_stats_stored():
 	# Arrange

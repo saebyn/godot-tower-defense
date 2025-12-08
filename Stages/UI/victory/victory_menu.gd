@@ -41,7 +41,7 @@ func _update_stats() -> void:
   var scenario_id = stats.get("scenario_id", "")
   var best_time = ScenarioManager.get_best_time(scenario_id)
   if best_time > 0.0:
-    var is_new_record = completion_time <= best_time
+    var is_new_record = stats.get("is_new_record", false)
     var record_indicator = " ⭐" if is_new_record else ""
     best_time_label.text = "Best Time: %s%s" % [_format_time(best_time), record_indicator]
   else:
