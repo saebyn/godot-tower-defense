@@ -2,7 +2,7 @@
 .godot/
 /android/
 godot
-Godot_v4.4-stable_linux.x86_64.zip
+Godot_v*.zip
 
 # Blender specific ignores
 *.blend1
