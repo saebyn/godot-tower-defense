@@ -21,6 +21,8 @@ func add_tween(label: Label3D, tween: Tween) -> void:
 func get_or_create_label() -> Label3D:
   # Try to find an inactive label in the pool
   for label in _number_pool:
+    if not is_instance_valid(label):
+      continue
     if not label.visible:
       return label
   
