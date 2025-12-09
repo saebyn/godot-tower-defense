@@ -93,8 +93,8 @@ func test_bonus_xp_can_trigger_level_up():
 func test_bonus_xp_combined_with_conversion_xp_in_stats():
   # Arrange
   var scenario_id = "scenario_1"
-  var conversion_xp = 40
-  var bonus_xp = 60
+  var conversion_xp = 30
+  var bonus_xp = 40
   ScenarioManager.set_current_scenario_id(scenario_id)
   
   # Act - Simulate both conversion and bonus XP
@@ -107,7 +107,7 @@ func test_bonus_xp_combined_with_conversion_xp_in_stats():
     "bonus_xp_earned": bonus_xp,
   }
   
-  # Assert
+  # Assert - Total is 70 XP, which doesn't trigger level up (need 100)
   var total_xp = conversion_xp + bonus_xp
   assert_eq(CurrencyManager.current_xp, total_xp, 
     "Total XP should be sum of conversion and bonus XP")
