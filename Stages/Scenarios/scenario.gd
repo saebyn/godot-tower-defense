@@ -7,6 +7,7 @@ extends Node3D
 
 @export_category("Scenario Settings")
 @export var scenario_environment: Environment ## Custom environment for this scenario (optional)
+@export var completion_bonus_xp: int = 50 ## XP bonus awarded for completing this scenario
 
 @export_category("Boundary Settings")
 @export var boundary_min_x: float = -50.0 ## Minimum X boundary (west edge)
@@ -85,6 +86,11 @@ func _on_all_waves_completed() -> void:
   # Convert remaining scrap to XP
   var conversion_data = CurrencyManager.convert_remaining_scrap_to_xp()
   
+  # Award completion bonus XP
+  if completion_bonus_xp > 0:
+    CurrencyManager.earn_xp(completion_bonus_xp)
+    MyLogger.info("Scenario", "Awarded %d bonus XP for completion" % completion_bonus_xp)
+  
   # Store victory statistics for UI display
   var scenario_id = ScenarioManager.get_current_scenario_id()
   
@@ -99,6 +105,7 @@ func _on_all_waves_completed() -> void:
     "scrap_reclaimed": reclaim_data.total_refund,
     "scrap_converted": conversion_data.scrap_converted,
     "xp_gained_from_conversion": conversion_data.xp_gained,
+    "bonus_xp_earned": completion_bonus_xp,
     "is_new_record": is_new_record,
   }
   

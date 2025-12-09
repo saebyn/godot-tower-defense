@@ -83,6 +83,11 @@ layout_mode = 2
 text = "Converted to XP: +0 ✨"
 horizontal_alignment = 1
 
+[node name="BonusXPLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Completion Bonus: +0 XP ⭐"
+horizontal_alignment = 1
+
 [node name="HSeparator4" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 

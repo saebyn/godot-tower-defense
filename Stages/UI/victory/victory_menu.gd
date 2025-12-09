@@ -6,6 +6,7 @@ extends Control
 @onready var scrap_reclaimed_label = $Panel/MarginContainer/VBoxContainer/ScrapReclaimedLabel
 @onready var remaining_scrap_label = $Panel/MarginContainer/VBoxContainer/RemainingScrapLabel
 @onready var converted_to_xp_label = $Panel/MarginContainer/VBoxContainer/ConvertedToXPLabel
+@onready var bonus_xp_label = $Panel/MarginContainer/VBoxContainer/BonusXPLabel
 @onready var total_xp_label = $Panel/MarginContainer/VBoxContainer/TotalXPLabel
 @onready var current_level_label = $Panel/MarginContainer/VBoxContainer/CurrentLevelLabel
 
@@ -61,8 +62,17 @@ func _update_stats() -> void:
   var xp_from_conversion = stats.get("xp_gained_from_conversion", 0)
   converted_to_xp_label.text = "Converted to XP: +%d ✨" % xp_from_conversion
   
-  # Total XP earned (just from conversion in this scenario)
-  total_xp_label.text = "Total XP Earned: %d" % xp_from_conversion
+  # Display bonus XP
+  var bonus_xp = stats.get("bonus_xp_earned", 0)
+  if bonus_xp > 0:
+    bonus_xp_label.text = "Completion Bonus: +%d XP ⭐" % bonus_xp
+    bonus_xp_label.visible = true
+  else:
+    bonus_xp_label.visible = false
+  
+  # Total XP earned (conversion + bonus)
+  var total_xp = xp_from_conversion + bonus_xp
+  total_xp_label.text = "Total XP Earned: %d" % total_xp
   
   # Display current level and progress
   var current_level = CurrencyManager.get_level()
