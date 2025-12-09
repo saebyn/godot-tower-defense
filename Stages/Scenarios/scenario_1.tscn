@@ -90,10 +90,10 @@ size = Vector3(113.034, 11.1602, 1)
 script = ExtResource("2_srnku")
 enemy_spawner = NodePath("EnemySpawner")
 scenario_environment = ExtResource("3_ebqns")
-boundary_min_x = -60.0
-boundary_max_x = 60.0
-boundary_min_z = -60.0
-boundary_max_z = 60.0
+boundary_min_x = -175.0
+boundary_max_x = 175.0
+boundary_min_z = -175.0
+boundary_max_z = 175.0
 
 [node name="Target" parent="." index="0" instance=ExtResource("2_xxlxc")]
 transform = Transform3D(0.97459, 0, -0.223999, 0, 1, 0, 0.223999, 0, 0.97459, 16.1092, 2.80732, -17.0537)
