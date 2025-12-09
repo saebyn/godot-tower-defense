@@ -256,7 +256,8 @@ func _update_navigation():
 
     # if we are moving, face the direction we are moving
     if velocity.length() > 0.01:
-      look_at(next_path_position, Vector3.UP, true)
+      var look_at_position := Vector3(next_path_position.x, global_position.y, next_path_position.z)
+      look_at(look_at_position, Vector3.UP, true)
 
 
 func _on_died(damage_source: String = "unknown"):
