@@ -19,7 +19,7 @@ enum AttackResult {
 @onready var attack_timer: Timer = $AttackTimer
 
 @export_group("Damage Settings")
-@export var damage_amount: int = 10
+@export var damage_amount: float = 10.0 ## Amount of damage per attack
 @export var attack_speed: float = 1.0 ## How many attacks per second
 @export var damage_source: String = "unknown" ## Source identifier for damage tracking
 

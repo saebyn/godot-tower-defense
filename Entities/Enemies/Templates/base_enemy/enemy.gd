@@ -11,6 +11,7 @@ extends CharacterBody3D
 
 var attack: Component_Attack
 var health: Component_Health
+var damage_numbers: Component_DamageNumbers
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var mesh_instance: MeshInstance3D = $characterMedium
@@ -26,6 +27,8 @@ func _ready():
     attack = get_meta("attack_component")
   if has_meta("health_component"):
     health = get_meta("health_component")
+  if has_meta("damage_numbers_component"):
+    damage_numbers = get_meta("damage_numbers_component")
   
   # These values need to be adjusted for the actor's speed
   # and the navigation layout.
@@ -275,9 +278,7 @@ func _on_died(damage_source: String = "unknown"):
   if scrap_reward > 0:
     CurrencyManager.earn_scrap(scrap_reward)
     # Show floating scrap gain feedback via damage numbers component
-    if has_meta("damage_numbers_component"):
-      var damage_numbers = get_meta("damage_numbers_component")
-      if damage_numbers and damage_numbers.has_method("show_scrap"):
+    if damage_numbers:
         damage_numbers.show_scrap(scrap_reward)
   
   queue_free()

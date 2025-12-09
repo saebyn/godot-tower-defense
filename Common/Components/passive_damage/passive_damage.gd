@@ -11,7 +11,7 @@ class_name Component_PassiveDamage
 signal damage_dealt(target: Node, damage: int)
 
 @export_group("Damage Settings")
-@export var damage_amount: int = 10 ## Damage dealt per hit
+@export var damage_amount: float = 10.0 ## Damage dealt per hit
 @export var attack_speed: float = 1.0 ## Cooldown between damage ticks per enemy
 @export var damage_source: String = "passive_damage" ## Source identifier for tracking
 @export var target_group: String = "enemies" ## Which group to damage
