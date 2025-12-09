@@ -87,8 +87,10 @@ func _on_all_waves_completed() -> void:
   var conversion_data = CurrencyManager.convert_remaining_scrap_to_xp()
   
   # Award completion bonus XP
+  var bonus_xp_awarded = 0
   if completion_bonus_xp > 0:
     CurrencyManager.earn_xp(completion_bonus_xp)
+    bonus_xp_awarded = completion_bonus_xp
     MyLogger.info("Scenario", "Awarded %d bonus XP for completion" % completion_bonus_xp)
   
   # Store victory statistics for UI display
@@ -105,7 +107,7 @@ func _on_all_waves_completed() -> void:
     "scrap_reclaimed": reclaim_data.total_refund,
     "scrap_converted": conversion_data.scrap_converted,
     "xp_gained_from_conversion": conversion_data.xp_gained,
-    "bonus_xp_earned": completion_bonus_xp,
+    "bonus_xp_earned": bonus_xp_awarded,
     "is_new_record": is_new_record,
   }
   
