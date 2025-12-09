@@ -90,6 +90,7 @@ size = Vector3(113.034, 11.1602, 1)
 script = ExtResource("2_srnku")
 enemy_spawner = NodePath("EnemySpawner")
 scenario_environment = ExtResource("3_ebqns")
+completion_bonus_xp = 50
 boundary_min_x = -175.0
 boundary_max_x = 175.0
 boundary_min_z = -175.0

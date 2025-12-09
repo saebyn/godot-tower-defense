@@ -176,6 +176,7 @@ data = PackedVector3Array(-50, 0.05, 50, 50, 0.05, 50, -50, -0.05, 50, 50, 0.05,
 script = ExtResource("1_bm4tj")
 enemy_spawner = NodePath("System_EnemySpawner")
 scenario_environment = ExtResource("2_vvsim")
+completion_bonus_xp = 100
 boundary_min_x = -175.0
 boundary_max_x = 175.0
 boundary_min_z = -175.0
