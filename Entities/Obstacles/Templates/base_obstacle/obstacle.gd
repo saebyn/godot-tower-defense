@@ -61,7 +61,6 @@ func _enter_placement_mode() -> void:
     var preview_mesh = MeshInstance3D.new()
     preview_mesh.mesh = mesh_instance.mesh
     preview_mesh.transform = mesh_instance.transform
-    preview_mesh.scale = mesh_instance.scale
 
     placement_preview_node.add_child(preview_mesh)
   
