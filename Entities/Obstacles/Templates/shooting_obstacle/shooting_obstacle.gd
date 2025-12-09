@@ -2,7 +2,6 @@ class_name Entity_ShootingObstacle
 extends Entity_RangedObstacle
 
 @export var enemy_group: String = "enemies"
-@export var detection_range: float = 25.0
 @export var detection_interval: float = 0.5
 
 ## The currently tracked target enemy, updated by detection timer
@@ -27,11 +26,6 @@ func _ready():
   if attack:
     attack.damage_source = "obstacle"
 
-  # Validate ranges
-  if detection_range < effect_range:
-    MyLogger.warn("ShootingObstacle", "detection_range (%f) is less than effect_range (%f), adjusting detection_range" % [detection_range, effect_range])
-    detection_range = effect_range
-
   # Set up detection timer
   if detection_timer:
     detection_timer.wait_time = detection_interval
@@ -50,7 +44,7 @@ func _detect_and_attack_enemies():
 func find_nearest_enemy_in_range() -> Array:
   var enemies := get_tree().get_nodes_in_group(enemy_group)
   var nearest_enemy: Node3D = null
-  var nearest_distance: float = detection_range
+  var nearest_distance: float = INF
   var can_attack := false
   
   for enemy in enemies:
@@ -81,7 +75,7 @@ func _handle_buffs(buff_type: Entity_BuffObstacle.BuffType, amounts: Array[float
         attack.attack_speed = _stack_buffs(buff_type, attack.attack_speed, amounts)
     Entity_BuffObstacle.BuffType.DAMAGE:
       if attack:
-        attack.damage_amount = _stack_buffs(buff_type, attack.damage_amount, amounts) as int
+        attack.damage_amount = _stack_buffs(buff_type, attack.damage_amount, amounts)
     _:
       super._handle_buffs(buff_type, amounts)
 
