@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bw7eli0bw14jj"]
+[gd_scene load_steps=4 format=3 uid="uid://bw7eli0bw14jj"]
 
 [ext_resource type="Script" uid="uid://ckqa3npf457pb" path="res://Entities/Scrap/scrap.gd" id="1_enoak"]
 [ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="2_d4qur"]
+[ext_resource type="Script" uid="uid://d2guk20uq6gui" path="res://Common/Components/damage_numbers/damage_numbers.gd" id="3_enoak"]
 
 [node name="Scrap" type="StaticBody3D" groups=["scrap"]]
 collision_layer = 4
@@ -9,7 +10,12 @@ collision_mask = 0
 script = ExtResource("1_enoak")
 
 [node name="Health" parent="." instance=ExtResource("2_d4qur")]
-hitpoints = 1
+hitpoints = 3
+max_damage_per_hit = 1.0
+
+[node name="Component_DamageNumbers" type="Node" parent="."]
+script = ExtResource("3_enoak")
+metadata/_custom_type_script = "uid://d2guk20uq6gui"
 
 [connection signal="damaged" from="Health" to="." method="_on_health_damaged"]
 [connection signal="died" from="Health" to="." method="_on_health_died"]

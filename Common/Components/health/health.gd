@@ -2,6 +2,7 @@ extends Node
 class_name Component_Health
 
 @export var hitpoints: int = 100
+@export var max_damage_per_hit: float = INF
 @export var disabled: bool:
   get:
     return disabled
@@ -18,23 +19,23 @@ class_name Component_Health
 var max_hitpoints: int
 var dead: bool = false
 
-signal died(damage_source: String)
-signal damaged(amount: int, hitpoints: int, damage_source: String)
+var damage_numbers: Component_DamageNumbers
 
-func take_damage(amount: int, damage_source: String = "unknown"):
+signal died(damage_source: String)
+signal damaged(amount: float, hitpoints: int, damage_source: String)
+
+func take_damage(amount: float, damage_source: String = "unknown"):
   if disabled:
     return
 
-  hitpoints -= amount
-  damaged.emit(amount, hitpoints, damage_source)
+  var damage = floori(min(amount, max_damage_per_hit))
+  hitpoints -= damage
+  damaged.emit(damage, hitpoints, damage_source)
   _update_display()
   
   # Show damage number via damage numbers component if available
-  var parent = get_parent()
-  if parent and parent.has_meta("damage_numbers_component"):
-    var damage_numbers = parent.get_meta("damage_numbers_component")
-    if damage_numbers and damage_numbers.has_method("show_damage"):
-      damage_numbers.show_damage(amount, damage_source)
+  if damage_numbers:
+      damage_numbers.show_damage(damage, damage_source)
   
   if hitpoints <= 0:
     _die(damage_source)
@@ -47,8 +48,14 @@ func _ready():
   subviewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
   
   # Register this component in parent's metadata for discovery
-  if get_parent():
-    get_parent().set_meta("health_component", self)
+  var parent = get_parent()
+
+  if parent:
+    parent.set_meta("health_component", self)
+
+    # Try to get damage numbers component if it exists
+    if parent.has_meta("damage_numbers_component"):
+      damage_numbers = parent.get_meta("damage_numbers_component")
 
 func _update_display():
   if not is_node_ready():
