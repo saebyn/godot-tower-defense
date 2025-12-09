@@ -126,7 +126,7 @@ func _load_scenario() -> void:
 
 func _configure_boundaries_from_scenario() -> void:
   if not current_scenario:
-    Logger.warning("Main", "Cannot configure boundaries - no scenario loaded")
+    MyLogger.warning("Main", "Cannot configure boundaries - no scenario loaded")
     return
   
   # Get boundary values from the scenario
@@ -135,7 +135,7 @@ func _configure_boundaries_from_scenario() -> void:
   var min_z = current_scenario.boundary_min_z
   var max_z = current_scenario.boundary_max_z
   
-  Logger.info("Main", "Configuring boundaries from scenario: X[%d, %d] Z[%d, %d]" % [int(min_x), int(max_x), int(min_z), int(max_z)])
+  MyLogger.info("Main", "Configuring boundaries from scenario: X[%d, %d] Z[%d, %d]" % [int(min_x), int(max_x), int(min_z), int(max_z)])
   
   # Update the visual boundary markers
   if ground_with_boundaries and ground_with_boundaries.has_method("set_boundaries"):

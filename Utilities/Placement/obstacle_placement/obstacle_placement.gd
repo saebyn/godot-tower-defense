@@ -2,12 +2,15 @@ extends Node3D
 class_name Utility_ObstaclePlacement
 
 signal rebake_navigation_mesh
-signal placement_mode_entered  ## Emitted when entering obstacle placement mode
-signal placement_mode_exited   ## Emitted when exiting obstacle placement mode
+signal placement_mode_entered ## Emitted when entering obstacle placement mode
+signal placement_mode_exited ## Emitted when exiting obstacle placement mode
 
 @export_group("Placement Settings")
 @export var placement_clearance: float = 3.0 ## Minimum distance from other obstacles
-@export var border_margin: float = 2.0 ## Minimum distance from navigation region border
+@export var world_min_x: float = -200.0 # Minimum X boundary
+@export var world_max_x: float = 200.0 # Maximum X boundary
+@export var world_min_z: float = -200.0 # Minimum Z boundary
+@export var world_max_z: float = 200.0 # Maximum Z boundary
 
 @export_group("Raycast Settings")
 @export var raycast_length: float = 1000.0 ## Length of the raycast for obstacle placement
@@ -83,6 +86,9 @@ func _input(event: InputEvent) -> void:
 func _validate_placement(target_position: Vector3) -> Utility_PlacementResult:
   if not _preview:
     return Utility_PlacementResult.new(false, Utility_PlacementResult.ValidationError.NO_PLACEABLE_OBSTACLE, "No obstacle selected for placement")
+
+  if not _is_within_border(target_position):
+    return Utility_PlacementResult.new(false, Utility_PlacementResult.ValidationError.OUTSIDE_BORDER, "Outside world boundaries")
   
   if _has_obstacle_collision(target_position):
     return Utility_PlacementResult.new(false, Utility_PlacementResult.ValidationError.OBSTACLE_COLLISION, "Collision with existing obstacle")
@@ -107,8 +113,8 @@ func _is_placement_valid(target_position: Vector3) -> bool:
     match result.error:
       Utility_PlacementResult.ValidationError.NO_PLACEABLE_OBSTACLE:
         MyLogger.debug("Placement", "  - No placeable obstacle selected")
-      Utility_PlacementResult.ValidationError.OUTSIDE_NAVIGATION_REGION:
-        MyLogger.debug("Placement", "  - Outside navigation region")
+      Utility_PlacementResult.ValidationError.OUTSIDE_BORDER:
+        MyLogger.debug("Placement", "  - Outside world boundaries")
       Utility_PlacementResult.ValidationError.OBSTACLE_COLLISION:
         MyLogger.debug("Placement", "  - Collision with existing obstacle")
       Utility_PlacementResult.ValidationError.NO_TERRAIN_SUPPORT:
@@ -120,36 +126,8 @@ func _is_placement_valid(target_position: Vector3) -> bool:
 
   return result.is_valid
 
-func _is_within_navigation_region(target_position: Vector3) -> bool:
-  if not navigation_region or not navigation_region.navigation_mesh:
-    return false
-  
-  # Check if position is within the navigation region bounds
-  var nav_mesh := navigation_region.navigation_mesh
-  var nav_region_transform := navigation_region.global_transform
-  
-  # Get the navigation mesh AABB
-  var vertices = nav_mesh.vertices
-  if vertices.size() == 0:
-    return false
-  
-  var min_bounds = vertices[0]
-  var max_bounds = vertices[0]
-  
-  for vertex in vertices:
-    min_bounds.x = min(min_bounds.x, vertex.x)
-    min_bounds.z = min(min_bounds.z, vertex.z)
-    max_bounds.x = max(max_bounds.x, vertex.x)
-    max_bounds.z = max(max_bounds.z, vertex.z)
-
-  # Transform position to navigation region local space
-  var local_pos = nav_region_transform.affine_inverse() * target_position
-
-  # Check if within bounds (with some margin)
-  return (local_pos.x >= min_bounds.x + border_margin and
-          local_pos.x <= max_bounds.x - border_margin and
-          local_pos.z >= min_bounds.z + border_margin and
-          local_pos.z <= max_bounds.z - border_margin)
+func _is_within_border(target_position: Vector3) -> bool:
+  return target_position.x >= world_min_x and target_position.x <= world_max_x and target_position.z >= world_min_z and target_position.z <= world_max_z
 
 func _has_obstacle_collision(target_position: Vector3) -> bool:
   if not _preview:

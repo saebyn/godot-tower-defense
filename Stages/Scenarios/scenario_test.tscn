@@ -28,6 +28,10 @@ data = PackedVector3Array(-500, 0.05, 500, 500, 0.05, 500, -500, -0.05, 500, 500
 script = ExtResource("1_rircw")
 enemy_spawner = NodePath("System_EnemySpawner")
 scenario_environment = ExtResource("2_7i27l")
+boundary_min_x = -200.0
+boundary_max_x = 200.0
+boundary_min_z = -200.0
+boundary_max_z = 200.0
 metadata/_custom_type_script = "uid://nv24k764rct"
 
 [node name="System_EnemySpawner" type="Node3D" parent="." node_paths=PackedStringArray("spawn_areas")]
