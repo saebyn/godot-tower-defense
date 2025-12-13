@@ -4,7 +4,7 @@ extends Node
 ## Handles earning and spending scrap, and tracking experience points throughout the game
 ## Implements SaveableSystem interface for centralized save management
 
-@export var starting_scrap: int = 100 # TODO change back to 0 before release
+@export var starting_scrap: int = 0 ## Amount of scrap player starts with at beginning of each scenario
 @export var scrap_to_xp_conversion_rate: float = 2.0 ## How much scrap converts to 1 XP (e.g., 2.0 means 2 scrap = 1 XP)
 
 var current_scrap: int = 0
