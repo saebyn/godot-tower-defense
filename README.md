@@ -58,6 +58,14 @@ Come hang out, watch the chaos unfold, and see how the sausage gets made! You mi
 
 ---
 
+## 🔧 Developer Tools
+
+- **[Sound Board](Stages/UI/sound_board/)** - Standalone scene for testing and previewing all sound effects defined in AudioManager
+  - Run with: `godot --path . "res://Stages/UI/sound_board/sound_board.tscn"`
+  - Dynamically displays all available sound effects with playback controls
+
+---
+
 ## ✨ Current Features
 
 **What's Working Now**:
