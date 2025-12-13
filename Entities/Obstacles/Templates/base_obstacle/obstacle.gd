@@ -62,7 +62,7 @@ func _enter_placement_mode() -> void:
     mesh_instance.hide()
     var preview_mesh = MeshInstance3D.new()
     preview_mesh.mesh = mesh_instance.mesh
-    # Use global_transform relative to self to preserve scale/rotation from parent nodes
+    # Use global_transform to capture the mesh's full transformation including parent node scales/rotations
     preview_mesh.global_transform = mesh_instance.global_transform
 
     placement_preview_node.add_child(preview_mesh)
