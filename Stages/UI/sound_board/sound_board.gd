@@ -36,11 +36,13 @@ func _populate_sound_list():
     button.custom_minimum_size = Vector2(300, 40)
     
     # Connect button to play the sound
-    button.pressed.connect(_on_sound_button_pressed.bind(effect_value, effect_name))
+    button.pressed.connect(_on_sound_button_pressed.bind(effect_value))
     
     sound_list_container.add_child(button)
 
-func _on_sound_button_pressed(effect: AudioManager.SoundEffect, effect_name: String):
+func _on_sound_button_pressed(effect: AudioManager.SoundEffect):
+  # Get the effect name for logging
+  var effect_name = AudioManager.SoundEffect.keys()[effect]
   MyLogger.info("SoundBoard", "Playing sound effect: %s" % effect_name)
   AudioManager.play_sound(audio_player, effect)
 
