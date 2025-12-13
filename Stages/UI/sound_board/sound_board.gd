@@ -29,7 +29,7 @@ func _populate_sound_grid():
     var effect_value = AudioManager.SoundEffect[effect_name]
     var config = AudioManager.get_effect_config(effect_value)
     
-    if config:
+    if config != null:
       var category = config.category
       if category not in effects_by_category:
         effects_by_category[category] = []
@@ -38,6 +38,8 @@ func _populate_sound_grid():
         "value": effect_value,
         "config": config
       })
+    else:
+      MyLogger.warn("SoundBoard", "No config found for effect: %s" % effect_name)
   
   # Get sorted list of categories
   var categories = effects_by_category.keys()
