@@ -53,6 +53,8 @@ func _enter_placement_mode() -> void:
   
   # Create our own mesh instances based on the temporary obstacle's meshes
   placement_preview_node = Node3D.new()
+  add_child(placement_preview_node)
+  
   for mesh_instance in mesh_instances:
     if not mesh_instance or not mesh_instance.mesh:
       MyLogger.warn("Obstacle", "Skipping invalid MeshInstance3D in placement preview")
@@ -60,11 +62,10 @@ func _enter_placement_mode() -> void:
     mesh_instance.hide()
     var preview_mesh = MeshInstance3D.new()
     preview_mesh.mesh = mesh_instance.mesh
-    preview_mesh.transform = mesh_instance.transform
+    # Use global_transform relative to self to preserve scale/rotation from parent nodes
+    preview_mesh.global_transform = mesh_instance.global_transform
 
     placement_preview_node.add_child(preview_mesh)
-  
-  add_child(placement_preview_node)
   _saved_collision_layers = collision_layer
   collision_layer = 0 # Disable collisions in preview mode
 
