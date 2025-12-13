@@ -3,42 +3,112 @@ extends Control
 class_name UI_SoundBoard
 
 ## Sound board UI for testing and playing sound effects from AudioManager
-## Provides buttons to play each sound effect defined in the AudioManager
+## Displays sound effects organized by category in a grid layout
+## Shows variation count and configurable pitch range for each effect
 
-@onready var sound_list_container: VBoxContainer = %SoundListContainer
+@onready var sound_grid_container: GridContainer = %SoundGridContainer
 @onready var audio_player: AudioStreamPlayer = %AudioPlayer
 @onready var close_button: Button = %CloseButton
 
 func _ready():
   MyLogger.info("SoundBoard", "Sound board loaded")
-  _populate_sound_list()
+  _populate_sound_grid()
   
   if close_button:
     close_button.pressed.connect(_on_close_button_pressed)
 
-func _populate_sound_list():
-  if not sound_list_container:
-    MyLogger.warn("SoundBoard", "Sound list container not found")
+func _populate_sound_grid():
+  if not sound_grid_container:
+    MyLogger.warn("SoundBoard", "Sound grid container not found")
     return
   
-  # Get all sound effects from the AudioManager enum
-  var sound_effect_names = AudioManager.SoundEffect.keys()
+  # Group sound effects by category
+  var effects_by_category: Dictionary = {}
   
-  MyLogger.info("SoundBoard", "Creating buttons for %d sound effects" % sound_effect_names.size())
-  
-  for effect_name in sound_effect_names:
-    var button = Button.new()
+  for effect_name in AudioManager.SoundEffect.keys():
     var effect_value = AudioManager.SoundEffect[effect_name]
+    var config = AudioManager.get_effect_config(effect_value)
     
-    # Format the button text (convert SNAKE_CASE to Title Case)
-    var display_name = effect_name.capitalize()
-    button.text = display_name
-    button.custom_minimum_size = Vector2(300, 40)
+    if config:
+      var category = config.category
+      if category not in effects_by_category:
+        effects_by_category[category] = []
+      effects_by_category[category].append({
+        "name": effect_name,
+        "value": effect_value,
+        "config": config
+      })
+  
+  # Get sorted list of categories
+  var categories = effects_by_category.keys()
+  categories.sort()
+  
+  # Set grid columns to number of categories
+  sound_grid_container.columns = max(1, categories.size())
+  
+  MyLogger.info("SoundBoard", "Creating grid with %d categories and %d total effects" % [categories.size(), AudioManager.SoundEffect.keys().size()])
+  
+  # Create a column for each category
+  for category in categories:
+    var category_container = VBoxContainer.new()
+    category_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     
-    # Connect button to play the sound (pass both value and name for efficiency)
-    button.pressed.connect(_on_sound_button_pressed.bind(effect_value, effect_name))
+    # Category header
+    var category_label = Label.new()
+    var category_name = AudioManager.get_category_name(category)
+    category_label.text = category_name.capitalize()
+    category_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    category_label.add_theme_font_size_override("font_size", 18)
+    category_container.add_child(category_label)
     
-    sound_list_container.add_child(button)
+    # Separator
+    var separator = HSeparator.new()
+    category_container.add_child(separator)
+    
+    # Add effects in this category
+    var effects = effects_by_category[category]
+    for effect_data in effects:
+      var effect_button = _create_effect_button(
+        effect_data["name"],
+        effect_data["value"],
+        effect_data["config"]
+      )
+      category_container.add_child(effect_button)
+    
+    sound_grid_container.add_child(category_container)
+
+func _create_effect_button(effect_name: String, effect_value: AudioManager.SoundEffect, config: AudioManager.SoundEffectConfig) -> VBoxContainer:
+  var button_container = VBoxContainer.new()
+  button_container.custom_minimum_size = Vector2(250, 0)
+  
+  # Main button
+  var button = Button.new()
+  var display_name = effect_name.capitalize()
+  button.text = display_name
+  button.custom_minimum_size = Vector2(0, 40)
+  button.pressed.connect(_on_sound_button_pressed.bind(effect_value, effect_name))
+  button_container.add_child(button)
+  
+  # Info label showing variations and pitch range
+  var info_label = Label.new()
+  var variation_count = config.samples.size()
+  var pitch_info = "Pitch: %.1f - %.1f" % [config.pitch_variation_min, config.pitch_variation_max]
+  info_label.text = "%d variation%s | %s" % [
+    variation_count,
+    "s" if variation_count != 1 else "",
+    pitch_info
+  ]
+  info_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+  info_label.add_theme_font_size_override("font_size", 10)
+  info_label.modulate = Color(0.8, 0.8, 0.8, 0.9)
+  button_container.add_child(info_label)
+  
+  # Spacing
+  var spacer = Control.new()
+  spacer.custom_minimum_size = Vector2(0, 5)
+  button_container.add_child(spacer)
+  
+  return button_container
 
 func _on_sound_button_pressed(effect: AudioManager.SoundEffect, effect_name: String):
   MyLogger.info("SoundBoard", "Playing sound effect: %s" % effect_name)
