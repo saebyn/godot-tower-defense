@@ -28,26 +28,19 @@ func _populate_sound_list():
   
   for effect_name in sound_effect_names:
     var button = Button.new()
-    var effect_value = AudioManager.SoundEffect.get(effect_name)
+    var effect_value = AudioManager.SoundEffect[effect_name]
     
     # Format the button text (convert SNAKE_CASE to Title Case)
     var display_name = effect_name.capitalize()
     button.text = display_name
     button.custom_minimum_size = Vector2(300, 40)
     
-    # Connect button to play the sound
-    button.pressed.connect(_on_sound_button_pressed.bind(effect_value))
+    # Connect button to play the sound (pass both value and name for efficiency)
+    button.pressed.connect(_on_sound_button_pressed.bind(effect_value, effect_name))
     
     sound_list_container.add_child(button)
 
-func _on_sound_button_pressed(effect: AudioManager.SoundEffect):
-  # Get the effect name for logging by finding the key that matches this value
-  var effect_name = ""
-  for key in AudioManager.SoundEffect.keys():
-    if AudioManager.SoundEffect[key] == effect:
-      effect_name = key
-      break
-  
+func _on_sound_button_pressed(effect: AudioManager.SoundEffect, effect_name: String):
   MyLogger.info("SoundBoard", "Playing sound effect: %s" % effect_name)
   AudioManager.play_sound(audio_player, effect)
 
