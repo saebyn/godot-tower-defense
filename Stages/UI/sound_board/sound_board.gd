@@ -41,8 +41,13 @@ func _populate_sound_list():
     sound_list_container.add_child(button)
 
 func _on_sound_button_pressed(effect: AudioManager.SoundEffect):
-  # Get the effect name for logging
-  var effect_name = AudioManager.SoundEffect.keys()[effect]
+  # Get the effect name for logging by finding the key that matches this value
+  var effect_name = ""
+  for key in AudioManager.SoundEffect.keys():
+    if AudioManager.SoundEffect[key] == effect:
+      effect_name = key
+      break
+  
   MyLogger.info("SoundBoard", "Playing sound effect: %s" % effect_name)
   AudioManager.play_sound(audio_player, effect)
 
