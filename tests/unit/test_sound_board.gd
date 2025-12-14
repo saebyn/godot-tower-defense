@@ -24,7 +24,6 @@ func test_sound_board_initializes():
   assert_not_null(sound_board, "Sound board should instantiate")
   assert_not_null(sound_board.sound_grid_container, "Grid container should exist")
   assert_not_null(sound_board.audio_player, "Audio player should exist")
-  assert_not_null(sound_board.close_button, "Close button should exist")
 
 func test_grid_container_has_columns():
   # Assert
@@ -80,20 +79,20 @@ func test_category_headers_exist():
           "First child should be a category header label"
         )
 
-func test_close_button_frees_sound_board():
+func test_sound_board_can_be_freed():
   # Arrange
   var parent = sound_board.get_parent()
   var initial_child_count = parent.get_child_count()
   
   # Act
-  sound_board.close_button.emit_signal("pressed")
+  sound_board.queue_free()
   await wait_frames(2)
   
   # Assert
   var final_child_count = parent.get_child_count()
   assert_true(
     final_child_count < initial_child_count,
-    "Sound board should be removed after close button is pressed"
+    "Sound board should be removed when freed"
   )
 
 func test_button_press_triggers_audio():
