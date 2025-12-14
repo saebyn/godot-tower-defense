@@ -49,6 +49,86 @@ func _ready() -> void:
       0.8, # Min pitch
       1.2 # Max pitch
     ),
+    SoundEffect.TURRET_FIRE: SoundEffectConfig.new(
+      [
+        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper turret fire sound
+      ],
+      SoundCategory.COMBAT,
+      0.9, # Min pitch
+      1.1 # Max pitch
+    ),
+    SoundEffect.ZOMBIE_DEATH: SoundEffectConfig.new(
+      [
+        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper zombie death sound
+      ],
+      SoundCategory.COMBAT,
+      0.7, # Min pitch
+      1.3 # Max pitch
+    ),
+    SoundEffect.SCRAP_PICKUP: SoundEffectConfig.new(
+      [
+        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper scrap pickup sound
+      ],
+      SoundCategory.USER_INTERFACE,
+      0.9, # Min pitch
+      1.1 # Max pitch
+    ),
+    SoundEffect.BUILDING_PLACEMENT: SoundEffectConfig.new(
+      [
+        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper building placement sound
+      ],
+      SoundCategory.BUILDING,
+      0.9, # Min pitch
+      1.1 # Max pitch
+    ),
+    SoundEffect.BUILDING_PROGRESS: SoundEffectConfig.new(
+      [
+        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper building progress sound
+      ],
+      SoundCategory.BUILDING,
+      0.9, # Min pitch
+      1.1 # Max pitch
+    ),
+    SoundEffect.BUILDING_COMPLETE: SoundEffectConfig.new(
+      [
+        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper building complete sound
+      ],
+      SoundCategory.BUILDING,
+      0.9, # Min pitch
+      1.1 # Max pitch
+    ),
+    SoundEffect.ELECTRIC_CRACKLE: SoundEffectConfig.new(
+      [
+        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper electric crackle sound
+      ],
+      SoundCategory.AMBIENCE,
+      0.9, # Min pitch
+      1.1 # Max pitch
+    ),
+    SoundEffect.ZOMBIE_IDLE_GROAN: SoundEffectConfig.new(
+      [
+        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper zombie idle groan sound
+      ],
+      SoundCategory.AMBIENCE,
+      0.9, # Min pitch
+      1.1 # Max pitch
+    ),
+    SoundEffect.UI_CONFIRM: SoundEffectConfig.new(
+      [
+        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper UI confirm sound
+      ],
+      SoundCategory.USER_INTERFACE,
+      0.9, # Min pitch
+      1.1 # Max pitch
+    ),
+    SoundEffect.ERROR: SoundEffectConfig.new(
+      [
+        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper error sound
+      ],
+      SoundCategory.USER_INTERFACE,
+      0.9, # Min pitch
+      1.1 # Max pitch
+    ),
     SoundEffect.ACHIEVEMENT_UNLOCKED: SoundEffectConfig.new(
       [
         preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper achievement sound
