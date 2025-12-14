@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=3 format=3 uid="uid://dw5m5kllxv6fe"]
+
+[ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_cancel"]
+[ext_resource type="AudioStream" uid="uid://d312o1ao3610w" path="res://Assets/Audio/SFX/blipSelect.wav" id="2_cancel"]
+
+[resource]
+script = ExtResource("1_cancel")
+sound_effect = 20
+samples = Array[AudioStream]([ExtResource("2_cancel")])
+category = 0
+pitch_variation_min = 0.85
+pitch_variation_max = 0.95
+metadata/_custom_type_script = "uid://evflivoc8b3v"

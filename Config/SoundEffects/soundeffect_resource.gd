@@ -20,6 +20,7 @@ enum SoundEffect {
 
   UI_CONFIRM = 13,
   UI_CANCEL = 20,
+  UI_HOVER = 22,
   ERROR = 14,
   ACHIEVEMENT_UNLOCKED = 15,
 
