@@ -12,6 +12,9 @@ signal placement_mode_exited ## Emitted when exiting obstacle placement mode
 @export var world_min_z: float = -200.0 # Minimum Z boundary
 @export var world_max_z: float = 200.0 # Maximum Z boundary
 
+@export_group("Sound Effects")
+@export var audio_player: AudioStreamPlayer
+
 @export_group("Raycast Settings")
 @export var raycast_length: float = 1000.0 ## Length of the raycast for obstacle placement
 @export var raycast_start: Vector3 = Vector3(0, 10, 0) ## Start position offset for the raycast
@@ -221,11 +224,14 @@ func _place_obstacle() -> void:
   
   _clear_obstacle_placement()
 
+  AudioManager.play_sound(audio_player, Resource_SoundEffect.SoundEffect.BUILDING_COMPLETE)
+
 func _cancel_obstacle_placement() -> void:
   if _preview:
     _preview.queue_free()
     _preview = null
   _clear_obstacle_placement()
+  AudioManager.play_sound(audio_player, Resource_SoundEffect.SoundEffect.UI_CANCEL)
 
 func _clear_obstacle_placement() -> void:
   if _preview:

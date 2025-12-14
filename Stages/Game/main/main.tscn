@@ -70,7 +70,8 @@ compositor = SubResource("Compositor_hjeu7")
 enabled = false
 collision_mask = 4
 
-[node name="ObstaclePlacement" parent="." node_paths=PackedStringArray("navigation_region", "camera") instance=ExtResource("7_kek77")]
+[node name="ObstaclePlacement" parent="." node_paths=PackedStringArray("audio_player", "navigation_region", "camera") instance=ExtResource("7_kek77")]
+audio_player = NodePath("../AudioStreamPlayer")
 navigation_region = NodePath("../NavigationRegion3D")
 camera = NodePath("../Camera3D")
 
