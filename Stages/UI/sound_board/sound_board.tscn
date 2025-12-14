@@ -31,7 +31,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="Panel" parent="CenterContainer"]
-custom_minimum_size = Vector2(800, 600)
+custom_minimum_size = Vector2(1135.715, 600.07)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="CenterContainer/Panel"]
