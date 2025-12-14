@@ -1437,12 +1437,15 @@ metadata/_custom_type_script = "uid://d2guk20uq6gui"
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7646298, 0.5170518)
+unit_size = 50.0
 bus = &"Sound Effects"
 
 [node name="Component_IdleSounds" type="Node3D" parent="." node_paths=PackedStringArray("audio_player")]
 script = ExtResource("7_sm4ql")
 idle_sound = 12
 audio_player = NodePath("../AudioStreamPlayer3D")
+min_idle_interval = 3.42
+max_idle_interval = 10.0
 metadata/_custom_type_script = "uid://c7bdetuss8stb"
 
 [connection signal="damaged" from="Health" to="ShakeEffect" method="damage_taken"]
