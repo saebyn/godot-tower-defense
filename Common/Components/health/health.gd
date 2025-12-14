@@ -1,6 +1,7 @@
 extends Node
 class_name Component_Health
 
+@export_group("Health Settings")
 @export var hitpoints: int = 100
 @export var max_damage_per_hit: float = INF
 @export var disabled: bool:
@@ -9,6 +10,11 @@ class_name Component_Health
   set(value):
     disabled = value
     _update_display()
+
+@export_group("SFX Settings")
+@export var hit_sound: Resource_SoundEffect.SoundEffect = Resource_SoundEffect.SoundEffect.DEFAULT
+@export var death_sound: Resource_SoundEffect.SoundEffect = Resource_SoundEffect.SoundEffect.DEFAULT
+@export var audio_player: AudioStreamPlayer3D
 
 
 @onready var health_bar := $SubViewportContainer/SubViewport/VBoxContainer/HealthBar
@@ -36,6 +42,10 @@ func take_damage(amount: float, damage_source: String = "unknown"):
   # Show damage number via damage numbers component if available
   if damage_numbers:
       damage_numbers.show_damage(damage, damage_source)
+
+  # Play hit sound if audio player is assigned
+  if audio_player:
+    AudioManager.play_sound(audio_player, hit_sound)
   
   if hitpoints <= 0:
     _die(damage_source)
@@ -49,6 +59,10 @@ func _ready():
   
   # Register this component in parent's metadata for discovery
   var parent = get_parent()
+
+  if not audio_player:
+    MyLogger.warn("Health", "No AudioStreamPlayer assigned for Health effect sounds.")
+
 
   if parent:
     parent.set_meta("health_component", self)
@@ -71,6 +85,10 @@ func _update_display():
 func _die(damage_source: String = "unknown"):
   if dead:
     return
+
+  # Play death sound if audio player is assigned
+  if audio_player:
+    AudioManager.play_sound(audio_player, death_sound)
 
   dead = true
   hitpoints = 0

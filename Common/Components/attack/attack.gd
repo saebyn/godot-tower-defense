@@ -24,8 +24,8 @@ enum AttackResult {
 @export var damage_source: String = "unknown" ## Source identifier for damage tracking
 
 @export_group("Effects")
-@export var hit_sound: Resource_SoundEffect.SoundEffect = Resource_SoundEffect.SoundEffect.PLAYER_ATTACK_HIT
-@export var audio_player: AudioStreamPlayer
+@export var hit_sound: Resource_SoundEffect.SoundEffect = Resource_SoundEffect.SoundEffect.DEFAULT
+@export var audio_player: AudioStreamPlayer3D
 
 
 var is_on_cooldown: bool = false
@@ -34,6 +34,10 @@ func _ready():
   # Register this component in parent's metadata for discovery
   if get_parent():
     get_parent().set_meta("attack_component", self)
+
+  if not audio_player:
+    MyLogger.warn("Attack", "No AudioStreamPlayer assigned for Attack effect sounds.")
+
 
 func perform_attack(target: Node) -> AttackResult:
   if not is_on_cooldown:

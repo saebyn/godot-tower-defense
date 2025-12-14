@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://b3ntnuvrvys63"]
+[gd_scene load_steps=14 format=3 uid="uid://b3ntnuvrvys63"]
 
 [ext_resource type="Script" uid="uid://2x2o4sni7v6q" path="res://Stages/Game/main/main.gd" id="1_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://d2nt6gtj5g3cm" path="res://Common/Components/attack/attack.tscn" id="2_kek77"]
@@ -38,6 +38,7 @@ obstacle_tooltip_scene = ExtResource("4_tooltip")
 damage_amount = 1
 attack_speed = 10
 damage_source = "player"
+hit_sound = 18
 audio_player = NodePath("../AudioStreamPlayer")
 
 [node name="UI" parent="." instance=ExtResource("3_272bh")]
