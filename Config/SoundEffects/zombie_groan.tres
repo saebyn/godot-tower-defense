@@ -10,7 +10,7 @@
 
 [resource]
 script = ExtResource("1_yktun")
-sound_effect = 11
+sound_effect = 12
 samples = Array[AudioStream]([ExtResource("1_fls0b"), ExtResource("2_oqvua"), ExtResource("3_mxrcf"), ExtResource("4_x3020"), ExtResource("5_nrytf"), ExtResource("6_ma6dw")])
 category = 3
 pitch_variation_min = 0.5

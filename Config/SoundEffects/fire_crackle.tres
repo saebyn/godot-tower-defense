@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_epfbt")
-sound_effect = 10
+sound_effect = 11
 samples = Array[AudioStream]([ExtResource("1_12xgj")])
 category = 3
 metadata/_custom_type_script = "uid://evflivoc8b3v"
