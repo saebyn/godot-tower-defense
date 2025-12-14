@@ -28,7 +28,7 @@ enum SoundEffect {
   BUILDING_PLACEMENT = 7,
   BUILDING_PROGRESS = 8,
   BUILDING_COMPLETE = 9,
-  BUILDING_REMOVED = 19,
+  BUILDING_REMOVED = 21,
 
   NONE = 18, # No sound effect
 }
