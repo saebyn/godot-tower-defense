@@ -45,7 +45,7 @@ func test_sound_effect_config_default_values():
 
 func test_get_effect_config_returns_valid_config():
   # Act
-  var config = AudioManager.get_effect_config(AudioManager.SoundEffect.PLAYER_ATTACK_HIT)
+  var config = AudioManager.get_effect_config(Resource_SoundEffect.SoundEffect.PLAYER_ATTACK_HIT)
   
   # Assert
   assert_not_null(config, "Config should not be null for PLAYER_ATTACK_HIT")
@@ -54,7 +54,7 @@ func test_get_effect_config_returns_valid_config():
 func test_get_effect_config_returns_null_for_missing_effect():
   # Note: This test verifies the current behavior where missing effects return null
   # We use a value outside the valid enum range
-  var valid_values = AudioManager.SoundEffect.values()
+  var valid_values = Resource_SoundEffect.SoundEffect.values()
   var invalid_effect = valid_values.max() + 1
   
   # Act
@@ -78,7 +78,7 @@ func test_get_category_name_returns_correct_string():
 
 func test_play_sound_sets_audio_stream():
   # Arrange
-  var effect = AudioManager.SoundEffect.PLAYER_ATTACK_HIT
+  var effect = Resource_SoundEffect.SoundEffect.PLAYER_ATTACK_HIT
   
   # Act
   AudioManager.play_sound(test_audio_player, effect)
@@ -89,7 +89,7 @@ func test_play_sound_sets_audio_stream():
 
 func test_play_sound_applies_pitch_variation():
   # Arrange
-  var effect = AudioManager.SoundEffect.PLAYER_ATTACK_HIT
+  var effect = Resource_SoundEffect.SoundEffect.PLAYER_ATTACK_HIT
   var config = AudioManager.get_effect_config(effect)
   
   # Act
@@ -107,8 +107,8 @@ func test_play_sound_applies_pitch_variation():
 
 func test_all_sound_effects_have_configs():
   # Act & Assert
-  for effect_name in AudioManager.SoundEffect.keys():
-    var effect_value = AudioManager.SoundEffect[effect_name]
+  for effect_name in Resource_SoundEffect.SoundEffect.keys():
+    var effect_value = Resource_SoundEffect.SoundEffect[effect_name]
     var config = AudioManager.get_effect_config(effect_value)
     
     assert_not_null(
@@ -118,8 +118,8 @@ func test_all_sound_effects_have_configs():
 
 func test_all_configs_have_valid_pitch_ranges():
   # Act & Assert
-  for effect_name in AudioManager.SoundEffect.keys():
-    var effect_value = AudioManager.SoundEffect[effect_name]
+  for effect_name in Resource_SoundEffect.SoundEffect.keys():
+    var effect_value = Resource_SoundEffect.SoundEffect[effect_name]
     var config = AudioManager.get_effect_config(effect_value)
     
     if config:

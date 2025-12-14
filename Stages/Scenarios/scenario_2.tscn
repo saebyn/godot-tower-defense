@@ -21,7 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://bbe4uhmabb4m5" path="res://Assets/Textures/fire/0121.png" id="16_h8fgx"]
 [ext_resource type="Texture2D" uid="uid://d0188f00s1i7k" path="res://Assets/Textures/fire/0131.png" id="17_ieiss"]
 [ext_resource type="Texture2D" uid="uid://babxb6r2b2fct" path="res://Assets/Textures/fire/0141.png" id="18_24qjn"]
-[ext_resource type="AudioStream" uid="uid://nw1wvgrqckbp" path="res://Assets/Audio/SFX/crackling.wav" id="19_td2w0"]
+[ext_resource type="AudioStream" uid="uid://nw1wvgrqckbp" path="res://Assets/Audio/SFX/ambience/crackling.wav" id="19_td2w0"]
 [ext_resource type="Script" uid="uid://veme7gd0dvne" path="res://Config/Enemies/enemy_type_resource.gd" id="22_3ckho"]
 [ext_resource type="PackedScene" uid="uid://duqnmq1hv1h8h" path="res://Assets/Models/tree.blend" id="23_nswya"]
 [ext_resource type="Resource" uid="uid://conw8uteeyyuk" path="res://Config/Enemies/basic_zombie.tres" id="23_pr8sm"]

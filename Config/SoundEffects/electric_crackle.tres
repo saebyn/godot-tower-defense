@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=3 format=3 uid="uid://bbvt3u0o148xf"]
+
+[ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_kbuwq"]
+[ext_resource type="AudioStream" uid="uid://j0ta2smf28q7" path="res://Assets/Audio/SFX/ambience/electric_crackle.wav" id="1_vk00t"]
+
+[resource]
+script = ExtResource("1_kbuwq")
+sound_effect = 9
+samples = Array[AudioStream]([ExtResource("1_vk00t")])
+category = 3
+metadata/_custom_type_script = "uid://evflivoc8b3v"

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=5 format=3 uid="uid://c533hmcya15j3"]
+
+[ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_5ecor"]
+[ext_resource type="AudioStream" uid="uid://6o21wf2rpnhs" path="res://Assets/Audio/SFX/combat/zombie_death/zombie-10.wav" id="1_o8llo"]
+[ext_resource type="AudioStream" uid="uid://stcm21kjy38e" path="res://Assets/Audio/SFX/combat/zombie_death/zombie-12.wav" id="2_f0l4i"]
+[ext_resource type="AudioStream" uid="uid://re7n83cijokn" path="res://Assets/Audio/SFX/combat/zombie_death/zombie-13.wav" id="3_7b4lc"]
+
+[resource]
+script = ExtResource("1_5ecor")
+sound_effect = 3
+samples = Array[AudioStream]([ExtResource("1_o8llo"), ExtResource("2_f0l4i"), ExtResource("3_7b4lc")])
+pitch_variation_min = 0.7
+pitch_variation_max = 1.3
+metadata/_custom_type_script = "uid://evflivoc8b3v"

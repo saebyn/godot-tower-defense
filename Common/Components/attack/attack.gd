@@ -24,7 +24,7 @@ enum AttackResult {
 @export var damage_source: String = "unknown" ## Source identifier for damage tracking
 
 @export_group("Effects")
-@export var hit_sound: AudioManager.SoundEffect = AudioManager.SoundEffect.PLAYER_ATTACK_HIT
+@export var hit_sound: Resource_SoundEffect.SoundEffect = Resource_SoundEffect.SoundEffect.PLAYER_ATTACK_HIT
 @export var audio_player: AudioStreamPlayer
 
 

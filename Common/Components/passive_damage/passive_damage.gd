@@ -18,7 +18,7 @@ signal damage_dealt(target: Node, damage: int)
 
 @export_group("Audio")
 @export var enable_sound: bool = false ## Enable damage sound effects
-@export var damage_sound: AudioManager.SoundEffect = AudioManager.SoundEffect.PLAYER_ATTACK_HIT
+@export var damage_sound: Resource_SoundEffect.SoundEffect = Resource_SoundEffect.SoundEffect.PLAYER_ATTACK_HIT
 @export var audio_player: AudioStreamPlayer
 
 var _enemy_cooldowns: Dictionary = {} ## Maps enemy -> time until next damage

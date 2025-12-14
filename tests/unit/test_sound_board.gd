@@ -128,8 +128,8 @@ func test_sound_effects_are_grouped_by_category():
   
   # Get all categories that have effects
   var categories_with_effects = {}
-  for effect_name in AudioManager.SoundEffect.keys():
-    var effect_value = AudioManager.SoundEffect[effect_name]
+  for effect_name in Resource_SoundEffect.SoundEffect.keys():
+    var effect_value = Resource_SoundEffect.SoundEffect[effect_name]
     var config = AudioManager.get_effect_config(effect_value)
     if config:
       var category = config.category

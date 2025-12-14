@@ -24,7 +24,7 @@ godot --path . "res://Stages/UI/sound_board/sound_board.tscn"
 - **Category Organization**: Sound effects are organized by category (Combat, UI, Building, Ambience) in a grid layout
 - **Variation Count Display**: Shows the number of audio variations available for each effect
 - **Pitch Range Information**: Displays the configurable pitch variation range for each effect
-- **Dynamic Button Generation**: Automatically creates a button for each sound effect defined in `AudioManager.SoundEffect` enum
+- **Dynamic Button Generation**: Automatically creates a button for each sound effect defined in `Resource_SoundEffect.SoundEffect` enum
 - **Sound Preview**: Click any button to play the corresponding sound effect
 - **Audio Variations**: Plays random variations with randomized pitch based on configured ranges (per AudioManager implementation)
 - **Easy Navigation**: Close button to exit the scene

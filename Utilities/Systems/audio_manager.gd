@@ -1,146 +1,35 @@
 extends Node
 
-enum SoundEffect {
-  PLAYER_ATTACK_HIT,
-  TURRET_FIRE,
-  ZOMBIE_DEATH,
-  SCRAP_PICKUP,
-  BUILDING_PLACEMENT,
-  BUILDING_PROGRESS,
-  BUILDING_COMPLETE,
-  ELECTRIC_CRACKLE,
-  ZOMBIE_IDLE_GROAN,
-  UI_CONFIRM,
-  ERROR,
-  ACHIEVEMENT_UNLOCKED,
-}
+var sound_effect_configs: Dictionary[Resource_SoundEffect.SoundEffect, Resource_SoundEffect] = {}
 
-enum SoundCategory {
-  USER_INTERFACE,
-  COMBAT,
-  BUILDING,
-  AMBIENCE,
-}
-
-# Configuration for each sound effect
-class SoundEffectConfig:
-  var samples: Array[AudioStream] = []
-  var category: SoundCategory = SoundCategory.COMBAT
-  var pitch_variation_min: float = 0.5
-  var pitch_variation_max: float = 1.0
-  
-  func _init(p_samples: Array[AudioStream], p_category: SoundCategory, p_pitch_min: float = 0.5, p_pitch_max: float = 1.0):
-    samples = p_samples
-    category = p_category
-    pitch_variation_min = p_pitch_min
-    pitch_variation_max = p_pitch_max
-
-var sound_effect_configs: Dictionary[SoundEffect, SoundEffectConfig] = {}
+var sfx_directory: String = "res://Config/SoundEffects/"
+var sfx_resource_extension: String = ".tres"
 
 
 func _ready() -> void:
-  sound_effect_configs = {
-    SoundEffect.PLAYER_ATTACK_HIT: SoundEffectConfig.new(
-      [
-        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"),
-        preload("res://Assets/Audio/SFX/qubodupImpactMeat02.ogg"),
-      ],
-      SoundCategory.COMBAT,
-      0.8, # Min pitch
-      1.2 # Max pitch
-    ),
-    SoundEffect.TURRET_FIRE: SoundEffectConfig.new(
-      [
-        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper turret fire sound
-      ],
-      SoundCategory.COMBAT,
-      0.9, # Min pitch
-      1.1 # Max pitch
-    ),
-    SoundEffect.ZOMBIE_DEATH: SoundEffectConfig.new(
-      [
-        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper zombie death sound
-      ],
-      SoundCategory.COMBAT,
-      0.7, # Min pitch
-      1.3 # Max pitch
-    ),
-    SoundEffect.SCRAP_PICKUP: SoundEffectConfig.new(
-      [
-        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper scrap pickup sound
-      ],
-      SoundCategory.USER_INTERFACE,
-      0.9, # Min pitch
-      1.1 # Max pitch
-    ),
-    SoundEffect.BUILDING_PLACEMENT: SoundEffectConfig.new(
-      [
-        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper building placement sound
-      ],
-      SoundCategory.BUILDING,
-      0.9, # Min pitch
-      1.1 # Max pitch
-    ),
-    SoundEffect.BUILDING_PROGRESS: SoundEffectConfig.new(
-      [
-        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper building progress sound
-      ],
-      SoundCategory.BUILDING,
-      0.9, # Min pitch
-      1.1 # Max pitch
-    ),
-    SoundEffect.BUILDING_COMPLETE: SoundEffectConfig.new(
-      [
-        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper building complete sound
-      ],
-      SoundCategory.BUILDING,
-      0.9, # Min pitch
-      1.1 # Max pitch
-    ),
-    SoundEffect.ELECTRIC_CRACKLE: SoundEffectConfig.new(
-      [
-        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper electric crackle sound
-      ],
-      SoundCategory.AMBIENCE,
-      0.9, # Min pitch
-      1.1 # Max pitch
-    ),
-    SoundEffect.ZOMBIE_IDLE_GROAN: SoundEffectConfig.new(
-      [
-        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper zombie idle groan sound
-      ],
-      SoundCategory.AMBIENCE,
-      0.9, # Min pitch
-      1.1 # Max pitch
-    ),
-    SoundEffect.UI_CONFIRM: SoundEffectConfig.new(
-      [
-        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper UI confirm sound
-      ],
-      SoundCategory.USER_INTERFACE,
-      0.9, # Min pitch
-      1.1 # Max pitch
-    ),
-    SoundEffect.ERROR: SoundEffectConfig.new(
-      [
-        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper error sound
-      ],
-      SoundCategory.USER_INTERFACE,
-      0.9, # Min pitch
-      1.1 # Max pitch
-    ),
-    SoundEffect.ACHIEVEMENT_UNLOCKED: SoundEffectConfig.new(
-      [
-        preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper achievement sound
-      ],
-      SoundCategory.USER_INTERFACE,
-      0.9, # Min pitch
-      1.1 # Max pitch
-    ),
-  }
+  # load resources from config directory into sound_effect_configs
+  var dir = DirAccess.open(sfx_directory)
+  if not dir:
+    MyLogger.error("AudioManager", "Could not open sound effects directory: %s" % sfx_directory)
+    return
+  
+  dir.list_dir_begin()
+  var file_name = dir.get_next()
+  while file_name != "":
+    if file_name.ends_with(sfx_resource_extension):
+      var file_path = sfx_directory + file_name
+      var resource = ResourceLoader.load(file_path)
+      if resource and resource is Resource_SoundEffect:
+        sound_effect_configs[resource.get("sound_effect")] = resource
+        MyLogger.debug("AudioManager", "Loaded sound effect: %s" % str(resource.get("sound_effect")))
+      else:
+        MyLogger.warn("AudioManager", "Failed to load sound effect from: %s" % file_path)
+
+    file_name = dir.get_next()
+  dir.list_dir_end()
 
 
-func play_sound(audio_player: AudioStreamPlayer, effect: SoundEffect) -> void:
+func play_sound(audio_player: AudioStreamPlayer, effect: Resource_SoundEffect.SoundEffect) -> void:
   if effect in sound_effect_configs:
     var config = sound_effect_configs[effect]
     if config.samples.is_empty():
@@ -155,10 +44,10 @@ func play_sound(audio_player: AudioStreamPlayer, effect: SoundEffect) -> void:
 
 
 ## Get the configuration for a sound effect
-func get_effect_config(effect: SoundEffect) -> SoundEffectConfig:
+func get_effect_config(effect: Resource_SoundEffect.SoundEffect) -> Resource_SoundEffect:
   return sound_effect_configs.get(effect, null)
 
 
 ## Get the category name as a string
-func get_category_name(category: SoundCategory) -> String:
-  return SoundCategory.keys()[category]
+func get_category_name(category: Resource_SoundEffect.SoundCategory) -> String:
+  return Resource_SoundEffect.SoundCategory.keys()[category]
