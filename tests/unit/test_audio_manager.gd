@@ -53,9 +53,9 @@ func test_get_effect_config_returns_valid_config():
 
 func test_get_effect_config_returns_null_for_missing_effect():
   # Note: This test verifies the current behavior where missing effects return null
-  # We're testing a hypothetical invalid enum value by creating a large number
-  # that shouldn't exist in the enum
-  var invalid_effect = 9999
+  # We use a value outside the valid enum range
+  var valid_values = AudioManager.SoundEffect.values()
+  var invalid_effect = valid_values.max() + 1
   
   # Act
   var config = AudioManager.get_effect_config(invalid_effect)
