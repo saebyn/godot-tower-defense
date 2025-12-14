@@ -21,7 +21,7 @@ godot --path . "res://Stages/UI/sound_board/sound_board.tscn"
 
 ## Features
 
-- **Category Organization**: Sound effects are organized by category (Combat, UI, Ambient, Music) in a grid layout
+- **Category Organization**: Sound effects are organized by category (Combat, UI, Building, Ambience) in a grid layout
 - **Variation Count Display**: Shows the number of audio variations available for each effect
 - **Pitch Range Information**: Displays the configurable pitch variation range for each effect
 - **Dynamic Button Generation**: Automatically creates a button for each sound effect defined in `AudioManager.SoundEffect` enum
@@ -32,10 +32,10 @@ godot --path . "res://Stages/UI/sound_board/sound_board.tscn"
 ## Grid Layout
 
 The sound board displays effects in columns, with each column representing a category:
-- **Combat**: Attack sounds, impact effects, etc.
-- **UI**: Menu sounds, notifications, button clicks, etc.
-- **Ambient**: Environmental sounds, background audio, etc.
-- **Music**: Background music tracks and stings
+- **Combat**: Attack sounds, impact effects, weapon sounds, etc.
+- **UI**: Menu sounds, notifications, button clicks, confirmations, etc.
+- **Building**: Construction sounds, placement effects, progress indicators, etc.
+- **Ambience**: Environmental sounds, background audio, ambient effects, etc.
 
 ## Purpose
 
@@ -59,7 +59,7 @@ The sound board:
 ## AudioManager Integration
 
 Each sound effect in AudioManager now includes:
-- **Category**: Organizes sounds by type (Combat, UI, Ambient, Music)
+- **Category**: Organizes sounds by type (Combat, UI, Building, Ambience)
 - **Variations**: Array of audio samples that are randomly selected
 - **Pitch Range**: Configurable min/max pitch variation for each effect
   - Example: Combat sounds might have wider variation (0.8-1.2) for variety
