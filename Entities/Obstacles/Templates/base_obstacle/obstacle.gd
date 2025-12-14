@@ -30,6 +30,7 @@ var health: Component_Health
 var obstacle_type: Resource_ObstacleType
 var navigation_obstacle: NavigationObstacle3D
 var placement_preview_node: Node3D
+@onready var audio_player: AudioStreamPlayer3D = $AudioStreamPlayer3D
 
 var _saved_collision_layers: int
 
@@ -133,7 +134,13 @@ func remove() -> int:
   
   # Return currency
   CurrencyManager.earn_scrap(refund_amount)
-  
+
+  # Play removal sound effect
+  AudioManager.play_sound(
+    audio_player,
+    Resource_SoundEffect.SoundEffect.BUILDING_REMOVED,
+  )
+
   # Remove from scene
   queue_free()
   
