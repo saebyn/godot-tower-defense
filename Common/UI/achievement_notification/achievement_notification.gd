@@ -54,7 +54,7 @@ func show_notification(achievement: Resource_Achievement) -> void:
     var audio_player = AudioStreamPlayer.new()
     add_child(audio_player)
     audio_player.finished.connect(audio_player.queue_free)
-    AudioManager.play_sound(audio_player, AudioManager.SoundEffect.ACHIEVEMENT_UNLOCKED)
+    AudioManager.play_sound(audio_player, Resource_SoundEffect.SoundEffect.ACHIEVEMENT_UNLOCKED)
   
   # Animate slide in
   _slide_in()

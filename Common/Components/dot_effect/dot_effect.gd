@@ -20,7 +20,7 @@ signal target_exited(target: Node)
 
 @export_group("Audio")
 @export var enable_sound: bool = false ## Enable DoT tick sound effects
-@export var tick_sound: AudioManager.SoundEffect = AudioManager.SoundEffect.PLAYER_ATTACK_HIT
+@export var tick_sound: Resource_SoundEffect.SoundEffect = Resource_SoundEffect.SoundEffect.PLAYER_ATTACK_HIT
 @export var audio_player: AudioStreamPlayer
 
 var _active_targets: Dictionary = {} ## Maps target -> bool (just tracking presence)

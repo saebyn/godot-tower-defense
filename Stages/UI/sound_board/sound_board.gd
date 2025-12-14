@@ -21,8 +21,8 @@ func _populate_sound_grid():
   # Group sound effects by category
   var effects_by_category: Dictionary = {}
   
-  for effect_name in AudioManager.SoundEffect.keys():
-    var effect_value = AudioManager.SoundEffect[effect_name]
+  for effect_name in Resource_SoundEffect.SoundEffect.keys():
+    var effect_value = Resource_SoundEffect.SoundEffect[effect_name]
     var config = AudioManager.get_effect_config(effect_value)
     
     if config != null:
@@ -44,7 +44,7 @@ func _populate_sound_grid():
   # Set grid columns to number of categories
   sound_grid_container.columns = max(1, categories.size())
   
-  MyLogger.info("SoundBoard", "Creating grid with %d categories and %d total effects" % [categories.size(), AudioManager.SoundEffect.keys().size()])
+  MyLogger.info("SoundBoard", "Creating grid with %d categories and %d total effects" % [categories.size(), Resource_SoundEffect.SoundEffect.keys().size()])
   
   # Create a column for each category
   for category in categories:
@@ -75,7 +75,7 @@ func _populate_sound_grid():
     
     sound_grid_container.add_child(category_container)
 
-func _create_effect_button(effect_name: String, effect_value: AudioManager.SoundEffect, config: AudioManager.SoundEffectConfig) -> VBoxContainer:
+func _create_effect_button(effect_name: String, effect_value: Resource_SoundEffect.SoundEffect, config: Resource_SoundEffect) -> VBoxContainer:
   var button_container = VBoxContainer.new()
   button_container.custom_minimum_size = Vector2(250, 0)
   
@@ -108,7 +108,7 @@ func _create_effect_button(effect_name: String, effect_value: AudioManager.Sound
   
   return button_container
 
-func _on_sound_button_pressed(effect: AudioManager.SoundEffect, effect_name: String):
+func _on_sound_button_pressed(effect: Resource_SoundEffect.SoundEffect, effect_name: String):
   MyLogger.info("SoundBoard", "Playing sound effect: %s" % effect_name)
   AudioManager.play_sound(audio_player, effect)
 

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=8 format=3 uid="uid://twng2iy3x8ed"]
+
+[ext_resource type="AudioStream" uid="uid://bd6nodqnunvhu" path="res://Assets/Audio/SFX/ambience/zombie/zombie-16.wav" id="1_fls0b"]
+[ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_yktun"]
+[ext_resource type="AudioStream" uid="uid://cdw4o1q3jtbk1" path="res://Assets/Audio/SFX/ambience/zombie/zombie-17.wav" id="2_oqvua"]
+[ext_resource type="AudioStream" uid="uid://bm205g74i8gm1" path="res://Assets/Audio/SFX/ambience/zombie/zombie-19.wav" id="3_mxrcf"]
+[ext_resource type="AudioStream" uid="uid://xaya1p44wrm0" path="res://Assets/Audio/SFX/ambience/zombie/zombie-18.wav" id="4_x3020"]
+[ext_resource type="AudioStream" uid="uid://cau7h3hs6xrca" path="res://Assets/Audio/SFX/ambience/zombie/zombie-20.wav" id="5_nrytf"]
+[ext_resource type="AudioStream" uid="uid://b1ka1t3622p6a" path="res://Assets/Audio/SFX/ambience/zombie/zombie-21.wav" id="6_ma6dw"]
+
+[resource]
+script = ExtResource("1_yktun")
+sound_effect = 11
+samples = Array[AudioStream]([ExtResource("1_fls0b"), ExtResource("2_oqvua"), ExtResource("3_mxrcf"), ExtResource("4_x3020"), ExtResource("5_nrytf"), ExtResource("6_ma6dw")])
+category = 3
+pitch_variation_min = 0.5
+pitch_variation_max = 1.2
+metadata/_custom_type_script = "uid://evflivoc8b3v"

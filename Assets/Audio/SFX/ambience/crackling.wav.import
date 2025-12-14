@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://nw1wvgrqckbp"
-path="res://.godot/imported/crackling.wav-345dd7999c1770216659dc2ebf31a25e.sample"
+path="res://.godot/imported/crackling.wav-c44b50273f8767984854f7dd2c104fef.sample"
 
 [deps]
 
-source_file="res://Assets/Audio/SFX/crackling.wav"
-dest_files=["res://.godot/imported/crackling.wav-345dd7999c1770216659dc2ebf31a25e.sample"]
+source_file="res://Assets/Audio/SFX/ambience/crackling.wav"
+dest_files=["res://.godot/imported/crackling.wav-c44b50273f8767984854f7dd2c104fef.sample"]
 
 [params]
 

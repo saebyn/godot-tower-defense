@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=3 format=3 uid="uid://dxixclnhf2w5c"]
+
+[ext_resource type="AudioStream" uid="uid://nw1wvgrqckbp" path="res://Assets/Audio/SFX/ambience/crackling.wav" id="1_12xgj"]
+[ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_epfbt"]
+
+[resource]
+script = ExtResource("1_epfbt")
+sound_effect = 10
+samples = Array[AudioStream]([ExtResource("1_12xgj")])
+category = 3
+metadata/_custom_type_script = "uid://evflivoc8b3v"
