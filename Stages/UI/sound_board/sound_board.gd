@@ -8,14 +8,10 @@ class_name UI_SoundBoard
 
 @onready var sound_grid_container: GridContainer = %SoundGridContainer
 @onready var audio_player: AudioStreamPlayer = %AudioPlayer
-@onready var close_button: Button = %CloseButton
 
 func _ready():
   MyLogger.info("SoundBoard", "Sound board loaded")
   _populate_sound_grid()
-  
-  if close_button:
-    close_button.pressed.connect(_on_close_button_pressed)
 
 func _populate_sound_grid():
   if not sound_grid_container:
@@ -118,4 +114,4 @@ func _on_sound_button_pressed(effect: AudioManager.SoundEffect, effect_name: Str
 
 func _on_close_button_pressed():
   MyLogger.info("SoundBoard", "Close button pressed")
-  queue_free()
+  get_tree().quit()

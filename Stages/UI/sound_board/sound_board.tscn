@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cjfkm8s4qbh3k"]
 
-[ext_resource type="Script" path="res://Stages/UI/sound_board/sound_board.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://fydiopstjytc" path="res://Stages/UI/sound_board/sound_board.gd" id="1_script"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
 
 [node name="SoundBoard" type="Control"]
@@ -80,7 +80,9 @@ layout_mode = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-text = "Close"
+text = "Exit"
 
 [node name="AudioPlayer" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
+
+[connection signal="pressed" from="CenterContainer/Panel/MarginContainer/VBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]

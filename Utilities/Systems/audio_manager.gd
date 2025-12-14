@@ -2,14 +2,24 @@ extends Node
 
 enum SoundEffect {
   PLAYER_ATTACK_HIT,
+  TURRET_FIRE,
+  ZOMBIE_DEATH,
+  SCRAP_PICKUP,
+  BUILDING_PLACEMENT,
+  BUILDING_PROGRESS,
+  BUILDING_COMPLETE,
+  ELECTRIC_CRACKLE,
+  ZOMBIE_IDLE_GROAN,
+  UI_CONFIRM,
+  ERROR,
   ACHIEVEMENT_UNLOCKED,
 }
 
 enum SoundCategory {
+  USER_INTERFACE,
   COMBAT,
-  UI,
-  AMBIENT,
-  MUSIC,
+  BUILDING,
+  AMBIENCE,
 }
 
 # Configuration for each sound effect
@@ -36,16 +46,16 @@ func _ready() -> void:
         preload("res://Assets/Audio/SFX/qubodupImpactMeat02.ogg"),
       ],
       SoundCategory.COMBAT,
-      0.8,  # Min pitch
-      1.2   # Max pitch
+      0.8, # Min pitch
+      1.2 # Max pitch
     ),
     SoundEffect.ACHIEVEMENT_UNLOCKED: SoundEffectConfig.new(
       [
         preload("res://Assets/Audio/SFX/qubodupImpactMeat01.ogg"), # Placeholder - needs proper achievement sound
       ],
-      SoundCategory.UI,
-      0.9,  # Min pitch
-      1.1   # Max pitch
+      SoundCategory.USER_INTERFACE,
+      0.9, # Min pitch
+      1.1 # Max pitch
     ),
   }
 
