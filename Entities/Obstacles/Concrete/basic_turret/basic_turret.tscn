@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://bl5g2v8n3jkph"]
+[gd_scene load_steps=9 format=3 uid="uid://bl5g2v8n3jkph"]
 
 [ext_resource type="PackedScene" uid="uid://dhxe3f6ho8qma" path="res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.tscn" id="1_turret"]
 [ext_resource type="Script" uid="uid://0yy8udbhaakj" path="res://Entities/Obstacles/Concrete/basic_turret/basic_turret.gd" id="2_6y5ob"]
 [ext_resource type="PackedScene" uid="uid://cyxcfkq8p7bag" path="res://Assets/Models/turret.blend" id="2_nmtda"]
+[ext_resource type="Script" uid="uid://c7bdetuss8stb" path="res://Common/Components/idle_sounds/idle_sounds.gd" id="4_cvjpm"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_sl1jc"]
 size = Vector3(1.26466, 1.16345, 1.03418)
@@ -40,12 +41,15 @@ script = ExtResource("2_6y5ob")
 rotation_speed = 360.0
 idle_animation = "idle"
 aim_margin = 0.1
+enemy_group = "enemies"
+detection_interval = 0.5
 mesh_instances = [NodePath("turret/Base"), NodePath("turret/TurretYaw/Top")]
 
 [node name="Attack" parent="." index="1"]
 damage_amount = 1
 attack_speed = 0.75
 damage_source = "turret"
+hit_sound = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." index="2"]
 transform = Transform3D(1.74, 0, 0, 0, 1.74, 0, 0, 0, 1.74, 0.234956, 0.996019, 0.0292969)
@@ -62,5 +66,13 @@ libraries = {
 &"": SubResource("AnimationLibrary_2a5gv")
 }
 autoplay = "idle"
+
+[node name="Component_IdleSounds" type="Node3D" parent="." index="7" node_paths=PackedStringArray("audio_player")]
+script = ExtResource("4_cvjpm")
+idle_sound = 3
+audio_player = NodePath("../AudioStreamPlayer3D")
+min_idle_interval = 10.0
+max_idle_interval = 30.0
+metadata/_custom_type_script = "uid://c7bdetuss8stb"
 
 [editable path="turret"]

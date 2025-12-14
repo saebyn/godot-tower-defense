@@ -19,9 +19,8 @@ signal target_exited(target: Node)
 @export var target_group: String = "enemies" ## Which group to affect
 
 @export_group("Audio")
-@export var enable_sound: bool = false ## Enable DoT tick sound effects
-@export var tick_sound: Resource_SoundEffect.SoundEffect = Resource_SoundEffect.SoundEffect.PLAYER_ATTACK_HIT
-@export var audio_player: AudioStreamPlayer
+@export var tick_sound: Resource_SoundEffect.SoundEffect = Resource_SoundEffect.SoundEffect.DEFAULT
+@export var audio_player: AudioStreamPlayer3D
 
 var _active_targets: Dictionary = {} ## Maps target -> bool (just tracking presence)
 var _tick_timer: Timer
@@ -42,6 +41,9 @@ func _ready():
   _tick_timer.timeout.connect(_on_tick)
   _tick_timer.autostart = true
   add_child(_tick_timer)
+
+  if not audio_player:
+    MyLogger.warn("DotEffect", "No AudioStreamPlayer assigned for DoT effect sounds.")
   
   # Register in parent metadata for discovery
   if get_parent():
@@ -91,7 +93,7 @@ func _on_tick():
       dot_applied.emit(target, damage_per_tick)
       MyLogger.trace("DotEffect", "Applied %d DoT damage to %s" % [damage_per_tick, target.name])
       
-      if enable_sound and audio_player:
+      if audio_player:
         AudioManager.play_sound(audio_player, tick_sound)
     else:
       # Target has no health component, remove from tracking

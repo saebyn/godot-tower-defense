@@ -16,14 +16,12 @@ shader_parameter/dither_scale = 1.00000004424012
 
 [node name="RangedObstacle" instance=ExtResource("1_shooting")]
 script = ExtResource("2_shooting")
-enemy_group = "enemies"
-attack_range = 15.0
-detection_range = 25.0
-detection_interval = 0.5
+effect_range = 15.0
 
-[node name="Attack" parent="." index="1" instance=ExtResource("3_shooting")]
+[node name="Attack" parent="." index="1" node_paths=PackedStringArray("audio_player") instance=ExtResource("3_shooting")]
 damage_amount = 15
 attack_speed = 0.5
+audio_player = NodePath("../AudioStreamPlayer3D")
 
 [node name="DetectionTimer" type="Timer" parent="." index="2"]
 wait_time = 0.5

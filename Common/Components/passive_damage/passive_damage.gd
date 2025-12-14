@@ -17,9 +17,8 @@ signal damage_dealt(target: Node, damage: int)
 @export var target_group: String = "enemies" ## Which group to damage
 
 @export_group("Audio")
-@export var enable_sound: bool = false ## Enable damage sound effects
-@export var damage_sound: Resource_SoundEffect.SoundEffect = Resource_SoundEffect.SoundEffect.PLAYER_ATTACK_HIT
-@export var audio_player: AudioStreamPlayer
+@export var damage_sound: Resource_SoundEffect.SoundEffect = Resource_SoundEffect.SoundEffect.DEFAULT
+@export var audio_player: AudioStreamPlayer3D
 
 var _enemy_cooldowns: Dictionary = {} ## Maps enemy -> time until next damage
 var _enemies_in_area: Array[Node] = []
@@ -34,6 +33,9 @@ func _ready():
   body_entered.connect(_on_body_entered)
   body_exited.connect(_on_body_exited)
   
+  if not audio_player:
+    MyLogger.warn("PassiveDamage", "No AudioStreamPlayer assigned for PassiveDamage effect sounds.")
+
   # Register in parent metadata for discovery
   if get_parent():
     get_parent().set_meta("passive_damage_component", self)
@@ -102,7 +104,7 @@ func _try_damage_enemy(enemy: Node):
     damage_dealt.emit(enemy, damage_amount)
     MyLogger.debug("PassiveDamage", "Dealt %d damage to %s" % [damage_amount, enemy.name])
     
-    if enable_sound and audio_player:
+    if audio_player:
       AudioManager.play_sound(audio_player, damage_sound)
 
 

@@ -971,8 +971,11 @@ _data = {
 transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0, 0, 0)
 script = ExtResource("1_e1yvt")
 
-[node name="Health" parent="." instance=ExtResource("2_5ebp1")]
+[node name="Health" parent="." node_paths=PackedStringArray("audio_player") instance=ExtResource("2_5ebp1")]
 hitpoints = 5
+hit_sound = 19
+death_sound = 5
+audio_player = NodePath("../AudioStreamPlayer3D")
 
 [node name="ShakeEffect" type="Node" parent="."]
 script = ExtResource("3_n2scg")
@@ -1398,6 +1401,10 @@ libraries = {
 &"": SubResource("AnimationLibrary_e25lm")
 }
 autoplay = "Idle"
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(0.9999998, 0, 0, 0, 1, 0, 0, 0, 0.9999998, -0.0522452, 2.7797458, 0.698045)
+bus = &"Sound Effects"
 
 [connection signal="damaged" from="Health" to="." method="_on_health_damaged"]
 [connection signal="damaged" from="Health" to="ShakeEffect" method="damage_taken"]
