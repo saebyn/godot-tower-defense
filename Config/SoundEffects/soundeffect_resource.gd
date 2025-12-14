@@ -19,6 +19,7 @@ enum SoundEffect {
   ZOMBIE_IDLE_GROAN = 12,
 
   UI_CONFIRM = 13,
+  UI_CANCEL = 20,
   ERROR = 14,
   ACHIEVEMENT_UNLOCKED = 15,
 
