@@ -212,7 +212,7 @@ func _on_obstacle_spawn_requested(obstacle_type: Resource_ObstacleType) -> void:
   
   # Skip if input is disabled
   if not input_enabled:
-    MyLogger.info("Placement", "Placement disabled due to game state")
+    MyLogger.info("Placement", "Placement disabled due to game state: %s" % GameManager.GameState.keys()[GameManager.current_state])
     return
 
   if busy:
