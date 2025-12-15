@@ -55,26 +55,17 @@ func _ready():
   obstacle_detection_raycast.collision_mask = 2 # Check for obstacles (layer 2)
   
   # Set input_enabled based on current game state
-  input_enabled = GameManager.current_state == GameManager.GameState.PLAYING
+  input_enabled = GameManager.is_gameplay_input_enabled()
   
   # Connect to GameManager state changes to disable input during menus and end screens
   GameManager.game_state_changed.connect(_on_game_state_changed)
 
 ## Handle game state changes to disable input during menus and end screens
-func _on_game_state_changed(new_state: GameManager.GameState):
-  # Disable placement input when in any menu state or end screen
-  match new_state:
-    GameManager.GameState.PLAYING:
-      input_enabled = true
-    GameManager.GameState.IN_GAME_MENU, GameManager.GameState.MAIN_MENU, GameManager.GameState.GAME_OVER, GameManager.GameState.VICTORY:
-      input_enabled = false
-      # Cancel any active placement when entering end screen or menu
-      if _preview:
-        _cancel_obstacle_placement()
-    _:
-      input_enabled = false
-      if _preview:
-        _cancel_obstacle_placement()
+func _on_game_state_changed(_new_state: GameManager.GameState):
+  input_enabled = GameManager.is_gameplay_input_enabled()
+  # Cancel any active placement when gameplay input is disabled
+  if not input_enabled and _preview:
+    _cancel_obstacle_placement()
 
 func _process(_delta: float) -> void:
   # Skip if input is disabled

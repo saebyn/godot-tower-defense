@@ -28,7 +28,7 @@ func _ready() -> void:
   _populate_default_hotbar()
   
   # Set input_enabled based on current game state
-  input_enabled = GameManager.current_state == GameManager.GameState.PLAYING
+  input_enabled = GameManager.is_gameplay_input_enabled()
   
   # Connect to GameManager state changes to disable input during menus and end screens
   GameManager.game_state_changed.connect(_on_game_state_changed)
@@ -116,15 +116,8 @@ func _update_slot_visual(slot_index: int) -> void:
   button.load(slot_index, obstacle)
 
 ## Handle game state changes to disable input during menus and end screens
-func _on_game_state_changed(new_state: GameManager.GameState):
-  # Disable hotbar input when in any menu state or end screen
-  match new_state:
-    GameManager.GameState.PLAYING:
-      input_enabled = true
-    GameManager.GameState.IN_GAME_MENU, GameManager.GameState.MAIN_MENU, GameManager.GameState.GAME_OVER, GameManager.GameState.VICTORY:
-      input_enabled = false
-    _:
-      input_enabled = false
+func _on_game_state_changed(_new_state: GameManager.GameState):
+  input_enabled = GameManager.is_gameplay_input_enabled()
 
 func _on_slot_pressed(slot_index: int) -> void:
   """Handle left click on slot - select obstacle for placement"""

@@ -27,21 +27,14 @@ func _ready():
   _update_orbit_center()
   
   # Set input_enabled based on current game state to avoid processing input in menus
-  input_enabled = GameManager.current_state == GameManager.GameState.PLAYING
+  input_enabled = GameManager.is_gameplay_input_enabled()
   
   # Connect to GameManager state changes to disable input during menus
   GameManager.game_state_changed.connect(_on_game_state_changed)
 
 ## Handle game state changes to disable camera input during menus
-func _on_game_state_changed(new_state: GameManager.GameState):
-  # Disable camera input when in any menu state
-  match new_state:
-    GameManager.GameState.PLAYING:
-      input_enabled = true
-    GameManager.GameState.IN_GAME_MENU, GameManager.GameState.MAIN_MENU, GameManager.GameState.GAME_OVER, GameManager.GameState.VICTORY:
-      input_enabled = false
-    _:
-      input_enabled = false
+func _on_game_state_changed(_new_state: GameManager.GameState):
+  input_enabled = GameManager.is_gameplay_input_enabled()
 
 
 func _process(delta: float) -> void:

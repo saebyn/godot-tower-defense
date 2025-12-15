@@ -55,6 +55,12 @@ func get_game_speed() -> float:
     return current_speed_multiplier
 
 
+## Returns true if gameplay input (attacks, hotbar, placement) should be enabled
+## Only enabled during PLAYING state
+func is_gameplay_input_enabled() -> bool:
+    return current_state == GameState.PLAYING
+
+
 func toggle_in_game_menu():
     if current_state == GameState.IN_GAME_MENU:
         set_game_state(GameState.PLAYING)
