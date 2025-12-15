@@ -7,8 +7,5 @@ Godot_v*.zip
 # Blender specific ignores
 *.blend1
 
-# Downloaded Godot binaries
-Godot_v4.5-stable_linux.x86_64.zip
-*.zip
+# Downloaded Godot binaries and partial files
 *.zip.*
-godot
