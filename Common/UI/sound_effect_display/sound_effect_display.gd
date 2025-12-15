@@ -12,10 +12,18 @@ var container: VBoxContainer = null
 # Dictionary to track sound effects: {effect_name: {count: int, timestamp: float, label: Label}}
 var tracked_effects: Dictionary = {}
 
+# Cache for enum value to name mapping (for performance)
+var _effect_name_cache: Dictionary = {}
+
 func _ready() -> void:
   # Try to get the container node if it exists
   if has_node("%EffectsContainer"):
     container = %EffectsContainer
+  
+  # Build enum name cache for fast lookups
+  for key in Resource_SoundEffect.SoundEffect.keys():
+    var value = Resource_SoundEffect.SoundEffect[key]
+    _effect_name_cache[value] = key.capitalize()
   
   # Connect to AudioManager signal for sound played events
   if AudioManager.has_signal("sound_played") and not AudioManager.sound_played.is_connected(_on_sound_played):
@@ -112,9 +120,9 @@ func _enforce_max_display_limit() -> void:
 
 ## Get human-readable name for sound effect
 func _get_effect_name(effect: Resource_SoundEffect.SoundEffect) -> String:
-  for key in Resource_SoundEffect.SoundEffect.keys():
-    if Resource_SoundEffect.SoundEffect[key] == effect:
-      return key.capitalize()
+  # Use cached mapping for O(1) lookup instead of O(n) search
+  if effect in _effect_name_cache:
+    return _effect_name_cache[effect]
   return "Unknown"
 
 ## Toggle visibility of the display
