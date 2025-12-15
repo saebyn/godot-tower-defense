@@ -35,6 +35,7 @@ var _place_obstacle_type: Resource_ObstacleType = null
 var _preview: Entity_PlaceableObstacle = null
 var _valid_material: StandardMaterial3D
 var _invalid_material: StandardMaterial3D
+var input_enabled: bool = true ## Track if placement input should be processed (disabled during victory/game over screens)
 
 func _ready():
   # Set up materials for visual feedback
@@ -52,8 +53,34 @@ func _ready():
   add_child(obstacle_detection_raycast)
   obstacle_detection_raycast.enabled = false
   obstacle_detection_raycast.collision_mask = 2 # Check for obstacles (layer 2)
+  
+  # Set input_enabled based on current game state
+  input_enabled = GameManager.current_state == GameManager.GameState.PLAYING
+  
+  # Connect to GameManager state changes to disable input during menus and end screens
+  GameManager.game_state_changed.connect(_on_game_state_changed)
+
+## Handle game state changes to disable input during menus and end screens
+func _on_game_state_changed(new_state: GameManager.GameState):
+  # Disable placement input when in any menu state or end screen
+  match new_state:
+    GameManager.GameState.PLAYING:
+      input_enabled = true
+    GameManager.GameState.IN_GAME_MENU, GameManager.GameState.MAIN_MENU, GameManager.GameState.GAME_OVER, GameManager.GameState.VICTORY:
+      input_enabled = false
+      # Cancel any active placement when entering end screen or menu
+      if _preview:
+        _cancel_obstacle_placement()
+    _:
+      input_enabled = false
+      if _preview:
+        _cancel_obstacle_placement()
 
 func _process(_delta: float) -> void:
+  # Skip if input is disabled
+  if not input_enabled:
+    return
+    
   if _preview:
     if Input.is_action_just_pressed("place_cancel"):
       # Handle obstacle placement cancellation
@@ -82,6 +109,10 @@ func _physics_process(_delta: float) -> void:
     _update_visual_feedback(collision_point)
 
 func _input(event: InputEvent) -> void:
+  # Skip if input is disabled
+  if not input_enabled:
+    return
+    
   if event is InputEventMouseMotion and busy:
     _project_placed_obstacle(event.position)
 
@@ -187,6 +218,11 @@ func _has_sufficient_clearance(target_position: Vector3) -> bool:
 
 func _on_obstacle_spawn_requested(obstacle_type: Resource_ObstacleType) -> void:
   MyLogger.info("Placement", "Spawn obstacle button pressed for: %s" % obstacle_type.name)
+  
+  # Skip if input is disabled
+  if not input_enabled:
+    MyLogger.info("Placement", "Placement disabled due to game state")
+    return
 
   if busy:
     MyLogger.info("Placement", "Already placing an obstacle, cancelling previous placement")

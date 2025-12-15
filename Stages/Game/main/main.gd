@@ -31,6 +31,8 @@ var _obstacle_tooltip = null # UI_ObstacleTooltip
 var _last_hover_check_position: Vector2 = Vector2(-1, -1)
 ## Minimum distance mouse must move before triggering hover check (in pixels)
 const HOVER_CHECK_THRESHOLD: float = 5.0
+## Track if input should be processed (disabled during victory/game over screens)
+var input_enabled: bool = true
 
 func _ready() -> void:
   # Find Attack component via metadata
@@ -62,6 +64,12 @@ func _ready() -> void:
   # Connect to obstacle placement signals for showing all shooting obstacle ranges
   obstacle_placement.placement_mode_entered.connect(_on_placement_mode_entered)
   obstacle_placement.placement_mode_exited.connect(_on_placement_mode_exited)
+  
+  # Set input_enabled based on current game state
+  input_enabled = GameManager.current_state == GameManager.GameState.PLAYING
+  
+  # Connect to GameManager state changes to disable input during menus
+  GameManager.game_state_changed.connect(_on_game_state_changed)
 
   # Load the appropriate scenario dynamically
   _load_scenario()
@@ -168,7 +176,22 @@ func _start_navigation_rebake_timer() -> void:
   add_child(timer)
   timer.timeout.connect(rebake_navigation_mesh)
 
+## Handle game state changes to disable input during menus and end screens
+func _on_game_state_changed(new_state: GameManager.GameState):
+  # Disable input when in any menu state or end screen
+  match new_state:
+    GameManager.GameState.PLAYING:
+      input_enabled = true
+    GameManager.GameState.IN_GAME_MENU, GameManager.GameState.MAIN_MENU, GameManager.GameState.GAME_OVER, GameManager.GameState.VICTORY:
+      input_enabled = false
+    _:
+      input_enabled = false
+
 func _input(event: InputEvent) -> void:
+  # Skip input processing if input is disabled (e.g., menus or end screens are shown)
+  if not input_enabled:
+    return
+    
   if event is InputEventMouseButton and not obstacle_placement.busy and event.pressed:
     if event.button_index == MOUSE_BUTTON_LEFT:
       _handle_enemy_click(event.position)

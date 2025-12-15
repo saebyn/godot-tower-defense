@@ -20,11 +20,18 @@ signal obstacle_selected(obstacle: Resource_ObstacleType)
 var slot_obstacle_ids: Array[String] = [] ## Obstacle IDs for each slot
 var slot_buttons: Array[HotbarButton] = [] ## Button references for each slot
 var current_configuring_slot: int = -1 ## Track which slot was last right-clicked for configuration (-1 if none, may not be valid index or current if no menu open)
+var input_enabled: bool = true ## Track if hotbar input should be processed (disabled during victory/game over screens)
 
 func _ready() -> void:
   _setup_ui()
   _connect_signals()
   _populate_default_hotbar()
+  
+  # Set input_enabled based on current game state
+  input_enabled = GameManager.current_state == GameManager.GameState.PLAYING
+  
+  # Connect to GameManager state changes to disable input during menus and end screens
+  GameManager.game_state_changed.connect(_on_game_state_changed)
 
 func _setup_ui() -> void:
   # Create the container if it doesn't exist
@@ -108,8 +115,23 @@ func _update_slot_visual(slot_index: int) -> void:
 
   button.load(slot_index, obstacle)
 
+## Handle game state changes to disable input during menus and end screens
+func _on_game_state_changed(new_state: GameManager.GameState):
+  # Disable hotbar input when in any menu state or end screen
+  match new_state:
+    GameManager.GameState.PLAYING:
+      input_enabled = true
+    GameManager.GameState.IN_GAME_MENU, GameManager.GameState.MAIN_MENU, GameManager.GameState.GAME_OVER, GameManager.GameState.VICTORY:
+      input_enabled = false
+    _:
+      input_enabled = false
+
 func _on_slot_pressed(slot_index: int) -> void:
   """Handle left click on slot - select obstacle for placement"""
+  # Skip if input is disabled
+  if not input_enabled:
+    return
+    
   var obstacle_id = slot_obstacle_ids[slot_index] if slot_index < slot_obstacle_ids.size() else ""
   var obstacle = _get_obstacle_by_id(obstacle_id)
   
@@ -119,6 +141,10 @@ func _on_slot_pressed(slot_index: int) -> void:
 
 func _on_slot_gui_input(event: InputEvent, slot_index: int) -> void:
   """Handle GUI input for advanced slot interactions"""
+  # Skip if input is disabled
+  if not input_enabled:
+    return
+    
   if event is InputEventMouseButton and event.pressed:
     if event.button_index == MOUSE_BUTTON_RIGHT:
       _show_obstacle_selection_menu(slot_index)
@@ -208,6 +234,10 @@ func set_slot_obstacle(slot_index: int, obstacle: Resource_ObstacleType) -> void
   _update_slot_visual(slot_index)
 
 func _input(event: InputEvent) -> void:
+  # Skip if input is disabled
+  if not input_enabled:
+    return
+    
   # Handle keyboard shortcuts for hotbar slots (1-6)
   if event is InputEventKey and event.pressed:
     var slot_index = -1
