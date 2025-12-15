@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://c474c2uw4525n" path="res://Stages/Game/main/camera.gd" id="5_hjeu7"]
 [ext_resource type="PackedScene" uid="uid://csgj8g6xkyj8x" path="res://Common/World/ground_with_boundaries.tscn" id="6_ground"]
 [ext_resource type="PackedScene" uid="uid://bpf2dmre1y8t0" path="res://Utilities/Placement/obstacle_placement/obstacle_placement.tscn" id="7_kek77"]
+[ext_resource type="Script" path="res://Stages/Game/main/audio_listener.gd" id="8_audio_listener"]
 [ext_resource type="AudioStream" uid="uid://besdcxihxcckh" path="res://Assets/Audio/Music/battleThemeA.mp3" id="9_i0vvu"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_pcgyj"]
@@ -55,6 +56,10 @@ script = ExtResource("5_hjeu7")
 camera_move_speed = 30.0
 camera_zoom_fast_multiplier = 5.0
 camera_max_size = 300.0
+
+[node name="AudioListener3D" type="AudioListener3D" parent="." node_paths=PackedStringArray("camera")]
+script = ExtResource("8_audio_listener")
+camera = NodePath("../Camera3D")
 
 [node name="GroundWithBoundaries" parent="." node_paths=PackedStringArray("camera") instance=ExtResource("6_ground")]
 camera = NodePath("../Camera3D")

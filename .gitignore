@@ -2,10 +2,11 @@
 .godot/
 /android/
 godot
-Godot_v*.zip
 
 # Blender specific ignores
 *.blend1
 
 # Downloaded Godot binaries and partial files
 *.zip.*
+Godot_v4.5-stable_linux.x86_64.zip
+Godot_v*.zip*
