@@ -84,6 +84,8 @@ func _create_effect_button(effect_name: String, effect_value: Resource_SoundEffe
   var display_name = effect_name.capitalize()
   button.text = display_name
   button.custom_minimum_size = Vector2(0, 40)
+  # Skip audio manager auto-attachment since we handle our own sounds
+  button.set_meta("skip_audio_manager", true)
   button.pressed.connect(_on_sound_button_pressed.bind(effect_value, effect_name))
   button_container.add_child(button)
   

@@ -41,9 +41,14 @@ func _ready() -> void:
 
 
 ## Automatically connect to buttons added to the scene tree
+## To skip auto-attachment, set metadata "skip_audio_manager" to true on the button
 func _on_node_added(node: Node) -> void:
   # Handle all Button types (Button, CheckButton, etc.)
   if node is BaseButton:
+    # Check if button has metadata to skip auto-attachment
+    if node.get_meta("skip_audio_manager", false) == true:
+      return
+    
     # Connect to pressed signal for click sound
     if not node.pressed.is_connected(_on_button_pressed):
       node.pressed.connect(_on_button_pressed.bind(node))
