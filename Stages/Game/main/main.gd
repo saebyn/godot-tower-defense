@@ -225,12 +225,15 @@ func _handle_obstacle_remove_click(click_position: Vector2):
       MyLogger.info("Player", "Confirmed Entity_PlaceableObstacle, calling remove()")
       
       # Check if we're removing the currently hovered obstacle
+      # Currently only Entity_RangedObstacle types can be hovered (see _handle_ranged_obstacle_hover)
       if _hovered_ranged_obstacle == obstacle:
         # Clear hover state to prevent dangling tooltip/range indicator
         _hovered_ranged_obstacle = null
         MyLogger.debug("Player", "Cleared hover state for removed obstacle")
       
       # Also check if the tooltip is showing this obstacle and hide it
+      # This is a defensive check that handles both current and future cases
+      # where non-ranged obstacles might show tooltips
       if _obstacle_tooltip and _obstacle_tooltip.visible and _obstacle_tooltip.current_obstacle == obstacle:
         _obstacle_tooltip.hide_tooltip()
         MyLogger.debug("Player", "Hid tooltip for removed obstacle")
