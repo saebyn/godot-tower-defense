@@ -42,6 +42,15 @@ offset_top = 10.0
 offset_right = 362.0
 offset_bottom = 53.0
 
+[node name="TechTreeButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 60.0
+offset_right = 150.0
+offset_bottom = 100.0
+tooltip_text = "Open Tech Tree (Y)"
+text = "Tech Tree"
+
 [node name="SpeedControls" parent="." instance=ExtResource("8_speed_controls")]
 layout_mode = 1
 anchors_preset = 1

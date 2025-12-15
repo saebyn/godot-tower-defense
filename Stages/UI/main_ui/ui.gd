@@ -2,15 +2,27 @@ extends Control
 
 signal obstacle_spawn_requested(obstacle: Resource_ObstacleType)
 
+const TechTreeScene = preload("res://Stages/UI/tech_tree/tech_tree.tscn")
+
 @onready var spawn_indicator: Control = $SpawnIndicator
 @onready var hotbar: Control = $Hotbar
 @onready var stats_display: Control = $StatsDisplay
 @onready var fps_overlay: Control = $FpsOverlay
+@onready var tech_tree_button: Button = $TechTreeButton
+
+var tech_tree_ui = null
+
+
+func _ready() -> void:
+  if tech_tree_button:
+    tech_tree_button.pressed.connect(_on_tech_tree_button_pressed)
 
 
 func _process(_delta: float) -> void:
   if Input.is_action_just_pressed("toggle_in_game_menu"):
     GameManager.toggle_in_game_menu()
+  elif Input.is_action_just_pressed("toggle_tech_tree"):
+    _toggle_tech_tree()
   elif Input.is_action_just_pressed("toggle_stats"):
     _toggle_stats_display()
   elif Input.is_action_just_pressed("toggle_fps"):
@@ -55,3 +67,46 @@ func _toggle_fps_overlay() -> void:
   if fps_overlay:
     fps_overlay.toggle_visibility()
     MyLogger.info("UI", "FPS overlay toggled: %s" % ("visible" if fps_overlay.visible else "hidden"))
+
+
+## Handle tech tree button press
+func _on_tech_tree_button_pressed() -> void:
+  _toggle_tech_tree()
+
+
+## Toggle the tech tree UI
+func _toggle_tech_tree() -> void:
+  if tech_tree_ui == null:
+    _show_tech_tree()
+  else:
+    _close_tech_tree()
+
+
+## Show the tech tree UI
+func _show_tech_tree() -> void:
+  MyLogger.info("UI", "Opening tech tree")
+  
+  # Pause the game
+  GameManager.pause_game()
+  GameManager.set_game_state(GameManager.GameState.IN_GAME_MENU)
+  
+  # Create tech tree UI
+  tech_tree_ui = TechTreeScene.instantiate()
+  add_child(tech_tree_ui)
+  tech_tree_ui.closed.connect(_on_tech_tree_closed)
+
+
+## Handle tech tree closed signal
+func _on_tech_tree_closed() -> void:
+  _close_tech_tree()
+
+
+## Close the tech tree UI
+func _close_tech_tree() -> void:
+  if tech_tree_ui:
+    MyLogger.info("UI", "Closing tech tree")
+    tech_tree_ui = null
+    
+    # Resume the game
+    GameManager.resume_game()
+    GameManager.set_game_state(GameManager.GameState.PLAYING)
