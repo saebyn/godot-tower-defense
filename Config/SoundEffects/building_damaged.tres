@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=3 format=3 uid="uid://dqbsdx20s28g5"]
+
+[ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_cqt66"]
+[ext_resource type="AudioStream" uid="uid://ctppycpxi6juc" path="res://Assets/Audio/SFX/building/damage.wav" id="1_pwut5"]
+
+[resource]
+script = ExtResource("1_cqt66")
+sound_effect = 16
+samples = Array[AudioStream]([ExtResource("1_pwut5")])
+pitch_variation_min = 0.8
+metadata/_custom_type_script = "uid://evflivoc8b3v"
