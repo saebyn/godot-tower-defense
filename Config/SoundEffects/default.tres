@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=3 format=3 uid="uid://iu544k6nicnx"]
 
 [ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_205l2"]
-[ext_resource type="AudioStream" uid="uid://d312o1ao3610w" path="res://Assets/Audio/SFX/blipSelect.wav" id="1_yj41l"]
+[ext_resource type="AudioStream" uid="uid://d312o1ao3610w" path="res://Assets/Audio/SFX/ui/blipSelect.wav" id="1_yj41l"]
 
 [resource]
 script = ExtResource("1_205l2")
