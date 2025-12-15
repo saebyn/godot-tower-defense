@@ -5,6 +5,9 @@ extends AudioListener3D
 
 @export var camera: Camera3D
 
+# Track the last known orbit center to avoid unnecessary updates
+var _last_orbit_center: Vector3 = Vector3.ZERO
+
 func _ready() -> void:
 	if not camera:
 		MyLogger.warn("AudioListener", "No camera assigned to audio listener")
@@ -24,6 +27,9 @@ func _process(_delta: float) -> void:
 	# The orbit_center is updated by the camera script whenever the camera moves
 	var orbit_center = camera.orbit_center
 	
-	# Position the audio listener at the ground focus point
-	# This makes spatial audio sound relative to where the player is looking
-	global_position = orbit_center
+	# Only update position if the orbit center has changed to improve performance
+	if orbit_center != _last_orbit_center:
+		_last_orbit_center = orbit_center
+		# Position the audio listener at the ground focus point
+		# This makes spatial audio sound relative to where the player is looking
+		global_position = orbit_center
