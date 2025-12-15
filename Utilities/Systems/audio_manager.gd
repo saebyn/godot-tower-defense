@@ -38,6 +38,20 @@ func _ready() -> void:
   
   # Connect to scene tree to automatically handle UI sounds
   get_tree().node_added.connect(_on_node_added)
+  
+  # Process existing nodes in the tree (handles main menu and any pre-loaded scenes)
+  _process_existing_buttons(get_tree().root)
+
+
+## Recursively process existing buttons in the scene tree
+func _process_existing_buttons(node: Node) -> void:
+  # Process this node if it's a button
+  if node is BaseButton:
+    _on_node_added(node)
+  
+  # Recursively process children
+  for child in node.get_children():
+    _process_existing_buttons(child)
 
 
 ## Automatically connect to buttons added to the scene tree
