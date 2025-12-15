@@ -84,6 +84,10 @@ func _toggle_tech_tree() -> void:
 
 ## Show the tech tree UI
 func _show_tech_tree() -> void:
+  # Prevent opening multiple instances
+  if tech_tree_ui != null:
+    return
+  
   MyLogger.info("UI", "Opening tech tree")
   
   # Pause the game
@@ -105,6 +109,13 @@ func _on_tech_tree_closed() -> void:
 func _close_tech_tree() -> void:
   if tech_tree_ui:
     MyLogger.info("UI", "Closing tech tree")
+    
+    # Disconnect signal to prevent leaks
+    if tech_tree_ui.closed.is_connected(_on_tech_tree_closed):
+      tech_tree_ui.closed.disconnect(_on_tech_tree_closed)
+    
+    # Properly remove and free the tech tree UI
+    tech_tree_ui.queue_free()
     tech_tree_ui = null
     
     # Resume the game
