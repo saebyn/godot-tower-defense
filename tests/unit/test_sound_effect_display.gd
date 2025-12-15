@@ -143,7 +143,7 @@ func test_clear_all_effects():
 
 func test_max_display_limit_enforcement():
   # Arrange - Play more than MAX_DISPLAYED_EFFECTS
-  var effect_values = Resource_SoundEffect.SoundEffect.values()  # Move outside loop
+  var effect_values = Resource_SoundEffect.SoundEffect.values()
   for i in range(sound_effect_display.MAX_DISPLAYED_EFFECTS + 5):
     # Use different effects by using modulo on enum values
     var effect = effect_values[i % effect_values.size()]

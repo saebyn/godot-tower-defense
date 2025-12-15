@@ -101,24 +101,26 @@ func _cleanup_expired_effects() -> void:
 
 ## Remove oldest effects if we exceed max display limit
 func _enforce_max_display_limit() -> void:
-  if tracked_effects.size() <= MAX_DISPLAYED_EFFECTS:
-    return
-  
-  # Find oldest entry
-  var oldest_name = ""
-  var oldest_time = INF
-  
-  for effect_name in tracked_effects.keys():
-    var entry = tracked_effects[effect_name]
-    if entry.timestamp < oldest_time:
-      oldest_time = entry.timestamp
-      oldest_name = effect_name
-  
-  if oldest_name != "":
-    var entry = tracked_effects[oldest_name]
-    if entry.label:
-      entry.label.queue_free()
-    tracked_effects.erase(oldest_name)
+  # Keep removing oldest effects until we're under the limit
+  while tracked_effects.size() > MAX_DISPLAYED_EFFECTS:
+    # Find oldest entry
+    var oldest_name = ""
+    var oldest_time = INF
+    
+    for effect_name in tracked_effects.keys():
+      var entry = tracked_effects[effect_name]
+      if entry.timestamp < oldest_time:
+        oldest_time = entry.timestamp
+        oldest_name = effect_name
+    
+    if oldest_name != "":
+      var entry = tracked_effects[oldest_name]
+      if entry.label:
+        entry.label.queue_free()
+      tracked_effects.erase(oldest_name)
+    else:
+      # Safety break if we can't find an oldest entry
+      break
 
 ## Get human-readable name for sound effect
 func _get_effect_name(effect: Resource_SoundEffect.SoundEffect) -> String:
