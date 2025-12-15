@@ -23,10 +23,12 @@ func _ready() -> void:
   # Build enum name cache for fast lookups
   for key in Resource_SoundEffect.SoundEffect.keys():
     var value = Resource_SoundEffect.SoundEffect[key]
-    _effect_name_cache[value] = key.capitalize()
+    # Transform enum key: replace underscores with spaces and capitalize each word
+    var readable_name = key.replace("_", " ").capitalize()
+    _effect_name_cache[value] = readable_name
   
   # Connect to AudioManager signal for sound played events
-  if AudioManager.has_signal("sound_played") and not AudioManager.sound_played.is_connected(_on_sound_played):
+  if not AudioManager.sound_played.is_connected(_on_sound_played):
     AudioManager.sound_played.connect(_on_sound_played)
   
   # Hide by default - this is an optional debug feature

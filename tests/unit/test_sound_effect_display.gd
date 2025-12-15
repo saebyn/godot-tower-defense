@@ -143,9 +143,9 @@ func test_clear_all_effects():
 
 func test_max_display_limit_enforcement():
   # Arrange - Play more than MAX_DISPLAYED_EFFECTS
+  var effect_values = Resource_SoundEffect.SoundEffect.values()  # Move outside loop
   for i in range(sound_effect_display.MAX_DISPLAYED_EFFECTS + 5):
     # Use different effects by using modulo on enum values
-    var effect_values = Resource_SoundEffect.SoundEffect.values()
     var effect = effect_values[i % effect_values.size()]
     # Wait a tiny bit between each to ensure different timestamps
     await get_tree().create_timer(0.01).timeout
