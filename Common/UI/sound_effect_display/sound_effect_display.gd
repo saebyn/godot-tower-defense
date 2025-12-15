@@ -7,14 +7,18 @@ class_name UI_SoundEffectDisplay
 const EXPIRY_TIME = 5.0
 const MAX_DISPLAYED_EFFECTS = 10
 
-@onready var container: VBoxContainer = %EffectsContainer
+var container: VBoxContainer = null
 
 # Dictionary to track sound effects: {effect_name: {count: int, timestamp: float, label: Label}}
 var tracked_effects: Dictionary = {}
 
 func _ready() -> void:
+  # Try to get the container node if it exists
+  if has_node("%EffectsContainer"):
+    container = %EffectsContainer
+  
   # Connect to AudioManager signal for sound played events
-  if AudioManager.has_signal("sound_played"):
+  if AudioManager.has_signal("sound_played") and not AudioManager.sound_played.is_connected(_on_sound_played):
     AudioManager.sound_played.connect(_on_sound_played)
   
   # Hide by default - this is an optional debug feature
@@ -31,7 +35,7 @@ func _process(delta: float) -> void:
 
 ## Handle sound effect played event
 func _on_sound_played(effect: Resource_SoundEffect.SoundEffect) -> void:
-  if not visible:
+  if not visible or not container:
     return
   
   var effect_name = _get_effect_name(effect)

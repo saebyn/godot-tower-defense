@@ -4,19 +4,25 @@ extends GutTest
 ## Tests sound effect tracking, aggregation, and expiration
 
 var sound_effect_display: UI_SoundEffectDisplay
+var container: VBoxContainer
 
 func before_each():
   # Create a test instance of the sound effect display
   sound_effect_display = UI_SoundEffectDisplay.new()
-  add_child(sound_effect_display)
   
-  # Need to create the container manually for unit testing
-  var container = VBoxContainer.new()
-  container.unique_name_in_owner = true
+  # Create the container manually for unit testing since @onready won't work
+  container = VBoxContainer.new()
   container.name = "EffectsContainer"
   sound_effect_display.add_child(container)
   
-  # Make visible for testing
+  # Set the container reference manually
+  sound_effect_display.container = container
+  
+  # Add to tree (will trigger _ready which sets visible=false)
+  add_child(sound_effect_display)
+  
+  # Make visible for testing (after _ready runs)
+  await get_tree().process_frame
   sound_effect_display.visible = true
 
 func after_each():
@@ -55,6 +61,10 @@ func test_toggle_display_visibility():
 func test_sound_played_creates_new_entry():
   # Arrange
   var effect = Resource_SoundEffect.SoundEffect.PLAYER_ATTACK_HIT
+  
+  # Debug: Verify setup
+  assert_not_null(sound_effect_display.container, "Container should not be null")
+  assert_true(sound_effect_display.visible, "Display should be visible")
   
   # Act
   sound_effect_display._on_sound_played(effect)
