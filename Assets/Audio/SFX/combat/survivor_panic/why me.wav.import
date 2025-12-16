@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://kkhb1qtxw6h1"
+path="res://.godot/imported/why me.wav-3679ddcd3fd67c2717e7cdc9554db925.sample"
+
+[deps]
+
+source_file="res://Assets/Audio/SFX/combat/survivor_panic/why me.wav"
+dest_files=["res://.godot/imported/why me.wav-3679ddcd3fd67c2717e7cdc9554db925.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

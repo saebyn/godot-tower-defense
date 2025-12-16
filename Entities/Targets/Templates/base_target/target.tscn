@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=4 uid="uid://b1yehhqyw2nfo"]
+[gd_scene load_steps=11 format=4 uid="uid://b1yehhqyw2nfo"]
 
 [ext_resource type="Script" uid="uid://ef5o7bdag8pq" path="res://Entities/Targets/Templates/base_target/target.gd" id="1_e1yvt"]
 [ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="2_5ebp1"]
 [ext_resource type="Script" uid="uid://1es12v0p8gvh" path="res://Common/Effects/shake_effect/shake_effect.gd" id="3_n2scg"]
+[ext_resource type="Script" uid="uid://b81o4afla2kvg" path="res://Common/Components/panic_behavior/panic_behavior.gd" id="4_jt1q2"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_tdtg0"]
 resource_name = "characterMedium"
@@ -1405,6 +1406,12 @@ autoplay = "Idle"
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(0.9999998, 0, 0, 0, 1, 0, 0, 0, 0.9999998, -0.0522452, 2.7797458, 0.698045)
 bus = &"Sound Effects"
+
+[node name="Component_PanicBehavior" type="Node" parent="."]
+script = ExtResource("4_jt1q2")
+panic_detection_radius = 30.0
+yelp_sound_chance = 0.5
+metadata/_custom_type_script = "uid://b81o4afla2kvg"
 
 [connection signal="damaged" from="Health" to="." method="_on_health_damaged"]
 [connection signal="damaged" from="Health" to="ShakeEffect" method="damage_taken"]

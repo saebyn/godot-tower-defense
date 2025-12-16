@@ -15,6 +15,7 @@ extends Node
 @export var panic_move_speed: float = 3.0 ## Movement speed when panicking
 @export var panic_move_interval: float = 1.5 ## Time between choosing new panic destinations
 @export var enemy_group: String = "enemies" ## Group name for enemies to detect
+@export var yelp_sound_chance: float = 0.33 ## Chance per second to play a yelp sound when we are panicking
 
 @export_category("Animation")
 @export var animation_player_path: NodePath = "../AnimationPlayer" ## Path to AnimationPlayer node
@@ -59,6 +60,13 @@ func _process(delta: float) -> void:
   
   if is_panicking:
     _update_panic_movement(delta)
+    # Randomly play yelp sounds while panicking
+    if randi() % 1000 < int(yelp_sound_chance * 1000 * delta):
+      _play_yelp_sound()
+
+func _play_yelp_sound() -> void:
+  if target and target.audio_player:
+    AudioManager.play_sound(target.audio_player, Resource_SoundEffect.SoundEffect.SURVIVOR_YELP)
 
 func _check_for_nearby_enemies() -> bool:
   if not target:

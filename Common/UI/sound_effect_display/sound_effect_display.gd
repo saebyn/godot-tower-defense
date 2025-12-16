@@ -36,7 +36,7 @@ func _ready() -> void:
   
   MyLogger.info("SoundEffectDisplay", "Sound effect display initialized")
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
   if not visible:
     return
   
