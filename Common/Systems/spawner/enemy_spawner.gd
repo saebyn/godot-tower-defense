@@ -55,9 +55,13 @@ func _start_next_wave() -> void:
     wave.start_wave()
 
 func _on_wave_started(wave: System_Wave) -> void:
+    # Play wave start sound
+    AudioManager.play_sound_2d(Resource_SoundEffect.SoundEffect.WAVE_START)
     wave_started.emit(wave)
 
 func _on_wave_completed(wave: System_Wave) -> void:
+    # Play wave complete sound
+    AudioManager.play_sound_2d(Resource_SoundEffect.SoundEffect.WAVE_COMPLETE)
     wave_completed.emit(wave)
     _current_wave_index += 1
     

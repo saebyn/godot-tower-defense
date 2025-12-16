@@ -119,6 +119,9 @@ func unlock_tech(tech_id: String) -> bool:
   unlocked_tech_ids.append(tech_id)
   MyLogger.info("TechTreeManager", "Unlocked tech: %s (%s)" % [tech_id, tech.display_name])
   
+  # Play tech unlock sound
+  AudioManager.play_sound_2d(Resource_SoundEffect.SoundEffect.TECH_UNLOCKED)
+  
   # Lock mutually exclusive techs
   for exclusive_id in tech.mutually_exclusive_with:
     if exclusive_id not in locked_tech_ids:

@@ -82,6 +82,8 @@ func _check_level_up() -> void:
     current_xp -= xp_for_next_level
     current_level += 1
     level_up.emit(current_level)
+    # Play level up sound
+    AudioManager.play_sound_2d(Resource_SoundEffect.SoundEffect.PLAYER_LEVEL_UP)
     MyLogger.info("Economy", "Leveled up to level %d!" % current_level)
     xp_changed.emit(current_xp)
     xp_for_next_level = _get_xp_for_next_level()
