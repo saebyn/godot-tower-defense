@@ -4,9 +4,9 @@ extends Node3D
 @export var hitpoints_override: int = -1 ## If set to a positive value, overrides the default health component's hitpoints
 
 var health: Component_Health
-var panic_behavior: Component_PanicBehavior
 
 @onready var mesh: MeshInstance3D = $characterMedium
+@onready var audio_player: AudioStreamPlayer3D = $AudioStreamPlayer3D
 
 func _ready():
   # Find Health component via metadata
@@ -21,12 +21,6 @@ func _ready():
     # Override health if specified
     if hitpoints_override > 0:
       health.hitpoints = hitpoints_override
-
-  # Add panic behavior component
-  panic_behavior = Component_PanicBehavior.new()
-  panic_behavior.name = "PanicBehavior"
-  panic_behavior.animation_player_path = NodePath("AnimationPlayer")
-  add_child(panic_behavior)
 
   # Add texture to mesh
   if skin_material and mesh:

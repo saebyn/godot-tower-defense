@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=7 format=3 uid="uid://dmw6fvgd005es"]
+
+[ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_5ou2q"]
+[ext_resource type="AudioStream" uid="uid://bc5b3sintoap4" path="res://Assets/Audio/SFX/combat/survivor_panic/help.wav" id="1_ggydj"]
+[ext_resource type="AudioStream" uid="uid://kkhb1qtxw6h1" path="res://Assets/Audio/SFX/combat/survivor_panic/why me.wav" id="2_c3xjo"]
+[ext_resource type="AudioStream" uid="uid://cwphbn2c7uq4b" path="res://Assets/Audio/SFX/combat/survivor_panic/oh no 1.wav" id="3_bmpvg"]
+[ext_resource type="AudioStream" uid="uid://b82w7eyifuvbp" path="res://Assets/Audio/SFX/combat/survivor_panic/oh no 2.wav" id="4_26tgo"]
+[ext_resource type="AudioStream" uid="uid://dedq4rth3boya" path="res://Assets/Audio/SFX/combat/survivor_panic/not again.wav" id="5_rf6a1"]
+
+[resource]
+script = ExtResource("1_5ou2q")
+sound_effect = 25
+samples = Array[AudioStream]([ExtResource("1_ggydj"), ExtResource("2_c3xjo"), ExtResource("3_bmpvg"), ExtResource("4_26tgo"), ExtResource("5_rf6a1")])
+pitch_variation_min = 0.818
+pitch_variation_max = 1.2770000000000001
+metadata/_custom_type_script = "uid://evflivoc8b3v"
