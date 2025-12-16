@@ -76,6 +76,9 @@ func _on_wave_completed(wave: System_Wave) -> void:
 func _on_all_waves_completed() -> void:
   MyLogger.info("Scenario", "All waves completed. Processing scenario completion...")
   
+  # Play scenario complete sound
+  AudioManager.play_sound_2d(Resource_SoundEffect.SoundEffect.SCENARIO_COMPLETE)
+  
   # Stop the timer
   var completion_time = _stop_timer()
   MyLogger.info("Scenario", "Scenario completed in %.2f seconds" % completion_time)
