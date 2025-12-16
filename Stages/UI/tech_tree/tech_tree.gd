@@ -4,9 +4,6 @@ class_name UI_TechTree
 ## Tech Tree UI Screen
 ## Displays tech nodes as a visual tree, allows players to unlock techs,
 ## and shows mutually exclusive warnings
-
-signal closed()
-
 const TechNodeCardScene = preload("res://Stages/UI/tech_tree/tech_node_card.tscn")
 
 @onready var scroll_container: ScrollContainer = $Panel/MarginContainer/VBoxContainer/ScrollContainer
@@ -24,6 +21,9 @@ var selected_tech_id: String = ""
 var tech_node_cards: Dictionary = {} # tech_id -> UI_TechNodeCard
 
 func _ready() -> void:
+  # Connect to GameManager state changes
+  GameManager.game_state_changed.connect(_on_game_state_changed)
+
   # Connect to TechTreeManager signals
   TechTreeManager.tech_unlocked.connect(_on_tech_unlocked)
   TechTreeManager.tech_locked.connect(_on_tech_locked)
@@ -40,6 +40,15 @@ func _ready() -> void:
   _refresh_tech_tree()
   
   MyLogger.info("TechTree", "Tech Tree UI initialized")
+
+func _on_game_state_changed(new_state: GameManager.GameState) -> void:
+  match new_state:
+    GameManager.GameState.IN_TECH_TREE:
+      visible = true
+      # Focus the close button for keyboard navigation
+      close_button.grab_focus()
+    GameManager.GameState.PLAYING:
+      visible = false
 
 ## Handle unhandled key inputs (ESC to close)
 func _unhandled_key_input(event: InputEvent) -> void:
@@ -257,5 +266,6 @@ func _on_tech_locked(tech_id: String) -> void:
 
 ## Handle close button
 func _on_close_pressed() -> void:
-  closed.emit()
-  queue_free()
+  MyLogger.info("TechTree", "Closing Tech Tree UI")
+  if GameManager.current_state == GameManager.GameState.IN_TECH_TREE:
+    GameManager.set_game_state(GameManager.GameState.PLAYING)

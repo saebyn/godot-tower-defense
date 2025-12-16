@@ -2,11 +2,9 @@ extends Control
 class_name UI_PauseMenu
 
 const SettingsMenuScene = preload("res://Common/UI/settings_menu/settings_menu.tscn")
-const TechTreeScene = preload("res://Stages/UI/tech_tree/tech_tree.tscn")
 const AchievementListScene = preload("res://Stages/UI/achievement_list/achievement_list.tscn")
 
 @onready var resume_button: Button = $VBoxContainer/ResumeButton
-@onready var tech_tree_button: Button = $VBoxContainer/TechTreeButton
 @onready var achievements_button: Button = $VBoxContainer/AchievementsButton
 @onready var settings_button: Button = $VBoxContainer/SettingsButton
 @onready var restart_button: Button = $VBoxContainer/RestartButton
@@ -14,7 +12,6 @@ const AchievementListScene = preload("res://Stages/UI/achievement_list/achieveme
 @onready var quit_button: Button = $VBoxContainer/QuitButton
 
 var settings_menu = null
-var tech_tree_ui = null
 var achievement_list_ui = null
 
 func _ready():
@@ -35,19 +32,14 @@ func _setup_settings_menu():
 func _on_game_state_changed(new_state: GameManager.GameState):
   match new_state:
     GameManager.GameState.IN_GAME_MENU:
-      show_menu()
+      visible = true
+      # Focus the resume button for keyboard navigation
+      resume_button.grab_focus()
     GameManager.GameState.PLAYING:
-      hide_menu()
-
-func show_menu():
-  visible = true
-  # Focus the resume button for keyboard navigation
-  resume_button.grab_focus()
-
-func hide_menu():
-  visible = false
+      visible = false
 
 func _on_resume_pressed():
+  MyLogger.info("PauseMenu", "Resume button pressed")
   GameManager.toggle_in_game_menu()
 
 func _on_settings_pressed():
@@ -55,22 +47,6 @@ func _on_settings_pressed():
   if settings_menu:
     settings_menu.show_menu()
 
-func _on_tech_tree_pressed():
-  MyLogger.info("PauseMenu", "Tech Tree button pressed")
-  _show_tech_tree()
-
-func _show_tech_tree():
-  # Create tech tree UI if not already open
-  if tech_tree_ui == null:
-    tech_tree_ui = TechTreeScene.instantiate()
-    add_child(tech_tree_ui)
-    tech_tree_ui.closed.connect(_on_tech_tree_closed)
-  else:
-    tech_tree_ui.visible = true
-
-func _on_tech_tree_closed():
-  MyLogger.debug("PauseMenu", "Tech tree closed")
-  tech_tree_ui = null
 
 func _on_achievements_pressed():
   MyLogger.info("PauseMenu", "Achievements button pressed")
