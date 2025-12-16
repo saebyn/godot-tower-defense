@@ -3,35 +3,40 @@ class_name Resource_SoundEffect
 
 
 enum SoundEffect {
-  DEFAULT = 0, # Use this if no specific sound effect is assigned
+  DEFAULT = 0, ## Use this if no specific sound effect is assigned
+
+  # User action sound effects
   PLAYER_ATTACK_HIT = 1,
+  SCRAP_PICKUP = 6,
+
+  # Combat related sound effects
+  ZOMBIE_DEATH = 4,
   TURRET_FIRE = 2,
   TURRET_IDLE = 3,
-  ZOMBIE_DEATH = 4,
-
   SURVIVOR_DEATH = 5,
   SURVIVOR_HIT = 19,
 
-  SCRAP_PICKUP = 6,
-
+  # Ambient sound effects
   ELECTRIC_CRACKLE = 10,
   FIRE_CRACKLE = 11,
   ZOMBIE_IDLE_GROAN = 12,
 
+  # UI related sound effects
   UI_CONFIRM = 13,
   UI_CANCEL = 20,
   UI_HOVER = 22,
   ERROR = 14,
   ACHIEVEMENT_UNLOCKED = 15,
 
-  BUILDING_DAMAGED = 16,
-  BUILDING_DESTROYED = 17,
-  BUILDING_PLACEMENT = 7,
-  BUILDING_PROGRESS = 8,
-  BUILDING_COMPLETE = 9,
-  BUILDING_REMOVED = 21,
+  # Building related sound effects
+  BUILDING_DAMAGED = 16, ## When a building takes damage
+  BUILDING_DESTROYED = 17, ## When a building is destroyed
+  BUILDING_PLACEMENT = 7, ## (not yet used) When a building is placed (this is after placement preview)
+  BUILDING_PROGRESS = 8, ## (not yet used) When progressing building construction
+  BUILDING_COMPLETE = 9, ## When building construction is complete (presently when placement is finished)
+  BUILDING_REMOVED = 21, ## When a building is removed/dismantled by the player
 
-  NONE = 18, # No sound effect
+  NONE = 18, ## No sound effect at all
 }
 
 enum SoundCategory {
