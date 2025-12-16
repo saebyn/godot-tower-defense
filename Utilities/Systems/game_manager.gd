@@ -1,12 +1,12 @@
 extends Node
 
 enum GameState {
-  MAIN_MENU,
-  PLAYING,
-  IN_GAME_MENU,
-  GAME_OVER,
-  VICTORY,
-  ALL_DONE
+  MAIN_MENU, ## When the player is in the main menu
+  PLAYING, ## When the player is actively playing a scenario
+  IN_GAME_MENU, ## When the in-game menu is open (game is paused)
+  GAME_OVER, ## When the player has lost any scenario
+  VICTORY, ## When the player successfully completes any scenario
+  ALL_DONE ## Represents the state after the final scenario is completed
 }
 
 var current_state: GameState = GameState.MAIN_MENU
@@ -20,6 +20,9 @@ func set_game_state(new_state: GameState):
         current_state = new_state
         game_state_changed.emit(new_state)
         MyLogger.info("GameManager", "Game state changed to: %s" % GameState.keys()[new_state])
+
+func is_playing() -> bool:
+    return current_state == GameState.PLAYING
 
 func pause_game():
     MyLogger.debug("GameManager", "Pausing game...")
