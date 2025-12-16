@@ -12,6 +12,8 @@ signal obstacle_spawn_requested(obstacle: Resource_ObstacleType)
 func _process(_delta: float) -> void:
   if Input.is_action_just_pressed("toggle_in_game_menu"):
     GameManager.toggle_in_game_menu()
+  elif Input.is_action_just_pressed("toggle_tech_tree"):
+    _toggle_tech_tree()
   elif Input.is_action_just_pressed("toggle_stats"):
     _toggle_stats_display()
   elif Input.is_action_just_pressed("toggle_fps"):
@@ -46,6 +48,15 @@ func _on_wave_completed(wave: System_Wave, wave_number: int) -> void:
 func show_obstacle_removed(refund_amount: int) -> void:
   if spawn_indicator and spawn_indicator.has_method("show_obstacle_removed"):
     spawn_indicator.show_obstacle_removed(refund_amount)
+
+## Toggle the tech tree UI visibility
+func _toggle_tech_tree() -> void:
+  MyLogger.info("UI", "Toggling Tech Tree UI")
+  if GameManager.current_state == GameManager.GameState.IN_TECH_TREE:
+    GameManager.set_game_state(GameManager.GameState.PLAYING)
+  else:
+    GameManager.pause_game()
+    GameManager.set_game_state(GameManager.GameState.IN_TECH_TREE)
 
 ## Toggle the stats display visibility
 func _toggle_stats_display() -> void:

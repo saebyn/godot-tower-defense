@@ -1,8 +1,9 @@
-[gd_scene load_steps=18 format=3 uid="uid://duje032qpuq2"]
+[gd_scene load_steps=19 format=3 uid="uid://duje032qpuq2"]
 
 [ext_resource type="Script" uid="uid://3yfu45cvudar" path="res://Stages/UI/main_ui/ui.gd" id="1_27fn8"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
 [ext_resource type="PackedScene" uid="uid://bomn53pg4n868" path="res://Stages/UI/game_over/game_over_menu.tscn" id="3_h1vkl"]
+[ext_resource type="PackedScene" uid="uid://b7rnv4gqf8q7o" path="res://Stages/UI/tech_tree/tech_tree.tscn" id="3_r1fny"]
 [ext_resource type="PackedScene" uid="uid://bhnpr8mat2j5c" path="res://Common/UI/currency_display/currency_display.tscn" id="4_currency"]
 [ext_resource type="PackedScene" uid="uid://cmjoofmc48ms1" path="res://Stages/UI/victory/victory_menu.tscn" id="4_vg0vb"]
 [ext_resource type="PackedScene" uid="uid://dqn8xvlx7m8kb" path="res://Common/UI/spawn_indicator/spawn_indicator.tscn" id="5_spawn_indicator"]
@@ -101,7 +102,7 @@ anchor_right = 0.135
 anchor_bottom = 0.205
 offset_left = 663.0
 offset_top = 502.0
-offset_right = 507.48
+offset_right = 507.47998
 offset_bottom = 369.16
 script = ExtResource("15_y1b7e")
 
@@ -110,6 +111,10 @@ layout_mode = 0
 offset_right = 16.0
 offset_bottom = 12.0
 text = "Free Scrap"
+
+[node name="TechTree" parent="." instance=ExtResource("3_r1fny")]
+visible = false
+layout_mode = 1
 
 [connection signal="obstacle_selected" from="Hotbar" to="." method="request_obstacle_spawn"]
 [connection signal="pressed" from="DebugControl/FreeScrap" to="DebugControl" method="_on_free_scrap_pressed"]

@@ -1,7 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://b7rnv4gqf8q7o"]
+[gd_scene load_steps=5 format=3 uid="uid://b7rnv4gqf8q7o"]
 
 [ext_resource type="Script" uid="uid://bq7n5gj2m4h8x" path="res://Stages/UI/tech_tree/tech_tree.gd" id="1_techtree"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
+
+[sub_resource type="InputEventAction" id="InputEventAction_h3ppm"]
+action = &"toggle_in_game_menu"
+
+[sub_resource type="Shortcut" id="Shortcut_k51dw"]
+events = [SubResource("InputEventAction_h3ppm")]
 
 [node name="TechTree" type="Control"]
 layout_mode = 3
@@ -47,6 +53,7 @@ text = "Tech Tree"
 
 [node name="CloseButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+shortcut = SubResource("Shortcut_k51dw")
 text = "Close"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Panel/MarginContainer/VBoxContainer"]

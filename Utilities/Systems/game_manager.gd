@@ -4,6 +4,7 @@ enum GameState {
   MAIN_MENU, ## When the player is in the main menu
   PLAYING, ## When the player is actively playing a scenario
   IN_GAME_MENU, ## When the in-game menu is open (game is paused)
+  IN_TECH_TREE, ## When the tech tree UI is open
   GAME_OVER, ## When the player has lost any scenario
   VICTORY, ## When the player successfully completes any scenario
   ALL_DONE ## Represents the state after the final scenario is completed
@@ -59,11 +60,15 @@ func get_game_speed() -> float:
 
 
 func toggle_in_game_menu():
-    if current_state == GameState.IN_GAME_MENU:
-        set_game_state(GameState.PLAYING)
-    elif current_state == GameState.PLAYING:
-        pause_game()
-        set_game_state(GameState.IN_GAME_MENU)
+    MyLogger.debug("GameManager", "Toggling in-game menu...")
+    match current_state:
+        GameState.IN_GAME_MENU:
+            set_game_state(GameState.PLAYING)
+        GameState.IN_TECH_TREE:
+            set_game_state(GameState.PLAYING)
+        GameState.PLAYING:
+            pause_game()
+            set_game_state(GameState.IN_GAME_MENU)
 
 ## Returns to the main menu from any game state
 func return_to_main_menu():
