@@ -246,10 +246,7 @@ func _unlock_achievement(achievement_id: String) -> void:
   
   MyLogger.info("AchievementManager", "Achievement unlocked: %s" % achievement.name)
   
-  # Play achievement unlock sound
-  AudioManager.play_sound_2d(Resource_SoundEffect.SoundEffect.ACHIEVEMENT_UNLOCKED)
-  
-  # Emit unlock signal
+  # Emit unlock signal (notification UI will play the sound)
   achievement_unlocked.emit(achievement)
   
   # If achievement was hidden, now emit progress update
