@@ -256,14 +256,6 @@ func _on_game_state_changed(new_state: GameManager.GameState):
    ./godot --path . --verbose "res://Stages/Game/main/main.tscn"
    ```
 
-## CI/CD Notes
-
-**No existing CI/CD pipelines** - manual testing required.
-
-**No automated tests** - use manual validation scenarios above.
-
-**No build scripts** - direct Godot execution only.
-
 ## Important Reminders
 
 1. **Asset Import**: Always allow 15+ minutes for initial import
