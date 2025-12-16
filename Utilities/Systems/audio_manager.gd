@@ -1,5 +1,8 @@
 extends Node
 
+# Signal emitted when a sound effect is played (for debug/tracking purposes)
+signal sound_played(effect: Resource_SoundEffect.SoundEffect)
+
 var sound_effect_configs: Dictionary[Resource_SoundEffect.SoundEffect, Resource_SoundEffect] = {}
 
 var sfx_directory: String = "res://Config/SoundEffects/"
@@ -132,6 +135,9 @@ func play_sound(audio_player: Variant, effect: Resource_SoundEffect.SoundEffect)
   audio_player.stream = config.samples[random_sample_index]
   audio_player.pitch_scale = config.pitch_variation_min + randf() * (config.pitch_variation_max - config.pitch_variation_min)
   audio_player.play()
+  
+  # Emit signal for sound effect tracking/debugging
+  sound_played.emit(effect)
 
 
 ## Play a non-spatial sound effect (2D audio for UI, etc.)
@@ -159,6 +165,9 @@ func play_sound_2d(effect: Resource_SoundEffect.SoundEffect) -> void:
   ui_audio_player.stream = config.samples[random_sample_index]
   ui_audio_player.pitch_scale = config.pitch_variation_min + randf() * (config.pitch_variation_max - config.pitch_variation_min)
   ui_audio_player.play()
+  
+  # Emit signal for sound effect tracking/debugging
+  sound_played.emit(effect)
 
 
 ## Get the configuration for a sound effect

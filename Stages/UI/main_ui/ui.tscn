@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://duje032qpuq2"]
+[gd_scene load_steps=18 format=3 uid="uid://duje032qpuq2"]
 
 [ext_resource type="Script" uid="uid://3yfu45cvudar" path="res://Stages/UI/main_ui/ui.gd" id="1_27fn8"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://b2jcxh0e7r1tv" path="res://Common/UI/stats_display/stats_display.tscn" id="11_stats_display"]
 [ext_resource type="Script" uid="uid://diix4dd6hthxj" path="res://Common/UI/achievement_notification/achievement_notification_manager.gd" id="12_achievement_notification"]
 [ext_resource type="PackedScene" uid="uid://c5m8n7qaq1r2s" path="res://Common/UI/fps_overlay/fps_overlay.tscn" id="12_fps_overlay"]
+[ext_resource type="PackedScene" uid="uid://dyxq61p5iqma7" path="res://Common/UI/sound_effect_display/sound_effect_display.tscn" id="13_sound_effect_display"]
 [ext_resource type="Script" uid="uid://c7e32ra2ikf6f" path="res://Stages/UI/main_ui/debug_control.gd" id="15_y1b7e"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_b3t5h"]
@@ -85,6 +86,9 @@ layout_mode = 1
 layout_mode = 1
 
 [node name="FpsOverlay" parent="." instance=ExtResource("12_fps_overlay")]
+layout_mode = 1
+
+[node name="SoundEffectDisplay" parent="." instance=ExtResource("13_sound_effect_display")]
 layout_mode = 1
 
 [node name="AchievementNotificationManager" type="CanvasLayer" parent="."]

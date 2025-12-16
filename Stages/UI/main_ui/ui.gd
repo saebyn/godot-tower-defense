@@ -6,6 +6,7 @@ signal obstacle_spawn_requested(obstacle: Resource_ObstacleType)
 @onready var hotbar: Control = $Hotbar
 @onready var stats_display: Control = $StatsDisplay
 @onready var fps_overlay: Control = $FpsOverlay
+@onready var sound_effect_display: Control = $SoundEffectDisplay
 
 
 func _process(_delta: float) -> void:
@@ -15,6 +16,8 @@ func _process(_delta: float) -> void:
     _toggle_stats_display()
   elif Input.is_action_just_pressed("toggle_fps"):
     _toggle_fps_overlay()
+  elif Input.is_action_just_pressed("toggle_sound_effects"):
+    _toggle_sound_effect_display()
 
 
 func request_obstacle_spawn(obstacle: Resource_ObstacleType) -> void:
@@ -55,3 +58,9 @@ func _toggle_fps_overlay() -> void:
   if fps_overlay:
     fps_overlay.toggle_visibility()
     MyLogger.info("UI", "FPS overlay toggled: %s" % ("visible" if fps_overlay.visible else "hidden"))
+
+## Toggle the sound effect display visibility
+func _toggle_sound_effect_display() -> void:
+  if sound_effect_display:
+    sound_effect_display.toggle_display()
+    MyLogger.info("UI", "Sound effect display toggled: %s" % ("visible" if sound_effect_display.visible else "hidden"))
