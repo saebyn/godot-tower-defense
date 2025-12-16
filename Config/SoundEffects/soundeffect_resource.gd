@@ -44,6 +44,7 @@ enum SoundCategory {
   COMBAT,
   BUILDING,
   AMBIENCE,
+  PLAYER_ACTION,
 }
 
 @export var sound_effect: SoundEffect = SoundEffect.DEFAULT
