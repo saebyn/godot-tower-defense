@@ -92,17 +92,11 @@ func _show_tech_tree() -> void:
   
   # Pause the game
   GameManager.pause_game()
-  GameManager.set_game_state(GameManager.GameState.IN_GAME_MENU)
   
   # Create tech tree UI
   tech_tree_ui = TechTreeScene.instantiate()
   add_child(tech_tree_ui)
-  tech_tree_ui.closed.connect(_on_tech_tree_closed)
-
-
-## Handle tech tree closed signal
-func _on_tech_tree_closed() -> void:
-  _close_tech_tree()
+  tech_tree_ui.closed.connect(_close_tech_tree)
 
 
 ## Close the tech tree UI
@@ -110,14 +104,8 @@ func _close_tech_tree() -> void:
   if tech_tree_ui:
     MyLogger.info("UI", "Closing tech tree")
     
-    # Disconnect signal to prevent leaks
-    if tech_tree_ui.closed.is_connected(_on_tech_tree_closed):
-      tech_tree_ui.closed.disconnect(_on_tech_tree_closed)
-    
-    # Properly remove and free the tech tree UI
-    tech_tree_ui.queue_free()
+    # Tech tree frees itself, just null the reference
     tech_tree_ui = null
     
     # Resume the game
     GameManager.resume_game()
-    GameManager.set_game_state(GameManager.GameState.PLAYING)

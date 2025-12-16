@@ -45,7 +45,6 @@ func test_clicking_button_opens_tech_tree():
   # Assert
   assert_not_null(main_ui.tech_tree_ui, "Tech tree should be instantiated after button press")
   assert_true(GameManager.is_paused(), "Game should be paused when tech tree opens")
-  assert_eq(GameManager.current_state, GameManager.GameState.IN_GAME_MENU, "Game state should be IN_GAME_MENU")
 
 func test_closing_tech_tree_resumes_game():
   # Arrange - open tech tree first
@@ -60,7 +59,6 @@ func test_closing_tech_tree_resumes_game():
   # Assert
   assert_null(main_ui.tech_tree_ui, "Tech tree should be null after closing")
   assert_false(GameManager.is_paused(), "Game should be resumed after tech tree closes")
-  assert_eq(GameManager.current_state, GameManager.GameState.PLAYING, "Game state should be PLAYING")
 
 func test_keyboard_shortcut_opens_tech_tree():
   # Arrange
@@ -122,9 +120,9 @@ func test_signal_cleanup_on_close():
   main_ui._close_tech_tree()
   await wait_process_frames(2)
   
-  # Assert - instance should be queued for deletion
+  # Assert - instance reference should be nulled
   assert_null(main_ui.tech_tree_ui, "Reference should be null after closing")
-  # Note: We can't directly test if queue_free() was called, but we verify the reference is nulled
+  # Note: Tech tree frees itself via queue_free() in its _on_close_pressed() method
 
 func test_tech_tree_interactions_work_while_paused():
   # Arrange - open tech tree which pauses the game
