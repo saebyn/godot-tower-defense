@@ -39,6 +39,10 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 
 ## Add scrap to the player's total
 func earn_scrap(amount: int) -> void:
+  # do nothing if game state is not playing
+  if not GameManager.is_playing():
+    return
+
   if amount <= 0:
     return
   
@@ -49,6 +53,10 @@ func earn_scrap(amount: int) -> void:
 
 ## Add XP to the player's total
 func earn_xp(amount: int) -> void:
+  # do nothing if game state is not playing
+  if not GameManager.is_playing():
+    return
+
   if amount <= 0:
     return
   
