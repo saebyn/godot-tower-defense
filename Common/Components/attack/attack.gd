@@ -50,6 +50,9 @@ func perform_attack(target: Node) -> AttackResult:
       health.take_damage(damage_amount, damage_source)
       if audio_player:
         AudioManager.play_sound(audio_player, hit_sound)
+      # Play zombie attack sound if this is a zombie attacking
+      if damage_source == "zombie":
+        AudioManager.play_sound(audio_player, Resource_SoundEffect.SoundEffect.ZOMBIE_ATTACK)
       # Start cooldown
       is_on_cooldown = true
       # if attack_speed is 10 attacks/second,

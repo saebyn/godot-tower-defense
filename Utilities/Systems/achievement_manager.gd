@@ -246,6 +246,9 @@ func _unlock_achievement(achievement_id: String) -> void:
   
   MyLogger.info("AchievementManager", "Achievement unlocked: %s" % achievement.name)
   
+  # Play achievement unlock sound
+  AudioManager.play_sound_2d(Resource_SoundEffect.SoundEffect.ACHIEVEMENT_UNLOCKED)
+  
   # Emit unlock signal
   achievement_unlocked.emit(achievement)
   
