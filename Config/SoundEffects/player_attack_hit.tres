@@ -1,12 +1,13 @@
 [gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=4 format=3 uid="uid://qrh6b0q0uigs"]
 
 [ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_pd0xw"]
-[ext_resource type="AudioStream" uid="uid://bk4kk36kx3k5r" path="res://Assets/Audio/SFX/qubodupImpactMeat01.ogg" id="1_uh4my"]
-[ext_resource type="AudioStream" uid="uid://gx3itwdofke6" path="res://Assets/Audio/SFX/qubodupImpactMeat02.ogg" id="2_dqv6y"]
+[ext_resource type="AudioStream" uid="uid://bk4kk36kx3k5r" path="res://Assets/Audio/SFX/combat/qubodupImpactMeat01.ogg" id="1_uh4my"]
+[ext_resource type="AudioStream" uid="uid://gx3itwdofke6" path="res://Assets/Audio/SFX/combat/qubodupImpactMeat02.ogg" id="2_dqv6y"]
 
 [resource]
 script = ExtResource("1_pd0xw")
 sound_effect = 1
 samples = Array[AudioStream]([ExtResource("1_uh4my"), ExtResource("2_dqv6y")])
+category = 4
 pitch_variation_min = 0.8
 pitch_variation_max = 1.2
