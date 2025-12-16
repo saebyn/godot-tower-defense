@@ -228,6 +228,7 @@ func _handle_obstacle_remove_click(click_position: Vector2):
       # Currently only Entity_RangedObstacle types can be hovered (see _handle_ranged_obstacle_hover)
       if _hovered_ranged_obstacle == obstacle:
         # Clear hover state to prevent dangling tooltip/range indicator
+        _hovered_ranged_obstacle.on_mouse_exit()
         _hovered_ranged_obstacle = null
         MyLogger.debug("Player", "Cleared hover state for removed obstacle")
       
