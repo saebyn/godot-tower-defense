@@ -63,14 +63,8 @@ func _input(event: InputEvent) -> void:
     var mouse_delta = event.position - _last_mouse_position
     _last_mouse_position = event.position
     
-    # Convert mouse delta to camera movement
-    # Create movement direction in world space
-    var move_direction = Vector3(mouse_delta.x, 0, mouse_delta.y)
-    
-    # Rotate the movement direction by the camera's Y-axis rotation
-    move_direction = move_direction.rotated(Vector3.UP, rotation.y + CAMERA_VIEW_ALIGNMENT_OFFSET).normalized()
-    
-    # Apply movement with drag speed
+    # Convert mouse delta to world movement direction and apply it
+    var move_direction = _convert_2d_to_world_movement(mouse_delta)
     global_position += move_direction * mouse_delta.length() * mouse_drag_speed
     
     # Update orbit center after movement
@@ -90,6 +84,18 @@ func _on_game_state_changed(new_state: GameManager.GameState):
       input_enabled = false
     _:
       input_enabled = false
+
+
+## Convert 2D screen-space movement to 3D world-space movement
+## Applies camera rotation alignment and returns normalized direction
+func _convert_2d_to_world_movement(delta_2d: Vector2) -> Vector3:
+  # Create movement direction in world space
+  var move_direction := Vector3(delta_2d.x, 0, delta_2d.y)
+  
+  # Rotate the movement direction by the camera's Y-axis rotation
+  move_direction = move_direction.rotated(Vector3.UP, rotation.y + CAMERA_VIEW_ALIGNMENT_OFFSET).normalized()
+  
+  return move_direction
 
 
 func _process(delta: float) -> void:
@@ -118,12 +124,7 @@ func _process(delta: float) -> void:
       
       # Apply edge scroll movement if detected
       if edge_movement != Vector2.ZERO:
-        # Create movement direction in world space
-        var move_direction := Vector3(edge_movement.x, 0, edge_movement.y)
-        
-        # Rotate the movement direction by the camera's Y-axis rotation
-        move_direction = move_direction.rotated(Vector3.UP, rotation.y + CAMERA_VIEW_ALIGNMENT_OFFSET).normalized()
-        
+        var move_direction = _convert_2d_to_world_movement(edge_movement)
         global_position += move_direction * edge_scroll_speed * delta
         
         # Update orbit center after movement
