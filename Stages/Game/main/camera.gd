@@ -64,6 +64,8 @@ func _input(event: InputEvent) -> void:
     _last_mouse_position = event.position
     
     # Convert mouse delta to world movement and apply it
+    # Note: mouse_delta is NOT normalized to create a natural 1:1 drag feel
+    # where the camera follows the mouse movement directly
     var move_direction = _convert_2d_to_world_movement(mouse_delta)
     global_position += move_direction * mouse_drag_speed
     
@@ -87,12 +89,15 @@ func _on_game_state_changed(new_state: GameManager.GameState):
 
 
 ## Convert 2D screen-space movement to 3D world-space movement
-## Applies camera rotation alignment and returns the rotated direction
+## Applies camera rotation alignment but preserves input magnitude
+## @param delta_2d: The 2D input vector (normalized or pixel delta)
+## @return: The 3D movement vector with magnitude preserved from input
 func _convert_2d_to_world_movement(delta_2d: Vector2) -> Vector3:
   # Create movement direction in world space
   var move_direction := Vector3(delta_2d.x, 0, delta_2d.y)
   
   # Rotate the movement direction by the camera's Y-axis rotation
+  # Note: Rotation preserves the vector's magnitude
   move_direction = move_direction.rotated(Vector3.UP, rotation.y + CAMERA_VIEW_ALIGNMENT_OFFSET)
   
   return move_direction
