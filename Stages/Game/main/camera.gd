@@ -64,14 +64,14 @@ func _input(event: InputEvent) -> void:
     _last_mouse_position = event.position
     
     # Convert mouse delta to camera movement
-    # Invert Y because screen Y goes down but we want camera to move up
-    var move_direction = Vector3(mouse_delta.x, 0, mouse_delta.y) * mouse_drag_speed
+    # Create movement direction in world space
+    var move_direction = Vector3(mouse_delta.x, 0, mouse_delta.y)
     
     # Rotate the movement direction by the camera's Y-axis rotation
     move_direction = move_direction.rotated(Vector3.UP, rotation.y + CAMERA_VIEW_ALIGNMENT_OFFSET).normalized()
     
-    # Apply movement
-    global_position += move_direction * mouse_delta.length() * mouse_drag_speed * 0.1
+    # Apply movement with drag speed
+    global_position += move_direction * mouse_delta.length() * mouse_drag_speed
     
     # Update orbit center after movement
     _update_orbit_center()
