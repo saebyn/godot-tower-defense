@@ -138,12 +138,8 @@ func _process(delta: float) -> void:
   var input_vector := Input.get_vector("camera_move_down", "camera_move_up", "camera_move_left", "camera_move_right")
 
   if input_vector != Vector2.ZERO:
-    # Create movement direction in world space (as original code did)
-    var move_direction := Vector3(input_vector.x, 0, input_vector.y)
-
-    # Rotate the movement direction by the camera's Y-axis rotation
-    move_direction = move_direction.rotated(Vector3.UP, rotation.y + CAMERA_VIEW_ALIGNMENT_OFFSET).normalized()
-    
+    # Convert keyboard input to world movement using the same helper function
+    var move_direction = _convert_2d_to_world_movement(input_vector)
     global_position += move_direction * camera_move_speed * delta
     
     # Update orbit center after movement
