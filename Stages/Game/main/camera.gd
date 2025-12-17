@@ -124,7 +124,9 @@ func _process(delta: float) -> void:
       
       # Apply edge scroll movement if detected
       if edge_movement != Vector2.ZERO:
-        var move_direction = _convert_2d_to_world_movement(edge_movement)
+        # Normalize edge movement to ensure consistent diagonal speed
+        var normalized_edge = edge_movement.normalized()
+        var move_direction = _convert_2d_to_world_movement(normalized_edge)
         global_position += move_direction * edge_scroll_speed * delta
         
         # Update orbit center after movement
@@ -138,8 +140,10 @@ func _process(delta: float) -> void:
   var input_vector := Input.get_vector("camera_move_down", "camera_move_up", "camera_move_left", "camera_move_right")
 
   if input_vector != Vector2.ZERO:
+    # Normalize keyboard input to ensure consistent speed in all directions
+    var normalized_input = input_vector.normalized()
     # Convert keyboard input to world movement using the same helper function
-    var move_direction = _convert_2d_to_world_movement(input_vector)
+    var move_direction = _convert_2d_to_world_movement(normalized_input)
     global_position += move_direction * camera_move_speed * delta
     
     # Update orbit center after movement
