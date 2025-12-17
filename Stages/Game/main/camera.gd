@@ -8,6 +8,13 @@ extends Camera3D
 @export var camera_max_size: float = 100.0 # Maximum zoom (farthest)
 @export var camera_zoom_duration: float = 0.2 # Duration for smooth zoom transitions
 
+@export_group("Mouse Controls")
+@export var enable_middle_mouse_drag: bool = true # Enable middle-mouse button drag to move camera
+@export var mouse_drag_speed: float = 0.5 # Speed multiplier for mouse drag movement
+@export var enable_edge_scroll: bool = true # Enable camera movement when mouse is at screen edge
+@export var edge_scroll_margin: float = 20.0 # Distance from screen edge to trigger scrolling (in pixels)
+@export var edge_scroll_speed: float = 30.0 # Speed of edge scrolling
+
 @export_group("Camera Boundaries")
 @export var enable_boundaries: bool = true # Enable camera boundary constraints
 @export var world_min_x: float = -200.0 # Minimum X boundary for camera orbit center
@@ -18,6 +25,10 @@ extends Camera3D
 var zoom_tween: Tween
 var orbit_center: Vector3 # The point on the ground the camera orbits around
 var input_enabled: bool = true # Track if camera input should be processed
+
+# Mouse drag state
+var _is_middle_mouse_pressed: bool = false
+var _last_mouse_position: Vector2 = Vector2.ZERO
 
 const CAMERA_VIEW_ALIGNMENT_OFFSET := PI / 2 ## 90 degrees in radians rotation to align movement with camera view
 
@@ -31,6 +42,43 @@ func _ready():
   
   # Connect to GameManager state changes to disable input during menus
   GameManager.game_state_changed.connect(_on_game_state_changed)
+
+
+func _input(event: InputEvent) -> void:
+  # Skip input processing if camera input is disabled (e.g., menus are open)
+  if not input_enabled:
+    return
+  
+  # Handle middle-mouse button press/release for drag movement
+  if enable_middle_mouse_drag and event is InputEventMouseButton:
+    if event.button_index == MOUSE_BUTTON_MIDDLE:
+      if event.pressed:
+        _is_middle_mouse_pressed = true
+        _last_mouse_position = event.position
+      else:
+        _is_middle_mouse_pressed = false
+  
+  # Handle mouse motion for drag movement
+  if enable_middle_mouse_drag and _is_middle_mouse_pressed and event is InputEventMouseMotion:
+    var mouse_delta = event.position - _last_mouse_position
+    _last_mouse_position = event.position
+    
+    # Convert mouse delta to camera movement
+    # Invert Y because screen Y goes down but we want camera to move up
+    var move_direction = Vector3(mouse_delta.x, 0, mouse_delta.y) * mouse_drag_speed
+    
+    # Rotate the movement direction by the camera's Y-axis rotation
+    move_direction = move_direction.rotated(Vector3.UP, rotation.y + CAMERA_VIEW_ALIGNMENT_OFFSET).normalized()
+    
+    # Apply movement
+    global_position += move_direction * mouse_delta.length() * mouse_drag_speed * 0.1
+    
+    # Update orbit center after movement
+    _update_orbit_center()
+    
+    # Apply camera boundary constraints
+    if enable_boundaries:
+      _apply_boundary_constraints()
 
 ## Handle game state changes to disable camera input during menus
 func _on_game_state_changed(new_state: GameManager.GameState):
@@ -48,8 +96,44 @@ func _process(delta: float) -> void:
   # Skip input processing if camera input is disabled (e.g., menus are open)
   if not input_enabled:
     return
+  
+  # Handle edge scrolling
+  var edge_movement := Vector2.ZERO
+  if enable_edge_scroll:
+    var viewport = get_viewport()
+    if viewport:
+      var viewport_size = viewport.get_visible_rect().size
+      var mouse_pos = viewport.get_mouse_position()
+      
+      # Check if mouse is near screen edges
+      if mouse_pos.x < edge_scroll_margin:
+        edge_movement.x = -1.0
+      elif mouse_pos.x > viewport_size.x - edge_scroll_margin:
+        edge_movement.x = 1.0
+      
+      if mouse_pos.y < edge_scroll_margin:
+        edge_movement.y = -1.0
+      elif mouse_pos.y > viewport_size.y - edge_scroll_margin:
+        edge_movement.y = 1.0
+      
+      # Apply edge scroll movement if detected
+      if edge_movement != Vector2.ZERO:
+        # Create movement direction in world space
+        var move_direction := Vector3(edge_movement.x, 0, edge_movement.y)
+        
+        # Rotate the movement direction by the camera's Y-axis rotation
+        move_direction = move_direction.rotated(Vector3.UP, rotation.y + CAMERA_VIEW_ALIGNMENT_OFFSET).normalized()
+        
+        global_position += move_direction * edge_scroll_speed * delta
+        
+        # Update orbit center after movement
+        _update_orbit_center()
+        
+        # Apply camera boundary constraints
+        if enable_boundaries:
+          _apply_boundary_constraints()
     
-  # Update camera position based on player input
+  # Update camera position based on player input (keyboard)
   var input_vector := Input.get_vector("camera_move_down", "camera_move_up", "camera_move_left", "camera_move_right")
 
   if input_vector != Vector2.ZERO:
