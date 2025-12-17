@@ -63,16 +63,21 @@ func _input(event: InputEvent) -> void:
     var mouse_delta = event.position - _last_mouse_position
     _last_mouse_position = event.position
     
-    # Convert mouse delta to world movement direction and apply it
-    var move_direction = _convert_2d_to_world_movement(mouse_delta)
-    global_position += move_direction * mouse_delta.length() * mouse_drag_speed
+    # Calculate the movement magnitude once (optimization)
+    var delta_magnitude = mouse_delta.length()
     
-    # Update orbit center after movement
-    _update_orbit_center()
-    
-    # Apply camera boundary constraints
-    if enable_boundaries:
-      _apply_boundary_constraints()
+    # Only process if there's actual movement
+    if delta_magnitude > 0:
+      # Convert mouse delta to world movement direction and apply it
+      var move_direction = _convert_2d_to_world_movement(mouse_delta)
+      global_position += move_direction * delta_magnitude * mouse_drag_speed
+      
+      # Update orbit center after movement
+      _update_orbit_center()
+      
+      # Apply camera boundary constraints
+      if enable_boundaries:
+        _apply_boundary_constraints()
 
 ## Handle game state changes to disable camera input during menus
 func _on_game_state_changed(new_state: GameManager.GameState):
