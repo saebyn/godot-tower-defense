@@ -63,21 +63,16 @@ func _input(event: InputEvent) -> void:
     var mouse_delta = event.position - _last_mouse_position
     _last_mouse_position = event.position
     
-    # Calculate the movement magnitude once (optimization)
-    var delta_magnitude = mouse_delta.length()
+    # Convert mouse delta to world movement and apply it
+    var move_direction = _convert_2d_to_world_movement(mouse_delta)
+    global_position += move_direction * mouse_drag_speed
     
-    # Only process if there's actual movement
-    if delta_magnitude > 0:
-      # Convert mouse delta to world movement direction and apply it
-      var move_direction = _convert_2d_to_world_movement(mouse_delta)
-      global_position += move_direction * delta_magnitude * mouse_drag_speed
-      
-      # Update orbit center after movement
-      _update_orbit_center()
-      
-      # Apply camera boundary constraints
-      if enable_boundaries:
-        _apply_boundary_constraints()
+    # Update orbit center after movement
+    _update_orbit_center()
+    
+    # Apply camera boundary constraints
+    if enable_boundaries:
+      _apply_boundary_constraints()
 
 ## Handle game state changes to disable camera input during menus
 func _on_game_state_changed(new_state: GameManager.GameState):
@@ -92,13 +87,13 @@ func _on_game_state_changed(new_state: GameManager.GameState):
 
 
 ## Convert 2D screen-space movement to 3D world-space movement
-## Applies camera rotation alignment and returns normalized direction
+## Applies camera rotation alignment and returns the rotated direction
 func _convert_2d_to_world_movement(delta_2d: Vector2) -> Vector3:
   # Create movement direction in world space
   var move_direction := Vector3(delta_2d.x, 0, delta_2d.y)
   
   # Rotate the movement direction by the camera's Y-axis rotation
-  move_direction = move_direction.rotated(Vector3.UP, rotation.y + CAMERA_VIEW_ALIGNMENT_OFFSET).normalized()
+  move_direction = move_direction.rotated(Vector3.UP, rotation.y + CAMERA_VIEW_ALIGNMENT_OFFSET)
   
   return move_direction
 
