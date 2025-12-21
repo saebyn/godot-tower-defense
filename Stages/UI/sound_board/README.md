@@ -27,7 +27,30 @@ godot --path . "res://Stages/UI/sound_board/sound_board.tscn"
 - **Dynamic Button Generation**: Automatically creates a button for each sound effect defined in `Resource_SoundEffect.SoundEffect` enum
 - **Sound Preview**: Click any button to play the corresponding sound effect
 - **Audio Variations**: Plays random variations with randomized pitch based on configured ranges (per AudioManager implementation)
+- **Interactive Editing**: Edit sound effect properties in real-time
+  - **Edit Mode Toggle**: Enable/disable editing controls
+  - **Pitch Range Controls**: Adjust min/max pitch variation with spinboxes
+  - **Volume Control**: Set volume in dB with spinbox
+  - **Category Selection**: Change sound effect category with dropdown
+  - **Visual Feedback**: Modified effects show with yellow tint
+  - **Save Changes**: Persist modifications back to .tres resource files
 - **Easy Navigation**: Close button to exit the scene
+
+## Editing Sound Effects
+
+The sound board includes an interactive editing mode for modifying sound effect configurations:
+
+1. Click the **Edit Mode** button to show editing controls
+2. Adjust parameters using the spinboxes and dropdowns:
+   - **Min Pitch**: Minimum pitch variation (0.0 - 2.0)
+   - **Max Pitch**: Maximum pitch variation (0.0 - 2.0)
+   - **Volume**: Volume in decibels (-80.0 dB - 24.0 dB)
+   - **Category**: Sound effect category (UI, Combat, Building, Ambience, Player Action)
+3. Modified sound effects are highlighted with a yellow tint
+4. Click **Save Changes** to write modifications to the .tres files
+5. The info label updates in real-time to reflect your changes
+
+**Note**: Saved changes persist to the resource files in `res://Config/SoundEffects/`
 
 ## Grid Layout
 
@@ -45,6 +68,8 @@ This tool is designed for:
 - Verifying audio file loading and playback
 - Demonstrating available sound effects to team members
 - Checking pitch variation ranges and variation counts
+- **Editing sound effect configurations** (pitch, volume, category)
+- **Iterative audio tuning** during game development
 
 ## Implementation Details
 
