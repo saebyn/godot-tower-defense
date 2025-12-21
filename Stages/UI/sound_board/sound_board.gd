@@ -287,6 +287,14 @@ func _on_save_button_pressed():
   
   for effect_value in modified_configs:
     var config = modified_configs[effect_value]
+    
+    # Validate pitch range before saving
+    if config.pitch_variation_min > config.pitch_variation_max:
+      MyLogger.warn("SoundBoard", "Skipping save for %s: pitch_min (%s) > pitch_max (%s)" % 
+        [effect_value, config.pitch_variation_min, config.pitch_variation_max])
+      failed_count += 1
+      continue
+    
     if _save_sound_effect_config(effect_value, config):
       saved_count += 1
       # Update AudioManager's copy
@@ -302,7 +310,10 @@ func _on_save_button_pressed():
   for effect_value in effect_edit_controls:
     effect_edit_controls[effect_value]["button"].modulate = Color(1.0, 1.0, 1.0)
   
-  MyLogger.info("SoundBoard", "Save complete: %d succeeded, %d failed" % [saved_count, failed_count])
+  if failed_count > 0:
+    MyLogger.warn("SoundBoard", "Save complete: %d succeeded, %d failed" % [saved_count, failed_count])
+  else:
+    MyLogger.info("SoundBoard", "Save complete: %d succeeded, %d failed" % [saved_count, failed_count])
 
 func _save_sound_effect_config(effect_value: Resource_SoundEffect.SoundEffect, config: Resource_SoundEffect) -> bool:
   # Determine the file path based on effect name
