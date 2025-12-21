@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=3 format=3 uid="uid://smuj3xso3s5t"]
+
+[ext_resource type="AudioStream" uid="uid://b0o76ino183qw" path="res://Assets/Audio/SFX/combat/survivor_die.wav" id="1_h14oe"]
+[ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_w2c3e"]
+
+[resource]
+script = ExtResource("1_w2c3e")
+sound_effect = 5
+samples = Array[AudioStream]([ExtResource("1_h14oe")])
+pitch_variation_min = 1.0
+pitch_variation_max = 1.0
+metadata/_custom_type_script = "uid://evflivoc8b3v"
