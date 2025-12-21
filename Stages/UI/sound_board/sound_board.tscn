@@ -50,10 +50,28 @@ theme_override_constants/margin_bottom = 20
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="TitleLabel" type="Label" parent="CenterContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="TitleContainer" type="HBoxContainer" parent="CenterContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/Panel/MarginContainer/VBoxContainer/TitleContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Sound Board"
 horizontal_alignment = 1
+
+[node name="EditModeButton" type="Button" parent="CenterContainer/Panel/MarginContainer/VBoxContainer/TitleContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+toggle_mode = true
+text = "Edit Mode"
+
+[node name="SaveButton" type="Button" parent="CenterContainer/Panel/MarginContainer/VBoxContainer/TitleContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+disabled = true
+text = "Save Changes"
 
 [node name="HSeparator" type="HSeparator" parent="CenterContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -85,4 +103,6 @@ text = "Exit"
 [node name="AudioPlayer" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 
+[connection signal="toggled" from="CenterContainer/Panel/MarginContainer/VBoxContainer/TitleContainer/EditModeButton" to="." method="_on_edit_mode_toggled"]
+[connection signal="pressed" from="CenterContainer/Panel/MarginContainer/VBoxContainer/TitleContainer/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="CenterContainer/Panel/MarginContainer/VBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]
