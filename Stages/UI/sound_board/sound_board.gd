@@ -93,10 +93,12 @@ func _create_effect_button(effect_name: String, effect_value: Resource_SoundEffe
   var info_label = Label.new()
   var variation_count = config.samples.size()
   var pitch_info = "Pitch: %.1f - %.1f" % [config.pitch_variation_min, config.pitch_variation_max]
-  info_label.text = "%d variation%s | %s" % [
+  var db_info = "Volume: %.1f dB" % config.volume_db
+  info_label.text = "%d variation%s | %s | %s" % [
     variation_count,
     "s" if variation_count != 1 else "",
-    pitch_info
+    pitch_info,
+    db_info
   ]
   info_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
   info_label.add_theme_font_size_override("font_size", 10)

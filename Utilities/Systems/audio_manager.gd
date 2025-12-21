@@ -134,6 +134,7 @@ func play_sound(audio_player: Variant, effect: Resource_SoundEffect.SoundEffect)
   var random_sample_index = randi() % config.samples.size()
   audio_player.stream = config.samples[random_sample_index]
   audio_player.pitch_scale = config.pitch_variation_min + randf() * (config.pitch_variation_max - config.pitch_variation_min)
+  audio_player.volume_db = config.volume_db
   audio_player.play()
   
   # Emit signal for sound effect tracking/debugging
@@ -142,32 +143,7 @@ func play_sound(audio_player: Variant, effect: Resource_SoundEffect.SoundEffect)
 
 ## Play a non-spatial sound effect (2D audio for UI, etc.)
 func play_sound_2d(effect: Resource_SoundEffect.SoundEffect) -> void:
-  var config: Resource_SoundEffect = null
-
-  if effect == Resource_SoundEffect.SoundEffect.NONE:
-    return
-
-  if effect in sound_effect_configs:
-    config = sound_effect_configs[effect]
-  else:
-    MyLogger.warn("AudioManager", "Sound effect %s not found in configurations!" % str(effect))
-    config = sound_effect_configs.get(Resource_SoundEffect.SoundEffect.DEFAULT, null)
-
-  if not config:
-    MyLogger.error("AudioManager", "Default sound effect configuration missing!")
-    return
-
-  if config.samples.is_empty():
-    MyLogger.warn("AudioManager", "No samples configured for effect %s" % str(effect))
-    return
-
-  var random_sample_index = randi() % config.samples.size()
-  ui_audio_player.stream = config.samples[random_sample_index]
-  ui_audio_player.pitch_scale = config.pitch_variation_min + randf() * (config.pitch_variation_max - config.pitch_variation_min)
-  ui_audio_player.play()
-  
-  # Emit signal for sound effect tracking/debugging
-  sound_played.emit(effect)
+  play_sound(ui_audio_player, effect)
 
 
 ## Get the configuration for a sound effect
