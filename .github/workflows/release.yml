@@ -2,6 +2,7 @@ name: "Release"
 on:
   release:
     types: [published]
+  push: # Remove this before merging to main
   workflow_dispatch:
 
 env:
