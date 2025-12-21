@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=3 format=3 uid="uid://dqw01vhrfy5ak"]
+
+[ext_resource type="AudioStream" uid="uid://q28u53sy7i3i" path="res://Assets/Audio/SFX/combat/zombie_attack.wav" id="1_4qo1x"]
+[ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="2_btuk7"]
+
+[resource]
+script = ExtResource("2_btuk7")
+sound_effect = 24
+samples = Array[AudioStream]([ExtResource("1_4qo1x")])
+pitch_variation_min = 0.592
+metadata/_custom_type_script = "uid://evflivoc8b3v"
