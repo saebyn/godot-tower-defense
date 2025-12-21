@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=3 format=3 uid="uid://ducn4t0udttjg"]
+
+[ext_resource type="AudioStream" uid="uid://bihojrblb7ydu" path="res://Assets/Audio/SFX/ambience/wave_start.wav" id="1_fkvxp"]
+[ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_ki4rq"]
+
+[resource]
+script = ExtResource("1_ki4rq")
+sound_effect = 27
+samples = Array[AudioStream]([ExtResource("1_fkvxp")])
+category = 3
+pitch_variation_max = 1.0
+metadata/_custom_type_script = "uid://evflivoc8b3v"

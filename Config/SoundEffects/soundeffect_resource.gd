@@ -60,4 +60,4 @@ enum SoundCategory {
 @export var category: SoundCategory = SoundCategory.COMBAT
 @export_range(0.0, 2.0) var pitch_variation_min: float = 0.9
 @export_range(0.0, 2.0) var pitch_variation_max: float = 1.1
-@export_range(-80.0, 24.0) var volume_db: float = 0.0
+@export_range(-80.0, 24.0, 0.1) var volume_db: float = 0.0
