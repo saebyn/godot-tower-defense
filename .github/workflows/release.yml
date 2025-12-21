@@ -125,14 +125,27 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: windows
+          path: windows
       - name: Download Linux Artifact
         uses: actions/download-artifact@v4
         with:
           name: linux
+          path: linux
       - name: Download Web Artifact
         uses: actions/download-artifact@v4
         with:
           name: web
+          path: web
+      - name: Install butler
+        run: |
+          curl -L https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default -o butler.zip
+          unzip butler.zip
+          chmod +x butler
+          mv butler /usr/local/bin/butler
+      - name: List downloaded artifacts
+        run: |
+          echo "Listing downloaded artifacts:"
+          ls -laR
       - name: Upload to itch.io
         env:
           ITCHIO_GAME: ${{ vars.ITCHIO_GAME }}
