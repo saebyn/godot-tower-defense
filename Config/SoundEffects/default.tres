@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=2 format=3 uid="uid://f2jo5fxkrap0"]
 
-[ext_resource type="Script" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_205l2"]
+[ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_205l2"]
 
 [resource]
 script = ExtResource("1_205l2")
