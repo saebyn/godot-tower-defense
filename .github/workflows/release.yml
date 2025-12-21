@@ -136,12 +136,6 @@ jobs:
         with:
           name: web
           path: web
-      - name: Install butler
-        run: |
-          curl -L https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default -o butler.zip
-          unzip butler.zip
-          chmod +x butler
-          mv butler /usr/local/bin/butler
       - name: List downloaded artifacts
         run: |
           echo "Listing downloaded artifacts:"
