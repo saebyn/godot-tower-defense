@@ -144,6 +144,8 @@ jobs:
           name: web
       - name: Upload to itch.io
         env:
+          ITCHIO_GAME: ${{ vars.ITCHIO_GAME }}
+          ITCHIO_USERNAME: ${{ vars.ITCHIO_USERNAME }}
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
         run: |
           butler push windows/${{ env.EXPORT_NAME }}.exe saebyn/zom-nom-defense:windows
