@@ -32,11 +32,10 @@ jobs:
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
-          mkdir -v -p ~/.config/
-          mv /root/.config/godot ~/.config/godot
+          mkdir -v -p ~/.config/godot
+          mv /root/.config/godot ~/.config/godot || true
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
           # Configure Blender path in editor settings
-          mkdir -v -p ~/.config/godot
           echo '[filesystem]' > ~/.config/godot/editor_settings-4.tres
           echo '' >> ~/.config/godot/editor_settings-4.tres
           echo 'import/blender/blender_path = "/usr/bin/blender"' >> ~/.config/godot/editor_settings-4.tres
@@ -69,11 +68,10 @@ jobs:
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
-          mkdir -v -p ~/.config/
-          mv /root/.config/godot ~/.config/godot
+          mkdir -v -p ~/.config/godot
+          mv /root/.config/godot ~/.config/godot || true
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
           # Configure Blender path in editor settings
-          mkdir -v -p ~/.config/godot
           echo '[filesystem]' > ~/.config/godot/editor_settings-4.tres
           echo '' >> ~/.config/godot/editor_settings-4.tres
           echo 'import/blender/blender_path = "/usr/bin/blender"' >> ~/.config/godot/editor_settings-4.tres
@@ -106,11 +104,10 @@ jobs:
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
-          mkdir -v -p ~/.config/
-          mv /root/.config/godot ~/.config/godot
+          mkdir -v -p ~/.config/godot
+          mv /root/.config/godot ~/.config/godot || true
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
           # Configure Blender path in editor settings
-          mkdir -v -p ~/.config/godot
           echo '[filesystem]' > ~/.config/godot/editor_settings-4.tres
           echo '' >> ~/.config/godot/editor_settings-4.tres
           echo 'import/blender/blender_path = "/usr/bin/blender"' >> ~/.config/godot/editor_settings-4.tres
