@@ -32,13 +32,12 @@ jobs:
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
-          mkdir -v -p ~/.config/godot
-          mv /root/.config/godot ~/.config/godot || true
+          mkdir -v -p /github/home/.config/godot
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
           # Configure Blender path in editor settings
-          echo '[filesystem]' > ~/.config/godot/editor_settings-4.tres
-          echo '' >> ~/.config/godot/editor_settings-4.tres
-          echo 'import/blender/blender_path = "/usr/bin/blender"' >> ~/.config/godot/editor_settings-4.tres
+          echo '[filesystem]' > /github/home/.config/godot/editor_settings-4.tres
+          echo '' >> /github/home/.config/godot/editor_settings-4.tres
+          echo 'import/blender/blender_path = "/usr/bin/blender"' >> /github/home/.config/godot/editor_settings-4.tres
       - name: Windows Build
         run: |
           mkdir -v -p build/windows
@@ -68,13 +67,12 @@ jobs:
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
-          mkdir -v -p ~/.config/godot
-          mv /root/.config/godot ~/.config/godot || true
+          mkdir -v -p /github/home/.config/godot
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
           # Configure Blender path in editor settings
-          echo '[filesystem]' > ~/.config/godot/editor_settings-4.tres
-          echo '' >> ~/.config/godot/editor_settings-4.tres
-          echo 'import/blender/blender_path = "/usr/bin/blender"' >> ~/.config/godot/editor_settings-4.tres
+          echo '[filesystem]' > /github/home/.config/godot/editor_settings-4.tres
+          echo '' >> /github/home/.config/godot/editor_settings-4.tres
+          echo 'import/blender/blender_path = "/usr/bin/blender"' >> /github/home/.config/godot/editor_settings-4.tres
       - name: Linux Build
         run: |
           mkdir -v -p build/linux
@@ -104,13 +102,12 @@ jobs:
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
-          mkdir -v -p ~/.config/godot
-          mv /root/.config/godot ~/.config/godot || true
+          mkdir -v -p /github/home/.config/godot
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
           # Configure Blender path in editor settings
-          echo '[filesystem]' > ~/.config/godot/editor_settings-4.tres
-          echo '' >> ~/.config/godot/editor_settings-4.tres
-          echo 'import/blender/blender_path = "/usr/bin/blender"' >> ~/.config/godot/editor_settings-4.tres
+          echo '[filesystem]' > /github/home/.config/godot/editor_settings-4.tres
+          echo '' >> /github/home/.config/godot/editor_settings-4.tres
+          echo 'import/blender/blender_path = "/usr/bin/blender"' >> /github/home/.config/godot/editor_settings-4.tres
       - name: Web Build
         run: |
           mkdir -v -p build/web
@@ -148,6 +145,6 @@ jobs:
           ITCHIO_USERNAME: ${{ vars.ITCHIO_USERNAME }}
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
         run: |
-          butler push windows/${{ env.EXPORT_NAME }}.exe saebyn/zom-nom-defense:windows
-          butler push linux/${{ env.EXPORT_NAME }}.x86_64 saebyn/zom-nom-defense:linux
-          butler push web saebyn/zom-nom-defense:web
+          butler push windows/${{ env.EXPORT_NAME }}.exe ${ITCHIO_USERNAME}/${ITCHIO_GAME}:windows
+          butler push linux/${{ env.EXPORT_NAME }}.x86_64 ${ITCHIO_USERNAME}/${ITCHIO_GAME}:linux
+          butler push web ${ITCHIO_USERNAME}/${ITCHIO_GAME}:web
