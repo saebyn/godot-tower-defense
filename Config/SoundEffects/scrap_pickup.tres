@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=3 format=3 uid="uid://ol2nylmr57tb"]
+
+[ext_resource type="AudioStream" uid="uid://wdweghx46j6n" path="res://Assets/Audio/SFX/pickup_scrap.wav" id="1_1xpyq"]
+[ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_pvglu"]
+
+[resource]
+script = ExtResource("1_pvglu")
+sound_effect = 6
+samples = Array[AudioStream]([ExtResource("1_1xpyq")])
+category = 4
+pitch_variation_min = 0.796
+metadata/_custom_type_script = "uid://evflivoc8b3v"
