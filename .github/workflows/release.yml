@@ -5,6 +5,10 @@ on:
   push: # Remove this before merging to main
   workflow_dispatch:
 
+concurrency:
+  group: "release-${{ github.ref }}"
+  cancel-in-progress: true
+
 env:
   GODOT_VERSION: 4.5.1
   EXPORT_NAME: zom-nom-defense-game
@@ -52,6 +56,8 @@ jobs:
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
+          mkdir -v -p ~/.config/
+          mv /root/.config/godot ~/.config/godot
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
       - name: Linux Build
         run: |
@@ -78,6 +84,8 @@ jobs:
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
+          mkdir -v -p ~/.config/
+          mv /root/.config/godot ~/.config/godot
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
       - name: Web Build
         run: |
