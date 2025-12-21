@@ -60,13 +60,15 @@ func _input(event: InputEvent) -> void:
   
   # Handle mouse motion for drag movement
   if enable_middle_mouse_drag and _is_middle_mouse_pressed and event is InputEventMouseMotion:
-    var mouse_delta = event.position - _last_mouse_position
+    var mouse_delta: Vector2 = event.position - _last_mouse_position
     _last_mouse_position = event.position
     
     # Convert mouse delta to world movement and apply it
     # Note: mouse_delta is NOT normalized to create a natural 1:1 drag feel
     # where the camera follows the mouse movement directly
-    var move_direction = _convert_2d_to_world_movement(mouse_delta)
+    var move_direction = _convert_2d_to_world_movement(
+      Vector2(mouse_delta.y, -mouse_delta.x)
+    )
     global_position += move_direction * mouse_drag_speed
     
     # Update orbit center after movement
@@ -131,7 +133,9 @@ func _process(delta: float) -> void:
       if edge_movement != Vector2.ZERO:
         # Normalize edge movement to ensure consistent diagonal speed
         var normalized_edge = edge_movement.normalized()
-        var move_direction = _convert_2d_to_world_movement(normalized_edge)
+        var move_direction = _convert_2d_to_world_movement(
+          Vector2(-normalized_edge.y, normalized_edge.x)
+        )
         global_position += move_direction * edge_scroll_speed * delta
         
         # Update orbit center after movement
