@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=3 format=3 uid="uid://c6rdr3r3pwnba"]
+
+[ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_8v7ae"]
+[ext_resource type="AudioStream" uid="uid://c4qs3jnvekh1m" path="res://Assets/Audio/SFX/ambience/turret_idle.wav" id="1_o1j8g"]
+
+[resource]
+script = ExtResource("1_8v7ae")
+sound_effect = 3
+samples = Array[AudioStream]([ExtResource("1_o1j8g")])
+category = 3
+pitch_variation_min = 0.885
+metadata/_custom_type_script = "uid://evflivoc8b3v"

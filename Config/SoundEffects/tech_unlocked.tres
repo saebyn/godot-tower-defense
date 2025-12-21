@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=3 format=3 uid="uid://rntaclo4j5yv"]
+
+[ext_resource type="AudioStream" uid="uid://7w6mkejq6tld" path="res://Assets/Audio/SFX/ui/sfx_sounds_fanfare3.wav" id="1_ymqbj"]
+[ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="2_uyhyk"]
+
+[resource]
+script = ExtResource("2_uyhyk")
+sound_effect = 26
+samples = Array[AudioStream]([ExtResource("1_ymqbj")])
+category = 0
+metadata/_custom_type_script = "uid://evflivoc8b3v"

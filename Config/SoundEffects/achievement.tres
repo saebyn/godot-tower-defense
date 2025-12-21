@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=3 format=3 uid="uid://btopsiqpjr6sc"]
+
+[ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_lwltv"]
+[ext_resource type="AudioStream" uid="uid://briykud6ipphf" path="res://Assets/Audio/SFX/ui/achievement.wav" id="1_uutwa"]
+
+[resource]
+script = ExtResource("1_lwltv")
+sound_effect = 15
+samples = Array[AudioStream]([ExtResource("1_uutwa")])
+category = 0
+pitch_variation_min = 1.0
+pitch_variation_max = 1.0
+metadata/_custom_type_script = "uid://evflivoc8b3v"
