@@ -89,3 +89,28 @@ jobs:
         with:
           name: web
           path: build/web
+
+  publish-release:
+    name: Publish Release
+    runs-on: ubuntu-22.04
+    container:
+      image: barichello/godot-ci:${GODOT_VERSION}
+    needs: [export-windows, export-linux, export-web]
+    steps:
+      - name: Download Windows Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows
+      - name: Download Linux Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linux
+      - name: Download Web Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web
+      - name: Upload to itch.io
+        run: |
+          butler push build/windows/$EXPORT_NAME.exe saebyn/zom-nom-defense:windows
+          butler push build/linux/$EXPORT_NAME.x86_64 saebyn/zom-nom-defense:linux
+          butler push build/web saebyn/zom-nom-defense:web
