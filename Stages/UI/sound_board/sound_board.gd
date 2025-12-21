@@ -218,7 +218,8 @@ func _on_config_value_changed(new_value: float, effect_value: Resource_SoundEffe
   # Get or create modified config
   if effect_value not in modified_configs:
     var original_config = AudioManager.get_effect_config(effect_value)
-    modified_configs[effect_value] = original_config.duplicate()
+    # Use the original resource directly so it retains its path for saving
+    modified_configs[effect_value] = original_config
   
   var config = modified_configs[effect_value]
   
@@ -243,7 +244,8 @@ func _on_category_changed(index: int, effect_value: Resource_SoundEffect.SoundEf
   # Get or create modified config
   if effect_value not in modified_configs:
     var original_config = AudioManager.get_effect_config(effect_value)
-    modified_configs[effect_value] = original_config.duplicate()
+    # Use the original resource directly so it retains its path for saving
+    modified_configs[effect_value] = original_config
   
   var config = modified_configs[effect_value]
   config.category = index
