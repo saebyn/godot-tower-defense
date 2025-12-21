@@ -7,6 +7,7 @@ on:
 
 env:
   GODOT_VERSION: 4.5.1
+  GODOT_CI_IMAGE: barichello/godot-ci:${GODOT_VERSION}
   EXPORT_NAME: zom-nom-defense-game
   PROJECT_PATH: .
 
@@ -15,7 +16,7 @@ jobs:
     name: Windows Export
     runs-on: ubuntu-22.04 # Use 22.04 with godot 4
     container:
-      image: barichello/godot-ci:${GODOT_VERSION}
+      image: ${GODOT_CI_IMAGE}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -43,7 +44,7 @@ jobs:
     name: Linux Export
     runs-on: ubuntu-22.04 # Use 22.04 with godot 4
     container:
-      image: barichello/godot-ci:${GODOT_VERSION}
+      image: barichello/godot-ci:4.5.1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -69,7 +70,7 @@ jobs:
     name: Web Export
     runs-on: ubuntu-22.04 # Use 22.04 with godot 4
     container:
-      image: barichello/godot-ci:4.4.1
+      image: barichello/godot-ci:4.5.1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -95,7 +96,7 @@ jobs:
     name: Publish Release
     runs-on: ubuntu-22.04
     container:
-      image: barichello/godot-ci:${GODOT_VERSION}
+      image: barichello/godot-ci:4.5.1
     needs: [export-windows, export-linux, export-web]
     steps:
       - name: Download Windows Artifact
