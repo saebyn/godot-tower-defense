@@ -191,6 +191,62 @@ func test_info_labels_show_pitch_range():
   
   assert_true(found_pitch_info, "Should find at least one label with pitch information")
 
+func test_edit_mode_button_exists():
+  # Assert
+  assert_not_null(sound_board.edit_mode_button, "Edit mode button should exist")
+  assert_true(sound_board.edit_mode_button.toggle_mode, "Edit mode button should be a toggle button")
+
+func test_save_button_exists():
+  # Assert
+  assert_not_null(sound_board.save_button, "Save button should exist")
+  assert_true(sound_board.save_button.disabled, "Save button should be disabled initially")
+
+func test_edit_controls_hidden_by_default():
+  # Assert
+  for effect_value in sound_board.effect_edit_controls:
+    var controls = sound_board.effect_edit_controls[effect_value]
+    assert_false(controls["container"].visible, "Edit controls should be hidden by default")
+
+func test_edit_mode_toggle_shows_controls():
+  # Act
+  sound_board.edit_mode_button.button_pressed = true
+  sound_board._on_edit_mode_toggled(true)
+  await wait_frames(1)
+  
+  # Assert
+  for effect_value in sound_board.effect_edit_controls:
+    var controls = sound_board.effect_edit_controls[effect_value]
+    assert_true(controls["container"].visible, "Edit controls should be visible when edit mode is on")
+
+func test_edit_controls_contain_spinboxes():
+  # Assert - check first effect's controls
+  if sound_board.effect_edit_controls.size() > 0:
+    var first_effect = sound_board.effect_edit_controls.keys()[0]
+    var controls = sound_board.effect_edit_controls[first_effect]
+    
+    assert_not_null(controls["pitch_min"], "Should have pitch_min spinbox")
+    assert_not_null(controls["pitch_max"], "Should have pitch_max spinbox")
+    assert_not_null(controls["volume"], "Should have volume spinbox")
+    assert_not_null(controls["category"], "Should have category option button")
+
+func test_modifying_value_enables_save_button():
+  # Arrange
+  assert_true(sound_board.save_button.disabled, "Save button should start disabled")
+  
+  # Get first effect controls
+  if sound_board.effect_edit_controls.size() > 0:
+    var first_effect = sound_board.effect_edit_controls.keys()[0]
+    var controls = sound_board.effect_edit_controls[first_effect]
+    
+    # Act - modify a value
+    var new_value = 1.5
+    sound_board._on_config_value_changed(new_value, first_effect, "pitch_min")
+    await wait_frames(1)
+    
+    # Assert
+    assert_false(sound_board.save_button.disabled, "Save button should be enabled after modification")
+    assert_true(sound_board.modified_configs.has(first_effect), "Effect should be in modified configs")
+
 # Helper functions
 func _find_buttons_in_container(container: Node) -> Array:
   var buttons = []
