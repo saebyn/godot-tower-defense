@@ -132,6 +132,40 @@ func test_all_configs_have_valid_pitch_ranges():
         "Min pitch should be positive for %s" % effect_name
       )
 
+func test_play_sound_with_pitch_override():
+  # Arrange
+  var effect = Resource_SoundEffect.SoundEffect.PLAYER_ATTACK_HIT
+  var pitch_override = 1.5
+  
+  # Act
+  AudioManager.play_sound(test_audio_player, effect, pitch_override)
+  
+  # Assert
+  assert_almost_eq(
+    test_audio_player.pitch_scale,
+    pitch_override,
+    0.01,
+    "Pitch scale should match the override value"
+  )
+
+func test_play_sound_without_pitch_override_uses_config():
+  # Arrange
+  var effect = Resource_SoundEffect.SoundEffect.PLAYER_ATTACK_HIT
+  var config = AudioManager.get_effect_config(effect)
+  
+  # Act
+  AudioManager.play_sound(test_audio_player, effect)
+  
+  # Assert
+  assert_true(
+    test_audio_player.pitch_scale >= config.pitch_variation_min,
+    "Pitch scale should be >= min pitch when no override"
+  )
+  assert_true(
+    test_audio_player.pitch_scale <= config.pitch_variation_max,
+    "Pitch scale should be <= max pitch when no override"
+  )
+
 func test_survivor_yelp_uses_default_pitch_variation():
   # Act
   var config = AudioManager.get_effect_config(Resource_SoundEffect.SoundEffect.SURVIVOR_YELP)

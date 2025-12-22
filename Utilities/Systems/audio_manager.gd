@@ -111,7 +111,8 @@ func _get_button_sound_effect(button: BaseButton) -> Resource_SoundEffect.SoundE
 
 
 ## Play a spatial sound effect (3D positional audio)
-func play_sound(audio_player: Variant, effect: Resource_SoundEffect.SoundEffect) -> void:
+## If pitch_override is provided (> 0), it will be used instead of the config's pitch variation
+func play_sound(audio_player: Variant, effect: Resource_SoundEffect.SoundEffect, pitch_override: float = -1.0) -> void:
   var config: Resource_SoundEffect = null
 
   if effect == Resource_SoundEffect.SoundEffect.NONE:
@@ -133,7 +134,13 @@ func play_sound(audio_player: Variant, effect: Resource_SoundEffect.SoundEffect)
 
   var random_sample_index = randi() % config.samples.size()
   audio_player.stream = config.samples[random_sample_index]
-  audio_player.pitch_scale = config.pitch_variation_min + randf() * (config.pitch_variation_max - config.pitch_variation_min)
+  
+  # Use pitch override if provided, otherwise use config's pitch variation
+  if pitch_override > 0.0:
+    audio_player.pitch_scale = pitch_override
+  else:
+    audio_player.pitch_scale = config.pitch_variation_min + randf() * (config.pitch_variation_max - config.pitch_variation_min)
+  
   audio_player.volume_db = config.volume_db
   audio_player.play()
   
