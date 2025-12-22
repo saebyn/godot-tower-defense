@@ -124,6 +124,7 @@ func test_survivor_voice_pitch_used_for_yelp():
   var audio_player = AudioStreamPlayer3D.new()
   target_node.set("audio_player", audio_player)
   target_node.add_child(audio_player)
+  add_child_autofree(audio_player)  # Ensure cleanup
   
   # Act - trigger panic behavior to call _play_yelp_sound internally
   # The panic behavior will randomly play yelp sounds, so we call it directly
