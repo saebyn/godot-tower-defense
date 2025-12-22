@@ -131,3 +131,12 @@ func test_all_configs_have_valid_pitch_ranges():
         config.pitch_variation_min > 0.0,
         "Min pitch should be positive for %s" % effect_name
       )
+
+func test_survivor_yelp_uses_default_pitch_variation():
+  # Act
+  var config = AudioManager.get_effect_config(Resource_SoundEffect.SoundEffect.SURVIVOR_YELP)
+  
+  # Assert - should use default pitch variation (0.9 - 1.1)
+  assert_not_null(config, "SURVIVOR_YELP should have a config")
+  assert_almost_eq(config.pitch_variation_min, 0.9, 0.01, "SURVIVOR_YELP should use default min pitch (0.9)")
+  assert_almost_eq(config.pitch_variation_max, 1.1, 0.01, "SURVIVOR_YELP should use default max pitch (1.1)")
