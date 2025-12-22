@@ -11,6 +11,4 @@
 script = ExtResource("1_5ou2q")
 sound_effect = 25
 samples = Array[AudioStream]([ExtResource("1_ggydj"), ExtResource("2_c3xjo"), ExtResource("3_bmpvg"), ExtResource("4_26tgo"), ExtResource("5_rf6a1")])
-pitch_variation_min = 0.818
-pitch_variation_max = 1.2770000000000001
 metadata/_custom_type_script = "uid://evflivoc8b3v"
