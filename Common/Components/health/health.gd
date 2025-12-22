@@ -45,7 +45,8 @@ func take_damage(amount: float, damage_source: String = "unknown"):
 
   # Play hit sound if audio player is assigned
   if audio_player:
-    AudioManager.play_sound(audio_player, hit_sound)
+    var pitch_override = _get_voice_pitch()
+    AudioManager.play_sound(audio_player, hit_sound, pitch_override)
   
   if hitpoints <= 0:
     _die(damage_source)
@@ -88,8 +89,16 @@ func _die(damage_source: String = "unknown"):
 
   # Play death sound if audio player is assigned
   if audio_player:
-    AudioManager.play_sound(audio_player, death_sound)
+    var pitch_override = _get_voice_pitch()
+    AudioManager.play_sound(audio_player, death_sound, pitch_override)
 
   dead = true
   hitpoints = 0
   died.emit(damage_source)
+
+## Get the voice pitch from parent if available (for survivors)
+func _get_voice_pitch() -> float:
+  var parent = get_parent()
+  if parent and parent.has("voice_pitch"):
+    return parent.voice_pitch
+  return -1.0  # No override

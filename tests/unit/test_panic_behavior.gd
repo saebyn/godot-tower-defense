@@ -114,3 +114,21 @@ func test_multiple_enemies_trigger_panic():
   
   # Act & Assert - one enemy nearby
   assert_true(panic_behavior._check_for_nearby_enemies(), "Should detect one nearby enemy")
+
+func test_survivor_voice_pitch_used_for_yelp():
+  # Arrange - set voice pitch on target
+  target_node.set("voice_pitch", 1.5)
+  enemy_node.global_position = Vector3(5, 0, 0)
+  
+  # Mock audio player to capture pitch
+  var mock_audio = AudioStreamPlayer3D.new()
+  target_node.set("audio_player", mock_audio)
+  add_child_autofree(mock_audio)
+  
+  # Act - trigger panic and yelp
+  panic_behavior._process(0.016)  # Start panic
+  panic_behavior._play_yelp_sound()
+  
+  # Assert - pitch should be set to survivor's voice_pitch
+  assert_almost_eq(mock_audio.pitch_scale, 1.5, 0.01, 
+    "Yelp sound should use survivor's voice_pitch")

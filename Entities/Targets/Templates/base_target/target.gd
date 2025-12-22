@@ -2,6 +2,7 @@ extends Node3D
 
 @export var skin_material: StandardMaterial3D
 @export var hitpoints_override: int = -1 ## If set to a positive value, overrides the default health component's hitpoints
+@export_range(0.5, 2.0) var voice_pitch: float = 1.0 ## Pitch override for this survivor's voice sounds
 
 var health: Component_Health
 
