@@ -16,7 +16,8 @@ var vsync_enabled: bool = true
 var resolution_index: int = 2 # Default to 1920x1080
 
 # Audio settings (in dB, range -80 to 0)
-var master_volume: float = 0.0
+# Default master volume is -6.02 dB (50% volume)
+var master_volume: float = -6.02
 var music_volume: float = 0.0
 var sfx_volume: float = 0.0
 
