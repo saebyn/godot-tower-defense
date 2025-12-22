@@ -153,8 +153,8 @@ func test_play_sound_without_pitch_override_uses_config():
   var effect = Resource_SoundEffect.SoundEffect.PLAYER_ATTACK_HIT
   var config = AudioManager.get_effect_config(effect)
   
-  # Act
-  AudioManager.play_sound(test_audio_player, effect)
+  # Act - explicitly pass null to test default behavior
+  AudioManager.play_sound(test_audio_player, effect, null)
   
   # Assert
   assert_true(

@@ -66,7 +66,7 @@ func _process(delta: float) -> void:
 
 func _play_yelp_sound() -> void:
   if target and target.audio_player:
-    var pitch_override = target.voice_pitch if target.has("voice_pitch") else -1.0
+    var pitch_override = target.voice_pitch if target.has("voice_pitch") else null
     AudioManager.play_sound(target.audio_player, Resource_SoundEffect.SoundEffect.SURVIVOR_YELP, pitch_override)
 
 func _check_for_nearby_enemies() -> bool:
