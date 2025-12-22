@@ -120,15 +120,16 @@ func test_survivor_voice_pitch_used_for_yelp():
   target_node.set("voice_pitch", 1.5)
   enemy_node.global_position = Vector3(5, 0, 0)
   
-  # Mock audio player to capture pitch
-  var mock_audio = AudioStreamPlayer3D.new()
-  target_node.set("audio_player", mock_audio)
-  add_child_autofree(mock_audio)
+  # Create audio player and add to target
+  var audio_player = AudioStreamPlayer3D.new()
+  target_node.set("audio_player", audio_player)
+  target_node.add_child(audio_player)
   
-  # Act - trigger panic and yelp
-  panic_behavior._process(0.016)  # Start panic
+  # Act - trigger panic behavior to call _play_yelp_sound internally
+  # The panic behavior will randomly play yelp sounds, so we call it directly
   panic_behavior._play_yelp_sound()
   
   # Assert - pitch should be set to survivor's voice_pitch
-  assert_almost_eq(mock_audio.pitch_scale, 1.5, 0.01, 
+  # Note: This tests the integration with AudioManager
+  assert_almost_eq(audio_player.pitch_scale, 1.5, 0.01, 
     "Yelp sound should use survivor's voice_pitch")
