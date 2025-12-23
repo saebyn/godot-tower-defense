@@ -3,6 +3,11 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      do_publish:
+        description: "Set to true to publish the release"
+        required: false
+        default: "false"
 
 concurrency:
   group: "release-${{ github.ref }}"
@@ -70,6 +75,7 @@ jobs:
   publish-release:
     name: Publish Release
     runs-on: ubuntu-22.04
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.do_publish == 'true' || github.event_name == 'release'
     container:
       image: barichello/godot-ci:4.5.1
     needs: [export-game]
