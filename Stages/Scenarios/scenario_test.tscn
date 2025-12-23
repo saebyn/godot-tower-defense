@@ -64,6 +64,7 @@ shape = SubResource("ConcavePolygonShape3D_7i27l")
 transform = Transform3D(0.685158, 0, -0.728396, 0, 1, 0, 0.728396, 0, 0.685158, 3.86399, 0, -3.75701)
 skin_material = ExtResource("26_3p75d")
 hitpoints_override = 100000000000
+voice_pitch = 1.255
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.518356, -0.427583, 0.740594, 2.18557e-08, 0.866025, 0.500001, -0.855165, 0.259178, -0.448909, 53.2767, 37.7537, -5.50173)
