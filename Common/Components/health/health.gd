@@ -98,7 +98,7 @@ func _die(damage_source: String = "unknown"):
 
 ## Get the voice pitch from owning node or parent if available (for survivors)
 func _get_voice_pitch() -> Variant:
-  var host = owner or get_parent()
-  if host and host.has("voice_pitch"):
+  var host := owner if owner else get_parent()
+  if host and host.voice_pitch != null:
     return host.voice_pitch
-  return null  # No override
+  return null # No override
