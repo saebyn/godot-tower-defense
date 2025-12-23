@@ -14,111 +14,65 @@ env:
   PROJECT_PATH: .
 
 jobs:
-  export-windows:
-    name: Windows Export
-    runs-on: ubuntu-22.04 # Use 22.04 with godot 4
+  export-game:
+    name: Export ${{ matrix.platform.name }}
+    runs-on: ubuntu-22.04
     container:
       image: barichello/godot-ci:4.5.1
+    strategy:
+      fail-fast: true
+      matrix:
+        platform:
+          - name: Windows
+            preset: "Windows Desktop"
+            output: "zom-nom-defense-game.exe"
+            directory: windows
+          - name: Linux
+            preset: "Linux/X11"
+            output: "zom-nom-defense-game.x86_64"
+            directory: linux
+          - name: Web
+            preset: "Web"
+            output: "index.html"
+            directory: web
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: true
-      - name: Install Blender
-        run: |
-          apt-get update
-          apt-get install -y blender
-      - name: Setup
-        run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/
-          mkdir -v -p /github/home/.config/godot
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-          # Configure Blender path in editor settings with proper Godot format
-          printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\nfilesystem/import/blender/blender_path = "/usr/bin/blender"\n' > /github/home/.config/godot/editor_settings-4.tres
-      - name: Windows Build
-        run: |
-          mkdir -v -p build/windows
-          EXPORT_DIR="$(readlink -f build)"
-          cd $PROJECT_PATH
-          godot --headless --verbose --export-release "Windows Desktop" "$EXPORT_DIR/windows/$EXPORT_NAME.exe"
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows
-          path: build/windows
 
-  export-linux:
-    name: Linux Export
-    runs-on: ubuntu-22.04 # Use 22.04 with godot 4
-    container:
-      image: barichello/godot-ci:4.5.1
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          lfs: true
       - name: Install Blender
         run: |
           apt-get update
           apt-get install -y blender
-      - name: Setup
-        run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/
-          mkdir -v -p /github/home/.config/godot
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-          # Configure Blender path in editor settings with proper Godot format
-          printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\nfilesystem/import/blender/blender_path = "/usr/bin/blender"\n' > /github/home/.config/godot/editor_settings-4.tres
-      - name: Linux Build
-        run: |
-          mkdir -v -p build/linux
-          EXPORT_DIR="$(readlink -f build)"
-          cd $PROJECT_PATH
-          godot --headless --verbose --export-release "Linux/X11" "$EXPORT_DIR/linux/$EXPORT_NAME.x86_64"
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux
-          path: build/linux
 
-  export-web:
-    name: Web Export
-    runs-on: ubuntu-22.04 # Use 22.04 with godot 4
-    container:
-      image: barichello/godot-ci:4.5.1
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          lfs: true
-      - name: Install Blender
-        run: |
-          apt-get update
-          apt-get install -y blender
-      - name: Setup
+      - name: Setup Godot
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
           mkdir -v -p /github/home/.config/godot
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
           # Configure Blender path in editor settings with proper Godot format
           printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\nfilesystem/import/blender/blender_path = "/usr/bin/blender"\n' > /github/home/.config/godot/editor_settings-4.tres
-      - name: Web Build
+
+      - name: Build ${{ matrix.platform.name }}
         run: |
-          mkdir -v -p build/web
+          mkdir -v -p build/${{ matrix.platform.directory }}
           EXPORT_DIR="$(readlink -f build)"
           cd $PROJECT_PATH
-          godot --headless --verbose --export-release "Web" "$EXPORT_DIR/web/index.html"
+          godot --headless --verbose --export-release "${{ matrix.platform.preset }}" "$EXPORT_DIR/${{ matrix.platform.directory }}/${{ matrix.platform.output }}"
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: web
-          path: build/web
+          name: ${{ matrix.platform.directory }}
+          path: build/${{ matrix.platform.directory }}
 
   publish-release:
     name: Publish Release
     runs-on: ubuntu-22.04
     container:
       image: barichello/godot-ci:4.5.1
-    needs: [export-windows, export-linux, export-web]
+    needs: [export-game]
     steps:
       - name: Download Windows Artifact
         uses: actions/download-artifact@v4
