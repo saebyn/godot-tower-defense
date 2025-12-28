@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dhxe3f6ho8qma" path="res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.tscn" id="1_turret"]
 [ext_resource type="Script" uid="uid://0yy8udbhaakj" path="res://Entities/Obstacles/Concrete/basic_turret/basic_turret.gd" id="2_6y5ob"]
-[ext_resource type="PackedScene" uid="uid://cyxcfkq8p7bag" path="res://Assets/Models/turret.blend" id="2_nmtda"]
+[ext_resource type="PackedScene" uid="uid://doxso30lh6jyq" path="res://Assets/Models/new_turret.glb" id="3_cvjpm"]
 [ext_resource type="Script" uid="uid://c7bdetuss8stb" path="res://Common/Components/idle_sounds/idle_sounds.gd" id="4_cvjpm"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_sl1jc"]
@@ -43,7 +43,7 @@ idle_animation = "idle"
 aim_margin = 0.1
 enemy_group = "enemies"
 detection_interval = 0.5
-mesh_instances = [NodePath("turret/Base"), NodePath("turret/TurretYaw/Top")]
+mesh_instances = [NodePath("turret/TurretBase/Leg_000"), NodePath("turret/TurretBase/Leg_001"), NodePath("turret/TurretBase/Leg_002"), NodePath("turret/TurretBase/Screw"), NodePath("turret/TurretBase/ScrewBase"), NodePath("turret/TurretBase/Table"), NodePath("turret/TurretYaw/Top/Barrel"), NodePath("turret/TurretYaw/Top/BarrelStraps")]
 
 [node name="Attack" parent="." index="1"]
 damage_amount = 1
@@ -55,11 +55,8 @@ hit_sound = 2
 transform = Transform3D(1.74, 0, 0, 0, 1.74, 0, 0, 0, 1.74, 0.234956, 0.996019, 0.0292969)
 shape = SubResource("BoxShape3D_sl1jc")
 
-[node name="turret" parent="." index="4" instance=ExtResource("2_nmtda")]
-transform = Transform3D(1.74, 0, 0, 0, 1.74, 0, 0, 0, 1.74, 0, -0.0307488, 0)
-
-[node name="Top" parent="turret/TurretYaw" index="0"]
-transform = Transform3D(0.321883, 0, 0, 0, 0.188604, 0, 0, 0, 0.321883, 0, 0.986146, 0)
+[node name="turret" parent="." index="4" instance=ExtResource("3_cvjpm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.021505594, -0.15591896, 0.036489725)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." index="5"]
 libraries = {
