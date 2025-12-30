@@ -16,6 +16,7 @@ extends Node3D
 @onready var ground_with_boundaries: Node3D = $GroundWithBoundaries
 var attack: Component_Attack
 @onready var ui: Control = $UI
+@onready var background_music_player: AudioStreamPlayer = $BgMusicAudioStreamPlayer
 
 @onready var obstacle_placement: Utility_ObstaclePlacement = $ObstaclePlacement
 
@@ -69,6 +70,13 @@ func _ready() -> void:
   # Rebake navigation mesh periodically
   _start_navigation_rebake_timer()
 
+  _on_settings_changed() # Apply initial music pause state
+  SettingsManager.audio_settings_changed.connect(_on_settings_changed)
+
+
+func _on_settings_changed() -> void:
+  print("Applying music pause setting: %s" % SettingsManager.music_pause)
+  background_music_player.process_mode = Node.PROCESS_MODE_PAUSABLE if SettingsManager.music_pause else Node.PROCESS_MODE_ALWAYS
 
 func _load_scenario() -> void:
   # Get the current scenario from ScenarioManager

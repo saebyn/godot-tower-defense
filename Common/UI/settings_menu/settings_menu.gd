@@ -20,6 +20,8 @@ signal closed()
 @onready var music_label: Label = $Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/MusicContainer/MusicLabel
 @onready var sfx_slider: HSlider = $Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/SFXContainer/SFXSlider
 @onready var sfx_label: Label = $Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/SFXContainer/SFXLabel
+@onready var music_pause_label: Label = $Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/MusicPauseContainer/MusicPauseLabel
+@onready var music_pause_check: CheckButton = $Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/MusicPauseContainer/MusicPauseCheck
 
 # Keybinds tab controls
 @onready var keybinds_container: VBoxContainer = $Panel/MarginContainer/VBoxContainer/TabContainer/Keybinds/ScrollContainer/KeybindsContainer
@@ -39,6 +41,7 @@ var temp_resolution: int
 var temp_master_volume: float
 var temp_music_volume: float
 var temp_sfx_volume: float
+var temp_music_pause: bool
 
 # Store original keybinds to restore on cancel
 var original_keybinds: Dictionary = {}
@@ -52,6 +55,7 @@ var previous_resolution: int
 var previous_master_volume: float
 var previous_music_volume: float
 var previous_sfx_volume: float
+var previous_music_pause: bool
 
 # Video confirmation dialog
 var video_confirm_dialog = null
@@ -85,6 +89,7 @@ func _connect_signals() -> void:
   master_slider.value_changed.connect(_on_master_volume_changed)
   music_slider.value_changed.connect(_on_music_volume_changed)
   sfx_slider.value_changed.connect(_on_sfx_volume_changed)
+  music_pause_check.toggled.connect(_on_music_pause_toggled)
   
   # Bottom buttons
   apply_button.pressed.connect(_on_apply_pressed)
@@ -130,11 +135,13 @@ func _load_current_settings() -> void:
   temp_master_volume = SettingsManager.master_volume
   temp_music_volume = SettingsManager.music_volume
   temp_sfx_volume = SettingsManager.sfx_volume
+  temp_music_pause = SettingsManager.music_pause
 
   # Save original audio settings for potential revert
   previous_master_volume = temp_master_volume
   previous_music_volume = temp_music_volume
   previous_sfx_volume = temp_sfx_volume
+  previous_music_pause = temp_music_pause
   
   # Update UI controls
   fullscreen_check.button_pressed = temp_fullscreen
@@ -145,6 +152,7 @@ func _load_current_settings() -> void:
   master_slider.value = _db_to_percentage(temp_master_volume)
   music_slider.value = _db_to_percentage(temp_music_volume)
   sfx_slider.value = _db_to_percentage(temp_sfx_volume)
+  music_pause_check.button_pressed = temp_music_pause
   
   _update_volume_labels()
 
@@ -189,6 +197,11 @@ func _on_sfx_volume_changed(value: float) -> void:
   SettingsManager.apply_audio_settings()
   _update_volume_labels()
 
+func _on_music_pause_toggled(pressed: bool) -> void:
+  temp_music_pause = pressed
+  SettingsManager.music_pause = temp_music_pause
+  SettingsManager.apply_audio_settings()
+
 func _on_apply_pressed() -> void:
   # Check if video settings changed
   var video_settings_changed = (
@@ -206,6 +219,7 @@ func _on_apply_pressed() -> void:
   SettingsManager.master_volume = temp_master_volume
   SettingsManager.music_volume = temp_music_volume
   SettingsManager.sfx_volume = temp_sfx_volume
+  SettingsManager.music_pause = temp_music_pause
   SettingsManager.apply_audio_settings()
   
   if video_settings_changed:
@@ -302,4 +316,5 @@ func _restore_original_audio_settings() -> void:
   SettingsManager.master_volume = previous_master_volume
   SettingsManager.music_volume = previous_music_volume
   SettingsManager.sfx_volume = previous_sfx_volume
+  SettingsManager.music_pause = previous_music_pause
   SettingsManager.apply_audio_settings()

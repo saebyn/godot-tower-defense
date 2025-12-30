@@ -4,7 +4,6 @@ extends Node
 ##
 ## Handles video, audio, and input settings with automatic save/load functionality
 
-signal settings_changed()
 signal video_settings_changed()
 signal audio_settings_changed()
 
@@ -20,6 +19,7 @@ var resolution_index: int = 2 # Default to 1920x1080
 var master_volume: float = -6.02
 var music_volume: float = 0.0
 var sfx_volume: float = 0.0
+var music_pause: bool = false
 
 # Available resolutions
 const RESOLUTIONS: Array[Vector2i] = [
@@ -32,7 +32,8 @@ const RESOLUTIONS: Array[Vector2i] = [
 
 func _ready() -> void:
   load_settings()
-  apply_settings()
+  apply_audio_settings()
+  apply_video_settings()
   MyLogger.info("SettingsManager", "Settings Manager initialized")
 
 ## Load settings from file
@@ -53,6 +54,7 @@ func load_settings() -> void:
   master_volume = config.get_value("audio", "master_volume", master_volume)
   music_volume = config.get_value("audio", "music_volume", music_volume)
   sfx_volume = config.get_value("audio", "sfx_volume", sfx_volume)
+  music_pause = config.get_value("audio", "music_pause", music_pause)
   
   MyLogger.info("SettingsManager", "Settings loaded from file")
 
@@ -69,6 +71,7 @@ func save_settings() -> void:
   config.set_value("audio", "master_volume", master_volume)
   config.set_value("audio", "music_volume", music_volume)
   config.set_value("audio", "sfx_volume", sfx_volume)
+  config.set_value("audio", "music_pause", music_pause)
   
   var err = config.save(SETTINGS_FILE)
   if err != OK:
@@ -80,7 +83,6 @@ func save_settings() -> void:
 func apply_settings() -> void:
   apply_video_settings()
   apply_audio_settings()
-  settings_changed.emit()
 
 ## Apply video settings
 func apply_video_settings() -> void:
