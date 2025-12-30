@@ -183,6 +183,12 @@ boundary_min_z = -175.0
 boundary_max_z = 175.0
 metadata/_custom_type_script = "uid://nv24k764rct"
 
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.9547608, 0.29737493, -1.29986715e-08, 0, -4.371139e-08, -1, -0.29737493, -0.9547608, 4.173392e-08, 0, 0, 0)
+light_energy = 0.1
+shadow_enabled = true
+directional_shadow_max_distance = 1.0
+
 [node name="campfire" parent="." instance=ExtResource("3_0dvov")]
 transform = Transform3D(3.08353, 0, 0, 0, 3.08353, 0, 0, 0, 3.08353, 0, 0, 0)
 
@@ -312,9 +318,6 @@ skin_material = ExtResource("26_pr8sm")
 [node name="Survivor2" parent="." instance=ExtResource("5_o7r5u")]
 transform = Transform3D(-0.902466, 0, -0.430763, 0, 1, 0, 0.430763, 0, -0.902466, 1.79115, 0, 5.97182)
 skin_material = ExtResource("27_3mp6f")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.518356, -0.427583, 0.740594, 2.18557e-08, 0.866025, 0.500001, -0.855165, 0.259178, -0.448909, 53.2767, 37.7537, -5.50173)
 
 [node name="trees" type="Node3D" parent="."]
 
