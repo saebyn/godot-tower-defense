@@ -1,12 +1,43 @@
-[gd_scene load_steps=9 format=3 uid="uid://bl5g2v8n3jkph"]
+[gd_scene load_steps=13 format=3 uid="uid://bl5g2v8n3jkph"]
 
 [ext_resource type="PackedScene" uid="uid://dhxe3f6ho8qma" path="res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.tscn" id="1_turret"]
 [ext_resource type="Script" uid="uid://0yy8udbhaakj" path="res://Entities/Obstacles/Concrete/basic_turret/basic_turret.gd" id="2_6y5ob"]
 [ext_resource type="PackedScene" uid="uid://doxso30lh6jyq" path="res://Assets/Models/new_turret.glb" id="3_cvjpm"]
+[ext_resource type="Texture2D" uid="uid://got2ohkr26cd" path="res://Assets/Textures/fire_particle.png" id="4_2a5gv"]
 [ext_resource type="Script" uid="uid://c7bdetuss8stb" path="res://Common/Components/idle_sounds/idle_sounds.gd" id="4_cvjpm"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_sl1jc"]
 size = Vector3(1.26466, 1.16345, 1.03418)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_cvjpm"]
+lifetime_randomness = 0.1
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 0.1
+emission_ring_radius = 0.01
+emission_ring_inner_radius = 0.0
+emission_ring_cone_angle = 63.5
+direction = Vector3(0, 0, 1)
+spread = 30.113
+initial_velocity_min = 0.099999994
+initial_velocity_max = 1.0
+gravity = Vector3(0, 0, 0)
+linear_accel_min = 28.329998
+linear_accel_max = 70.85999
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2a5gv"]
+transparency = 1
+albedo_texture = ExtResource("4_2a5gv")
+emission_enabled = true
+emission = Color(1, 0, 0, 1)
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_3mut8"]
+material = SubResource("StandardMaterial3D_2a5gv")
+size = Vector2(0.05, 0.05)
 
 [sub_resource type="Animation" id="Animation_cvjpm"]
 length = 0.001
@@ -36,11 +67,12 @@ _data = {
 &"idle": SubResource("Animation_6y5ob")
 }
 
-[node name="BasicTurret" node_paths=PackedStringArray("mesh_instances") instance=ExtResource("1_turret")]
+[node name="BasicTurret" node_paths=PackedStringArray("attack_particle_system", "mesh_instances") instance=ExtResource("1_turret")]
 script = ExtResource("2_6y5ob")
 rotation_speed = 360.0
 idle_animation = "idle"
 aim_margin = 0.1
+attack_particle_system = NodePath("turret/TurretYaw/Top/Barrel/GPUParticles3D")
 enemy_group = "enemies"
 detection_interval = 0.5
 mesh_instances = [NodePath("turret/TurretBase/Leg_000"), NodePath("turret/TurretBase/Leg_001"), NodePath("turret/TurretBase/Leg_002"), NodePath("turret/TurretBase/Screw"), NodePath("turret/TurretBase/ScrewBase"), NodePath("turret/TurretBase/Table"), NodePath("turret/TurretYaw/Top/Barrel"), NodePath("turret/TurretYaw/Top/BarrelStraps")]
@@ -56,7 +88,19 @@ transform = Transform3D(1.74, 0, 0, 0, 1.74, 0, 0, 0, 1.74, 0.234956, 0.996019, 
 shape = SubResource("BoxShape3D_sl1jc")
 
 [node name="turret" parent="." index="4" instance=ExtResource("3_cvjpm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.021505594, -0.15591896, 0.036489725)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.022, -0.93759286, 0.036)
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="turret/TurretYaw/Top/Barrel" index="0"]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.3402462, 0, 0)
+emitting = false
+amount = 90
+lifetime = 1.14
+interp_to_end = 0.38
+one_shot = true
+explosiveness = 1.0
+randomness = 0.15
+process_material = SubResource("ParticleProcessMaterial_cvjpm")
+draw_pass_1 = SubResource("QuadMesh_3mut8")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." index="5"]
 libraries = {
@@ -71,5 +115,7 @@ audio_player = NodePath("../AudioStreamPlayer3D")
 min_idle_interval = 10.0
 max_idle_interval = 30.0
 metadata/_custom_type_script = "uid://c7bdetuss8stb"
+
+[connection signal="cooldown_started" from="Attack" to="." method="_on_attack"]
 
 [editable path="turret"]

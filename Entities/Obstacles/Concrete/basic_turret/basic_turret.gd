@@ -11,7 +11,7 @@ extends Entity_ShootingObstacle
 @export var idle_animation: String = "idle"
 @export var aim_margin: float = 0.1 # Radians within which we consider ourselves "aimed" at the target
 @onready var turret_yaw: Node3D = $turret/TurretYaw
-
+@export var attack_particle_system: GPUParticles3D
 
 func _process(delta: float) -> void:
   if current_target:
@@ -44,3 +44,7 @@ func _process(delta: float) -> void:
 func get_angle_difference(angle1: float, angle2: float) -> float:
   var diff: float = fmod(angle2 - angle1 + PI, TAU) - PI
   return diff
+
+
+func _on_attack() -> void:
+  attack_particle_system.restart()
