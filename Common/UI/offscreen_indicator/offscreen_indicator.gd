@@ -34,6 +34,7 @@ var active_indicators: Array[Control] = []
 var update_timer: Timer
 
 func _ready() -> void:
+  MyLogger.info("OffscreenIndicator", "Initializing Offscreen Indicator")
   # Setup update timer
   update_timer = Timer.new()
   update_timer.wait_time = update_interval
@@ -43,6 +44,13 @@ func _ready() -> void:
   
   # Initialize indicator pool
   _initialize_indicator_pool()
+
+  ScenarioManager.scenario_started.connect(_on_scenario_started)
+  _on_scenario_started("") # Initial setup in case scenario is already running
+
+func _on_scenario_started(_x: String) -> void:
+  # Reset indicators when a new scenario starts
+  _clear_active_indicators()
 
 func _initialize_indicator_pool() -> void:
   # Start with empty pool - indicators will be created as needed
