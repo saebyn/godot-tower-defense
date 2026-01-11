@@ -82,19 +82,6 @@ func _load_scenario() -> void:
   # Get the current scenario from ScenarioManager
   var scenario_id = ScenarioManager.get_current_scenario_id()
   
-  if scenario_id.is_empty():
-    # Default to scenario_1 if no scenario is set
-    scenario_id = "scenario_1"
-    ScenarioManager.set_current_scenario_id(scenario_id)
-    MyLogger.info("Main", "No scenario set, defaulting to: %s" % scenario_id)
-  
-  # Get scenario metadata
-  var metadata = ScenarioManager.get_scenario_metadata(scenario_id)
-  var scene_path = metadata.get("scene_path", "")
-  
-  if scene_path.is_empty():
-    MyLogger.error("Main", "Scenario %s has no scene path configured" % scenario_id)
-    return
   
   # Check if there's already a scenario loaded (from the editor)
   # Look for any existing child that's a Stage_Scenario
@@ -104,16 +91,12 @@ func _load_scenario() -> void:
       remove_child(child)
       child.queue_free()
   
-  # Load the scenario scene
-  MyLogger.info("Main", "Loading scenario: %s from %s" % [scenario_id, scene_path])
-  var scenario_scene = load(scene_path)
-  
-  if scenario_scene == null:
-    MyLogger.error("Main", "Failed to load scenario scene: %s" % scene_path)
+  # Instantiate and add the scenario
+  current_scenario = ScenarioManager.instantiate_scenario()
+  if not current_scenario:
+    MyLogger.error("Main", "Failed to instantiate scenario: %s" % scenario_id)
     return
   
-  # Instantiate and add the scenario
-  current_scenario = scenario_scene.instantiate()
   add_child(current_scenario)
   
   # Apply the 45-degree rotation to align with isometric camera view
@@ -128,6 +111,9 @@ func _load_scenario() -> void:
 
   # Rebake navigation mesh after loading scenario
   rebake_navigation_mesh()
+
+  # Configure camera max zoom/size from scenario settings
+  camera.camera_max_size = current_scenario.camera_max_size
   
   MyLogger.info("Main", "Scenario loaded successfully: %s" % scenario_id)
 

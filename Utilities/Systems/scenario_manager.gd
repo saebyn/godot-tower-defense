@@ -12,6 +12,8 @@ extends Node
 ## - Best times and scores per scenario
 ## - Scenario unlocking logic
 
+const DEFAULT_SCENARIO_ID: String = "scenario_1" ## Default scenario to start with
+
 # Runtime state (resets each session)
 var current_scenario_id: String = "" # Currently active scenario (e.g., "scenario_1")
 var current_wave: int = 0 # Current wave number within the active scenario
@@ -74,6 +76,33 @@ func _ready():
   
   MyLogger.info("ScenarioManager", "Scenario Manager initialized")
 
+func instantiate_scenario():
+  if current_scenario_id.is_empty():
+    current_scenario_id = DEFAULT_SCENARIO_ID
+
+  var metadata = get_scenario_metadata(current_scenario_id)
+  var scene_path = metadata.get("scene_path", "")
+  if scene_path.is_empty():
+    MyLogger.error("ScenarioManager", "No scene path defined for scenario: %s" % current_scenario_id)
+    return null
+
+  var scenario_scene: PackedScene = load(scene_path)
+  if not scenario_scene:
+    MyLogger.error("ScenarioManager", "Failed to load scenario scene: %s" % scene_path)
+    return null
+
+  var instance := scenario_scene.instantiate()
+
+  _handle_scenario_loaded(instance)
+
+  return instance
+
+func _handle_scenario_loaded(scenario: Stage_Scenario) -> void:
+  MyLogger.info("ScenarioManager", "Waiting for scenario %s to load..." % current_scenario_id)
+  await scenario.ready
+  scenario_started.emit(current_scenario_id)
+  MyLogger.info("ScenarioManager", "Scenario %s instantiated and ready" % current_scenario_id)
+
 ## Runtime State Management
 
 ## Set the current scenario being played
@@ -81,8 +110,9 @@ func set_current_scenario_id(scenario_id: String) -> void:
   if current_scenario_id != scenario_id:
     current_scenario_id = scenario_id
     current_wave = 0 # Reset wave when changing scenarios
-    scenario_started.emit(scenario_id)
     MyLogger.info("ScenarioManager", "Current scenario set to: %s" % scenario_id)
+  else:
+    MyLogger.debug("ScenarioManager", "Scenario ID %s is already the current scenario" % scenario_id)
 
 ## Get the current scenario ID being played
 func get_current_scenario_id() -> String:
