@@ -26,12 +26,15 @@ func _ready() -> void:
     # Defer node detection to ensure all children are ready
     _detect_node.call_deferred()
 
-
 func _exit_tree() -> void:
     # Unregister from SceneReferences autoload
     SceneReferences.unregister_enemy_spawner()
 
 func _detect_node() -> void:
+    spawn_areas = spawn_areas.filter(func(a): return a != null)
+    if spawn_areas.is_empty():
+        MyLogger.warning("Spawner", "No spawn areas assigned in EnemySpawner!")
+
     # Check for Wave child nodes
     _waves.clear() # Clear in case of multiple calls
     for child in get_children():
@@ -81,19 +84,23 @@ func _on_enemy_spawned_from_wave(enemy: Node3D, _wave: System_Wave) -> void:
     enemy_spawned.emit(enemy)
 
 
-func spawn_enemy(enemy_type: Resource_EnemyType) -> Node3D:
+func spawn_enemy(enemy_type: Resource_EnemyType) -> Variant:
     var enemy = enemy_type.scene.instantiate()
 
     assert(enemy.has_method("load_resource"), "Enemy scene must have load_resource method")
 
     enemy.load_resource(enemy_type)
 
-    enemy.global_position = find_random_spawn_position()
-    add_child(enemy)
-    current_enemies.append(enemy)
-    _spawned_enemies += 1
-    enemy_spawned.emit(enemy)
-    return enemy
+    var spawn_position = find_random_spawn_position()
+    if spawn_position == null:
+        return null
+    else:
+        enemy.global_position = spawn_position
+        add_child(enemy)
+        current_enemies.append(enemy)
+        _spawned_enemies += 1
+        enemy_spawned.emit(enemy)
+        return enemy
 
 
 func get_spawned_enemy_count() -> int:
@@ -107,16 +114,15 @@ func _on_child_exiting_tree(node: Node) -> void:
         _spawned_enemies -= 1
 
 
-func find_random_spawn_position() -> Vector3:
+func find_random_spawn_position() -> Variant:
     # Handle both old single spawn_area and new spawn_areas array for backward compatibility
     var spawn_area_to_use: MeshInstance3D = null
     
-    if spawn_areas.is_empty():
-        MyLogger.error("Spawner", "No spawn areas configured!")
-        return Vector3.ZERO
-
     # Randomly select one of the spawn areas
     spawn_area_to_use = spawn_areas.pick_random() as MeshInstance3D
+
+    if spawn_area_to_use == null:
+        return null
     
     # Generate a random position within the selected spawn area
     var bounds := spawn_area_to_use.get_aabb()
