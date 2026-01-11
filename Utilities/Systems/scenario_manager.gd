@@ -261,15 +261,3 @@ func reset_data() -> void:
   scenario_best_scores.clear()
   
   MyLogger.info("ScenarioManager", "Scenario progression reset")
-
-## Legacy Methods (deprecated, kept for backward compatibility)
-
-## Manual save method for external use (now delegates to SaveManager)
-func save_progression_now() -> void:
-  SaveManager.save_current_slot()
-
-## Delete save file (delegates to SaveManager)
-func delete_saved_progression() -> bool:
-  if SaveManager.current_save_slot > 0:
-    return SaveManager.delete_save_slot(SaveManager.current_save_slot)
-  return true
