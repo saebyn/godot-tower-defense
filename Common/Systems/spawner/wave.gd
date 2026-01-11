@@ -109,8 +109,9 @@ func _spawn_next_enemy() -> void:
   # Let the parent spawner handle the actual instantiation and positioning
   var spawner = get_parent() as System_EnemySpawner
   if spawner:
-    var enemy := spawner.spawn_enemy(enemy_type)
-    enemy_spawned.emit(enemy, self)
+    var enemy = spawner.spawn_enemy(enemy_type)
+    if enemy:
+      enemy_spawned.emit(enemy, self)
 
 func _end_wave() -> void:
   if not _is_active:
