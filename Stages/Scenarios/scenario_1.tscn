@@ -22,7 +22,7 @@ size = Vector2(10, 100)
 albedo_color = Color(1, 0, 1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ebqns"]
-size = Vector3(100, 0.1, 100)
+size = Vector3(300, 0.1, 300)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m8tvj"]
 vertex_color_use_as_albedo = true
@@ -36,6 +36,7 @@ data = PackedVector3Array(-50, 0.05, 50, 50, 0.05, 50, -50, -0.05, 50, 50, 0.05,
 script = ExtResource("1_y1v65")
 enemy_spawner = NodePath("System_EnemySpawner")
 scenario_environment = ExtResource("2_3f6pf")
+camera_max_size = 70.0
 metadata/_custom_type_script = "uid://nv24k764rct"
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
@@ -47,7 +48,7 @@ directional_shadow_max_distance = 1.0
 
 [node name="System_EnemySpawner" type="Node3D" parent="." node_paths=PackedStringArray("spawn_areas")]
 script = ExtResource("4_vni6r")
-spawn_areas = [NodePath("SpawnSurface1"), NodePath("SpawnSurface2"), NodePath(""), NodePath("")]
+spawn_areas = [NodePath("SpawnSurface1"), NodePath("SpawnSurface2")]
 metadata/_custom_type_script = "uid://du3d1fs80prdm"
 
 [node name="Wave1" type="Node3D" parent="System_EnemySpawner"]
@@ -60,15 +61,13 @@ spawn_interval = 1.0
 metadata/_custom_type_script = "uid://b7jdk6preu1s4"
 
 [node name="SpawnSurface1" type="MeshInstance3D" parent="System_EnemySpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44.7997, 0.031, 0)
-visible = false
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 109.30005, 0.031, -109.331665)
 mesh = SubResource("PlaneMesh_3f6pf")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_5hngp")
 
 [node name="SpawnSurface2" type="MeshInstance3D" parent="System_EnemySpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44.7926, 0.031, 0)
-visible = false
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -102.37265, 0.031, 93.73537)
 mesh = SubResource("PlaneMesh_ffud3")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_pnunk")

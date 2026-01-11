@@ -7,6 +7,7 @@ extends Node3D
 
 @export_category("Scenario Settings")
 @export var scenario_environment: Environment ## Custom environment for this scenario (optional)
+@export var camera_max_size: float = 300.0 ## Maximum camera zoom/size for this scenario (in meters)
 @export var completion_bonus_xp: int = 50 ## XP bonus awarded for completing this scenario
 
 @export_category("Boundary Settings")
