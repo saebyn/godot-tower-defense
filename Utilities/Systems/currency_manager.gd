@@ -182,19 +182,3 @@ func reset_data() -> void:
   current_scrap = starting_scrap
   
   MyLogger.info("CurrencyManager", "Progression reset to defaults")
-
-## Legacy Methods (deprecated, kept for backward compatibility)
-
-## Manual save method for external use (now delegates to SaveManager)
-func save_progression_now() -> void:
-  SaveManager.save_current_slot()
-
-## Check if save file exists (checks SaveManager instead)
-func has_saved_progression() -> bool:
-  return SaveManager.current_save_slot > 0
-
-## Delete save file (delegates to SaveManager)
-func delete_saved_progression() -> bool:
-  if SaveManager.current_save_slot > 0:
-    return SaveManager.delete_save_slot(SaveManager.current_save_slot)
-  return true
