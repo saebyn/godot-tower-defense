@@ -31,6 +31,7 @@ StatsManager="*res://Utilities/Systems/stats_manager.gd"
 SettingsManager="*res://Utilities/Systems/settings_manager.gd"
 ScenarioManager="*res://Utilities/Systems/scenario_manager.gd"
 DamageNumbersManager="*res://Utilities/Systems/damage_numbers_manager.gd"
+SceneReferences="*res://Utilities/Systems/scene_references.gd"
 
 [editor_plugins]
 

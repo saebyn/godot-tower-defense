@@ -51,38 +51,16 @@ func _ready() -> void:
   _initialize_indicator_pool()
 
 func _find_game_components() -> void:
-  # Simple recursive search for camera and enemy spawner
-  camera = _find_camera(get_tree().root)
-  enemy_spawner = _find_enemy_spawner(get_tree().root)
+  # Get camera and enemy spawner from SceneReferences autoload
+  camera = SceneReferences.get_camera()
+  enemy_spawner = SceneReferences.get_enemy_spawner()
   
   if not camera:
-    MyLogger.error("OffscreenIndicator", "Could not find camera")
+    MyLogger.error("OffscreenIndicator", "Could not find camera in SceneReferences")
   if not enemy_spawner:
-    MyLogger.error("OffscreenIndicator", "Could not find enemy spawner")
+    MyLogger.error("OffscreenIndicator", "Could not find enemy spawner in SceneReferences")
   else:
     MyLogger.info("OffscreenIndicator", "Found camera and enemy spawner successfully")
-
-func _find_camera(node: Node) -> Camera3D:
-  if node is Camera3D:
-    return node as Camera3D
-  
-  for child in node.get_children():
-    var result = _find_camera(child)
-    if result:
-      return result
-  
-  return null
-
-func _find_enemy_spawner(node: Node) -> System_EnemySpawner:
-  if node is System_EnemySpawner:
-    return node as System_EnemySpawner
-  
-  for child in node.get_children():
-    var result = _find_enemy_spawner(child)
-    if result:
-      return result
-  
-  return null
 
 func _initialize_indicator_pool() -> void:
   # Start with empty pool - indicators will be created as needed
