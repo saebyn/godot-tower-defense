@@ -62,7 +62,7 @@ func start_wave() -> void:
   
   # Wait for start delay if configured
   if start_delay > 0.0:
-    await get_tree().create_timer(start_delay).timeout
+    await get_tree().create_timer(start_delay, false).timeout
   
   _is_active = true
   wave_started.emit(self)
