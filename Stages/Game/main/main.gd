@@ -13,7 +13,6 @@ extends Node3D
 @onready var camera: Camera3D = $Camera3D
 @onready var navigation_region: NavigationRegion3D = $NavigationRegion3D
 @onready var enemy_raycast: RayCast3D = $EnemyRayCast3D
-@onready var ground_with_boundaries: Node3D = $GroundWithBoundaries
 var attack: Component_Attack
 @onready var ui: Control = $UI
 @onready var background_music_player: AudioStreamPlayer = $BgMusicAudioStreamPlayer
@@ -96,7 +95,7 @@ func _load_scenario() -> void:
   if not current_scenario:
     MyLogger.error("Main", "Failed to instantiate scenario: %s" % scenario_id)
     return
-  
+
   add_child(current_scenario)
   
   # Apply the 45-degree rotation to align with isometric camera view
@@ -130,11 +129,7 @@ func _configure_boundaries_from_scenario() -> void:
   var max_z = current_scenario.boundary_max_z
   
   MyLogger.info("Main", "Configuring boundaries from scenario: X[%d, %d] Z[%d, %d]" % [int(min_x), int(max_x), int(min_z), int(max_z)])
-  
-  # Update the visual boundary markers
-  if ground_with_boundaries and ground_with_boundaries.has_method("set_boundaries"):
-    ground_with_boundaries.set_boundaries(min_x, max_x, min_z, max_z)
-  
+
   # Update camera boundary constraints
   if camera:
     camera.world_min_x = min_x
