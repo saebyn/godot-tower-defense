@@ -77,7 +77,7 @@ func _on_wave_completed(wave: System_Wave) -> void:
     _current_wave_index += 1
     
     # Start next wave after a brief delay
-    await get_tree().create_timer(1.0).timeout
+    await get_tree().create_timer(1.0, false).timeout
     _start_next_wave()
 
 func _on_enemy_spawned_from_wave(enemy: Node3D, _wave: System_Wave) -> void:
