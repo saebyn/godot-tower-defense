@@ -1,1 +1,0 @@
-extends Stage_Scenario
