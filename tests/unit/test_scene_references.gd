@@ -7,9 +7,9 @@ var mock_camera: Camera3D
 var mock_spawner: System_EnemySpawner
 
 func before_each():
-	# Reset SceneReferences state
-	SceneReferences.camera = null
-	SceneReferences.enemy_spawner = null
+	# Reset SceneReferences state using unregister methods
+	SceneReferences.unregister_camera()
+	SceneReferences.unregister_enemy_spawner()
 	
 	# Create mock objects
 	mock_camera = Camera3D.new()

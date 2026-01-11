@@ -21,11 +21,11 @@ signal enemy_spawner_unregistered()
 
 ## Register the main camera. Emits camera_registered signal.
 ## Logs a warning if replacing an existing camera reference.
-func register_camera(cam: Camera3D) -> void:
-	if camera and camera != cam:
+func register_camera(new_camera: Camera3D) -> void:
+	if camera and camera != new_camera:
 		MyLogger.warning("SceneReferences", "Replacing existing camera reference")
-	camera = cam
-	camera_registered.emit(cam)
+	camera = new_camera
+	camera_registered.emit(new_camera)
 	MyLogger.info("SceneReferences", "Camera registered")
 
 ## Unregister the main camera. Emits camera_unregistered signal.
