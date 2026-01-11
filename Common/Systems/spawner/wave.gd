@@ -35,11 +35,13 @@ func _ready() -> void:
   _spawn_timer = Timer.new()
   _spawn_timer.wait_time = spawn_interval
   _spawn_timer.timeout.connect(_spawn_next_enemy)
+  _spawn_timer.process_mode = Node.PROCESS_MODE_PAUSABLE
   add_child(_spawn_timer)
   
   _wave_timer = Timer.new()
   _wave_timer.one_shot = true
   _wave_timer.timeout.connect(_end_wave)
+  _wave_timer.process_mode = Node.PROCESS_MODE_PAUSABLE
   add_child(_wave_timer)
   
   # Validate configuration
