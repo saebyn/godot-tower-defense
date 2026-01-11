@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://ohj5uicc86pi"]
+[gd_scene load_steps=18 format=3 uid="uid://ohj5uicc86pi"]
 
 [ext_resource type="Script" uid="uid://nv24k764rct" path="res://Stages/Scenarios/scenario.gd" id="1_y1v65"]
 [ext_resource type="Environment" uid="uid://b2cu0j1h4uw4a" path="res://Config/Environments/desert.tres" id="2_3f6pf"]
@@ -8,6 +8,8 @@
 [ext_resource type="Script" uid="uid://veme7gd0dvne" path="res://Config/Enemies/enemy_type_resource.gd" id="6_b7d5n"]
 [ext_resource type="Resource" uid="uid://conw8uteeyyuk" path="res://Config/Enemies/basic_zombie.tres" id="7_b7d5n"]
 [ext_resource type="Material" uid="uid://b80m8n51hna4r" path="res://Assets/Textures/survivorFemaleA.material" id="7_vi6mr"]
+[ext_resource type="PackedScene" uid="uid://ea13ckmsfnt3" path="res://Assets/Models/Muscle.fbx" id="9_5hngp"]
+[ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="10_ffud3"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_3f6pf"]
 size = Vector2(10, 100)
@@ -42,7 +44,6 @@ metadata/_custom_type_script = "uid://nv24k764rct"
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, 0, 0, 0)
 light_color = Color(0.9999984, 0.99647874, 0.5014268, 1)
-light_energy = 3.0
 shadow_enabled = true
 directional_shadow_max_distance = 1.0
 
@@ -86,5 +87,23 @@ collision_mask = 0
 shape = SubResource("ConcavePolygonShape3D_8lne4")
 
 [node name="Survivor1" parent="." instance=ExtResource("2_xxlxc")]
-transform = Transform3D(0.685158, 0, -0.728396, 0, 1, 0, 0.728396, 0, 0.685158, 3.86399, 0, -3.75701)
+transform = Transform3D(0.685158, 0, -0.728396, 0, 1, 0, 0.728396, 0, 0.685158, -0.024741411, 3.2650461, -0.34983206)
 skin_material = ExtResource("7_vi6mr")
+
+[node name="Muscle" parent="." groups=["targets"] instance=ExtResource("9_5hngp")]
+transform = Transform3D(1.735, 0, 0, 0, 1.735, 0, 0, 0, 1.562, 0, 0, 0)
+
+[node name="StaticBody3D" parent="Muscle/Muscle" index="0"]
+collision_layer = 17
+collision_mask = 0
+
+[node name="Health" parent="Muscle" node_paths=PackedStringArray("audio_player") instance=ExtResource("10_ffud3")]
+hitpoints = 1000
+hit_sound = 16
+death_sound = 17
+audio_player = NodePath("../AudioStreamPlayer3D")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="Muscle"]
+bus = &"Sound Effects"
+
+[editable path="Muscle"]
