@@ -13,10 +13,16 @@ mesh_instances = [NodePath("StackOfCrates/Cube")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.04165, 0, 0)
 
 [node name="Cube" parent="StackOfCrates" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.586533, -0.281648)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0152402, 1.0123842, -0.281648)
+
+[node name="Health" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0152402, 0.4258511, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.17451, 1.5625, -0.129532)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15926981, 1.9883511, -0.129532)
 shape = SubResource("BoxShape3D_5dfv8")
+
+[node name="AudioStreamPlayer3D" parent="." index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0135173, 1.5797635, 0)
 
 [editable path="StackOfCrates"]
