@@ -24,10 +24,6 @@ func before_each():
   wave_instance.start_delay = 0.0
   spawner_instance.add_child(wave_instance)
 
-func after_each():
-  # Clean up
-  pass
-
 ## Timer Process Mode Configuration Tests
 ## These tests verify that timers are configured to respect pause state
 
