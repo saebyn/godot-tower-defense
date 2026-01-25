@@ -9,7 +9,7 @@ const RANGED_OBSTACLES_GROUP: String = "ranged_obstacles"
   set(value):
     effect_range = value
     if effect_range_indicator:
-      effect_range_indicator.scale = Vector3(effect_range * 2, 0.1, effect_range * 2)
+      effect_range_indicator.scale = _calculate_scale(effect_range)
 
 ## Whether this obstacle is currently being hovered over by the mouse
 var _is_hovered: bool = false
@@ -28,10 +28,16 @@ func _ready():
   # we need to scale X and Z by effect_range / 0.5 = effect_range * 2.
   # For height, we use a small value (0.1) to create a thin disc showing ground coverage.
   if effect_range_indicator:
-    effect_range_indicator.scale = Vector3(effect_range * 2, 0.1, effect_range * 2)
+    effect_range_indicator.scale = _calculate_scale(effect_range)
 
   MyLogger.info("RangedObstacle", "Ranged obstacle initialized with effect range: %f" % effect_range)
 
+
+func _calculate_scale(new_range: float) -> Vector3:
+  # CylinderMesh has a default radius of 0.5 and height of 2.0. To get a cylinder with radius = effect_range,
+  # we need to scale X and Z by effect_range / 0.5 = effect_range * 2.
+  # For height, we use a small value to create a thin disc showing ground coverage.
+  return Vector3(new_range * 2, 0.001, new_range * 2)
 
 ## Overrides the parent method to set up the effect range indicator for placement preview.
 ## Scales and displays the effect_range_indicator mesh to show the effect range during placement.

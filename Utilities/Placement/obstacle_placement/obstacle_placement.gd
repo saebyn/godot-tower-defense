@@ -73,10 +73,9 @@ func _physics_process(_delta: float) -> void:
   if _preview and raycast.is_colliding():
     var collision_point = raycast.get_collision_point()
     
-    # Position preview properly above ground based on its bounds
-    var bounds = _preview.get_aabb()
-    var height_offset = - bounds.position.y # Offset to put bottom of mesh at ground level
-    _preview.global_position = collision_point + Vector3(0, height_offset, 0)
+    # Position preview at collision point
+    # This assumes that all obstacles' models are centered such that their base is at y=0
+    _preview.global_position = collision_point
     
     # Update visual feedback based on placement validity
     _update_visual_feedback(collision_point)
