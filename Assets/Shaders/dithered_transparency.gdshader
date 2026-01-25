@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode depth_draw_never, cull_back, unshaded;
+render_mode unshaded;
 
 uniform vec4 albedo_color : source_color = vec4(0.697, 0.521, 0.0, 1.0);
 uniform float transparency : hint_range(0.0, 1.0) = 0.6;
