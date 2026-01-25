@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://o24bc34g5fea"]
+[gd_scene load_steps=19 format=3 uid="uid://cviggt4knmypm"]
 
 [ext_resource type="PackedScene" uid="uid://deoia86ae444c" path="res://Assets/Models/Landscape1.blend" id="1_x2unt"]
 [ext_resource type="PackedScene" uid="uid://b1yehhqyw2nfo" path="res://Entities/Targets/Templates/base_target/target.tscn" id="2_fx4lu"]
