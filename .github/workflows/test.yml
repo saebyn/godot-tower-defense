@@ -45,6 +45,13 @@ jobs:
       - name: Run Tests
         run: |
           ./run_tests.sh
+          EXIT_CODE=$?
+          echo "Test exit code: $EXIT_CODE"
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "Tests failed with exit code $EXIT_CODE"
+            exit $EXIT_CODE
+          fi
+          echo "All tests passed"
 
       - name: Upload Test Results
         if: always()
