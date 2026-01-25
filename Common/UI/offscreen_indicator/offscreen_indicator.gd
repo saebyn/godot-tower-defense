@@ -37,7 +37,13 @@ var active_indicators: Array[Control] = []
 var update_timer: Timer
 
 func _ready() -> void:
-  # Find camera and enemy spawner
+  # Connect to SceneReferences signals to handle dynamic registration/unregistration
+  SceneReferences.camera_registered.connect(_on_camera_registered)
+  SceneReferences.camera_unregistered.connect(_on_camera_unregistered)
+  SceneReferences.enemy_spawner_registered.connect(_on_enemy_spawner_registered)
+  SceneReferences.enemy_spawner_unregistered.connect(_on_enemy_spawner_unregistered)
+  
+  # Try to get initial references if already registered
   _find_game_components()
   
   # Setup update timer
@@ -56,11 +62,27 @@ func _find_game_components() -> void:
   enemy_spawner = SceneReferences.get_enemy_spawner()
   
   if not camera:
-    MyLogger.error("OffscreenIndicator", "Could not find camera in SceneReferences")
+    MyLogger.debug("OffscreenIndicator", "Camera not yet registered, waiting for signal")
   if not enemy_spawner:
-    MyLogger.error("OffscreenIndicator", "Could not find enemy spawner in SceneReferences")
-  else:
+    MyLogger.debug("OffscreenIndicator", "Enemy spawner not yet registered, waiting for signal")
+  if camera and enemy_spawner:
     MyLogger.info("OffscreenIndicator", "Found camera and enemy spawner successfully")
+
+func _on_camera_registered(new_camera: Camera3D) -> void:
+  camera = new_camera
+  MyLogger.info("OffscreenIndicator", "Camera registered")
+
+func _on_camera_unregistered() -> void:
+  camera = null
+  MyLogger.info("OffscreenIndicator", "Camera unregistered")
+
+func _on_enemy_spawner_registered(spawner: System_EnemySpawner) -> void:
+  enemy_spawner = spawner
+  MyLogger.info("OffscreenIndicator", "Enemy spawner registered")
+
+func _on_enemy_spawner_unregistered() -> void:
+  enemy_spawner = null
+  MyLogger.info("OffscreenIndicator", "Enemy spawner unregistered")
 
 func _initialize_indicator_pool() -> void:
   # Start with empty pool - indicators will be created as needed

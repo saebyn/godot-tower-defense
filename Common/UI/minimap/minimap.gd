@@ -45,7 +45,13 @@ func _ready() -> void:
   # Setup minimap UI
   _setup_minimap_ui()
   
-  # Find game components
+  # Connect to SceneReferences signals to handle dynamic registration/unregistration
+  SceneReferences.camera_registered.connect(_on_camera_registered)
+  SceneReferences.camera_unregistered.connect(_on_camera_unregistered)
+  SceneReferences.enemy_spawner_registered.connect(_on_enemy_spawner_registered)
+  SceneReferences.enemy_spawner_unregistered.connect(_on_enemy_spawner_unregistered)
+  
+  # Try to get initial references if already registered
   _find_game_components()
   
   # Setup update timer
@@ -85,11 +91,27 @@ func _find_game_components() -> void:
   enemy_spawner = SceneReferences.get_enemy_spawner()
   
   if not camera:
-    MyLogger.error("Minimap", "Could not find camera in SceneReferences")
+    MyLogger.debug("Minimap", "Camera not yet registered, waiting for signal")
   if not enemy_spawner:
-    MyLogger.error("Minimap", "Could not find enemy spawner in SceneReferences")
-  else:
+    MyLogger.debug("Minimap", "Enemy spawner not yet registered, waiting for signal")
+  if camera and enemy_spawner:
     MyLogger.info("Minimap", "Found camera and enemy spawner successfully")
+
+func _on_camera_registered(new_camera: Camera3D) -> void:
+  camera = new_camera
+  MyLogger.info("Minimap", "Camera registered")
+
+func _on_camera_unregistered() -> void:
+  camera = null
+  MyLogger.info("Minimap", "Camera unregistered")
+
+func _on_enemy_spawner_registered(spawner: System_EnemySpawner) -> void:
+  enemy_spawner = spawner
+  MyLogger.info("Minimap", "Enemy spawner registered")
+
+func _on_enemy_spawner_unregistered() -> void:
+  enemy_spawner = null
+  MyLogger.info("Minimap", "Enemy spawner unregistered")
 
 func _calculate_world_bounds() -> void:
   # For now, use a fixed world bounds. In a real implementation,
