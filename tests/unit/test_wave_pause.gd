@@ -4,6 +4,11 @@ extends GutTest
 ## Tests that wave timers respect pause state by verifying both configuration
 ## and actual pause behavior using controllable test nodes.
 
+# Test configuration constants
+const PAUSE_WAIT_FRAMES = 20  # Frames to wait during pause to verify timers don't progress
+const UNPAUSE_WAIT_FRAMES = 10  # Frames to wait after unpause to verify timers resume
+const SPAWN_TEST_WAIT_FRAMES = 60  # Frames to wait during pause spawn test (~1 sec @ 60fps)
+
 # Mock spawner that tracks spawn calls
 class MockEnemySpawner extends System_EnemySpawner:
   var spawn_calls: int = 0
@@ -78,7 +83,7 @@ func test_timers_pause_when_tree_paused():
   # Act - Pause the scene tree
   get_tree().paused = true
   # Wait several frames with GUT's process continuing (GUT has ignore_pause=true)
-  for i in range(20):
+  for i in range(PAUSE_WAIT_FRAMES):
     await wait_frames(1)
   
   # Assert - Timer values should not have changed while paused
@@ -108,10 +113,10 @@ func test_timers_resume_after_unpause():
   
   # Act - Pause then unpause
   get_tree().paused = true
-  for i in range(10):
+  for i in range(UNPAUSE_WAIT_FRAMES):
     await wait_frames(1)
   get_tree().paused = false
-  for i in range(10):
+  for i in range(UNPAUSE_WAIT_FRAMES):
     await wait_frames(1)
   
   # Assert - Timers should have progressed after unpause
@@ -143,8 +148,8 @@ func test_spawn_callbacks_dont_fire_during_pause():
   
   # Act - Pause and wait long enough for multiple spawns if not paused
   get_tree().paused = true
-  # Wait ~1 second worth of frames (would be time for ~10 spawns if not paused)
-  for i in range(60):
+  # Wait multiple frames (would allow many spawns if not paused)
+  for i in range(SPAWN_TEST_WAIT_FRAMES):
     await wait_frames(1)
   
   # Assert - No new spawns should have occurred
