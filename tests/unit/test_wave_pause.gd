@@ -22,7 +22,7 @@ class MockEnemySpawner extends System_EnemySpawner:
   func get_spawned_enemy_count() -> int:
     return 0
   
-  # Override to prevent actual spawner logic
+  # Override to prevent actual spawner logic from running in tests
   func _ready() -> void:
     pass
 
@@ -37,7 +37,7 @@ func before_each():
   # Create a wave instance as child of spawner
   wave_instance = System_Wave.new()
   wave_instance.duration = 10.0
-  wave_instance.spawn_interval = 0.5
+  wave_instance.spawn_interval = 0.5  # Default interval for most tests
   wave_instance.start_delay = 0.0
   spawner_instance.add_child(wave_instance)
 
@@ -129,14 +129,13 @@ func test_timers_resume_after_unpause():
     "Spawn timer should progress after unpause")
 
 func test_spawn_callbacks_dont_fire_during_pause():
-  # Arrange - Create enemy type with fast spawning
+  # Arrange - Create enemy type with fast spawning for this test
   var enemy_type = Resource_EnemyType.new()
   enemy_type.scene = load("res://Entities/Enemies/Templates/base_enemy/enemy.tscn")
   wave_instance.enemy_types = [enemy_type]
   wave_instance.enemy_counts = [10]
-  # Set fast spawn interval before starting wave
-  wave_instance.spawn_interval = 0.1
-  wave_instance._spawn_timer.wait_time = 0.1
+  # Need to update timer directly since spawn_interval is already set in _ready()
+  wave_instance._spawn_timer.wait_time = 0.1  # Fast interval to test multiple potential spawns
   
   # Start wave
   wave_instance.start_wave()
