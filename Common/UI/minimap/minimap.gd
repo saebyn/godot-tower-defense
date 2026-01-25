@@ -30,9 +30,6 @@ class_name UI_Minimap
 @export var enemy_dot_size: float = 3.0 ## Size of enemy dots on minimap
 @export var update_interval: float = 0.2 ## How often to update minimap
 
-@onready var camera: Camera3D
-@onready var enemy_spawner: System_EnemySpawner
-
 # Minimap components
 var background_panel: Panel
 var minimap_canvas: Control
@@ -44,15 +41,6 @@ var world_bounds: AABB
 func _ready() -> void:
   # Setup minimap UI
   _setup_minimap_ui()
-  
-  # Connect to SceneReferences signals to handle dynamic registration/unregistration
-  SceneReferences.camera_registered.connect(_on_camera_registered)
-  SceneReferences.camera_unregistered.connect(_on_camera_unregistered)
-  SceneReferences.enemy_spawner_registered.connect(_on_enemy_spawner_registered)
-  SceneReferences.enemy_spawner_unregistered.connect(_on_enemy_spawner_unregistered)
-  
-  # Try to get initial references if already registered
-  _find_game_components()
   
   # Setup update timer
   update_timer = Timer.new()
@@ -85,43 +73,12 @@ func _setup_minimap_ui() -> void:
   # Connect mouse input for click-to-move
   minimap_canvas.gui_input.connect(_on_minimap_clicked)
 
-func _find_game_components() -> void:
-  # Get camera and enemy spawner from SceneReferences autoload
-  camera = SceneReferences.get_camera()
-  enemy_spawner = SceneReferences.get_enemy_spawner()
-  
-  if not camera:
-    MyLogger.debug("Minimap", "Camera not yet registered, waiting for signal")
-  if not enemy_spawner:
-    MyLogger.debug("Minimap", "Enemy spawner not yet registered, waiting for signal")
-  if camera and enemy_spawner:
-    MyLogger.info("Minimap", "Found camera and enemy spawner successfully")
-
-func _on_camera_registered(new_camera: Camera3D) -> void:
-  camera = new_camera
-  MyLogger.info("Minimap", "Camera registered")
-
-func _on_camera_unregistered() -> void:
-  camera = null
-  MyLogger.info("Minimap", "Camera unregistered")
-
-func _on_enemy_spawner_registered(spawner: System_EnemySpawner) -> void:
-  enemy_spawner = spawner
-  MyLogger.info("Minimap", "Enemy spawner registered")
-
-func _on_enemy_spawner_unregistered() -> void:
-  enemy_spawner = null
-  MyLogger.info("Minimap", "Enemy spawner unregistered")
-
 func _calculate_world_bounds() -> void:
   # For now, use a fixed world bounds. In a real implementation,
   # you'd calculate this from the navigation mesh or level geometry
   world_bounds = AABB(Vector3(-100, 0, -100), Vector3(200, 10, 200))
 
 func _update_minimap() -> void:
-  if not camera or not enemy_spawner:
-    return
-  
   # Clear previous elements
   _clear_minimap_canvas()
   
@@ -140,6 +97,7 @@ func _clear_minimap_canvas() -> void:
     child.queue_free()
 
 func _draw_camera_viewport() -> void:
+  var camera := SceneReferences.get_camera()
   if not camera:
     return
   
@@ -155,6 +113,7 @@ func _draw_camera_viewport() -> void:
   minimap_canvas.add_child(camera_indicator)
 
 func _draw_enemies() -> void:
+  var enemy_spawner := SceneReferences.get_enemy_spawner()
   if not enemy_spawner:
     return
   
@@ -224,6 +183,7 @@ func _minimap_to_world(minimap_pos: Vector2) -> Vector3:
 
 func _on_minimap_clicked(event: InputEvent) -> void:
   if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+    var camera := SceneReferences.get_camera()
     if not camera:
       return
     
