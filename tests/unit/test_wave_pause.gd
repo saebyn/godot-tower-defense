@@ -134,9 +134,8 @@ func test_spawn_callbacks_dont_fire_during_pause():
   enemy_type.scene = load("res://Entities/Enemies/Templates/base_enemy/enemy.tscn")
   wave_instance.enemy_types = [enemy_type]
   wave_instance.enemy_counts = [10]
-  wave_instance.spawn_interval = 0.1 # Fast spawning
-  
-  # Reconfigure spawn timer with new interval
+  # Set fast spawn interval before starting wave
+  wave_instance.spawn_interval = 0.1
   wave_instance._spawn_timer.wait_time = 0.1
   
   # Start wave
