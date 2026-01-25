@@ -4,10 +4,11 @@ extends GutTest
 ## Tests that wave timers have correct process_mode configuration
 ##
 ## Note: We only test process_mode configuration, not actual pause behavior.
-## Pausing the scene tree in unit tests can cause GUT to hang since GUT itself
-## runs with ignore_pause=true but nodes may not process correctly when paused.
-## The process_mode configuration is what actually matters - Godot's engine
-## will handle the pause behavior correctly at runtime.
+## Pausing the scene tree in unit tests can cause GUT to hang because GUT
+## uses ignore_pause=true in its configuration (.gutconfig.json) which allows
+## GUT itself to continue running, but the test nodes may not process correctly
+## when paused. The process_mode configuration is what actually matters -
+## Godot's engine will handle the pause behavior correctly at runtime.
 
 var wave_instance: System_Wave
 var spawner_instance: System_EnemySpawner
