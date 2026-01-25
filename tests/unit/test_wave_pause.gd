@@ -60,8 +60,8 @@ func test_wave_timer_is_pausable():
   assert_eq(wave_instance._wave_timer.process_mode, Node.PROCESS_MODE_PAUSABLE,
     "Wave timer should be set to PROCESS_MODE_PAUSABLE")
 
-## Timer Behavior Tests
-## These tests verify actual pause behavior by checking timer state
+## Timer and Spawn Behavior Tests
+## These tests verify actual pause behavior by checking timer state and spawn activity
 
 func test_timers_pause_when_tree_paused():
   # Arrange - Create a simple enemy type
