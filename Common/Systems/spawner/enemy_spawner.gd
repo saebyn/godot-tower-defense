@@ -20,20 +20,20 @@ signal enemy_spawned(enemy: Node3D)
 func _ready() -> void:
     # Monitor child nodes exiting tree to track enemies
     child_exiting_tree.connect(_on_child_exiting_tree)
-    # Defer mode detection to ensure all children are ready
-    _detect_mode.call_deferred()
+    # Defer node detection to ensure all children are ready
+    _detect_node.call_deferred()
 
-func _detect_mode() -> void:
+func _detect_node() -> void:
     # Check for Wave child nodes
     _waves.clear() # Clear in case of multiple calls
     for child in get_children():
         if child is System_Wave:
             _waves.append(child)
     
-    MyLogger.info("Spawner", "Using wave mode with %d waves" % _waves.size())
-    _setup_wave_mode()
+    MyLogger.info("Spawner", "Using wave node with %d waves" % _waves.size())
+    _setup_wave_node()
 
-func _setup_wave_mode() -> void:
+func _setup_wave_node() -> void:
     # Connect wave signals
     for wave in _waves:
         wave.wave_started.connect(_on_wave_started)

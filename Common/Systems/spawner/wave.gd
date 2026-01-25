@@ -22,8 +22,8 @@ const WAVE_OVERLAP_RECHECK_TIME: float = 1.0 ## Time to wait before rechecking f
 var _is_active: bool = false
 var _is_completed: bool = false
 var _enemies_to_spawn: Array[Resource_EnemyType] = [] ## Queue of enemies to spawn
-var _spawn_timer: Timer
-var _wave_timer: Timer
+var _spawn_timer: Timer ## When to spawn the next enemy
+var _wave_timer: Timer ## When to end the wave
 
 ## Signals
 signal wave_started(wave: System_Wave)
