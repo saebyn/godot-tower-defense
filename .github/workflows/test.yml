@@ -40,7 +40,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           echo "Running initial project import (this may take 15+ minutes)..."
-          ./godot --headless --import --path . --quit || echo "Import completed or timed out"
+          godot --headless --import --path . --quit
 
       - name: Run Tests
         run: |
