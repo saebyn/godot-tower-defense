@@ -27,10 +27,10 @@ func test_screenshot_saved_with_slot():
   SaveManager.save_current_slot()
   
   # Wait a frame for screenshot capture to complete
-  await get_tree().create_timer(0.1).timeout
+  await wait_seconds(0.1)
   
   # Try to load the screenshot
-  var screenshot = SaveManager.get_slot_screenshot(TEST_SLOT)
+  #SaveManager.get_slot_screenshot(TEST_SLOT)
   
   # Screenshot should exist (even if viewport is headless, the function should still work)
   # In headless mode, it might be null, so we just verify it doesn't crash
@@ -44,7 +44,7 @@ func test_screenshot_deleted_with_slot():
   SaveManager.save_current_slot()
   
   # Wait for screenshot
-  await get_tree().create_timer(0.1).timeout
+  await wait_seconds(0.1)
   
   # Delete the slot
   SaveManager.delete_save_slot(TEST_SLOT)

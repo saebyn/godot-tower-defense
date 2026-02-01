@@ -30,7 +30,7 @@ func test_notification_shows_achievement_data():
   
   # Act
   notification.show_notification(achievement)
-  await wait_frames(2) # Wait for scene tree processing
+  await wait_process_frames(2) # Wait for scene tree processing
   
   # Assert
   assert_true(notification.visible, "Notification should become visible")

@@ -21,7 +21,7 @@ func before_each():
   sound_board = SoundBoardScene.instantiate()
   add_child(sound_board)
   # Wait for _ready to complete
-  await wait_frames(1)
+  await wait_process_frames(1)
 
 func after_each():
   # Restore original resource
@@ -52,7 +52,7 @@ func test_save_writes_to_file():
   # Act - Modify and save
   sound_board._on_config_value_changed(new_pitch_min, default_effect, "pitch_min")
   sound_board._on_save_button_pressed()
-  await wait_frames(1)
+  await wait_process_frames(1)
   
   # Force reload from file
   ResourceLoader.load_threaded_request(test_resource_path)
@@ -60,7 +60,7 @@ func test_save_writes_to_file():
   
   # Assert
   assert_not_null(saved_config, "Should load saved resource")
-  assert_almost_eq(saved_config.pitch_variation_min, new_pitch_min, 0.001, 
+  assert_almost_eq(saved_config.pitch_variation_min, new_pitch_min, 0.001,
     "Saved pitch_min should match modified value")
   
   MyLogger.info("TestSoundBoardSave", "Save test passed: %s -> %s" % [original_pitch_min, saved_config.pitch_variation_min])

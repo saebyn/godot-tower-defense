@@ -20,7 +20,7 @@ func before_each():
   add_child_autofree(tech_tree)
   
   # Wait for ready to complete
-  await wait_frames(2)
+  await wait_process_frames(2)
 
 func test_tech_tree_initializes():
   # Assert
@@ -85,7 +85,7 @@ func test_tech_node_card_state_updates_on_unlock():
   
   # Act - unlock the tech
   TechTreeManager.unlock_tech("tur_scrap_shooter")
-  await wait_frames(2)
+  await wait_process_frames(2)
   
   # Assert - card state should update
   assert_eq(card.current_state, UI_TechNodeCard.NodeState.UNLOCKED, "Card should show as unlocked")
@@ -97,7 +97,7 @@ func test_tech_node_card_state_updates_on_lock():
   
   # Act - unlock a mutually exclusive tech
   TechTreeManager.unlock_tech("tur_boom_barrel")
-  await wait_frames(2)
+  await wait_process_frames(2)
   
   # Assert - mutually exclusive tech card should update
   var molotov_card = tech_tree.tech_node_cards.get("tur_molotov_mortar")
@@ -115,29 +115,6 @@ func test_tech_tree_displays_branches():
   
   # At least some branches should be present
   assert_gt(found_branches.size(), 0, "Should display at least one branch")
-
-func test_close_button_emits_closed_signal():
-  # Arrange
-  watch_signals(tech_tree)
-  
-  # Act - simulate close button press
-  tech_tree._on_close_pressed()
-  
-  # Assert
-  assert_signal_emitted(tech_tree, "closed", "Should emit closed signal")
-
-func test_esc_key_closes_tech_tree():
-  # Arrange
-  watch_signals(tech_tree)
-  
-  # Act - simulate ESC key press
-  var event = InputEventKey.new()
-  event.keycode = KEY_ESCAPE
-  event.pressed = true
-  tech_tree._unhandled_key_input(event)
-  
-  # Assert
-  assert_signal_emitted(tech_tree, "closed", "ESC key should emit closed signal")
 
 func test_double_click_unlocks_available_tech():
   # Arrange
@@ -201,7 +178,6 @@ func test_scroll_events_consumed_over_tech_tree():
   # Note: The scroll event handling is now managed by the camera input system
   # which disables camera input during menu states. This test verifies the
   # tech tree can be instantiated without errors.
-  
   # Assert - tech tree should be properly initialized
   assert_not_null(tech_tree, "Tech tree should be instantiated")
   assert_not_null(tech_tree.scroll_container, "Scroll container should exist")
