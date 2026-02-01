@@ -16,6 +16,7 @@ jobs:
           submodules: "recursive"
 
       - name: Cache Godot import files
+        id: cache
         uses: actions/cache@v4
         with:
           path: .godot/
@@ -32,14 +33,10 @@ jobs:
           ./godot --version
 
       - name: Import project files
+        if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          # Only run full import if .godot directory is not cached
-          if [ ! -d ".godot/imported" ]; then
-            echo "Running initial project import (this may take 15+ minutes)..."
-            timeout 1200 ./godot --headless --import --path . || echo "Import completed or timed out"
-          else
-            echo "Using cached import files"
-          fi
+          echo "Running initial project import (this may take 15+ minutes)..."
+          ./godot --headless --import --path . || echo "Import completed or timed out"
 
       - name: Run Tests
         run: |
