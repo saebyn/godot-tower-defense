@@ -9,6 +9,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.5.1
 
     steps:
       - uses: actions/checkout@v4
@@ -20,21 +22,6 @@ jobs:
         run: |
           apt-get update
           apt-get install -y blender
-  
-      - name: Cache Godot import files
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: .godot/
-          key: godot-import-${{ hashFiles('.godot/imported/*') }}
-
-      - name: Download Godot
-        run: |
-          wget -q https://github.com/godotengine/godot/releases/download/4.5-stable/Godot_v4.5-stable_linux.x86_64.zip
-          unzip -q Godot_v4.5-stable_linux.x86_64.zip
-          chmod +x Godot_v4.5-stable_linux.x86_64
-          mv Godot_v4.5-stable_linux.x86_64 ./godot
-          ./godot --version
 
       - name: Setup Godot
         run: |
@@ -42,6 +29,13 @@ jobs:
           # Configure Blender path in editor settings with proper Godot format
           printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\nfilesystem/import/blender/blender_path = "/usr/bin/blender"\n' > /github/home/.config/godot/editor_settings-4.tres
 
+      - name: Cache Godot import files
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: .godot/
+          key: godot-import-${{ hashFiles('.godot/imported/*') }}
+  
       - name: Import project files
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
