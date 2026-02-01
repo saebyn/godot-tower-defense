@@ -3,7 +3,7 @@ class_name Resource_SoundEffect
 
 
 enum SoundEffect {
-  DEFAULT = 0, ## Use this if no specific sound effect is assigned
+  DEFAULT = 0,  ## Use this if no specific sound effect is assigned
 
   # User action sound effects
   PLAYER_ATTACK_HIT = 1,
@@ -14,12 +14,12 @@ enum SoundEffect {
   TURRET_FIRE = 2,
   TURRET_IDLE = 3,
   SURVIVOR_DEATH = 5,
-  SURVIVOR_YELP = 25, ## When a survivor is panicked but not hurt
-  SURVIVOR_HIT = 19, ## When a survivor takes damage
-  ZOMBIE_ATTACK = 24, ## When a zombie attacks a survivor or building
-  WAVE_START = 27, ## When a new wave of zombies starts
-  WAVE_COMPLETE = 28, ## When a wave of zombies is fully defeated
-  SCENARIO_COMPLETE = 29, ## When the player completes the scenario
+  SURVIVOR_YELP = 25,  ## When a survivor is panicked but not hurt
+  SURVIVOR_HIT = 19,  ## When a survivor takes damage
+  ZOMBIE_ATTACK = 24,  ## When a zombie attacks a survivor or building
+  WAVE_START = 27,  ## When a new wave of zombies starts
+  WAVE_COMPLETE = 28,  ## When a wave of zombies is fully defeated
+  SCENARIO_COMPLETE = 29,  ## When the player completes the scenario
 
   # Ambient sound effects
   ELECTRIC_CRACKLE = 10,
@@ -36,15 +36,15 @@ enum SoundEffect {
   PLAYER_LEVEL_UP = 30,
 
   # Building related sound effects
-  BUILDING_DAMAGED = 16, ## When a building takes damage
-  BUILDING_DESTROYED = 17, ## When a building is destroyed
-  BUILDING_PLACEMENT = 7, ## (not yet used) When a building is placed (this is after placement preview)
-  BUILDING_PROGRESS = 8, ## (not yet used) When progressing building construction
-  BUILDING_COMPLETE = 9, ## When building construction is complete (presently when placement is finished)
-  BUILDING_REMOVED = 21, ## When a building is removed/dismantled by the player
-  BUILDING_UPGRADED = 23, ## (not yet used) When a building is upgraded
+  BUILDING_DAMAGED = 16,  ## When a building takes damage
+  BUILDING_DESTROYED = 17,  ## When a building is destroyed
+  BUILDING_PLACEMENT = 7,  ## (not yet used) When a building is placed (this is after placement preview)
+  BUILDING_PROGRESS = 8,  ## (not yet used) When progressing building construction
+  BUILDING_COMPLETE = 9,  ## When building construction is complete (presently when placement is finished)
+  BUILDING_REMOVED = 21,  ## When a building is removed/dismantled by the player
+  BUILDING_UPGRADED = 23,  ## (not yet used) When a building is upgraded
 
-  NONE = 18, ## No sound effect at all
+  NONE = 18,  ## No sound effect at all
 }
 
 enum SoundCategory {

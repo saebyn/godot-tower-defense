@@ -9,7 +9,7 @@ func before_each():
   # Instantiate achievement list for each test
   achievement_list = list_scene.instantiate()
   add_child(achievement_list)
-  await wait_frames(2) # Allow ready to be called
+  await wait_process_frames(2) # Allow ready to be called
 
 func after_each():
   # Clean up achievement list after each test
@@ -78,7 +78,7 @@ func test_refresh_achievements_creates_cards():
   
   # Act
   achievement_list.refresh_achievements()
-  await wait_frames(2)
+  await wait_process_frames(2)
   
   # Assert
   var child_count = achievement_list.achievement_container.get_child_count()

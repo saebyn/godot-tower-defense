@@ -17,7 +17,7 @@ func before_each():
   ScenarioManager.clear_current_scenario()
   
   # Reset GameManager state
-  GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
+  GameManager.set_game_state(GameManager.GameState.PLAYING)
 
 func test_bonus_xp_is_included_in_scenario_stats():
   # This test simulates what happens in scenario._on_all_waves_completed()
@@ -110,9 +110,9 @@ func test_bonus_xp_works_with_level_ups():
   # Verify bonus XP correctly triggers level ups
   # Arrange
   CurrencyManager.current_level = 1
-  CurrencyManager.current_xp = 80  # 20 XP away from level 2
+  CurrencyManager.current_xp = 80 # 20 XP away from level 2
   var conversion_xp = 10
-  var bonus_xp = 30  # Total 40 XP, which will trigger level up
+  var bonus_xp = 30 # Total 40 XP, which will trigger level up
   
   # Act
   CurrencyManager.earn_xp(conversion_xp)

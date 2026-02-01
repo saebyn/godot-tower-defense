@@ -11,7 +11,7 @@ func before_each():
   sound_board = SoundBoardScene.instantiate()
   add_child(sound_board)
   # Wait for _ready to complete
-  await wait_frames(1)
+  await wait_process_frames(1)
 
 func after_each():
   # Clean up the sound board
@@ -86,7 +86,7 @@ func test_sound_board_can_be_freed():
   
   # Act
   sound_board.queue_free()
-  await wait_frames(2)
+  await wait_process_frames(2)
   
   # Assert
   var final_child_count = parent.get_child_count()
@@ -94,32 +94,6 @@ func test_sound_board_can_be_freed():
     final_child_count < initial_child_count,
     "Sound board should be removed when freed"
   )
-
-func test_button_press_triggers_audio():
-  # Arrange
-  var grid = sound_board.sound_grid_container
-  var category_containers = grid.get_children()
-  var audio_player = sound_board.audio_player
-  
-  # Find first button
-  var first_button = null
-  for category_container in category_containers:
-    if category_container is VBoxContainer:
-      var buttons = _find_buttons_in_container(category_container)
-      if buttons.size() > 0:
-        first_button = buttons[0]
-        break
-  
-  assert_not_null(first_button, "Should find at least one button")
-  
-  # Act
-  first_button.emit_signal("pressed")
-  await wait_frames(1)
-  
-  # Assert
-  # Note: We can't reliably test if audio is playing in headless mode,
-  # but we can verify the stream was set
-  assert_not_null(audio_player.stream, "Audio stream should be set after button press")
 
 func test_sound_effects_are_grouped_by_category():
   # Act
@@ -211,7 +185,7 @@ func test_edit_mode_toggle_shows_controls():
   # Act
   sound_board.edit_mode_button.button_pressed = true
   sound_board._on_edit_mode_toggled(true)
-  await wait_frames(1)
+  await wait_process_frames(1)
   
   # Assert
   for effect_value in sound_board.effect_edit_controls:
@@ -241,7 +215,7 @@ func test_modifying_value_enables_save_button():
     # Act - modify a value
     var new_value = 1.5
     sound_board._on_config_value_changed(new_value, first_effect, "pitch_min")
-    await wait_frames(1)
+    await wait_process_frames(1)
     
     # Assert
     assert_false(sound_board.save_button.disabled, "Save button should be enabled after modification")

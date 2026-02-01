@@ -30,7 +30,7 @@ func test_scene_loads():
   assert_not_null(instance, "Save slot selection scene should instantiate")
   
   add_child_autofree(instance)
-  await wait_frames(1)
+  await wait_process_frames(1)
   
   # Check that key components exist
   assert_true(instance.has_node("MarginContainer/VBoxContainer/ScrollContainer/SlotContainer"),
@@ -45,7 +45,7 @@ func test_empty_slots_display():
   var scene = load("res://Stages/UI/save_slot_selection/save_slot_selection.tscn")
   var instance = scene.instantiate()
   add_child_autofree(instance)
-  await wait_frames(2)
+  await wait_process_frames(2)
   
   var slot_container = instance.get_node("MarginContainer/VBoxContainer/ScrollContainer/SlotContainer")
   var slot_cards = slot_container.get_children()
@@ -61,12 +61,12 @@ func test_empty_slots_display():
 func test_occupied_slots_display():
   # Create a test save in slot 1
   SaveManager.create_new_game(1)
-  await wait_frames(1)
+  await wait_process_frames(1)
   
   var scene = load("res://Stages/UI/save_slot_selection/save_slot_selection.tscn")
   var instance = scene.instantiate()
   add_child_autofree(instance)
-  await wait_frames(2)
+  await wait_process_frames(2)
   
   var slot_container = instance.get_node("MarginContainer/VBoxContainer/ScrollContainer/SlotContainer")
   var slot_cards = slot_container.get_children()
@@ -87,7 +87,7 @@ func test_slot_card_loads():
   assert_not_null(instance, "Save slot card scene should instantiate")
   
   add_child_autofree(instance)
-  await wait_frames(1)
+  await wait_process_frames(1)
   
   # Check that key components exist
   assert_true(instance.has_node("MarginContainer/HBoxContainer/LeftContainer/SlotNameLabel"),
@@ -100,7 +100,7 @@ func test_slot_card_configure_empty():
   var scene = load("res://Stages/UI/save_slot_selection/save_slot_card.tscn")
   var instance = scene.instantiate()
   add_child_autofree(instance)
-  await wait_frames(1)
+  await wait_process_frames(1)
   
   # Configure as empty slot
   var metadata = {"exists": false, "slot_number": 1}
@@ -117,7 +117,7 @@ func test_slot_card_configure_occupied():
   var scene = load("res://Stages/UI/save_slot_selection/save_slot_card.tscn")
   var instance = scene.instantiate()
   add_child_autofree(instance)
-  await wait_frames(1)
+  await wait_process_frames(1)
   
   # Configure as occupied slot
   var metadata = {

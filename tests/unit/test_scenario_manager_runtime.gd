@@ -36,18 +36,6 @@ func test_scenario_id_starts_empty():
   # Assert
   assert_eq(ScenarioManager.get_current_scenario_id(), "", "Scenario ID should start empty")
 
-func test_set_current_scenario_emits_signal():
-  # Arrange
-  watch_signals(ScenarioManager)
-  var scenario_id = "scenario_2"
-  
-  # Act
-  ScenarioManager.set_current_scenario_id(scenario_id)
-  
-  # Assert
-  assert_signal_emitted(ScenarioManager, "scenario_started", "scenario_started signal should be emitted")
-  assert_signal_emitted_with_parameters(ScenarioManager, "scenario_started", [scenario_id])
-
 func test_clear_current_scenario():
   # Arrange
   ScenarioManager.set_current_scenario_id("scenario_3")

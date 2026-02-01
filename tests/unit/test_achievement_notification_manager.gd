@@ -8,7 +8,7 @@ func before_each():
   # Create manager instance
   manager = UI_AchievementNotificationManager.new()
   add_child(manager)
-  await wait_frames(2) # Allow ready to be called
+  await wait_process_frames(2) # Allow ready to be called
 
 func after_each():
   # Clean up manager after each test
@@ -84,7 +84,7 @@ func test_manager_shows_next_after_current_finishes():
   # Simulate notification finished
   var initial_queue_size = manager.notification_queue.size()
   manager._on_notification_finished()
-  await wait_frames(2)
+  await wait_process_frames(2)
   
   # Assert
   assert_lt(manager.notification_queue.size(), initial_queue_size, "Queue size should decrease after showing next")

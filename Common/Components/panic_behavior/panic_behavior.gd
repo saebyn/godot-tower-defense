@@ -10,29 +10,29 @@ extends Node
 ## It will automatically disable itself if the parent is not a Node3D.
 
 @export_category("Panic Settings")
-@export var panic_detection_radius: float = 10.0 ## Distance at which enemies trigger panic
-@export var panic_move_radius: float = 3.0 ## Maximum distance survivor can move from spawn point
-@export var panic_move_speed: float = 3.0 ## Movement speed when panicking
-@export var panic_move_interval: float = 1.5 ## Time between choosing new panic destinations
-@export var enemy_group: String = "enemies" ## Group name for enemies to detect
-@export var yelp_sound_chance: float = 0.33 ## Chance per second to play a yelp sound when we are panicking
+@export var panic_detection_radius: float = 10.0  ## Distance at which enemies trigger panic
+@export var panic_move_radius: float = 3.0  ## Maximum distance survivor can move from spawn point
+@export var panic_move_speed: float = 3.0  ## Movement speed when panicking
+@export var panic_move_interval: float = 1.5  ## Time between choosing new panic destinations
+@export var enemy_group: String = "enemies"  ## Group name for enemies to detect
+@export var yelp_sound_chance: float = 0.33  ## Chance per second to play a yelp sound when we are panicking
 
 @export_category("Animation")
-@export var animation_player_path: NodePath = "../AnimationPlayer" ## Path to AnimationPlayer node
+@export var animation_player_path: NodePath = "../AnimationPlayer"  ## Path to AnimationPlayer node
 
 var is_panicking: bool = false
 var spawn_position: Vector3
 var current_panic_destination: Vector3
 var panic_timer: float = 0.0
 var animation_player: AnimationPlayer
-var target: Node3D # Reference to the parent target node
+var target: Node3D  # Reference to the parent target node
 
 func _ready() -> void:
   # Get reference to parent target
   target = get_parent() as Node3D
   if not target:
     MyLogger.error("PanicBehavior", "Parent must be a Node3D! PanicBehavior disabled.")
-    set_process(false) # Disable processing if parent is invalid
+    set_process(false)  # Disable processing if parent is invalid
     return
   
   # Store the initial position as the center point for panic movement
@@ -65,7 +65,7 @@ func _process(delta: float) -> void:
       _play_yelp_sound()
 
 func _play_yelp_sound() -> void:
-  if target and target.audio_player:
+  if target and "audio_player" in target and target.audio_player:
     var pitch_override = target.voice_pitch if target.voice_pitch != null else null
     AudioManager.play_sound(target.audio_player, Resource_SoundEffect.SoundEffect.SURVIVOR_YELP, pitch_override)
 
