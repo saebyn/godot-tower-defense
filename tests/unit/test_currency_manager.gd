@@ -4,10 +4,17 @@ extends GutTest
 ## This demonstrates basic GUT testing functionality
 
 func before_each():
+  # Set game state to PLAYING so earn_scrap/earn_xp functions work
+  GameManager.set_game_state(GameManager.GameState.PLAYING)
+  
   # Reset the CurrencyManager state before each test
   CurrencyManager.current_scrap = 0
   CurrencyManager.current_xp = 0
   CurrencyManager.current_level = 1
+
+func after_each():
+  # Reset game state after each test
+  GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
 
 func test_earn_scrap_increases_total():
   # Arrange
@@ -87,8 +94,8 @@ func test_reset_scrap_sets_to_starting_amount():
   assert_eq(CurrencyManager.current_scrap, starting_scrap, "Scrap should reset to starting_scrap value")
 
 func test_convert_remaining_scrap_to_xp_with_valid_scrap():
-  # Arrange
-  CurrencyManager.current_scrap = 200
+  # Arrange - use 198 scrap so XP (99) doesn't trigger level up (needs 100)
+  CurrencyManager.current_scrap = 198
   CurrencyManager.current_xp = 0
   CurrencyManager.current_level = 1
   CurrencyManager.scrap_to_xp_conversion_rate = 2.0
@@ -98,9 +105,9 @@ func test_convert_remaining_scrap_to_xp_with_valid_scrap():
   var result = CurrencyManager.convert_remaining_scrap_to_xp()
   
   # Assert
-  assert_eq(result.scrap_converted, 200, "Should convert 200 scrap")
-  assert_eq(result.xp_gained, 100, "Should gain 100 XP (200 / 2.0)")
-  assert_eq(CurrencyManager.current_xp, 100, "Current XP should be 100")
+  assert_eq(result.scrap_converted, 198, "Should convert 198 scrap")
+  assert_eq(result.xp_gained, 99, "Should gain 99 XP (198 / 2.0)")
+  assert_eq(CurrencyManager.current_xp, 99, "Current XP should be 99")
   assert_eq(CurrencyManager.current_scrap, starting_scrap, "Scrap should reset to starting amount")
 
 func test_convert_remaining_scrap_to_xp_with_zero_scrap():
