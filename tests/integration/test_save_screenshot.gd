@@ -6,6 +6,8 @@ extends GutTest
 const TEST_SLOT = 9
 
 func before_each():
+  # Set game state to PLAYING so earn_scrap functions work
+  GameManager.set_game_state(GameManager.GameState.PLAYING)
   # Clean up test slot
   SaveManager.delete_save_slot(TEST_SLOT)
   SaveManager.current_save_slot = -1
@@ -14,6 +16,8 @@ func after_each():
   # Clean up test slot
   SaveManager.delete_save_slot(TEST_SLOT)
   SaveManager.current_save_slot = -1
+  # Reset game state
+  GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
 
 ## Test: Screenshot is saved when saving a slot
 func test_screenshot_saved_with_slot():
