@@ -29,8 +29,8 @@ class MockSaveableSystem:
     save_data = {}
     loaded_data = {}
 
-# Test slot number
-const TEST_SLOT = 1
+# Test slot number - use a high number to avoid conflicts with other tests
+const TEST_SLOT = 9
 
 # Store original managed systems to restore after tests
 var original_managed_systems: Array = []
@@ -55,15 +55,14 @@ func after_each():
   SaveManager.managed_systems = original_managed_systems.duplicate()
 
 func _cleanup_test_saves():
-  # Delete test save slots
-  for i in range(1, SaveManager.MAX_SAVE_SLOTS + 1):
-    var slot_path = SaveManager.SAVE_SLOT_PATH % i
-    var backup_path = SaveManager.SAVE_SLOT_BACKUP_PATH % i
-    
-    if FileAccess.file_exists(slot_path):
-      DirAccess.remove_absolute(slot_path)
-    if FileAccess.file_exists(backup_path):
-      DirAccess.remove_absolute(backup_path)
+  # Delete only the test save slot to avoid affecting other tests
+  var slot_path = SaveManager.SAVE_SLOT_PATH % TEST_SLOT
+  var backup_path = SaveManager.SAVE_SLOT_BACKUP_PATH % TEST_SLOT
+  
+  if FileAccess.file_exists(slot_path):
+    DirAccess.remove_absolute(slot_path)
+  if FileAccess.file_exists(backup_path):
+    DirAccess.remove_absolute(backup_path)
 
 ## Test: Register system with valid interface
 func test_register_system_with_valid_interface():
@@ -100,6 +99,8 @@ func test_create_new_game():
 
 ## Test: Save and load slot preserves data
 func test_save_and_load_slot():
+  # File operations may generate engine errors in headless mode - ignore them
+  
   var mock_system = MockSaveableSystem.new("test_system", {"value": 42, "name": "test"})
   SaveManager.register_system(mock_system)
   
@@ -220,6 +221,8 @@ func test_save_includes_metadata():
 
 ## Test: Multiple systems save independently
 func test_multiple_systems_save_independently():
+  # File operations may generate engine errors in headless mode - ignore them
+  
   var system1 = MockSaveableSystem.new("system1", {"value1": 100})
   var system2 = MockSaveableSystem.new("system2", {"value2": 200})
   
@@ -263,6 +266,8 @@ func test_save_directory_created():
 
 ## Test: Initialize default slot loads existing save
 func test_initialize_default_slot_loads_existing():
+  # File operations may generate engine errors in headless mode - ignore them
+  
   var mock_system = MockSaveableSystem.new("test_system", {"value": 42})
   SaveManager.register_system(mock_system)
   

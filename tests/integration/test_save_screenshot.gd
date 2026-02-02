@@ -21,6 +21,8 @@ func after_each():
 
 ## Test: Screenshot is saved when saving a slot
 func test_screenshot_saved_with_slot():
+  # File operations may generate engine errors in headless mode - ignore them
+  
   # Create a new game
   SaveManager.create_new_game(TEST_SLOT)
   
@@ -42,6 +44,8 @@ func test_screenshot_saved_with_slot():
 
 ## Test: Screenshot is deleted when slot is deleted
 func test_screenshot_deleted_with_slot():
+  # File operations may generate engine errors in headless mode - ignore them
+  
   # Create and save a game
   SaveManager.create_new_game(TEST_SLOT)
   CurrencyManager.earn_scrap(100)
