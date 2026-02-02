@@ -4,7 +4,11 @@ extends GutTest
 ## Tests that screenshots are captured, saved, and loaded correctly
 
 # Test slot number - use a unique high number to avoid conflicts with other tests
-# test_save_manager.gd uses slot 9, test_save_manager_integration.gd uses 7-8
+# Note: Test slot allocation across test files:
+#   - test_save_manager.gd uses slot 9
+#   - test_save_manager_integration.gd uses slots 7-8
+#   - test_save_screenshot.gd uses slot 10
+# TODO: Consider using a centralized test constants file for slot allocation
 const TEST_SLOT = 10
 
 func before_each():

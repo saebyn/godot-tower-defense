@@ -545,7 +545,12 @@ func _save_json_file_atomic(primary_path: String, backup_path: String, data: Dic
   if FileAccess.file_exists(primary_path):
     # Copy primary to backup - this is a best-effort operation
     # We log errors but don't fail the save since the backup is for recovery, not primary storage
-    # Note: Using manual file copy instead of dir.copy() to avoid engine errors in CI/headless mode
+    # 
+    # Note: Using manual file copy instead of DirAccess.copy() because:
+    # - DirAccess.copy() generates internal engine errors when it fails, even if we handle the error
+    # - These engine errors cause test failures in GUT (which treats any engine error as a test failure)
+    # - Manual copy via FileAccess doesn't generate these internal engine errors
+    # - For JSON save files, we don't need to preserve file permissions or metadata
     var source_file = FileAccess.open(primary_path, FileAccess.READ)
     if source_file:
       var content = source_file.get_as_text()
