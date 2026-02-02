@@ -5,12 +5,19 @@ extends GutTest
 
 func before_each():
   # Set game state to PLAYING so earn_scrap/earn_xp functions work
+  # Note: Must be set BEFORE resetting CurrencyManager to ensure signals work correctly
   GameManager.set_game_state(GameManager.GameState.PLAYING)
+  
+  # Wait a frame to ensure state change is processed
+  await get_tree().process_frame
   
   # Reset the CurrencyManager state before each test
   CurrencyManager.current_scrap = 0
   CurrencyManager.current_xp = 0
   CurrencyManager.current_level = 1
+  
+  # Verify we're in PLAYING state (sanity check)
+  assert_true(GameManager.is_playing(), "PRECONDITION: GameManager must be in PLAYING state")
 
 func after_each():
   # Reset game state after each test

@@ -18,15 +18,23 @@ func before_each():
   initial_xp = CurrencyManager.current_xp
   initial_level = CurrencyManager.current_level
   
+  # Set game state to PLAYING first
+  GameManager.set_game_state(GameManager.GameState.PLAYING)
+  
+  # Wait a frame to ensure state change is processed
+  await get_tree().process_frame
+  
   # Reset to known state
   CurrencyManager.current_scrap = 200
   CurrencyManager.current_xp = 0
   CurrencyManager.current_level = 1
   CurrencyManager.scrap_to_xp_conversion_rate = 2.0
   
-  GameManager.set_game_state(GameManager.GameState.PLAYING)
   ScenarioManager.set_current_scenario_id("scenario_test")
   ScenarioManager.last_scenario_stats.clear()
+  
+  # Verify we're in PLAYING state (sanity check)
+  assert_true(GameManager.is_playing(), "PRECONDITION: GameManager must be in PLAYING state")
 
 func after_each():
   # Restore original state

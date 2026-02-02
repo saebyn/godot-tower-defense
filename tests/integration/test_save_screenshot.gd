@@ -8,9 +8,16 @@ const TEST_SLOT = 9
 func before_each():
   # Set game state to PLAYING so earn_scrap functions work
   GameManager.set_game_state(GameManager.GameState.PLAYING)
+  
+  # Wait a frame to ensure state change is processed
+  await get_tree().process_frame
+  
   # Clean up test slot
   SaveManager.delete_save_slot(TEST_SLOT)
   SaveManager.current_save_slot = -1
+  
+  # Verify we're in PLAYING state (sanity check)
+  assert_true(GameManager.is_playing(), "PRECONDITION: GameManager must be in PLAYING state")
 
 func after_each():
   # Clean up test slot

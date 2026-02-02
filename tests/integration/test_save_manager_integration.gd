@@ -19,8 +19,15 @@ func after_all():
 func before_each():
   # Set game state to PLAYING so earn_scrap/earn_xp functions work
   GameManager.set_game_state(GameManager.GameState.PLAYING)
+  
+  # Wait a frame to ensure state change is processed
+  await get_tree().process_frame
+  
   # Ensure clean slate for each test
   _cleanup_test_slots()
+  
+  # Verify we're in PLAYING state (sanity check)
+  assert_true(GameManager.is_playing(), "PRECONDITION: GameManager must be in PLAYING state")
 
 func after_each():
   # Clean up after each test

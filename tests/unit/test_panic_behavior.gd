@@ -13,6 +13,9 @@ func before_each():
   target_node.position = Vector3.ZERO
   add_child_autofree(target_node)
   
+  # Wait for node to be in tree before setting global transforms
+  await get_tree().process_frame
+  
   # Create and attach panic behavior
   panic_behavior = Component_PanicBehavior.new()
   target_node.add_child(panic_behavior)
@@ -21,6 +24,9 @@ func before_each():
   enemy_node = Node3D.new()
   enemy_node.add_to_group("enemies")
   add_child_autofree(enemy_node)
+  
+  # Wait for enemy node to be in tree
+  await get_tree().process_frame
 
 func after_each():
   # Cleanup is handled by autofree
@@ -102,9 +108,12 @@ func test_multiple_enemies_trigger_panic():
   var enemy2 = Node3D.new()
   enemy2.add_to_group("enemies")
   add_child_autofree(enemy2)
-  # Set position AFTER adding to tree to avoid "not in tree" error
-  enemy2.global_position = Vector3(15, 0, 0) # Far away
   
+  # Wait for node to be in tree before setting global_position
+  await get_tree().process_frame
+  
+  # Set position AFTER adding to tree and waiting
+  enemy2.global_position = Vector3(15, 0, 0) # Far away
   enemy_node.global_position = Vector3(15, 0, 0) # Also far away
   
   # Act & Assert - no enemies nearby
