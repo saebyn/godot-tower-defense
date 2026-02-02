@@ -545,11 +545,21 @@ func _save_json_file_atomic(primary_path: String, backup_path: String, data: Dic
   if FileAccess.file_exists(primary_path):
     # Copy primary to backup - this is a best-effort operation
     # We log errors but don't fail the save since the backup is for recovery, not primary storage
-    var copy_result = dir.copy(primary_filename, backup_filename)
-    if copy_result != OK:
-      MyLogger.warn("SaveManager", "Failed to create backup (error %d): %s - save will continue" % [copy_result, backup_path])
+    # Note: Using manual file copy instead of dir.copy() to avoid engine errors in CI/headless mode
+    var source_file = FileAccess.open(primary_path, FileAccess.READ)
+    if source_file:
+      var content = source_file.get_as_text()
+      source_file.close()
+      
+      var dest_file = FileAccess.open(backup_path, FileAccess.WRITE)
+      if dest_file:
+        dest_file.store_string(content)
+        dest_file.close()
+        MyLogger.debug("SaveManager", "Created backup: %s" % backup_filename)
+      else:
+        MyLogger.warn("SaveManager", "Failed to create backup file: %s - save will continue" % backup_path)
     else:
-      MyLogger.debug("SaveManager", "Created backup: %s" % backup_filename)
+      MyLogger.warn("SaveManager", "Failed to read source for backup: %s - save will continue" % primary_path)
   
   # Rename temp file to primary (atomic operation on most filesystems)
   var rename_result = dir.rename(temp_filename, primary_filename)

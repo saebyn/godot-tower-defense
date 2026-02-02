@@ -3,7 +3,9 @@ extends GutTest
 ## Integration test for save screenshot functionality
 ## Tests that screenshots are captured, saved, and loaded correctly
 
-const TEST_SLOT = 9
+# Test slot number - use a unique high number to avoid conflicts with other tests
+# test_save_manager.gd uses slot 9, test_save_manager_integration.gd uses 7-8
+const TEST_SLOT = 10
 
 func before_each():
   # Set game state to PLAYING so earn_scrap functions work
