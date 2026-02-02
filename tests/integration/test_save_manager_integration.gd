@@ -17,12 +17,16 @@ func after_all():
   _cleanup_test_slots()
 
 func before_each():
+  # Set game state to PLAYING so earn_scrap/earn_xp functions work
+  GameManager.set_game_state(GameManager.GameState.PLAYING)
   # Ensure clean slate for each test
   _cleanup_test_slots()
 
 func after_each():
   # Clean up after each test
   _cleanup_test_slots()
+  # Reset game state
+  GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
 
 func _cleanup_test_slots():
   SaveManager.delete_save_slot(TEST_SLOT_1)
