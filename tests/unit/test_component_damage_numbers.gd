@@ -2,6 +2,33 @@ extends GutTest
 
 ## Unit tests for damage numbers component
 
+func before_each():
+  # Clear any existing damage numbers from previous tests
+  for label in DamageNumbersManager._number_pool:
+    if is_instance_valid(label):
+      label.queue_free()
+  DamageNumbersManager._number_pool.clear()
+  
+  # Kill any active tweens
+  for label in DamageNumbersManager._active_tweens.keys():
+    var tween = DamageNumbersManager._active_tweens[label]
+    if is_instance_valid(tween):
+      tween.kill()
+  DamageNumbersManager._active_tweens.clear()
+
+func after_each():
+  # Clean up damage numbers after each test
+  for label in DamageNumbersManager._number_pool:
+    if is_instance_valid(label):
+      label.queue_free()
+  DamageNumbersManager._number_pool.clear()
+  
+  for label in DamageNumbersManager._active_tweens.keys():
+    var tween = DamageNumbersManager._active_tweens[label]
+    if is_instance_valid(tween):
+      tween.kill()
+  DamageNumbersManager._active_tweens.clear()
+
 func test_damage_numbers_component_registers_in_metadata():
   # Arrange
   var parent = Node3D.new()

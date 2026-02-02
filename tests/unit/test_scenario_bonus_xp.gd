@@ -4,6 +4,9 @@ extends GutTest
 ## Tests that bonus XP is awarded correctly and tracked in stats
 
 func before_each():
+  # Set game state to PLAYING so earn_scrap/earn_xp functions work
+  GameManager.set_game_state(GameManager.GameState.PLAYING)
+  
   # Reset CurrencyManager state
   CurrencyManager.current_scrap = 0
   CurrencyManager.current_xp = 0
@@ -15,8 +18,9 @@ func before_each():
   ScenarioManager.scenario_best_scores.clear()
   ScenarioManager.last_scenario_stats = {}
   ScenarioManager.clear_current_scenario()
-  
-  # Reset GameManager state
+
+func after_each():
+  # Reset game state after each test
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
 
 func test_bonus_xp_is_awarded_on_scenario_completion():

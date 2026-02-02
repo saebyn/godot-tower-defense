@@ -52,7 +52,9 @@ func test_convert_scrap_to_xp_with_200_scrap():
   # Assert
   assert_eq(result.scrap_converted, 200, "Should convert 200 scrap")
   assert_eq(result.xp_gained, 100, "Should gain 100 XP (200 / 2.0)")
-  assert_eq(CurrencyManager.current_xp, 100, "Current XP should be 100")
+  # Note: current_xp is 0 because 100 XP triggers level up (100 XP needed for level 1->2)
+  # After leveling up, XP resets to 0
+  assert_eq(CurrencyManager.current_xp, 0, "Current XP should be 0 after level up")
   assert_eq(CurrencyManager.current_scrap, starting_scrap, "Scrap should reset to starting amount")
   assert_eq(CurrencyManager.current_level, 2, "Should level up to level 2")
 
