@@ -39,6 +39,8 @@ func _cleanup_test_slots():
 
 ## Test: Create new game and save currency data
 func test_currency_manager_save_load():
+  # File operations may generate engine errors in headless mode - ignore them
+  
   # Create fresh game
   SaveManager.create_new_game(TEST_SLOT_1)
   var initial_scrap = CurrencyManager.get_scrap()
@@ -68,6 +70,8 @@ func test_currency_manager_save_load():
 
 ## Test: Stats manager save/load
 func test_stats_manager_save_load():
+  # File operations may generate engine errors in headless mode - ignore them
+  
   # Create fresh game
   SaveManager.create_new_game(TEST_SLOT_1)
   
@@ -94,6 +98,8 @@ func test_stats_manager_save_load():
 
 ## Test: Level manager save/load
 func test_scenario_manager_save_load():
+  # File operations may generate engine errors in headless mode - ignore them
+  
   # Create fresh game
   SaveManager.create_new_game(TEST_SLOT_1)
   
@@ -121,6 +127,8 @@ func test_scenario_manager_save_load():
 
 ## Test: Tech tree manager save/load
 func test_tech_tree_manager_save_load():
+  # File operations may generate engine errors in headless mode - ignore them
+  
   # This test verifies tech tree persistence works
   # Note: Tech tree state may persist between tests due to autoload nature
   # Create fresh game
@@ -164,6 +172,8 @@ func test_tech_tree_manager_save_load():
 
 ## Test: Multiple managers save/load together
 func test_all_managers_save_load():
+  # File operations may generate engine errors in headless mode - ignore them
+  
   # Create fresh game
   SaveManager.create_new_game(TEST_SLOT_1)
   
@@ -192,6 +202,8 @@ func test_all_managers_save_load():
 
 ## Test: Switch between save slots
 func test_save_slot_switching():
+  # File operations may generate engine errors in headless mode - ignore them
+  
   # This test verifies that different save slots maintain independent state
   # Create slot 1 with specific scrap amount
   SaveManager.create_new_game(TEST_SLOT_1)
@@ -222,6 +234,8 @@ func test_save_slot_switching():
 
 ## Test: Metadata is accurate
 func test_save_metadata():
+  # File operations may generate engine errors in headless mode - ignore them
+  
   # Create fresh game
   SaveManager.create_new_game(TEST_SLOT_1)
   
@@ -244,6 +258,8 @@ func test_save_metadata():
 
 ## Test: Current scenario ID is restored when loading save
 func test_restore_current_scenario_on_load():
+  # File operations may generate engine errors in headless mode - ignore them
+  
   # Create fresh game and set a scenario
   SaveManager.create_new_game(TEST_SLOT_1)
   ScenarioManager.set_current_scenario_id("scenario_2")
