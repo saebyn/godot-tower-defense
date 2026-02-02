@@ -20,8 +20,10 @@ func before_each():
   panic_behavior = Component_PanicBehavior.new()
   target_node.add_child(panic_behavior)
   
-  # Create an enemy node for testing
+  # Create an enemy node for testing - start FAR AWAY to avoid triggering panic
+  # The panic detection radius is 10.0, so we place the enemy at 100 units away
   enemy_node = Node3D.new()
+  enemy_node.position = Vector3(100, 0, 0)  # Start far away from target
   enemy_node.add_to_group("enemies")
   add_child_autofree(enemy_node)
   

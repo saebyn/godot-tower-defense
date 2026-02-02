@@ -18,17 +18,26 @@ func before_each():
   # Wait a frame to ensure state change is processed
   await get_tree().process_frame
   
-  # Clean up test slot
-  SaveManager.delete_save_slot(TEST_SLOT)
+  # Reset save slot state (don't call delete on potentially non-existent slot)
   SaveManager.current_save_slot = -1
+  
+  # Only try to delete if the slot actually exists
+  var slot_path = "user://saves/save_slot_%d.save" % TEST_SLOT
+  if FileAccess.file_exists(slot_path):
+    SaveManager.delete_save_slot(TEST_SLOT)
   
   # Verify we're in PLAYING state (sanity check)
   assert_true(GameManager.is_playing(), "PRECONDITION: GameManager must be in PLAYING state")
 
 func after_each():
-  # Clean up test slot
-  SaveManager.delete_save_slot(TEST_SLOT)
+  # Reset save slot state
   SaveManager.current_save_slot = -1
+  
+  # Only try to delete if the slot actually exists
+  var slot_path = "user://saves/save_slot_%d.save" % TEST_SLOT
+  if FileAccess.file_exists(slot_path):
+    SaveManager.delete_save_slot(TEST_SLOT)
+  
   # Reset game state
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
 
