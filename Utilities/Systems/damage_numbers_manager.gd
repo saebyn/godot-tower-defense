@@ -53,14 +53,15 @@ func get_or_create_label() -> Label3D:
 
 ## Create a new Label3D with the correct settings
 func _create_label() -> Label3D:
+  # Check if current_scene is available before creating the label
+  # In headless mode or when no scene is loaded, current_scene is null
+  var current_scene = get_tree().current_scene
+  if current_scene == null:
+    return null
+  
   var label = Label3D.new()
   
   # Add to scene tree (at current scene level)
-  var current_scene = get_tree().current_scene
-  if current_scene == null:
-    # In headless mode or when no scene is loaded, we can't create labels
-    label.queue_free()
-    return null
   current_scene.add_child(label)
   
   # Configure label appearance
