@@ -29,6 +29,9 @@ func get_or_create_label() -> Label3D:
   # Create new if pool not full
   if _number_pool.size() < MAX_POOL_SIZE:
     var new_label = _create_label()
+    if new_label == null:
+      # Failed to create label (likely headless mode)
+      return null
     _number_pool.append(new_label)
     return new_label
   
@@ -36,6 +39,8 @@ func get_or_create_label() -> Label3D:
   if not _number_pool.is_empty():
     # Find any label and force-deactivate it for reuse
     for label in _number_pool:
+      if not is_instance_valid(label):
+        continue
       # Kill the tween if active
       if _active_tweens.has(label) and is_instance_valid(_active_tweens[label]):
         _active_tweens[label].kill()
@@ -52,6 +57,10 @@ func _create_label() -> Label3D:
   
   # Add to scene tree (at current scene level)
   var current_scene = get_tree().current_scene
+  if current_scene == null:
+    # In headless mode or when no scene is loaded, we can't create labels
+    label.queue_free()
+    return null
   current_scene.add_child(label)
   
   # Configure label appearance

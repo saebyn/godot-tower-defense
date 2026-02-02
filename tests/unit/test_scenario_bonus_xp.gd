@@ -7,6 +7,9 @@ func before_each():
   # Set game state to PLAYING so earn_scrap/earn_xp functions work
   GameManager.set_game_state(GameManager.GameState.PLAYING)
   
+  # Wait a frame to ensure state change is processed
+  await get_tree().process_frame
+  
   # Reset CurrencyManager state
   CurrencyManager.current_scrap = 0
   CurrencyManager.current_xp = 0
@@ -18,6 +21,9 @@ func before_each():
   ScenarioManager.scenario_best_scores.clear()
   ScenarioManager.last_scenario_stats = {}
   ScenarioManager.clear_current_scenario()
+  
+  # Verify we're in PLAYING state (sanity check)
+  assert_true(GameManager.is_playing(), "PRECONDITION: GameManager must be in PLAYING state")
 
 func after_each():
   # Reset game state after each test
