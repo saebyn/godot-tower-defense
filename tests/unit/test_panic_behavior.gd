@@ -116,12 +116,8 @@ func test_multiple_enemies_trigger_panic():
   # Act & Assert - one enemy nearby
   assert_true(panic_behavior._check_for_nearby_enemies(), "Should detect one nearby enemy")
 
-func test_survivor_voice_pitch_used_for_yelp():
-  # This test verifies that panic behavior attempts to use voice_pitch when playing yelp sounds.
-  # Note: We use a mock approach since _play_yelp_sound requires a target with audio_player property
-  # The actual audio integration is tested via integration tests.
-  
-  # For this unit test, we verify the panic behavior code can handle targets without audio_player
+func test_play_yelp_sound_handles_missing_audio_player():
+  # This test verifies that panic behavior can handle targets without audio_player
   # by calling _play_yelp_sound which should gracefully handle missing audio_player
   enemy_node.global_position = Vector3(5, 0, 0)
   
