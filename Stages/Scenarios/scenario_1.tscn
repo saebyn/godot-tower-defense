@@ -1,6 +1,6 @@
 [gd_scene load_steps=18 format=3 uid="uid://ohj5uicc86pi"]
 
-[ext_resource type="Script" uid="uid://nv24k764rct" path="res://Stages/Scenarios/scenario.gd" id="1_y1v65"]
+[ext_resource type="Script" uid="uid://c6r6470xqv0mw" path="res://Stages/Scenarios/scenario_1.gd" id="1_ffud3"]
 [ext_resource type="Environment" uid="uid://b2cu0j1h4uw4a" path="res://Config/Environments/desert.tres" id="2_3f6pf"]
 [ext_resource type="PackedScene" uid="uid://b1yehhqyw2nfo" path="res://Entities/Targets/Templates/base_target/target.tscn" id="2_xxlxc"]
 [ext_resource type="Script" uid="uid://b7jdk6preu1s4" path="res://Common/Systems/spawner/wave.gd" id="4_gwcit"]
@@ -35,7 +35,7 @@ normal_enabled = true
 data = PackedVector3Array(-50, 0.05, 50, 50, 0.05, 50, -50, -0.05, 50, 50, 0.05, 50, 50, -0.05, 50, -50, -0.05, 50, 50, 0.05, -50, -50, 0.05, -50, 50, -0.05, -50, -50, 0.05, -50, -50, -0.05, -50, 50, -0.05, -50, 50, 0.05, 50, 50, 0.05, -50, 50, -0.05, 50, 50, 0.05, -50, 50, -0.05, -50, 50, -0.05, 50, -50, 0.05, -50, -50, 0.05, 50, -50, -0.05, -50, -50, 0.05, 50, -50, -0.05, 50, -50, -0.05, -50, 50, 0.05, 50, -50, 0.05, 50, 50, 0.05, -50, -50, 0.05, 50, -50, 0.05, -50, 50, 0.05, -50, -50, -0.05, 50, 50, -0.05, 50, -50, -0.05, -50, 50, -0.05, 50, 50, -0.05, -50, -50, -0.05, -50)
 
 [node name="Stage_Scenario" type="Node3D" node_paths=PackedStringArray("enemy_spawner")]
-script = ExtResource("1_y1v65")
+script = ExtResource("1_ffud3")
 enemy_spawner = NodePath("System_EnemySpawner")
 scenario_environment = ExtResource("2_3f6pf")
 camera_max_size = 70.0
@@ -87,23 +87,25 @@ collision_mask = 0
 shape = SubResource("ConcavePolygonShape3D_8lne4")
 
 [node name="Survivor1" parent="." instance=ExtResource("2_xxlxc")]
-transform = Transform3D(0.685158, 0, -0.728396, 0, 1, 0, 0.728396, 0, 0.685158, -0.024741411, 3.2650461, -0.34983206)
+transform = Transform3D(0.685158, 0, -0.728396, 0, 1, 0, 0.728396, 0, 0.685158, -0.025, 3.2032154, -0.35)
 skin_material = ExtResource("7_vi6mr")
 
-[node name="Muscle" parent="." groups=["targets"] instance=ExtResource("9_5hngp")]
+[node name="MuscleCar" parent="." groups=["obstacles"] instance=ExtResource("9_5hngp")]
 transform = Transform3D(1.735, 0, 0, 0, 1.735, 0, 0, 0, 1.562, 0, 0, 0)
 
-[node name="StaticBody3D" parent="Muscle/Muscle" index="0"]
+[node name="StaticBody3D" parent="MuscleCar/Muscle" index="0"]
 collision_layer = 17
 collision_mask = 0
 
-[node name="Health" parent="Muscle" node_paths=PackedStringArray("audio_player") instance=ExtResource("10_ffud3")]
-hitpoints = 1000
+[node name="Health" parent="MuscleCar" node_paths=PackedStringArray("audio_player") instance=ExtResource("10_ffud3")]
+hitpoints = 500
 hit_sound = 16
 death_sound = 17
 audio_player = NodePath("../AudioStreamPlayer3D")
 
-[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="Muscle"]
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="MuscleCar"]
 bus = &"Sound Effects"
 
-[editable path="Muscle"]
+[connection signal="died" from="MuscleCar/Health" to="." method="car_destroyed"]
+
+[editable path="MuscleCar"]
