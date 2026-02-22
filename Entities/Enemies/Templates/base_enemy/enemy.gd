@@ -220,10 +220,9 @@ func _process(_delta: float) -> void:
   _attack_target()
 
   # play animation based on movement speed
-  if velocity.length() > 0.1:
-    animation_player.play("Run")
-  else:
-    animation_player.play("Idle")
+  var target_anim := "Run" if velocity.length() > 0.1 else "Idle"
+  if animation_player.current_animation != target_anim:
+    animation_player.play(target_anim)
 
 
 func _physics_process(_delta):
