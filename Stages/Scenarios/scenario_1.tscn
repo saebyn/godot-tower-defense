@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://ohj5uicc86pi"]
+[gd_scene load_steps=19 format=3 uid="uid://ohj5uicc86pi"]
 
 [ext_resource type="Script" uid="uid://c6r6470xqv0mw" path="res://Stages/Scenarios/scenario_1.gd" id="1_ffud3"]
 [ext_resource type="Environment" uid="uid://b2cu0j1h4uw4a" path="res://Config/Environments/desert.tres" id="2_3f6pf"]
@@ -34,13 +34,6 @@ normal_enabled = true
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_8lne4"]
 data = PackedVector3Array(-50, 0.05, 50, 50, 0.05, 50, -50, -0.05, 50, 50, 0.05, 50, 50, -0.05, 50, -50, -0.05, 50, 50, 0.05, -50, -50, 0.05, -50, 50, -0.05, -50, -50, 0.05, -50, -50, -0.05, -50, 50, -0.05, -50, 50, 0.05, 50, 50, 0.05, -50, 50, -0.05, 50, 50, 0.05, -50, 50, -0.05, -50, 50, -0.05, 50, -50, 0.05, -50, -50, 0.05, 50, -50, -0.05, -50, -50, 0.05, 50, -50, -0.05, 50, -50, -0.05, -50, 50, 0.05, 50, -50, 0.05, 50, 50, 0.05, -50, -50, 0.05, 50, -50, 0.05, -50, 50, 0.05, -50, -50, -0.05, 50, 50, -0.05, 50, -50, -0.05, -50, 50, -0.05, 50, 50, -0.05, -50, -50, -0.05, -50)
-
-[sub_resource type="QuadMesh" id="QuadMesh_pnunk"]
-size = Vector2(275.86, 155)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ebqns"]
-albedo_texture = ExtResource("11_pnunk")
-uv1_scale = Vector3(5.38, 1, 1)
 
 [node name="Stage_Scenario" type="Node3D" node_paths=PackedStringArray("enemy_spawner")]
 script = ExtResource("1_ffud3")
@@ -95,7 +88,7 @@ collision_mask = 0
 shape = SubResource("ConcavePolygonShape3D_8lne4")
 
 [node name="Survivor1" parent="." instance=ExtResource("2_xxlxc")]
-transform = Transform3D(0.8162794, 0, -0.5776592, 0, 1, 0, 0.5776592, 0, 0.8162794, -9.451261, 3.2032154, -10.37112)
+transform = Transform3D(0.8162794, 0, -0.5776592, 0, 1, 0, 0.5776592, 0, 0.8162794, -9.937922, 3.2032154, -9.683429)
 skin_material = ExtResource("7_vi6mr")
 
 [node name="MuscleCar" parent="." groups=["obstacles"] instance=ExtResource("9_5hngp")]
@@ -114,10 +107,103 @@ audio_player = NodePath("../AudioStreamPlayer3D")
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="MuscleCar"]
 bus = &"Sound Effects"
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.0026832, -0.27956712, 0, -6.539886e-08, -8.189716e-09, 1, -1.4961516, -0.18735886, -4.371139e-08, 0, 0.1, 0)
-mesh = SubResource("QuadMesh_pnunk")
-surface_material_override/0 = SubResource("StandardMaterial3D_ebqns")
+[node name="Road" type="Node3D" parent="."]
+transform = Transform3D(0.59237885, 0, 0.80565953, 0, 1, 0, -0.80565953, 0, 0.59237885, -123.36184, 0, 161.99586)
+
+[node name="Road1" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road2" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road3" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road4" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road5" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road6" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road7" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 140, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road8" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 160, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road9" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 180, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road10" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road11" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 220, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road12" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 240, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road13" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 260, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road14" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 280, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road15" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 300, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road16" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 320, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road17" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 340, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road18" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 360, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
+
+[node name="Road19" type="Decal" parent="Road"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 380, 0, 0)
+size = Vector3(20, 2, 30)
+texture_albedo = ExtResource("11_pnunk")
 
 [connection signal="died" from="MuscleCar/Health" to="." method="car_destroyed"]
 
