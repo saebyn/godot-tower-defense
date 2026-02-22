@@ -46,6 +46,7 @@ enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/tech_tree
 targets=""
 navigation_mesh_source_group=""
 scrap=""
+obstacles=""
 
 [gui]
 
