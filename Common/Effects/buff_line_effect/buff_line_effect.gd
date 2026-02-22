@@ -35,136 +35,136 @@ var buff_obstacle: Entity_BuffObstacle
 var time_since_update: float = 0.0
 
 func _ready():
-	buff_obstacle = get_parent() as Entity_BuffObstacle
-	if not buff_obstacle:
-		MyLogger.error("BuffLineEffect", "Parent must be Entity_BuffObstacle")
-		queue_free()
-		return
-	
-	_setup_mesh()
+  buff_obstacle = get_parent() as Entity_BuffObstacle
+  if not buff_obstacle:
+    MyLogger.error("BuffLineEffect", "Parent must be Entity_BuffObstacle")
+    queue_free()
+    return
+  
+  _setup_mesh()
 
 func _setup_mesh():
-	mesh_instance = MeshInstance3D.new()
-	mesh_instance.mesh = ImmediateMesh.new()
-	
-	material = StandardMaterial3D.new()
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.vertex_color_use_as_albedo = true
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	material.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_DISABLED # Don't write to depth buffer
-	material.disable_receive_shadows = true
-	
-	# Render behind other objects (lower render priority)
-	material.render_priority = -10
-	
-	mesh_instance.material_override = material
-	mesh_instance.layers = 1 # Ensure it's on default render layer
-	add_child(mesh_instance)
+  mesh_instance = MeshInstance3D.new()
+  mesh_instance.mesh = ImmediateMesh.new()
+  
+  material = StandardMaterial3D.new()
+  material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+  material.vertex_color_use_as_albedo = true
+  material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+  material.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_DISABLED # Don't write to depth buffer
+  material.disable_receive_shadows = true
+  
+  # Render behind other objects (lower render priority)
+  material.render_priority = -10
+  
+  mesh_instance.material_override = material
+  mesh_instance.layers = 1 # Ensure it's on default render layer
+  add_child(mesh_instance)
 
 func _process(delta):
-	if update_interval > 0.0:
-		time_since_update += delta
-		if time_since_update >= update_interval:
-			time_since_update = 0.0
-			_draw_buff_lines()
-	else:
-		_draw_buff_lines()
+  if update_interval > 0.0:
+    time_since_update += delta
+    if time_since_update >= update_interval:
+      time_since_update = 0.0
+      _draw_buff_lines()
+  else:
+    _draw_buff_lines()
 
 func _draw_buff_lines():
-	var im: ImmediateMesh = mesh_instance.mesh
-	im.clear_surfaces()
-	
-	# Get currently buffed obstacles
-	var buffed_obstacles = _get_buffed_obstacles()
-	
-	if buffed_obstacles.is_empty():
-		return
-	
-	# Limit displayed lines to reduce visual clutter
-	var obstacles_to_draw = buffed_obstacles
-	if buffed_obstacles.size() > max_lines_displayed:
-		# Sort by distance, show closest ones
-		buffed_obstacles.sort_custom(func(a, b):
-			return buff_obstacle.global_position.distance_squared_to(a.global_position) < \
-				   buff_obstacle.global_position.distance_squared_to(b.global_position)
-		)
-		obstacles_to_draw = buffed_obstacles.slice(0, max_lines_displayed)
-	
-	im.surface_begin(Mesh.PRIMITIVE_LINES, material)
-	
-	for obstacle in obstacles_to_draw:
-		_draw_line_to_obstacle(im, obstacle)
-	
-	im.surface_end()
+  var im: ImmediateMesh = mesh_instance.mesh
+  im.clear_surfaces()
+  
+  # Get currently buffed obstacles
+  var buffed_obstacles = _get_buffed_obstacles()
+  
+  if buffed_obstacles.is_empty():
+    return
+  
+  # Limit displayed lines to reduce visual clutter
+  var obstacles_to_draw = buffed_obstacles
+  if buffed_obstacles.size() > max_lines_displayed:
+    # Sort by distance, show closest ones
+    buffed_obstacles.sort_custom(func(a, b):
+      return buff_obstacle.global_position.distance_squared_to(a.global_position) < \
+           buff_obstacle.global_position.distance_squared_to(b.global_position)
+    )
+    obstacles_to_draw = buffed_obstacles.slice(0, max_lines_displayed)
+  
+  im.surface_begin(Mesh.PRIMITIVE_LINES, material)
+  
+  for obstacle in obstacles_to_draw:
+    _draw_line_to_obstacle(im, obstacle)
+  
+  im.surface_end()
 
 func _get_buffed_obstacles() -> Array:
-	var results = []
-	var obstacles = get_tree().get_nodes_in_group(Entity_PlaceableObstacle.OBSTACLE_GROUP)
-	
-	for obstacle in obstacles:
-		if obstacle == buff_obstacle:
-			continue
-		if not is_instance_valid(obstacle):
-			continue
-		
-		var distance = buff_obstacle.global_position.distance_to(obstacle.global_position)
-		if distance <= buff_obstacle.effect_range:
-			# Verify obstacle actually has our buff
-			if obstacle.buffs.has(buff_obstacle.get_instance_id()):
-				results.append(obstacle)
-	
-	return results
+  var results = []
+  var obstacles = get_tree().get_nodes_in_group(Entity_PlaceableObstacle.OBSTACLE_GROUP)
+  
+  for obstacle in obstacles:
+    if obstacle == buff_obstacle:
+      continue
+    if not is_instance_valid(obstacle):
+      continue
+    
+    var distance = buff_obstacle.global_position.distance_to(obstacle.global_position)
+    if distance <= buff_obstacle.effect_range:
+      # Verify obstacle actually has our buff
+      if obstacle.buffs.has(buff_obstacle.get_instance_id()):
+        results.append(obstacle)
+  
+  return results
 
 func _draw_line_to_obstacle(im: ImmediateMesh, obstacle: Node3D):
-	var start_pos = buff_obstacle.global_position
-	var end_pos = obstacle.global_position
-	
-	# Project to ground plane (low Y value)
-	start_pos.y = line_offset_start
-	end_pos.y = line_offset_end
-	
-	var color = _get_buff_color()
-	var alpha = _calculate_alpha()
-	var final_color = Color(color.r, color.g, color.b, alpha)
-	
-	# Draw main line
-	im.surface_set_color(final_color)
-	im.surface_add_vertex(to_local(start_pos))
-	im.surface_add_vertex(to_local(end_pos))
-	
-	# Draw parallel lines for width (if width > 0)
-	if line_width > 0.01:
-		var direction = (end_pos - start_pos).normalized()
-		var perpendicular = Vector3(-direction.z, 0, direction.x) * line_width
-		
-		# Left parallel line
-		im.surface_set_color(final_color)
-		im.surface_add_vertex(to_local(start_pos + perpendicular))
-		im.surface_add_vertex(to_local(end_pos + perpendicular))
-		
-		# Right parallel line
-		im.surface_set_color(final_color)
-		im.surface_add_vertex(to_local(start_pos - perpendicular))
-		im.surface_add_vertex(to_local(end_pos - perpendicular))
+  var start_pos = buff_obstacle.global_position
+  var end_pos = obstacle.global_position
+  
+  # Project to ground plane (low Y value)
+  start_pos.y = line_offset_start
+  end_pos.y = line_offset_end
+  
+  var color = _get_buff_color()
+  var alpha = _calculate_alpha()
+  var final_color = Color(color.r, color.g, color.b, alpha)
+  
+  # Draw main line
+  im.surface_set_color(final_color)
+  im.surface_add_vertex(to_local(start_pos))
+  im.surface_add_vertex(to_local(end_pos))
+  
+  # Draw parallel lines for width (if width > 0)
+  if line_width > 0.01:
+    var direction = (end_pos - start_pos).normalized()
+    var perpendicular = Vector3(-direction.z, 0, direction.x) * line_width
+    
+    # Left parallel line
+    im.surface_set_color(final_color)
+    im.surface_add_vertex(to_local(start_pos + perpendicular))
+    im.surface_add_vertex(to_local(end_pos + perpendicular))
+    
+    # Right parallel line
+    im.surface_set_color(final_color)
+    im.surface_add_vertex(to_local(start_pos - perpendicular))
+    im.surface_add_vertex(to_local(end_pos - perpendicular))
 
 func _get_buff_color() -> Color:
-	# Use override color if specified
-	if override_color.a > 0.0:
-		return override_color
-	
-	# Otherwise use buff type color
-	match buff_obstacle.buff_type:
-		Entity_BuffObstacle.BuffType.ATTACK_SPEED:
-			return Color(0.949, 0.655, 0.353) # Orange
-		Entity_BuffObstacle.BuffType.DAMAGE:
-			return Color(0.42, 0.549, 0.369) # Zombie Green
-		Entity_BuffObstacle.BuffType.RANGE:
-			return Color(0.18, 0.8, 0.44) # Economy Green
-		_:
-			return Color.WHITE
+  # Use override color if specified
+  if override_color.a > 0.0:
+    return override_color
+  
+  # Otherwise use buff type color
+  match buff_obstacle.buff_type:
+    Entity_BuffObstacle.BuffType.ATTACK_SPEED:
+      return Color(0.949, 0.655, 0.353) # Orange
+    Entity_BuffObstacle.BuffType.DAMAGE:
+      return Color(0.42, 0.549, 0.369) # Zombie Green
+    Entity_BuffObstacle.BuffType.RANGE:
+      return Color(0.18, 0.8, 0.44) # Economy Green
+    _:
+      return Color.WHITE
 
 func _calculate_alpha() -> float:
-	# Pulsing effect based on time
-	var time_factor = Time.get_ticks_msec() * 0.001 * pulse_speed
-	var pulse = sin(time_factor) * 0.2
-	return clamp(line_opacity + pulse, 0.0, 1.0)
+  # Pulsing effect based on time
+  var time_factor = Time.get_ticks_msec() * 0.001 * pulse_speed
+  var pulse = sin(time_factor) * 0.2
+  return clamp(line_opacity + pulse, 0.0, 1.0)
