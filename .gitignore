@@ -5,6 +5,10 @@
 # Blender specific ignores
 *.blend1
 
+# Ignore backups and temporary files
+*~
+*.bak
+
 # Downloaded Godot binaries
 godot
 Godot_v*.zip
