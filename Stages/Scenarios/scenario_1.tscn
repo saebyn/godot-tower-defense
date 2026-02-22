@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://ohj5uicc86pi"]
+[gd_scene load_steps=21 format=3 uid="uid://ohj5uicc86pi"]
 
 [ext_resource type="Script" uid="uid://c6r6470xqv0mw" path="res://Stages/Scenarios/scenario_1.gd" id="1_ffud3"]
 [ext_resource type="Environment" uid="uid://b2cu0j1h4uw4a" path="res://Config/Environments/desert.tres" id="2_3f6pf"]
@@ -10,6 +10,7 @@
 [ext_resource type="Material" uid="uid://b80m8n51hna4r" path="res://Assets/Textures/survivorFemaleA.material" id="7_vi6mr"]
 [ext_resource type="PackedScene" uid="uid://ea13ckmsfnt3" path="res://Assets/Models/Muscle.fbx" id="9_5hngp"]
 [ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="10_ffud3"]
+[ext_resource type="Texture2D" uid="uid://c4mugepdahndc" path="res://Assets/Textures/road.png" id="11_pnunk"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_3f6pf"]
 size = Vector2(10, 100)
@@ -33,6 +34,13 @@ normal_enabled = true
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_8lne4"]
 data = PackedVector3Array(-50, 0.05, 50, 50, 0.05, 50, -50, -0.05, 50, 50, 0.05, 50, 50, -0.05, 50, -50, -0.05, 50, 50, 0.05, -50, -50, 0.05, -50, 50, -0.05, -50, -50, 0.05, -50, -50, -0.05, -50, 50, -0.05, -50, 50, 0.05, 50, 50, 0.05, -50, 50, -0.05, 50, 50, 0.05, -50, 50, -0.05, -50, 50, -0.05, 50, -50, 0.05, -50, -50, 0.05, 50, -50, -0.05, -50, -50, 0.05, 50, -50, -0.05, 50, -50, -0.05, -50, 50, 0.05, 50, -50, 0.05, 50, 50, 0.05, -50, -50, 0.05, 50, -50, 0.05, -50, 50, 0.05, -50, -50, -0.05, 50, 50, -0.05, 50, -50, -0.05, -50, 50, -0.05, 50, 50, -0.05, -50, -50, -0.05, -50)
+
+[sub_resource type="QuadMesh" id="QuadMesh_pnunk"]
+size = Vector2(275.86, 155)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ebqns"]
+albedo_texture = ExtResource("11_pnunk")
+uv1_scale = Vector3(5.38, 1, 1)
 
 [node name="Stage_Scenario" type="Node3D" node_paths=PackedStringArray("enemy_spawner")]
 script = ExtResource("1_ffud3")
@@ -87,11 +95,11 @@ collision_mask = 0
 shape = SubResource("ConcavePolygonShape3D_8lne4")
 
 [node name="Survivor1" parent="." instance=ExtResource("2_xxlxc")]
-transform = Transform3D(0.685158, 0, -0.728396, 0, 1, 0, 0.728396, 0, 0.685158, -0.025, 3.2032154, -0.35)
+transform = Transform3D(0.8162794, 0, -0.5776592, 0, 1, 0, 0.5776592, 0, 0.8162794, -9.451261, 3.2032154, -10.37112)
 skin_material = ExtResource("7_vi6mr")
 
 [node name="MuscleCar" parent="." groups=["obstacles"] instance=ExtResource("9_5hngp")]
-transform = Transform3D(1.735, 0, 0, 0, 1.735, 0, 0, 0, 1.562, 0, 0, 0)
+transform = Transform3D(1.4573488, 0, -0.84759146, 0, 1.7350003, 0, 0.9414668, 0, 1.3120339, -9.960177, 0, -9.729578)
 
 [node name="StaticBody3D" parent="MuscleCar/Muscle" index="0"]
 collision_layer = 17
@@ -105,6 +113,11 @@ audio_player = NodePath("../AudioStreamPlayer3D")
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="MuscleCar"]
 bus = &"Sound Effects"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.0026832, -0.27956712, 0, -6.539886e-08, -8.189716e-09, 1, -1.4961516, -0.18735886, -4.371139e-08, 0, 0.1, 0)
+mesh = SubResource("QuadMesh_pnunk")
+surface_material_override/0 = SubResource("StandardMaterial3D_ebqns")
 
 [connection signal="died" from="MuscleCar/Health" to="." method="car_destroyed"]
 
