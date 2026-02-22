@@ -34,8 +34,10 @@ func take_damage(amount: float, damage_source: String = "unknown"):
   if disabled:
     return
 
+  assert(amount >= 0, "Damage amount cannot be negative.")
+
   var damage = floori(min(amount, max_damage_per_hit))
-  hitpoints -= damage
+  hitpoints = max(hitpoints - damage, 0)
   damaged.emit(damage, hitpoints, damage_source)
   _update_display()
   
@@ -48,6 +50,8 @@ func take_damage(amount: float, damage_source: String = "unknown"):
     var pitch_override = _get_voice_pitch()
     AudioManager.play_sound(audio_player, hit_sound, pitch_override)
   
+  assert(hitpoints >= 0, "Hitpoints should never be negative.")
+
   if hitpoints <= 0:
     _die(damage_source)
 
@@ -66,7 +70,7 @@ func _ready():
 
 
   if parent:
-    parent.set_meta("health_component", self)
+    parent.set_meta("health_component", self )
 
     # Try to get damage numbers component if it exists
     if parent.has_meta("damage_numbers_component"):
