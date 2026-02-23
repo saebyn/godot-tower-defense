@@ -39,6 +39,12 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "nodes": {
+"PATH:Camera": {
+"import/skip_import": true
+},
+"PATH:Light": {
+"import/skip_import": true
+},
 "PATH:Muscle": {
 "generate/physics": true
 }
