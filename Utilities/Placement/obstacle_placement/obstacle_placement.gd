@@ -194,6 +194,7 @@ func _on_obstacle_spawn_requested(obstacle_type: Resource_ObstacleType) -> void:
   _place_obstacle_type = obstacle_type
   _preview = obstacle_type.scene.instantiate()
   _preview.obstacle_type = obstacle_type
+  _preview.is_preview = true
   MyLogger.info("Placement", "Created preview for obstacle: %s" % obstacle_type.name)
   raycast.enabled = true
   add_child(_preview)

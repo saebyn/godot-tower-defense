@@ -21,7 +21,8 @@ func _ready():
     buff_timer = Timer.new()
     buff_timer.wait_time = buff_interval
     buff_timer.one_shot = false
-    buff_timer.autostart = true
+    # Only autostart when placed, not in preview mode
+    buff_timer.autostart = not is_preview
     buff_timer.timeout.connect(_apply_buffs)
     add_child(buff_timer)
 
