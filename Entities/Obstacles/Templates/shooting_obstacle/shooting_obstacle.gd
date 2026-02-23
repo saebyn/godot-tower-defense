@@ -26,8 +26,8 @@ func _ready():
   if attack:
     attack.damage_source = "obstacle"
 
-  # Set up detection timer
-  if detection_timer:
+  # Set up detection timer (only when placed, not in preview mode)
+  if detection_timer and not is_preview:
     detection_timer.wait_time = detection_interval
     detection_timer.timeout.connect(_detect_and_attack_enemies)
     detection_timer.start()

@@ -26,6 +26,7 @@ const OBSTACLE_GROUP: String = "obstacles"
     mesh_instances = values
     update_configuration_warnings()
 
+var is_preview: bool = false
 var health: Component_Health
 var obstacle_type: Resource_ObstacleType
 var navigation_obstacle: NavigationObstacle3D
