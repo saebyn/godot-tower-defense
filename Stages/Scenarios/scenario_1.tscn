@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://ohj5uicc86pi"]
+[gd_scene load_steps=20 format=3 uid="uid://ohj5uicc86pi"]
 
 [ext_resource type="Script" uid="uid://c6r6470xqv0mw" path="res://Stages/Scenarios/scenario_1.gd" id="1_ffud3"]
 [ext_resource type="Environment" uid="uid://b2cu0j1h4uw4a" path="res://Config/Environments/desert.tres" id="2_3f6pf"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://ea13ckmsfnt3" path="res://Assets/Models/Muscle.fbx" id="9_5hngp"]
 [ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="10_ffud3"]
 [ext_resource type="Texture2D" uid="uid://c4mugepdahndc" path="res://Assets/Textures/road.png" id="11_pnunk"]
+[ext_resource type="PackedScene" uid="uid://dmaheitw7drsh" path="res://Entities/Scrap/pile_of_boxes.tscn" id="12_ebqns"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_3f6pf"]
 size = Vector2(10, 100)
@@ -91,12 +92,18 @@ shape = SubResource("ConcavePolygonShape3D_8lne4")
 transform = Transform3D(0.8162794, 0, -0.5776592, 0, 1, 0, 0.5776592, 0, 0.8162794, -9.937922, 3.2032154, -9.683429)
 skin_material = ExtResource("7_vi6mr")
 
+[node name="Component_PanicBehavior" parent="Survivor1" index="6"]
+panic_move_radius = 0.0
+
 [node name="MuscleCar" parent="." groups=["obstacles"] instance=ExtResource("9_5hngp")]
 transform = Transform3D(1.4573488, 0, -0.84759146, 0, 1.7350003, 0, 0.9414668, 0, 1.3120339, -9.960177, 0, -9.729578)
 
 [node name="StaticBody3D" parent="MuscleCar/Muscle" index="0"]
 collision_layer = 17
 collision_mask = 0
+
+[node name="Trunk" parent="MuscleCar" index="5"]
+transform = Transform3D(100, 0, 0, 0, 64.28409, 76.59997, 0, -76.59997, 64.28409, 0.0023932643, 1.1999701, -2.0580146)
 
 [node name="Health" parent="MuscleCar" node_paths=PackedStringArray("audio_player") instance=ExtResource("10_ffud3")]
 hitpoints = 500
@@ -106,9 +113,6 @@ audio_player = NodePath("../AudioStreamPlayer3D")
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="MuscleCar"]
 bus = &"Sound Effects"
-
-[node name="Trunk" parent="MuscleCar" index="7"]
-transform = Transform3D(100, 0, 0, 0, 64.28409, 76.59997, 0, -76.59997, 64.28409, 0.0023932643, 1.1999701, -2.0580146)
 
 [node name="Road" type="Node3D" parent="."]
 transform = Transform3D(0.59237885, 0, 0.80565953, 0, 1, 0, -0.80565953, 0, 0.59237885, -123.36184, 0, 161.99586)
@@ -208,6 +212,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 380, 0, 0)
 size = Vector3(20, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
+[node name="Scrap" parent="." instance=ExtResource("12_ebqns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.2382793, 0.008174896, -14.148994)
+
+[node name="Scrap2" parent="." instance=ExtResource("12_ebqns")]
+transform = Transform3D(0.79272604, 0, 0.609578, 0, 1, 0, -0.609578, 0, 0.79272604, -7.5853558, 0.008174896, -15.2588)
+
 [connection signal="died" from="MuscleCar/Health" to="." method="car_destroyed"]
 
+[editable path="Survivor1"]
 [editable path="MuscleCar"]
