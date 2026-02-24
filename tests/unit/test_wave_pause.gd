@@ -116,8 +116,8 @@ func test_timers_resume_after_unpause():
   for i in range(UNPAUSE_WAIT_FRAMES):
     await wait_frames(1)
   get_tree().paused = false
-  for i in range(UNPAUSE_WAIT_FRAMES):
-    await wait_frames(1)
+  # Use time-based wait for reliable timer progression measurement
+  await wait_seconds(0.3)
   
   # Assert - Timers should have progressed after unpause
   var final_wave_time = wave_instance._wave_timer.time_left
