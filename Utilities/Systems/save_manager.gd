@@ -594,6 +594,11 @@ func _save_json_file_atomic(primary_path: String, backup_path: String, data: Dic
 ## Helper: Capture screenshot for save slot
 ## Captures the current viewport and saves it as a thumbnail
 func _capture_screenshot(slot_number: int) -> void:
+  # Skip screenshot in headless mode (dummy renderer can't produce images)
+  if DisplayServer.get_name() == "headless":
+    MyLogger.debug("SaveManager", "Skipping screenshot capture in headless mode")
+    return
+  
   # Get the current viewport with null check
   var viewport = get_viewport()
   if not viewport:
