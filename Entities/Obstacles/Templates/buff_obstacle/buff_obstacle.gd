@@ -26,6 +26,11 @@ func _ready():
     buff_timer.timeout.connect(_apply_buffs)
     add_child(buff_timer)
 
+func place(navigation_region: NavigationRegion3D) -> void:
+    super.place(navigation_region)
+    if buff_timer:
+        buff_timer.start()
+
 func _apply_buffs():
     var obstacles := get_tree().get_nodes_in_group(Entity_PlaceableObstacle.OBSTACLE_GROUP)
     for obstacle in obstacles:
