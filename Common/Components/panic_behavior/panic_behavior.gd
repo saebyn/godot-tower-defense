@@ -15,6 +15,9 @@ extends Node
 @export var panic_move_speed: float = 3.0 ## Movement speed when panicking
 @export var panic_move_interval: float = 1.5 ## Time between choosing new panic destinations
 @export var enemy_group: String = "enemies" ## Group name for enemies to detect
+@export var minimum_move_threshold: float = 0.1 ## Minimum distance to move towards destination to avoid jittering
+
+@export_category("Audio")
 @export var yelp_sound_chance: float = 0.33 ## Chance per second to play a yelp sound when we are panicking
 
 @export_category("Animation")
@@ -36,7 +39,7 @@ func _ready() -> void:
     return
   
   # Store the initial position as the center point for panic movement
-  spawn_position = target.global_position
+  spawn_position = target.position
   current_panic_destination = spawn_position
   
   # Get animation player reference
@@ -86,7 +89,7 @@ func _check_for_nearby_enemies() -> bool:
     if not enemy is Node3D:
       continue
     
-    var distance = target.global_position.distance_to(enemy.global_position)
+    var distance = target.position.distance_to(enemy.position)
     if distance <= panic_detection_radius:
       return true
   
@@ -117,22 +120,16 @@ func _update_panic_movement(delta: float) -> void:
     panic_timer = 0.0
   
   # Move towards the panic destination
-  var direction = (current_panic_destination - target.global_position)
-  direction.y = 0 # Keep movement on the horizontal plane
-  var distance = direction.length()
-  
-  if distance > 0.1:
-    direction = direction.normalized()
-    var move_amount = panic_move_speed * delta
-    
-    # Don't overshoot the destination
-    if move_amount > distance:
-      move_amount = distance
-    
-    target.global_position += direction * move_amount
+  var move := current_panic_destination - target.position
+  move.y = 0 # Keep movement on the horizontal plane
+  var direction = move.normalized()
+
+  if move.length() > minimum_move_threshold:
+    var move_amount = min(panic_move_speed * delta, move.length())
+    target.position += direction * move_amount
     
     # Face the direction of movement
-    var target_look_position = target.global_position + direction
+    var target_look_position = target.position + direction
     target.look_at(target_look_position, Vector3.UP, true)
     
     # Play run animation
@@ -157,4 +154,4 @@ func _choose_new_panic_destination() -> void:
   )
   
   current_panic_destination = spawn_position + offset
-  MyLogger.trace("PanicBehavior", "Chose new panic destination: %v" % current_panic_destination)
+  MyLogger.debug("PanicBehavior", "Chose new panic destination: %v" % current_panic_destination)
