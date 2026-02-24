@@ -187,6 +187,7 @@ func set_preview_material(material: Material) -> void:
 ## @param navigation_region The NavigationRegion3D to which the navigation obstacle will be added.
 func place(navigation_region: NavigationRegion3D) -> void:
   MyLogger.info("Obstacle", "place() called. obstacle_type: %s" % ("null" if not obstacle_type else obstacle_type.name))
+  is_preview = false
   if not is_inside_tree():
     MyLogger.error("Obstacle", "PlaceableObstacle must be added to the scene tree before placing.")
     return
