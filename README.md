@@ -111,7 +111,7 @@ Controls are fully rebindable in-game via the Settings menu.
 
 ### Prerequisites
 
-- [Godot Engine 4.5](https://godotengine.org/download) or later
+- [Godot Engine 4.6](https://godotengine.org/download) or later
 
 ### Running the Game
 
@@ -322,4 +322,4 @@ Because zombies go "nom nom nom" and puns are mandatory in lighthearted apocalyp
 
 ---
 
-**Built with** [Godot 4.5](https://godotengine.org/) | **Repo**: [github.com/saebyn/zom-nom-defense](https://github.com/saebyn/zom-nom-defense)
+**Built with** [Godot 4](https://godotengine.org/) | **Repo**: [github.com/saebyn/zom-nom-defense](https://github.com/saebyn/zom-nom-defense)

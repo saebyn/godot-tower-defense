@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  GODOT_VERSION: 4.5.1
+  GODOT_VERSION: 4.6.1
   EXPORT_NAME: zom-nom-defense-game
   PROJECT_PATH: .
 
@@ -23,7 +23,7 @@ jobs:
     name: Export ${{ matrix.platform.name }}
     runs-on: ubuntu-22.04
     container:
-      image: barichello/godot-ci:4.5.1
+      image: barichello/godot-ci:4.6.1
     strategy:
       fail-fast: true
       matrix:
@@ -73,7 +73,7 @@ jobs:
     runs-on: ubuntu-22.04
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.do_publish == 'true' || github.event_name == 'release'
     container:
-      image: barichello/godot-ci:4.5.1
+      image: barichello/godot-ci:4.6.1
     needs: [export-game]
     steps:
       - name: Download Windows Artifact
