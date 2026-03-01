@@ -7,8 +7,8 @@
 [resource]
 script = ExtResource("1_cwuf0")
 id = "wall"
-name = "Wall"
-description = "A basic wall to redirect enemies"
+name = "Stacked Crates"
+description = "A very weak wall to redirect enemies"
 icon = ExtResource("1_vdyj0")
 color = Color(1, 0.129412, 1, 1)
 category = 0
