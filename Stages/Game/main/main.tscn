@@ -81,7 +81,6 @@ bus = &"Sound Effects"
 
 [node name="BgMusicAudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamPlaylist_hjeu7")
-autoplay = true
 bus = &"Music"
 
 [connection signal="cooldown_ended" from="Attack" to="." method="_on_attack_cooldown_ended"]

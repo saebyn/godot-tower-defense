@@ -71,6 +71,7 @@ func _ready() -> void:
 
   _on_settings_changed() # Apply initial music pause state
   SettingsManager.audio_settings_changed.connect(_on_settings_changed)
+  background_music_player.play()
 
 
 func _on_settings_changed() -> void:

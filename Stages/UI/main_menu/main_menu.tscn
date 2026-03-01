@@ -126,7 +126,6 @@ size_flags_vertical = 3
 
 [node name="BgMusicAudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamPlaylist_ptjlr")
-autoplay = true
 bus = &"Music"
 
 [connection signal="pressed" from="CenterContainer/MenuPanel/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
