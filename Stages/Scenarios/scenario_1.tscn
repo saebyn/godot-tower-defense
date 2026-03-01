@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://ohj5uicc86pi"]
+[gd_scene format=3 uid="uid://ohj5uicc86pi"]
 
 [ext_resource type="Script" uid="uid://c6r6470xqv0mw" path="res://Stages/Scenarios/scenario_1.gd" id="1_ffud3"]
 [ext_resource type="Environment" uid="uid://b2cu0j1h4uw4a" path="res://Config/Environments/desert.tres" id="2_3f6pf"]
@@ -36,25 +36,25 @@ normal_enabled = true
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_8lne4"]
 data = PackedVector3Array(-50, 0.05, 50, 50, 0.05, 50, -50, -0.05, 50, 50, 0.05, 50, 50, -0.05, 50, -50, -0.05, 50, 50, 0.05, -50, -50, 0.05, -50, 50, -0.05, -50, -50, 0.05, -50, -50, -0.05, -50, 50, -0.05, -50, 50, 0.05, 50, 50, 0.05, -50, 50, -0.05, 50, 50, 0.05, -50, 50, -0.05, -50, 50, -0.05, 50, -50, 0.05, -50, -50, 0.05, 50, -50, -0.05, -50, -50, 0.05, 50, -50, -0.05, 50, -50, -0.05, -50, 50, 0.05, 50, -50, 0.05, 50, 50, 0.05, -50, -50, 0.05, 50, -50, 0.05, -50, 50, 0.05, -50, -50, -0.05, 50, 50, -0.05, 50, -50, -0.05, -50, 50, -0.05, 50, 50, -0.05, -50, -50, -0.05, -50)
 
-[node name="Stage_Scenario" type="Node3D" node_paths=PackedStringArray("enemy_spawner")]
+[node name="Stage_Scenario" type="Node3D" unique_id=673340366 node_paths=PackedStringArray("enemy_spawner")]
 script = ExtResource("1_ffud3")
 enemy_spawner = NodePath("System_EnemySpawner")
 scenario_environment = ExtResource("2_3f6pf")
 camera_max_size = 70.0
 metadata/_custom_type_script = "uid://nv24k764rct"
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=638538789]
 transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, 0, 0, 0)
 light_color = Color(0.9999984, 0.99647874, 0.5014268, 1)
 shadow_enabled = true
 directional_shadow_max_distance = 1.0
 
-[node name="System_EnemySpawner" type="Node3D" parent="." node_paths=PackedStringArray("spawn_areas")]
+[node name="System_EnemySpawner" type="Node3D" parent="." unique_id=1710012680 node_paths=PackedStringArray("spawn_areas")]
 script = ExtResource("4_vni6r")
 spawn_areas = [NodePath("SpawnSurface1"), NodePath("SpawnSurface2")]
 metadata/_custom_type_script = "uid://du3d1fs80prdm"
 
-[node name="Wave1" type="Node3D" parent="System_EnemySpawner"]
+[node name="Wave1" type="Node3D" parent="System_EnemySpawner" unique_id=2131354128]
 script = ExtResource("4_gwcit")
 start_delay = 15.0
 max_enemies = 1
@@ -63,159 +63,162 @@ enemy_counts = Array[int]([1])
 spawn_interval = 1.0
 metadata/_custom_type_script = "uid://b7jdk6preu1s4"
 
-[node name="SpawnSurface1" type="MeshInstance3D" parent="System_EnemySpawner"]
+[node name="SpawnSurface1" type="MeshInstance3D" parent="System_EnemySpawner" unique_id=1680697042]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 109.30005, 0.031, -109.331665)
 mesh = SubResource("PlaneMesh_3f6pf")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_5hngp")
 
-[node name="SpawnSurface2" type="MeshInstance3D" parent="System_EnemySpawner"]
+[node name="SpawnSurface2" type="MeshInstance3D" parent="System_EnemySpawner" unique_id=906371729]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -102.37265, 0.031, 93.73537)
 mesh = SubResource("PlaneMesh_ffud3")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_pnunk")
 
-[node name="Ground" type="MeshInstance3D" parent="."]
+[node name="Ground" type="MeshInstance3D" parent="." unique_id=2093188596]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
 mesh = SubResource("BoxMesh_ebqns")
 surface_material_override/0 = SubResource("StandardMaterial3D_m8tvj")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="." groups=["navigation_mesh_source_group"]]
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=277694067 groups=["navigation_mesh_source_group"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
 collision_layer = 17
 collision_mask = 0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1866206734]
 shape = SubResource("ConcavePolygonShape3D_8lne4")
 
-[node name="Survivor1" parent="." instance=ExtResource("2_xxlxc")]
+[node name="Survivor1" parent="." unique_id=49640128 instance=ExtResource("2_xxlxc")]
 transform = Transform3D(0.8162794, 0, -0.5776592, 0, 1, 0, 0.5776592, 0, 0.8162794, -9.937922, 3.2032154, -9.683429)
 skin_material = ExtResource("7_vi6mr")
+
+[node name="AnimationPlayer" parent="Survivor1" index="4"]
+autoplay = &"Idle"
 
 [node name="Component_PanicBehavior" parent="Survivor1" index="6"]
 panic_move_radius = 0.0
 
-[node name="MuscleCar" parent="." groups=["obstacles"] instance=ExtResource("9_5hngp")]
+[node name="MuscleCar" parent="." unique_id=1065602798 groups=["obstacles"] instance=ExtResource("9_5hngp")]
 transform = Transform3D(1.4573488, 0, -0.84759146, 0, 1.7350003, 0, 0.9414668, 0, 1.3120339, -9.960177, 0, -9.729578)
 
-[node name="StaticBody3D" parent="MuscleCar/Muscle" index="0"]
+[node name="StaticBody3D" parent="MuscleCar/Muscle" parent_id_path=PackedInt32Array(1065602798, 1254183138) index="0" unique_id=415324209]
 collision_layer = 17
 collision_mask = 0
 
-[node name="Trunk" parent="MuscleCar" index="5"]
+[node name="Trunk" parent="MuscleCar" index="5" unique_id=1866742032]
 transform = Transform3D(100, 0, 0, 0, 64.28409, 76.59997, 0, -76.59997, 64.28409, 0.0023932643, 1.1999701, -2.0580146)
 
-[node name="Health" parent="MuscleCar" node_paths=PackedStringArray("audio_player") instance=ExtResource("10_ffud3")]
+[node name="Health" parent="MuscleCar" unique_id=1701891090 node_paths=PackedStringArray("audio_player") instance=ExtResource("10_ffud3")]
 hitpoints = 500
 hit_sound = 16
 death_sound = 17
 audio_player = NodePath("../AudioStreamPlayer3D")
 
-[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="MuscleCar"]
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="MuscleCar" unique_id=2009202380]
 bus = &"Sound Effects"
 
-[node name="Road" type="Node3D" parent="."]
+[node name="Road" type="Node3D" parent="." unique_id=1732223280]
 transform = Transform3D(0.59237885, 0, 0.80565953, 0, 1, 0, -0.80565953, 0, 0.59237885, -123.36184, 0, 161.99586)
 
-[node name="Road1" type="Decal" parent="Road"]
+[node name="Road1" type="Decal" parent="Road" unique_id=1792439658]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road2" type="Decal" parent="Road"]
+[node name="Road2" type="Decal" parent="Road" unique_id=566601232]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road3" type="Decal" parent="Road"]
+[node name="Road3" type="Decal" parent="Road" unique_id=915769558]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road4" type="Decal" parent="Road"]
+[node name="Road4" type="Decal" parent="Road" unique_id=397665169]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road5" type="Decal" parent="Road"]
+[node name="Road5" type="Decal" parent="Road" unique_id=256204668]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road6" type="Decal" parent="Road"]
+[node name="Road6" type="Decal" parent="Road" unique_id=2000781681]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road7" type="Decal" parent="Road"]
+[node name="Road7" type="Decal" parent="Road" unique_id=1894989863]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 140, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road8" type="Decal" parent="Road"]
+[node name="Road8" type="Decal" parent="Road" unique_id=410582555]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 160, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road9" type="Decal" parent="Road"]
+[node name="Road9" type="Decal" parent="Road" unique_id=1744377850]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 180, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road10" type="Decal" parent="Road"]
+[node name="Road10" type="Decal" parent="Road" unique_id=1350963741]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road11" type="Decal" parent="Road"]
+[node name="Road11" type="Decal" parent="Road" unique_id=604553405]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 220, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road12" type="Decal" parent="Road"]
+[node name="Road12" type="Decal" parent="Road" unique_id=1436595919]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 240, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road13" type="Decal" parent="Road"]
+[node name="Road13" type="Decal" parent="Road" unique_id=1272785639]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 260, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road14" type="Decal" parent="Road"]
+[node name="Road14" type="Decal" parent="Road" unique_id=1083497176]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 280, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road15" type="Decal" parent="Road"]
+[node name="Road15" type="Decal" parent="Road" unique_id=1505435872]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 300, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road16" type="Decal" parent="Road"]
+[node name="Road16" type="Decal" parent="Road" unique_id=2022049037]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 320, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road17" type="Decal" parent="Road"]
+[node name="Road17" type="Decal" parent="Road" unique_id=1234635747]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 340, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road18" type="Decal" parent="Road"]
+[node name="Road18" type="Decal" parent="Road" unique_id=240362147]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 360, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Road19" type="Decal" parent="Road"]
+[node name="Road19" type="Decal" parent="Road" unique_id=38266428]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 380, 0, 0)
-size = Vector3(20, 2, 30)
+size = Vector3(20.1, 2, 30)
 texture_albedo = ExtResource("11_pnunk")
 
-[node name="Scrap" parent="." instance=ExtResource("12_ebqns")]
+[node name="Scrap" parent="." unique_id=1448749931 instance=ExtResource("12_ebqns")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.2382793, 0.008174896, -14.148994)
 
-[node name="Scrap2" parent="." instance=ExtResource("12_ebqns")]
+[node name="Scrap2" parent="." unique_id=687780763 instance=ExtResource("12_ebqns")]
 transform = Transform3D(0.79272604, 0, 0.609578, 0, 1, 0, -0.609578, 0, 0.79272604, -7.5853558, 0.008174896, -15.2588)
 
 [connection signal="died" from="MuscleCar/Health" to="." method="car_destroyed"]
