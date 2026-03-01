@@ -56,7 +56,7 @@ metadata/_custom_type_script = "uid://du3d1fs80prdm"
 
 [node name="Wave1" type="Node3D" parent="System_EnemySpawner" unique_id=2131354128]
 script = ExtResource("4_gwcit")
-start_delay = 15.0
+duration = 60.0
 max_enemies = 1
 enemy_types = Array[ExtResource("6_b7d5n")]([ExtResource("7_b7d5n")])
 enemy_counts = Array[int]([1])
@@ -74,6 +74,15 @@ transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70
 mesh = SubResource("PlaneMesh_ffud3")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_pnunk")
+
+[node name="Wave2" type="Node3D" parent="System_EnemySpawner" unique_id=602578287]
+script = ExtResource("4_gwcit")
+duration = 60.0
+max_enemies = 15
+enemy_types = Array[ExtResource("6_b7d5n")]([ExtResource("7_b7d5n")])
+enemy_counts = Array[int]([50])
+spawn_interval = 0.5
+metadata/_custom_type_script = "uid://b7jdk6preu1s4"
 
 [node name="Ground" type="MeshInstance3D" parent="." unique_id=2093188596]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)

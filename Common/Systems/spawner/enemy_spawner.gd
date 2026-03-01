@@ -2,6 +2,7 @@ extends Node3D
 class_name System_EnemySpawner
 
 @export var spawn_areas: Array[MeshInstance3D] = []
+@export var initial_spawn_delay: float = 2.0
 
 var _spawned_enemies: int = 0
 
@@ -77,7 +78,7 @@ func _on_wave_completed(wave: System_Wave) -> void:
     _current_wave_index += 1
     
     # Start next wave after a brief delay
-    await get_tree().create_timer(1.0, false).timeout
+    await get_tree().create_timer(initial_spawn_delay, false).timeout
     _start_next_wave()
 
 func _on_enemy_spawned_from_wave(enemy: Node3D, _wave: System_Wave) -> void:
