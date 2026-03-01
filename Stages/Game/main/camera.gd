@@ -276,12 +276,19 @@ func zoom_to_survivors() -> void:
     MyLogger.warning("Camera", "No survivors found to zoom to")
     return
   
-  # Calculate center position of all targets
+  # Calculate center position of all Node3D targets
   var center := Vector3.ZERO
+  var count := 0
   for target in targets:
     if target is Node3D:
       center += target.global_position
-  center /= targets.size()
+      count += 1
+  
+  if count == 0:
+    MyLogger.warning("Camera", "No valid Node3D survivors found to zoom to")
+    return
+  
+  center /= count
   
   _animate_to_ground_position(center, survivor_zoom_size)
   MyLogger.info("Camera", "Zooming to survivors at position: %s" % str(center))
@@ -300,6 +307,9 @@ func _animate_to_ground_position(ground_target: Vector3, target_zoom: float) -> 
   # New camera position maintains the same offset but relative to the new ground target
   var target_position = ground_target + offset
   
+  # Update orbit center immediately to reflect the intended target
+  orbit_center = ground_target
+  
   # Kill any existing tweens
   if zoom_tween:
     zoom_tween.kill()
@@ -311,7 +321,6 @@ func _animate_to_ground_position(ground_target: Vector3, target_zoom: float) -> 
   move_tween.set_ease(Tween.EASE_IN_OUT)
   move_tween.set_trans(Tween.TRANS_QUAD)
   move_tween.tween_property(self, "global_position", target_position, zoom_preset_duration)
-  move_tween.tween_callback(_update_orbit_center)
   
   # Animate zoom
   _animate_zoom(target_zoom)
