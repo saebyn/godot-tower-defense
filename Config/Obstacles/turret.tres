@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1_c82l7")
 id = "turret"
-name = "Turret"
+name = "Scrap Shooter"
 description = "A turret that does a small amount of damage to passing enemies"
 icon = ExtResource("1_ydp4p")
 color = Color(1, 0, 1, 1)

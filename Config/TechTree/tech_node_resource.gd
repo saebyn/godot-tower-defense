@@ -14,7 +14,7 @@ class_name Resource_TechNode
 
 @export_category("Unlock Requirements")
 @export var level_requirement: int = 1 ## Player level required to unlock this tech
-@export var scrap_cost: int = 0 ## Scrap cost to unlock (currently unused - tech unlocking is free)
+@export var scrap_cost: int = 0 ## Scrap cost to unlock
 @export var prerequisite_tech_ids: Array[String] = [] ## Tech IDs that must be unlocked first
 @export var achievement_ids: Array[String] = [] ## Achievement IDs required to unlock
 

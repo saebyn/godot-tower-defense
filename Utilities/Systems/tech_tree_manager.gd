@@ -17,7 +17,7 @@ func _ready() -> void:
   MyLogger.info("TechTreeManager", "Initializing TechTreeManager...")
   
   # Register with SaveManager
-  SaveManager.register_system(self)
+  SaveManager.register_system(self )
   
   # Load tech tree definitions
   _load_tech_tree()
@@ -76,7 +76,7 @@ func can_unlock_tech(tech_id: String) -> bool:
     MyLogger.debug("TechTreeManager", "Tech %s requires level %d, player is level %d" % [tech_id, tech.level_requirement, CurrencyManager.get_level()])
     return false
   
-  # Check scrap cost (currently unused but kept for potential future use)
+  # Check scrap cost
   if tech.scrap_cost > 0 and CurrencyManager.get_scrap() < tech.scrap_cost:
     MyLogger.debug("TechTreeManager", "Tech %s requires %d scrap, player has %d" % [tech_id, tech.scrap_cost, CurrencyManager.get_scrap()])
     return false
@@ -109,7 +109,7 @@ func unlock_tech(tech_id: String) -> bool:
   
   var tech = tech_nodes[tech_id]
   
-  # Deduct scrap cost if any (currently unused)
+  # Deduct scrap cost if any
   if tech.scrap_cost > 0:
     if not CurrencyManager.spend_scrap(tech.scrap_cost):
       MyLogger.error("TechTreeManager", "Failed to spend scrap for tech: %s" % tech_id)
