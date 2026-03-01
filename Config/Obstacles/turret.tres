@@ -15,5 +15,5 @@ category = 0
 is_offensive = true
 cost = 20
 scene = ExtResource("2_sp3ta")
-required_tech_ids = Array[String]([])
+required_tech_ids = Array[String](["tur_scrap_shooter"])
 metadata/_custom_type_script = "uid://vy1lf2kd14dr"
