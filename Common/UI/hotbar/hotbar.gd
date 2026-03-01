@@ -231,6 +231,30 @@ func _input(event: InputEvent) -> void:
 
 func _on_obstacle_types_updated(added_types: Array[Resource_ObstacleType], removed_types: Array[Resource_ObstacleType]) -> void:
   MyLogger.info("Hotbar", "Obstacle types updated. Added: %d, Removed: %d" % [added_types.size(), removed_types.size()])
+
+  # Update the hotbar configuration if any of the added or removed types are currently in the hotbar
+  # First, if there are any new types added and there are empty slots, fill them with the new types.
+  # Then, if there are any removed types that are currently in the hotbar, clear those slots.
+  # The reason for this order is that if we clear removed types first,
+  # then we might replace them with new types that were just added, which could be confusing.
+  var last_visited_slot_index := 0
+  for added in added_types:
+    for i in range(last_visited_slot_index, max_slots):
+      last_visited_slot_index = i
+      if slot_obstacle_ids[i].is_empty():
+        slot_obstacle_ids[i] = added.id
+        MyLogger.info("Hotbar", "Added new obstacle %s to empty slot %d" % [added.name, i + 1])
+        break
+    
+    # If we've filled all slots, we can stop checking for added types
+    if last_visited_slot_index == max_slots - 1:
+      break
+
+  for removed in removed_types:
+    for i in range(max_slots):
+      if slot_obstacle_ids[i] == removed.id:
+        slot_obstacle_ids[i] = ""
+        MyLogger.info("Hotbar", "Removed obstacle %s from slot %d" % [removed.name, i + 1])
   
   # Update visuals for all slots to reflect changes
   for i in range(max_slots):
