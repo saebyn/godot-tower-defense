@@ -22,7 +22,12 @@ extends Camera3D
 @export var world_min_z: float = -200.0 # Minimum Z boundary for camera orbit center
 @export var world_max_z: float = 200.0 # Maximum Z boundary for camera orbit center
 
+@export_group("Zoom Presets")
+@export var survivor_zoom_size: float = 15.0 # Zoom level when zooming to survivors
+@export var zoom_preset_duration: float = 0.5 # Duration for zoom preset transitions
+
 var zoom_tween: Tween
+var move_tween: Tween # Tween for smooth camera position transitions
 var orbit_center: Vector3 # The point on the ground the camera orbits around
 var input_enabled: bool = true # Track if camera input should be processed
 
@@ -177,6 +182,13 @@ func _process(delta: float) -> void:
   if Input.is_action_just_pressed("camera_rotate_right"):
     _orbit_around_center(PI / 2) # Rotate right by 90 degrees
 
+  # Handle zoom presets
+  if Input.is_action_just_pressed("camera_zoom_to_survivors"):
+    zoom_to_survivors()
+
+  if Input.is_action_just_pressed("camera_zoom_out_max"):
+    zoom_out_max()
+
   # Handle discrete zoom events from mouse wheel and keyboard
   var zoom_in_pressed = Input.is_action_just_pressed("camera_zoom_in") or Input.is_action_just_pressed("camera_zoom_in_key")
   var zoom_out_pressed = Input.is_action_just_pressed("camera_zoom_out") or Input.is_action_just_pressed("camera_zoom_out_key")
@@ -255,3 +267,64 @@ func _apply_boundary_constraints():
     var offset = global_position - orbit_center
     global_position = constrained_center + offset
     orbit_center = constrained_center
+
+
+## Zoom to survivors: center camera on the average position of all targets with appropriate zoom
+func zoom_to_survivors() -> void:
+  var targets = get_tree().get_nodes_in_group("targets")
+  if targets.is_empty():
+    MyLogger.warning("Camera", "No survivors found to zoom to")
+    return
+  
+  # Calculate center position of all targets
+  var center := Vector3.ZERO
+  for target in targets:
+    if target is Node3D:
+      center += target.global_position
+  center /= targets.size()
+  
+  _animate_to_ground_position(center, survivor_zoom_size)
+  MyLogger.info("Camera", "Zooming to survivors at position: %s" % str(center))
+
+
+## Zoom out to maximum camera size for a full battlefield overview
+func zoom_out_max() -> void:
+  _animate_zoom(camera_max_size)
+  MyLogger.info("Camera", "Zooming out to max size: %s" % str(camera_max_size))
+
+
+## Animate the camera to look at a ground position with a target zoom size
+func _animate_to_ground_position(ground_target: Vector3, target_zoom: float) -> void:
+  # Calculate the camera offset from current orbit center
+  var offset = global_position - orbit_center
+  # New camera position maintains the same offset but relative to the new ground target
+  var target_position = ground_target + offset
+  
+  # Kill any existing tweens
+  if zoom_tween:
+    zoom_tween.kill()
+  if move_tween:
+    move_tween.kill()
+  
+  # Animate position
+  move_tween = create_tween()
+  move_tween.set_ease(Tween.EASE_IN_OUT)
+  move_tween.set_trans(Tween.TRANS_QUAD)
+  move_tween.tween_property(self, "global_position", target_position, zoom_preset_duration)
+  move_tween.tween_callback(_update_orbit_center)
+  
+  # Animate zoom
+  _animate_zoom(target_zoom)
+
+
+## Animate the camera zoom to a target size
+func _animate_zoom(target_zoom: float) -> void:
+  target_zoom = clamp(target_zoom, camera_min_size, camera_max_size)
+  
+  if zoom_tween:
+    zoom_tween.kill()
+  
+  zoom_tween = create_tween()
+  zoom_tween.set_ease(Tween.EASE_IN_OUT)
+  zoom_tween.set_trans(Tween.TRANS_QUAD)
+  zoom_tween.tween_property(self, "size", target_zoom, zoom_preset_duration)
