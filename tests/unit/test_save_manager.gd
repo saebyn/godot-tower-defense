@@ -97,6 +97,14 @@ func test_create_new_game():
   var slot_path = SaveManager.SAVE_SLOT_PATH % TEST_SLOT
   assert_true(FileAccess.file_exists(slot_path), "Save file should exist")
 
+## Test: Create new game emits load_completed so downstream listeners (ObstacleRegistry, etc.) refresh
+func test_create_new_game_emits_load_completed():
+  watch_signals(SaveManager)
+  
+  SaveManager.create_new_game(TEST_SLOT)
+  
+  assert_signal_emitted(SaveManager, "load_completed", "load_completed should be emitted so downstream systems refresh")
+
 ## Test: Save and load slot preserves data
 func test_save_and_load_slot():
   # File operations may generate engine errors in headless mode - ignore them
