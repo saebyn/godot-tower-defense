@@ -290,6 +290,9 @@ func create_new_game(slot_number: int) -> void:
   save_current_slot(false)
   
   slot_created.emit(slot_number)
+  # Notify downstream systems (ObstacleRegistry, etc.) that a valid state is now loaded
+  # This ensures they refresh after a reset, just as they would after loading a save
+  load_completed.emit()
   MyLogger.info("SaveManager", "New game created in slot %d" % slot_number)
 
 ## Get metadata for a specific save slot
