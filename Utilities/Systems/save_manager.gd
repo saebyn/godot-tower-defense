@@ -287,7 +287,10 @@ func create_new_game(slot_number: int) -> void:
   slot_start_time = Time.get_ticks_msec() / 1000.0
   
   # Save the fresh state without capturing screenshot (we're still in UI, not in game)
-  save_current_slot(false)
+  if not save_current_slot(false):
+    MyLogger.error("SaveManager", "Failed to save new game in slot %d" % slot_number)
+    load_failed.emit("Failed to save new game slot %d" % slot_number)
+    return
   
   slot_created.emit(slot_number)
   # Notify downstream systems (ObstacleRegistry, etc.) that a valid state is now loaded
