@@ -29,17 +29,23 @@ enum TutState {
 
 var _tut_state: TutState = TutState.INACTIVE
 var _tutorial_accepted: bool = false
+var _main_scene: Node = null
+var _obstacle_placement: Node = null
 
 
 func _ready() -> void:
   super._ready()
+  # Defer so the full scene tree (including Main and ObstaclePlacement) is ready
   call_deferred("_start_intro_dialog")
 
 
 func _start_intro_dialog() -> void:
-  if not has_node("/root/Dialogic"):
+  if not is_instance_valid(Dialogic):
     MyLogger.warn("Scenario1", "Dialogic autoload not found — skipping dialog")
     return
+  # Cache scene references now that the tree is fully ready
+  _main_scene = get_tree().current_scene
+  _obstacle_placement = _main_scene.get_node_or_null("ObstaclePlacement") if _main_scene else null
   _tut_state = TutState.INTRO
   Dialogic.timeline_ended.connect(_on_dialogic_timeline_ended)
   Dialogic.signal_event.connect(_on_dialogic_signal)
@@ -68,9 +74,8 @@ func _on_dialogic_timeline_ended() -> void:
       # Attack instructions delivered — unpause and wait for the player to attack
       _tut_state = TutState.AWAITING_ATTACK
       get_tree().paused = false
-      var main := get_tree().current_scene
-      if main and main.has_signal("enemy_attacked"):
-        main.enemy_attacked.connect(_on_enemy_attacked_for_tutorial, CONNECT_ONE_SHOT)
+      if _main_scene and _main_scene.has_signal("enemy_attacked"):
+        _main_scene.enemy_attacked.connect(_on_enemy_attacked_for_tutorial, CONNECT_ONE_SHOT)
       else:
         MyLogger.warn("Scenario1", "enemy_attacked signal not found, skipping attack step")
         _tut_state = TutState.TUT_OBSTACLE
@@ -81,10 +86,8 @@ func _on_dialogic_timeline_ended() -> void:
       # Obstacle instructions delivered — unpause and wait for placement
       _tut_state = TutState.AWAITING_OBSTACLE
       get_tree().paused = false
-      var main := get_tree().current_scene
-      var op := main.get_node_or_null("ObstaclePlacement") if main else null
-      if op and op.has_signal("obstacle_placed"):
-        op.obstacle_placed.connect(_on_obstacle_placed_for_tutorial, CONNECT_ONE_SHOT)
+      if _obstacle_placement and _obstacle_placement.has_signal("obstacle_placed"):
+        _obstacle_placement.obstacle_placed.connect(_on_obstacle_placed_for_tutorial, CONNECT_ONE_SHOT)
       else:
         MyLogger.warn("Scenario1", "obstacle_placed signal not found, skipping obstacle step")
         _tut_state = TutState.TUT_READ_UI
@@ -129,10 +132,11 @@ func _on_obstacle_placed_for_tutorial() -> void:
 
 ## Disconnect Dialogic signals and unpause the game
 func _end_dialog() -> void:
-  if Dialogic.timeline_ended.is_connected(_on_dialogic_timeline_ended):
-    Dialogic.timeline_ended.disconnect(_on_dialogic_timeline_ended)
-  if Dialogic.signal_event.is_connected(_on_dialogic_signal):
-    Dialogic.signal_event.disconnect(_on_dialogic_signal)
+  if is_instance_valid(Dialogic):
+    if Dialogic.timeline_ended.is_connected(_on_dialogic_timeline_ended):
+      Dialogic.timeline_ended.disconnect(_on_dialogic_timeline_ended)
+    if Dialogic.signal_event.is_connected(_on_dialogic_signal):
+      Dialogic.signal_event.disconnect(_on_dialogic_signal)
   _tut_state = TutState.INACTIVE
   get_tree().paused = false
   MyLogger.info("Scenario1", "Dialog sequence finished, game running")
