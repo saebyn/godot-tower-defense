@@ -1,5 +1,7 @@
 extends Node3D
 
+signal enemy_attacked ## Emitted when the player clicks to attack an enemy
+
 @export_group("Attack Settings")
 @export var raycast_length: float = 1000.0
 @export var attack_waiting_cursor_image: Texture2D
@@ -222,6 +224,7 @@ func _handle_enemy_click(click_position: Vector2):
     MyLogger.debug("Player", "Clicked on: %s" % collider.name)
     # If the collider is an enemy, perform an attack
     attack.perform_attack(collider)
+    enemy_attacked.emit()
   
   # Disable the enemy raycast after use
   enemy_raycast.enabled = false

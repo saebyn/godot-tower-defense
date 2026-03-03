@@ -4,6 +4,7 @@ class_name Utility_ObstaclePlacement
 signal rebake_navigation_mesh
 signal placement_mode_entered ## Emitted when entering obstacle placement mode
 signal placement_mode_exited ## Emitted when exiting obstacle placement mode
+signal obstacle_placed ## Emitted when an obstacle is successfully placed
 
 @export_group("Placement Settings")
 @export var placement_clearance: float = 3.0 ## Minimum distance from other obstacles
@@ -217,6 +218,7 @@ func _place_obstacle() -> void:
   _preview.place(navigation_region)
 
   rebake_navigation_mesh.emit()
+  obstacle_placed.emit()
   
   # Track obstacle placement in stats system
   if StatsManager and _place_obstacle_type:
