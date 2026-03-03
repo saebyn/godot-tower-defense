@@ -290,8 +290,12 @@ func zoom_to_survivors() -> void:
   
   center /= count
   
-  _animate_to_ground_position(center, survivor_zoom_size)
-  MyLogger.info("Camera", "Zooming to survivors at position: %s" % str(center))
+  # Project the averaged center onto the ground plane to keep orbit_center on Y=0
+  var ground_center := center
+  ground_center.y = 0.0
+  
+  _animate_to_ground_position(ground_center, survivor_zoom_size)
+  MyLogger.info("Camera", "Zooming to survivors at position: %s" % str(ground_center))
 
 
 ## Zoom out to maximum camera size for a full battlefield overview
@@ -309,6 +313,11 @@ func _animate_to_ground_position(ground_target: Vector3, target_zoom: float) -> 
   
   # Update orbit center immediately to reflect the intended target
   orbit_center = ground_target
+  
+  # Apply boundary constraints to clamp orbit_center and target_position within world bounds
+  if enable_boundaries:
+    _apply_boundary_constraints()
+    target_position = orbit_center + offset
   
   # Kill any existing tweens
   if zoom_tween:
