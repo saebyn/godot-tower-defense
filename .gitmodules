@@ -3,6 +3,5 @@
   url = https://github.com/bitwes/Gut.git
   ignore = dirty
 [submodule "external/dialogic"]
-  path = external/dialogic
-  url = https://github.com/dialogic-godot/dialogic.git
-  ignore = dirty
+	path = external/dialogic
+	url = https://github.com/dialogic-godot/dialogic

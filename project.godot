@@ -38,7 +38,22 @@ DamageNumbersManager="*res://Utilities/Systems/damage_numbers_manager.gd"
 SceneReferences="*res://Utilities/Systems/scene_references.gd"
 SurvivorNameManager="*res://Utilities/Systems/survivor_name_manager.gd"
 Twitch="*res://Config/Twitch/twitch_service.tscn"
-Dialogic="*res://addons/dialogic/Core/DialogicGameHandler.gd"
+Dialogic="*uid://ds2q0uclmolvu"
+
+[dialogic]
+
+directories/dch_directory={
+"survivor": "res://Dialogic/Characters/survivor.dch"
+}
+directories/dtl_directory={
+"scenario_1_intro": "res://Dialogic/Timelines/scenario_1_intro.dtl",
+"scenario_1_tut_attack": "res://Dialogic/Timelines/scenario_1_tut_attack.dtl",
+"scenario_1_tut_obstacle": "res://Dialogic/Timelines/scenario_1_tut_obstacle.dtl",
+"scenario_1_tut_read_ui": "res://Dialogic/Timelines/scenario_1_tut_read_ui.dtl",
+"scenario_1_tut_tech_tree": "res://Dialogic/Timelines/scenario_1_tut_tech_tree.dtl",
+"scenario_1_tut_welcome": "res://Dialogic/Timelines/scenario_1_tut_welcome.dtl"
+}
+layout/style_directory={}
 
 [editor_plugins]
 
