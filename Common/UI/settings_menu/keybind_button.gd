@@ -168,6 +168,3 @@ func _rebind_action(event: InputEvent) -> void:
     binding_name = _get_mouse_button_name(event.button_index)
   
   MyLogger.info("KeybindButton", "Rebound '%s' to %s" % [action_name, binding_name])
-  
-  # Note: We don't save keybinds to file in this version
-  # This could be added later if needed

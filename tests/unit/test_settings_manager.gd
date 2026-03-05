@@ -34,3 +34,130 @@ func test_default_sfx_volume():
   
   # Assert - SFX volume default is 0.0 dB (100%)
   assert_eq(sfx_volume_db, 0.0, "Default SFX volume should be 0.0 dB")
+
+func test_save_keybinds_writes_key_event_to_config():
+  # Arrange - use a test action that exists in InputMap
+  var test_action = "camera_move_left"
+  
+  # Set a known key binding
+  var key_event = InputEventKey.new()
+  key_event.physical_keycode = KEY_A
+  key_event.shift_pressed = false
+  InputMap.action_erase_events(test_action)
+  InputMap.action_add_event(test_action, key_event)
+  
+  # Act - save keybinds via the config file
+  var config = ConfigFile.new()
+  SettingsManager._save_keybinds(config)
+  
+  # Assert - config should contain the binding as an array
+  assert_true(config.has_section("keybinds"), "Config should have keybinds section")
+  assert_true(config.has_section_key("keybinds", test_action), "Config should have the test action")
+  var saved_bindings: Array = config.get_value("keybinds", test_action, [])
+  assert_eq(saved_bindings.size(), 1, "Should have exactly one binding saved")
+  var saved_data: Dictionary = saved_bindings[0]
+  assert_eq(saved_data.get("type"), "key", "Saved type should be 'key'")
+  assert_eq(saved_data.get("physical_keycode"), KEY_A, "Saved keycode should match KEY_A")
+  assert_eq(saved_data.get("shift_pressed"), false, "Saved shift_pressed should be false")
+
+func test_save_keybinds_writes_mouse_event_to_config():
+  # Arrange - use a test action and assign a mouse button
+  var test_action = "camera_move_left"
+  
+  var mouse_event = InputEventMouseButton.new()
+  mouse_event.button_index = MOUSE_BUTTON_LEFT
+  InputMap.action_erase_events(test_action)
+  InputMap.action_add_event(test_action, mouse_event)
+  
+  # Act
+  var config = ConfigFile.new()
+  SettingsManager._save_keybinds(config)
+  
+  # Assert
+  assert_true(config.has_section_key("keybinds", test_action), "Config should have the test action")
+  var saved_bindings: Array = config.get_value("keybinds", test_action, [])
+  assert_eq(saved_bindings.size(), 1, "Should have exactly one binding saved")
+  var saved_data: Dictionary = saved_bindings[0]
+  assert_eq(saved_data.get("type"), "mouse", "Saved type should be 'mouse'")
+  assert_eq(saved_data.get("button_index"), int(MOUSE_BUTTON_LEFT), "Saved button_index should match")
+
+func test_load_keybinds_applies_key_event_to_input_map():
+  # Arrange - create a config with a known keybind (array format)
+  var test_action = "camera_move_left"
+  var config = ConfigFile.new()
+  config.set_value("keybinds", test_action, [{
+    "type": "key",
+    "physical_keycode": KEY_Z,
+    "ctrl_pressed": false,
+    "alt_pressed": false,
+    "shift_pressed": true,
+    "meta_pressed": false,
+    "command_or_control_autoremap": false
+  }])
+  
+  # Act - load keybinds from config
+  SettingsManager._load_keybinds(config)
+  
+  # Assert - InputMap should now have the new binding
+  var events = InputMap.action_get_events(test_action)
+  assert_true(events.size() > 0, "Action should have at least one event")
+  var loaded_event = events[0]
+  assert_true(loaded_event is InputEventKey, "Loaded event should be a key event")
+  if loaded_event is InputEventKey:
+    assert_eq(loaded_event.physical_keycode, KEY_Z, "Loaded keycode should be KEY_Z")
+    assert_eq(loaded_event.shift_pressed, true, "Loaded shift_pressed should be true")
+
+func test_load_keybinds_applies_mouse_event_to_input_map():
+  # Arrange
+  var test_action = "camera_move_left"
+  var config = ConfigFile.new()
+  config.set_value("keybinds", test_action, [{
+    "type": "mouse",
+    "button_index": int(MOUSE_BUTTON_RIGHT)
+  }])
+  
+  # Act
+  SettingsManager._load_keybinds(config)
+  
+  # Assert
+  var events = InputMap.action_get_events(test_action)
+  assert_true(events.size() > 0, "Action should have at least one event after load")
+  var loaded_event = events[0]
+  assert_true(loaded_event is InputEventMouseButton, "Loaded event should be a mouse button event")
+  if loaded_event is InputEventMouseButton:
+    assert_eq(int(loaded_event.button_index), int(MOUSE_BUTTON_RIGHT), "Loaded button should be right mouse button")
+
+func test_load_keybinds_ignores_unknown_actions():
+  # Arrange - config with an action that doesn't exist in InputMap
+  var config = ConfigFile.new()
+  config.set_value("keybinds", "nonexistent_action_xyz", [{
+    "type": "key",
+    "physical_keycode": KEY_A,
+    "ctrl_pressed": false,
+    "alt_pressed": false,
+    "shift_pressed": false,
+    "meta_pressed": false,
+    "command_or_control_autoremap": false
+  }])
+  
+  # Act - should not crash or add the invalid action
+  SettingsManager._load_keybinds(config)
+  
+  # Assert - nonexistent action should still not be in InputMap
+  assert_false(InputMap.has_action("nonexistent_action_xyz"), "Unknown action should not be added to InputMap")
+
+func test_load_keybinds_skips_missing_keybinds_section():
+  # Arrange - config without a keybinds section
+  var config = ConfigFile.new()
+  config.set_value("audio", "master_volume", -6.02)
+  
+  # Capture current bindings for a known action
+  var test_action = "camera_move_left"
+  var events_before = InputMap.action_get_events(test_action).duplicate()
+  
+  # Act - should not crash
+  SettingsManager._load_keybinds(config)
+  
+  # Assert - bindings should be unchanged
+  var events_after = InputMap.action_get_events(test_action)
+  assert_eq(events_before.size(), events_after.size(), "Bindings should be unchanged when no keybinds section")
