@@ -56,6 +56,9 @@ func load_settings() -> void:
   sfx_volume = config.get_value("audio", "sfx_volume", sfx_volume)
   music_pause = config.get_value("audio", "music_pause", music_pause)
   
+  # Load keybind settings
+  _load_keybinds(config)
+  
   MyLogger.info("SettingsManager", "Settings loaded from file")
 
 ## Save settings to file
@@ -72,6 +75,9 @@ func save_settings() -> void:
   config.set_value("audio", "music_volume", music_volume)
   config.set_value("audio", "sfx_volume", sfx_volume)
   config.set_value("audio", "music_pause", music_pause)
+  
+  # Save keybind settings
+  _save_keybinds(config)
   
   var err = config.save(SETTINGS_FILE)
   if err != OK:
@@ -179,3 +185,64 @@ func get_resolution_string(index: int) -> String:
     var res = RESOLUTIONS[index]
     return "%dx%d" % [res.x, res.y]
   return "Unknown"
+
+## Save keybind settings into an existing ConfigFile object
+func _save_keybinds(config: ConfigFile) -> void:
+  # get_actions() is called once per save; this is acceptable since save_settings()
+  # is only invoked on explicit user action (Apply button, video confirmation, etc.)
+  var actions = InputMap.get_actions()
+  for action in actions:
+    if action.begins_with("ui_") or action.begins_with("spatial_editor"):
+      continue
+    var events = InputMap.action_get_events(action)
+    if events.size() == 0:
+      continue
+    var bindings: Array = []
+    for event in events:
+      if event is InputEventKey:
+        bindings.append({
+          "type": "key",
+          "physical_keycode": event.physical_keycode,
+          "ctrl_pressed": event.ctrl_pressed,
+          "alt_pressed": event.alt_pressed,
+          "shift_pressed": event.shift_pressed,
+          "meta_pressed": event.meta_pressed,
+          "command_or_control_autoremap": event.command_or_control_autoremap
+        })
+      elif event is InputEventMouseButton:
+        bindings.append({
+          "type": "mouse",
+          "button_index": int(event.button_index)
+        })
+    if not bindings.is_empty():
+      config.set_value("keybinds", action, bindings)
+
+## Load keybind settings from a ConfigFile object and apply them to InputMap
+func _load_keybinds(config: ConfigFile) -> void:
+  if not config.has_section("keybinds"):
+    return
+  for action in config.get_section_keys("keybinds"):
+    if not InputMap.has_action(action):
+      continue
+    var bindings: Array = config.get_value("keybinds", action, [])
+    if bindings.is_empty():
+      continue
+    InputMap.action_erase_events(action)
+    for binding_data in bindings:
+      var event: InputEvent = null
+      if binding_data.get("type") == "key":
+        var key_event = InputEventKey.new()
+        key_event.physical_keycode = binding_data.get("physical_keycode", 0)
+        key_event.ctrl_pressed = binding_data.get("ctrl_pressed", false)
+        key_event.alt_pressed = binding_data.get("alt_pressed", false)
+        key_event.shift_pressed = binding_data.get("shift_pressed", false)
+        key_event.meta_pressed = binding_data.get("meta_pressed", false)
+        key_event.command_or_control_autoremap = binding_data.get("command_or_control_autoremap", false)
+        event = key_event
+      elif binding_data.get("type") == "mouse":
+        var mouse_event = InputEventMouseButton.new()
+        mouse_event.button_index = binding_data.get("button_index", MOUSE_BUTTON_LEFT)
+        event = mouse_event
+      if event != null:
+        InputMap.action_add_event(action, event)
+  MyLogger.info("SettingsManager", "Keybinds loaded from file")
