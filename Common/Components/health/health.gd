@@ -1,6 +1,20 @@
 extends Node
 class_name Component_Health
 
+## Opacity applied when HP is at or above the full-health threshold
+const HIGH_HP_OPACITY: float = 0.35
+## Opacity applied when HP drops below the low-health threshold
+const FULL_OPACITY: float = 1.0
+## HP ratio above which the bar fades to high-opacity
+const HIGH_HP_THRESHOLD: float = 0.8
+
+## Health bar fill colors keyed to zombie/entity type themes (Visual Style Guide)
+const COLOR_ZOMBIE_STANDARD: Color = Color(0.478, 0.608, 0.463, 1.0)  # desaturated green #7A9B76
+const COLOR_ZOMBIE_FAST: Color = Color(0.788, 0.365, 0.310, 1.0)      # warm red/orange #C95D4F
+const COLOR_ZOMBIE_TANK: Color = Color(0.420, 0.447, 0.502, 1.0)      # cool gray #6B7280
+const COLOR_SURVIVOR: Color = Color(0.949, 0.655, 0.353, 1.0)         # orange accent #F2A75A
+const COLOR_DEFAULT: Color = Color(0.349, 0.431, 0.286, 1.0)          # zombie_flesh from palette
+
 @export_group("Health Settings")
 @export var hitpoints: int = 100
 @export var max_damage_per_hit: float = INF
@@ -10,6 +24,12 @@ class_name Component_Health
   set(value):
     disabled = value
     _update_display()
+
+@export_group("Visual Settings")
+## Override the health bar fill color. Requires use_custom_bar_color = true.
+@export var bar_color: Color = Color(0.0, 0.0, 0.0, 0.0)
+## When true, bar_color is used instead of automatic type-based color detection.
+@export var use_custom_bar_color: bool = false
 
 @export_group("SFX Settings")
 @export var hit_sound: Resource_SoundEffect.SoundEffect = Resource_SoundEffect.SoundEffect.DEFAULT
@@ -26,6 +46,9 @@ var max_hitpoints: int
 var dead: bool = false
 
 var damage_numbers: Component_DamageNumbers
+
+## StyleBoxFlat used to apply fill color to the health bar (created once in _ready)
+var _bar_fill_style: StyleBoxFlat
 
 signal died(damage_source: String)
 signal damaged(amount: float, hitpoints: int, damage_source: String)
@@ -59,6 +82,11 @@ func take_damage(amount: float, damage_source: String = "unknown"):
 func _ready():
   # Store the initial hitpoints as max_hitpoints
   max_hitpoints = hitpoints
+
+  # Create a reusable StyleBoxFlat for bar fill color (avoids allocating per update)
+  _bar_fill_style = StyleBoxFlat.new()
+  health_bar.add_theme_stylebox_override("fill", _bar_fill_style)
+
   _update_display()
   subviewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
   
@@ -86,6 +114,52 @@ func _update_display():
   health_bar.max_value = max_hitpoints
   health_bar.value = hitpoints
   health_label.text = str(hitpoints) + " / " + str(max_hitpoints)
+
+  _update_health_bar_visuals()
+
+## Determine the fill color for the health bar based on the entity type.
+## Returns bar_color if use_custom_bar_color is true, otherwise infers from parent entity type.
+func _get_effective_bar_color() -> Color:
+  if use_custom_bar_color:
+    return bar_color
+
+  var parent = get_parent()
+  if not parent:
+    return COLOR_DEFAULT
+
+  # Survivors use the orange accent color
+  if parent.is_in_group("survivors"):
+    return COLOR_SURVIVOR
+
+  # Use enemy_type string to identify zombie sub-types
+  if "enemy_type" in parent:
+    var type: String = str(parent.enemy_type).to_lower()
+    if "fast" in type:
+      return COLOR_ZOMBIE_FAST
+    if "tank" in type:
+      return COLOR_ZOMBIE_TANK
+    # Any other enemy is treated as standard zombie
+    return COLOR_ZOMBIE_STANDARD
+
+  return COLOR_DEFAULT
+
+## Update health bar fill color and sprite transparency based on current HP ratio.
+func _update_health_bar_visuals():
+  if not is_node_ready():
+    return
+
+  # Apply fill color
+  var fill_color := _get_effective_bar_color()
+  if _bar_fill_style:
+    _bar_fill_style.bg_color = fill_color
+
+  # Compute transparency: fade bar toward HIGH_HP_OPACITY when HP is healthy
+  var hp_ratio: float = float(hitpoints) / float(max_hitpoints) if max_hitpoints > 0 else 0.0
+  var target_alpha: float = HIGH_HP_OPACITY if hp_ratio >= HIGH_HP_THRESHOLD else lerp(FULL_OPACITY, HIGH_HP_OPACITY, hp_ratio / HIGH_HP_THRESHOLD)
+
+  sprite.modulate.a = target_alpha
+  # Keep label readable — never drop below 60% opacity
+  health_label.modulate.a = maxf(target_alpha, 0.6)
 
 func _die(damage_source: String = "unknown"):
   if dead:

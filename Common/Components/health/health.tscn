@@ -28,7 +28,7 @@ offset_bottom = -167.0
 transparent_bg = true
 handle_input_locally = false
 canvas_cull_mask = 4293918721
-size = Vector2i(200, 100)
+size = Vector2i(160, 55)
 render_target_update_mode = 4
 
 [node name="Background" type="NinePatchRect" parent="SubViewportContainer/SubViewport"]
@@ -47,12 +47,15 @@ grow_vertical = 2
 
 [node name="HealthBar" type="ProgressBar" parent="SubViewportContainer/SubViewport/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 22)
 step = 1.0
 value = 100.0
 show_percentage = false
 
 [node name="HealthLabel" type="Label" parent="SubViewportContainer/SubViewport/VBoxContainer"]
 layout_mode = 2
+custom_minimum_size = Vector2(0, 14)
 text = "xxx/xxx"
 horizontal_alignment = 1
 vertical_alignment = 1
