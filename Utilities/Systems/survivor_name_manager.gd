@@ -4,8 +4,8 @@ extends Node
 ##
 ## Assignment priority (highest to lowest):
 ##   1. priority_pool  — names added here are assigned first and permanently
-##                       consumed on release (never recycled).
-##   2. NAME_POOL      — built-in pool of 65 names; released names return here
+##                       consumed on assignment (never recycled).
+##   2. NAME_POOL      — built-in pool of names; released names return here
 ##                       and may be reassigned to future survivors.
 ##   3. Generated      — when both pools are exhausted an adjective + base-name
 ##                       combination is produced, retrying until unique.
@@ -119,11 +119,12 @@ func release_name(survivor_name: String) -> void:
 
   name_released.emit(survivor_name)
 
-## Returns all names that are not currently assigned to a living survivor.
+## Returns all names that are not currently assigned to a living survivor
+## and have not been permanently consumed as priority names.
 func _get_available_names() -> Array[String]:
   var available: Array[String] = []
   for n in NAME_POOL:
-    if n not in used_names:
+    if n not in used_names and n not in _spent_priority_names:
       available.append(n)
   return available
 

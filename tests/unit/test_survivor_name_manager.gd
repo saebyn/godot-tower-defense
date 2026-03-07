@@ -167,6 +167,16 @@ func test_priority_name_already_in_regular_pool_is_consumed_not_recycled():
   assert_true(SurvivorNameManager.get("_spent_priority_names").has(priority_name),
     "Name that exists in both pools should be treated as priority when released")
 
+  # Exhaust all other NAME_POOL names so that if "Ada" were still available
+  # from the regular pool, it would be the only remaining candidate.
+  for n in SurvivorNameManager.NAME_POOL:
+    if n != priority_name:
+      SurvivorNameManager.used_names.append(n)
+
+  var reassigned = SurvivorNameManager.assign_name()
+  assert_ne(reassigned, priority_name,
+    "Name that exists in both pools and was spent as priority must never be reassigned from NAME_POOL")
+
 # --- fallback name generator ---
 
 func test_assign_name_when_pool_exhausted_returns_non_empty():
