@@ -60,7 +60,7 @@ func assign_name() -> String:
     return ""
 
   # Pick a random name from the available list
-  var chosen: String = available[randi() % available.size()]
+  var chosen: String = available.pick_random()
   used_names.append(chosen)
   name_assigned.emit(chosen)
   MyLogger.info("SurvivorNameManager", "Assigned name '%s' (%d names now in use)" % [chosen, used_names.size()])

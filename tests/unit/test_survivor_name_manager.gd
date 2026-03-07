@@ -72,7 +72,6 @@ func test_released_name_can_be_reassigned():
   SurvivorNameManager.release_name(name)
 
   # Exhaust all other names so the released one must be chosen
-  var remaining: Array[String] = []
   for n in SurvivorNameManager.NAME_POOL:
     if n != name:
       SurvivorNameManager.used_names.append(n)
