@@ -10,6 +10,9 @@ extends Node
 ## Names of survivors that survive a scenario stay reserved until those
 ## survivors eventually die (or a new game is started).
 ##
+## When the primary pool is exhausted, a generated name (adjective + base name)
+## is produced, retrying until a unique combination is found.
+##
 ## Implements SaveableSystem interface for centralized save management.
 
 ## Full pool of candidate names
@@ -40,6 +43,13 @@ const NAME_POOL: Array[String] = [
   "Zara", "Zed",
 ]
 
+## Adjective prefixes combined with a base pool name when the pool is exhausted
+const _GENERATED_NAME_PREFIXES: Array[String] = [
+  "Big", "Bold", "Brave", "Calm", "Dark", "Deft", "Fast", "Grim",
+  "Iron", "Kind", "Last", "Lucky", "Mad", "Old", "Quick", "Quiet",
+  "Rough", "Scarred", "Slim", "Sly", "Swift", "Tough", "True", "Wily",
+]
+
 ## Names currently assigned to living survivors (persisted across scenarios)
 var used_names: Array[String] = []
 
@@ -51,16 +61,19 @@ func _ready() -> void:
   MyLogger.info("SurvivorNameManager", "Survivor Name Manager initialized - Pool size: %d" % NAME_POOL.size())
 
 ## Assign an available name from the pool to a new survivor.
-## Returns an empty string if all names are exhausted.
+## Falls back to a generated name (adjective + base name) when the pool is
+## exhausted, retrying until a unique combination is found.
 func assign_name() -> String:
   var available = _get_available_names()
 
+  var chosen: String
   if available.is_empty():
-    MyLogger.warn("SurvivorNameManager", "Name pool exhausted - no names available")
-    return ""
+    MyLogger.info("SurvivorNameManager", "Name pool exhausted - generating a fallback name")
+    chosen = _generate_unique_name()
+  else:
+    # Pick a random name from the available list
+    chosen = available.pick_random()
 
-  # Pick a random name from the available list
-  var chosen: String = available.pick_random()
   used_names.append(chosen)
   name_assigned.emit(chosen)
   MyLogger.info("SurvivorNameManager", "Assigned name '%s' (%d names now in use)" % [chosen, used_names.size()])
@@ -88,9 +101,28 @@ func _get_available_names() -> Array[String]:
       available.append(n)
   return available
 
-## Number of names still available in the pool.
+## Generate a unique name by combining a random adjective prefix with a random
+## base pool name, retrying until the combination is not already in use.
+func _generate_unique_name() -> String:
+  const MAX_ATTEMPTS: int = 10000
+  for _i in range(MAX_ATTEMPTS):
+    var prefix: String = _GENERATED_NAME_PREFIXES.pick_random()
+    var base: String = NAME_POOL.pick_random()
+    var generated: String = "%s %s" % [prefix, base]
+    if generated not in used_names:
+      return generated
+  # Practically unreachable: prefix_count * pool_count >> realistic survivor count
+  MyLogger.error("SurvivorNameManager", "Could not generate a unique name after %d attempts" % MAX_ATTEMPTS)
+  return "Unknown"
+
+## Number of primary pool names still available (excludes generated names).
+## Returns 0 rather than a negative number when generated names fill used_names.
 func get_available_count() -> int:
-  return NAME_POOL.size() - used_names.size()
+  var pool_names_in_use: int = 0
+  for n in used_names:
+    if n in NAME_POOL:
+      pool_names_in_use += 1
+  return NAME_POOL.size() - pool_names_in_use
 
 ## SaveableSystem Interface Implementation
 
@@ -106,7 +138,7 @@ func load_data(data: Dictionary) -> void:
   used_names.clear()
   var loaded: Array = data.get("used_names", [])
   for n in loaded:
-    if n is String and n in NAME_POOL:
+    if n is String and not n.strip_edges().is_empty():
       used_names.append(n)
 
   MyLogger.info("SurvivorNameManager", "Loaded %d used names from save" % used_names.size())
