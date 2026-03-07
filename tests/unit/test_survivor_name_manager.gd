@@ -79,6 +79,54 @@ func test_released_name_can_be_reassigned():
   var reassigned = SurvivorNameManager.assign_name()
   assert_eq(reassigned, name, "Released name should be available for reassignment")
 
+# --- fallback name generator ---
+
+func test_assign_name_when_pool_exhausted_returns_non_empty():
+  # Fill the entire primary pool
+  for n in SurvivorNameManager.NAME_POOL:
+    SurvivorNameManager.used_names.append(n)
+
+  var generated = SurvivorNameManager.assign_name()
+  assert_ne(generated, "", "Should return a non-empty generated name when pool is exhausted")
+
+func test_assign_name_when_pool_exhausted_is_not_a_plain_pool_name():
+  for n in SurvivorNameManager.NAME_POOL:
+    SurvivorNameManager.used_names.append(n)
+
+  var generated = SurvivorNameManager.assign_name()
+  assert_false(SurvivorNameManager.NAME_POOL.has(generated),
+    "Generated name should not be a plain pool name when pool is exhausted")
+
+func test_assign_name_when_pool_exhausted_is_unique():
+  for n in SurvivorNameManager.NAME_POOL:
+    SurvivorNameManager.used_names.append(n)
+
+  var first_generated = SurvivorNameManager.assign_name()
+  var second_generated = SurvivorNameManager.assign_name()
+  assert_ne(first_generated, second_generated,
+    "Two consecutively generated names should be unique")
+
+func test_assign_name_when_pool_exhausted_adds_to_used_names():
+  for n in SurvivorNameManager.NAME_POOL:
+    SurvivorNameManager.used_names.append(n)
+
+  var count_before = SurvivorNameManager.used_names.size()
+  var generated = SurvivorNameManager.assign_name()
+  assert_eq(SurvivorNameManager.used_names.size(), count_before + 1,
+    "Generated name should be added to used_names")
+  assert_true(SurvivorNameManager.used_names.has(generated),
+    "Generated name should appear in used_names")
+
+func test_generated_name_can_be_released():
+  for n in SurvivorNameManager.NAME_POOL:
+    SurvivorNameManager.used_names.append(n)
+
+  var generated = SurvivorNameManager.assign_name()
+  var count_before = SurvivorNameManager.used_names.size()
+  SurvivorNameManager.release_name(generated)
+  assert_eq(SurvivorNameManager.used_names.size(), count_before - 1,
+    "Generated name should be releasable")
+
 # --- persistence (save / load) ---
 
 func test_get_save_key_returns_expected_key():
@@ -98,10 +146,26 @@ func test_save_and_load_round_trip():
   for n in saved_names:
     assert_true(SurvivorNameManager.used_names.has(n), "Loaded data should contain name '%s'" % n)
 
-func test_load_data_ignores_names_not_in_pool():
-  var bogus_data = {"used_names": ["FakeNameXYZ", "AnotherBogus"]}
-  SurvivorNameManager.load_data(bogus_data)
-  assert_eq(SurvivorNameManager.used_names.size(), 0, "Names not in pool should be ignored on load")
+func test_generated_name_survives_save_load_round_trip():
+  # Exhaust the pool then generate a fallback name
+  for n in SurvivorNameManager.NAME_POOL:
+    SurvivorNameManager.used_names.append(n)
+  var generated = SurvivorNameManager.assign_name()
+
+  var save_data = SurvivorNameManager.get_save_data()
+  SurvivorNameManager.reset_data()
+  SurvivorNameManager.load_data(save_data)
+
+  assert_true(SurvivorNameManager.used_names.has(generated),
+    "Generated name should survive a save/load round trip")
+
+func test_load_data_ignores_empty_strings():
+  var data = {"used_names": ["", " "]}
+  SurvivorNameManager.load_data(data)
+  assert_false(SurvivorNameManager.used_names.has(""),
+    "Empty string should not be loaded as a used name")
+  assert_false(SurvivorNameManager.used_names.has(" "),
+    "Whitespace-only string should not be loaded as a used name")
 
 func test_load_data_accepts_empty_array():
   SurvivorNameManager.assign_name()
