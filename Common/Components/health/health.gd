@@ -19,6 +19,8 @@ const COLOR_ZOMBIE_FAST: Color = Color(0.788, 0.365, 0.310, 1.0) # warm red/oran
 const COLOR_ZOMBIE_TANK: Color = Color(0.420, 0.447, 0.502, 1.0) # cool gray #6B7280
 const COLOR_SURVIVOR: Color = Color(0.949, 0.655, 0.353, 1.0) # orange accent #F2A75A
 const COLOR_DEFAULT: Color = Color(0.349, 0.431, 0.286, 1.0) # zombie_flesh from palette
+## Lerp weight toward white when tinting the name label (0 = bar color, 1 = pure white)
+const NAME_LABEL_LIGHTEN_WEIGHT: float = 0.55
 
 @export_group("Health Settings")
 @export var hitpoints: int = 100
@@ -171,7 +173,7 @@ func _get_effective_bar_color() -> Color:
     return COLOR_DEFAULT
 
   # Survivors use the orange accent color
-  if parent.is_in_group("survivors"):
+  if parent.is_in_group("targets"):
     return COLOR_SURVIVOR
 
   # Use enemy_type string to identify zombie sub-types
@@ -196,7 +198,7 @@ func _get_entity_display_name() -> String:
     return ""
 
   # Survivors: use the assigned survivor name
-  if parent.is_in_group("survivors") and "survivor_name" in parent:
+  if parent.is_in_group("targets") and "survivor_name" in parent:
     var sname: String = str(parent.survivor_name)
     if not sname.is_empty():
       return sname
@@ -208,7 +210,7 @@ func _get_entity_display_name() -> String:
       var words := type.split("_")
       var parts: PackedStringArray = []
       for word in words:
-        parts.append(word.capitalize())
+        parts.append(word.to_lower().capitalize())
       return " ".join(parts)
 
   return ""
@@ -232,7 +234,7 @@ func _update_health_bar_visuals():
 
   # Apply a lightened version of the bar color to the name label so it is
   # visually distinct from the white HP numbers but still entity-type-coded.
-  name_label.add_theme_color_override("font_color", base_color.lerp(Color.WHITE, 0.55))
+  name_label.add_theme_color_override("font_color", base_color.lerp(Color.WHITE, NAME_LABEL_LIGHTEN_WEIGHT))
 
   # Compute transparency using three zones:
   #   hp >= HIGH_HP_THRESHOLD : faded (HIGH_HP_OPACITY)
