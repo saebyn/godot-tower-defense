@@ -35,6 +35,10 @@ func _ready():
   navigation_agent.path_desired_distance = 0.5
   navigation_agent.target_desired_distance = target_desired_distance
 
+  # Sync NavigationAgent3D debug display with the current debug mode
+  navigation_agent.debug_enabled = SettingsManager.debug_mode
+  SettingsManager.debug_mode_changed.connect(_on_debug_mode_changed)
+
   # Connect the death signal from Health component
   if health:
     health.died.connect(_on_died)
@@ -286,3 +290,7 @@ func _on_died(damage_source: String = "unknown"):
 
 func _on_health_damaged(amount: int, hitpoints: int, damage_source: String = "unknown") -> void:
   MyLogger.debug("Enemy.Combat", "Enemy (%s) took %d damage from %s. Remaining HP: %d" % [enemy_type, amount, damage_source, hitpoints])
+
+
+func _on_debug_mode_changed(enabled: bool) -> void:
+  navigation_agent.debug_enabled = enabled
