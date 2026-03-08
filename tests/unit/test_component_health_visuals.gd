@@ -166,10 +166,9 @@ func test_survivor_group_yields_survivor_color():
 func test_explicit_bar_color_overrides_auto():
   var health := _make_health()
   health.use_custom_bar_color = true
-  health.bar_color = Color(1.0, 0.0, 0.0, 1.0)  # bright red override
+  health.bar_color = Color(1.0, 0.0, 0.0, 1.0) # bright red override
   await get_tree().process_frame
 
   var color := health._get_effective_bar_color()
   assert_eq(color, Color(1.0, 0.0, 0.0, 1.0),
     "Explicit bar_color should override auto-detection")
-

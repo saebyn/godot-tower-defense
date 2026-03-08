@@ -28,6 +28,8 @@ const COLOR_DEFAULT: Color = Color(0.349, 0.431, 0.286, 1.0) # zombie_flesh from
     _update_display()
 
 @export_group("Visual Settings")
+## When false the health bar sprite is hidden entirely (health is still tracked).
+@export var show_health_bar: bool = true
 ## Override the health bar fill color. Requires use_custom_bar_color = true.
 @export var bar_color: Color = Color(0.0, 0.0, 0.0, 0.0)
 ## When true, bar_color is used instead of automatic type-based color detection.
@@ -111,7 +113,7 @@ func _update_display():
   if not is_node_ready():
     return
   
-  sprite.visible = not disabled
+  sprite.visible = (not disabled) and show_health_bar
 
   # Set up health display UI
   health_bar.max_value = max_hitpoints
