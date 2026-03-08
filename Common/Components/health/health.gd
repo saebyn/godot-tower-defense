@@ -1,12 +1,14 @@
 extends Node
 class_name Component_Health
 
-## Opacity applied when HP is at or above the full-health threshold
+## Opacity applied when HP is at or above the high-health threshold (semi-transparent)
 const HIGH_HP_OPACITY: float = 0.35
-## Opacity applied when HP drops below the low-health threshold
+## Maximum opacity, applied at or below the low-health threshold
 const FULL_OPACITY: float = 1.0
-## HP ratio above which the bar fades to high-opacity
+## HP ratio above which the bar fades to low opacity (becomes more transparent)
 const HIGH_HP_THRESHOLD: float = 0.8
+## HP ratio at or below which the bar is always fully opaque
+const LOW_HP_THRESHOLD: float = 0.3
 
 ## Health bar fill colors keyed to zombie/entity type themes (Visual Style Guide)
 const COLOR_ZOMBIE_STANDARD: Color = Color(0.478, 0.608, 0.463, 1.0)  # desaturated green #7A9B76
@@ -153,9 +155,19 @@ func _update_health_bar_visuals():
   if _bar_fill_style:
     _bar_fill_style.bg_color = fill_color
 
-  # Compute transparency: fade bar toward HIGH_HP_OPACITY when HP is healthy
+  # Compute transparency using three zones:
+  #   hp >= HIGH_HP_THRESHOLD : faded (HIGH_HP_OPACITY)
+  #   hp <= LOW_HP_THRESHOLD  : fully opaque (FULL_OPACITY)
+  #   between thresholds      : linear interpolation
   var hp_ratio: float = float(hitpoints) / float(max_hitpoints) if max_hitpoints > 0 else 0.0
-  var target_alpha: float = HIGH_HP_OPACITY if hp_ratio >= HIGH_HP_THRESHOLD else lerp(FULL_OPACITY, HIGH_HP_OPACITY, hp_ratio / HIGH_HP_THRESHOLD)
+  var target_alpha: float
+  if hp_ratio >= HIGH_HP_THRESHOLD:
+    target_alpha = HIGH_HP_OPACITY
+  elif hp_ratio <= LOW_HP_THRESHOLD:
+    target_alpha = FULL_OPACITY
+  else:
+    var lerp_weight: float = (hp_ratio - LOW_HP_THRESHOLD) / (HIGH_HP_THRESHOLD - LOW_HP_THRESHOLD)
+    target_alpha = lerp(FULL_OPACITY, HIGH_HP_OPACITY, lerp_weight)
 
   sprite.modulate.a = target_alpha
   # Keep label readable — never drop below 60% opacity
