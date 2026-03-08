@@ -96,6 +96,27 @@ func take_damage(amount: float, damage_source: String = "unknown"):
 func _ready():
   # Store the initial hitpoints as max_hitpoints
   max_hitpoints = hitpoints
+
+  # Register this component in parent's metadata for discovery
+  # Must happen in _ready so that sibling/parent scripts can find it during their own _ready
+  var parent = get_parent()
+
+  if not audio_player:
+    MyLogger.warn("Health", "No AudioStreamPlayer assigned for Health effect sounds.")
+
+  if parent:
+    parent.set_meta("health_component", self)
+
+    # Try to get damage numbers component if it exists
+    if parent.has_meta("damage_numbers_component"):
+      damage_numbers = parent.get_meta("damage_numbers_component")
+
+  # One-time display initialisation
+  _bar_fill_style = StyleBoxFlat.new()
+  health_bar.add_theme_stylebox_override("fill", _bar_fill_style)
+  subviewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+  _update_display()
+
   GameManager.speed_changed.connect(_on_game_speed_changed)
 
 func _on_game_speed_changed(new_speed: float):
@@ -110,27 +131,6 @@ func _process(delta: float) -> void:
     if _damage_reveal_timer <= 0.0 and not _hovered:
       _damage_reveal_timer = 0.0
       _update_display()
-
-  # Create a reusable StyleBoxFlat for bar fill color (avoids allocating per update)
-  _bar_fill_style = StyleBoxFlat.new()
-  health_bar.add_theme_stylebox_override("fill", _bar_fill_style)
-
-  _update_display()
-  subviewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-  
-  # Register this component in parent's metadata for discovery
-  var parent = get_parent()
-
-  if not audio_player:
-    MyLogger.warn("Health", "No AudioStreamPlayer assigned for Health effect sounds.")
-
-
-  if parent:
-    parent.set_meta("health_component", self )
-
-    # Try to get damage numbers component if it exists
-    if parent.has_meta("damage_numbers_component"):
-      damage_numbers = parent.get_meta("damage_numbers_component")
 
 func _update_display():
   if not is_node_ready():
