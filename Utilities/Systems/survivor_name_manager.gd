@@ -55,12 +55,13 @@ const _GENERATED_NAME_PREFIXES: Array[String] = [
 var used_names: Array[String] = []
 
 ## Priority pool — checked before NAME_POOL. Add names here to give specific
-## survivors memorable identities. Released priority names are permanently
-## consumed and never reassigned (see _spent_priority_names).
+## survivors memorable identities. Priority names are permanently consumed
+## on assignment and never reassigned (see _spent_priority_names).
 var priority_pool: Array[String] = []
 
-## Priority names that have already been used and released; excluded from
-## future assignments so each priority name is a once-only identity.
+## Priority names that have already been assigned (may still be in use) and
+## are excluded from future assignments so each priority name is a once-only
+## identity.
 var _spent_priority_names: Array[String] = []
 
 signal name_assigned(survivor_name: String)
