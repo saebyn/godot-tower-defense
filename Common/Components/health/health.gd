@@ -139,7 +139,11 @@ func _update_display():
   if not is_node_ready():
     return
   
-  var unit_frame_visible: bool = show_health_bar and (_hovered or _damage_reveal_timer > 0.0)
+  # Survivors (targets group) always show their unit frame so the name and HP
+  # are permanently readable; other entities only show on hover or recent damage.
+  var parent = get_parent()
+  var is_survivor: bool = parent != null and parent.is_in_group("targets")
+  var unit_frame_visible: bool = show_health_bar and (is_survivor or _hovered or _damage_reveal_timer > 0.0)
   sprite.visible = (not disabled) and unit_frame_visible
 
   # Set up health display UI
