@@ -6,8 +6,12 @@ extends Node
 
 signal video_settings_changed()
 signal audio_settings_changed()
+signal debug_mode_changed(enabled: bool)
 
 const SETTINGS_FILE = "user://settings.cfg"
+
+# Debug settings (runtime only, not persisted)
+var debug_mode: bool = false
 
 # Video settings
 var fullscreen: bool = false
@@ -178,6 +182,13 @@ func set_sfx_volume(volume_db: float) -> void:
   sfx_volume = clamp(volume_db, -80.0, 0.0)
   apply_audio_settings()
   save_settings()
+
+## Set debug mode (runtime only, not persisted)
+func set_debug_mode(enabled: bool) -> void:
+  if debug_mode != enabled:
+    debug_mode = enabled
+    debug_mode_changed.emit(debug_mode)
+    MyLogger.info("SettingsManager", "Debug mode %s" % ("enabled" if debug_mode else "disabled"))
 
 ## Get resolution string for display
 func get_resolution_string(index: int) -> String:

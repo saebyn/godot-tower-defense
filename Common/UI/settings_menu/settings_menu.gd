@@ -26,6 +26,9 @@ signal closed()
 # Keybinds tab controls
 @onready var keybinds_container: VBoxContainer = $Panel/MarginContainer/VBoxContainer/TabContainer/Keybinds/ScrollContainer/KeybindsContainer
 
+# Debug tab controls
+@onready var debug_check: CheckButton = $Panel/MarginContainer/VBoxContainer/TabContainer/Debug/VBoxContainer/DebugModeContainer/DebugModeCheck
+
 # Bottom buttons
 @onready var apply_button: Button = $Panel/MarginContainer/VBoxContainer/ButtonContainer/ApplyButton
 @onready var cancel_button: Button = $Panel/MarginContainer/VBoxContainer/ButtonContainer/CancelButton
@@ -94,6 +97,9 @@ func _connect_signals() -> void:
   # Bottom buttons
   apply_button.pressed.connect(_on_apply_pressed)
   cancel_button.pressed.connect(_on_cancel_pressed)
+  
+  # Debug settings
+  debug_check.toggled.connect(_on_debug_mode_toggled)
 
 func _setup_resolution_options() -> void:
   resolution_option.clear()
@@ -154,6 +160,9 @@ func _load_current_settings() -> void:
   sfx_slider.value = _db_to_percentage(temp_sfx_volume)
   music_pause_check.button_pressed = temp_music_pause
   
+  # Debug settings
+  debug_check.button_pressed = SettingsManager.debug_mode
+  
   _update_volume_labels()
 
 func _db_to_percentage(db: float) -> float:
@@ -201,6 +210,9 @@ func _on_music_pause_toggled(pressed: bool) -> void:
   temp_music_pause = pressed
   SettingsManager.music_pause = temp_music_pause
   SettingsManager.apply_audio_settings()
+
+func _on_debug_mode_toggled(pressed: bool) -> void:
+  SettingsManager.set_debug_mode(pressed)
 
 func _on_apply_pressed() -> void:
   # Check if video settings changed
