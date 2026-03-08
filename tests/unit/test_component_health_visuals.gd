@@ -35,8 +35,8 @@ func test_full_health_fades_to_high_opacity():
   var health := _make_health()
   await get_tree().process_frame
 
-  # At 100% HP sprite should be faded
-  assert_almost_eq(health.sprite.modulate.a, Component_Health.HIGH_HP_OPACITY, 0.01,
+  # At 100% HP the bar should be nearly invisible (HIGH_HP_OPACITY)
+  assert_almost_eq(health.health_bar.modulate.a, Component_Health.HIGH_HP_OPACITY, 0.01,
     "Full HP should use HIGH_HP_OPACITY")
 
 func test_low_health_shows_full_opacity():
@@ -47,7 +47,7 @@ func test_low_health_shows_full_opacity():
   health.hitpoints = int(health.max_hitpoints * Component_Health.LOW_HP_THRESHOLD)
   health._update_display()
 
-  assert_almost_eq(health.sprite.modulate.a, Component_Health.FULL_OPACITY, 0.01,
+  assert_almost_eq(health.health_bar.modulate.a, Component_Health.FULL_OPACITY, 0.01,
     "HP at LOW_HP_THRESHOLD should use FULL_OPACITY")
 
 func test_zero_health_shows_full_opacity():
@@ -57,7 +57,7 @@ func test_zero_health_shows_full_opacity():
   health.hitpoints = 0
   health._update_display()
 
-  assert_almost_eq(health.sprite.modulate.a, Component_Health.FULL_OPACITY, 0.01,
+  assert_almost_eq(health.health_bar.modulate.a, Component_Health.FULL_OPACITY, 0.01,
     "Zero HP should use FULL_OPACITY")
 
 func test_opacity_at_high_hp_threshold_boundary():
@@ -69,7 +69,7 @@ func test_opacity_at_high_hp_threshold_boundary():
   health._update_display()
 
   # Should be at HIGH_HP_OPACITY (at or above threshold)
-  assert_almost_eq(health.sprite.modulate.a, Component_Health.HIGH_HP_OPACITY, 0.05,
+  assert_almost_eq(health.health_bar.modulate.a, Component_Health.HIGH_HP_OPACITY, 0.05,
     "HP at HIGH_HP_THRESHOLD should be near HIGH_HP_OPACITY")
 
 func test_opacity_interpolates_between_thresholds():
@@ -82,18 +82,18 @@ func test_opacity_interpolates_between_thresholds():
   health._update_display()
 
   # Should be between HIGH_HP_OPACITY and FULL_OPACITY, not at either extreme
-  assert_gt(health.sprite.modulate.a, Component_Health.HIGH_HP_OPACITY,
+  assert_gt(health.health_bar.modulate.a, Component_Health.HIGH_HP_OPACITY,
     "Mid-health should be more opaque than HIGH_HP_OPACITY")
-  assert_lt(health.sprite.modulate.a, Component_Health.FULL_OPACITY,
+  assert_lt(health.health_bar.modulate.a, Component_Health.FULL_OPACITY,
     "Mid-health should be less opaque than FULL_OPACITY")
 
 func test_label_opacity_never_below_minimum():
   var health := _make_health()
   await get_tree().process_frame
 
-  # At full health the label should still be at least 60% opaque
-  assert_gte(health.health_label.modulate.a, 0.6,
-    "Label opacity should never drop below 0.6")
+  # Label modulate is never touched by the health system, so it stays at 1.0
+  assert_almost_eq(health.health_label.modulate.a, 1.0, 0.01,
+    "Label opacity should be 1.0 (untouched)")
 
 func test_label_opacity_at_low_health():
   var health := _make_health()
@@ -102,8 +102,8 @@ func test_label_opacity_at_low_health():
   health.hitpoints = 1
   health._update_display()
 
-  assert_gte(health.health_label.modulate.a, 0.6,
-    "Label opacity should remain readable at low HP")
+  assert_almost_eq(health.health_label.modulate.a, 1.0, 0.01,
+    "Label opacity should be 1.0 (untouched) even at low HP")
 
 
 # ────────────────────────────────────────────────────────────────

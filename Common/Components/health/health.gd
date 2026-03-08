@@ -1,8 +1,8 @@
 extends Node
 class_name Component_Health
 
-## Opacity applied when HP is at or above the high-health threshold (semi-transparent)
-const HIGH_HP_OPACITY: float = 0.35
+## Opacity applied when HP is at or above the high-health threshold (nearly invisible)
+const HIGH_HP_OPACITY: float = 0.10
 ## Maximum opacity, applied at or below the low-health threshold
 const FULL_OPACITY: float = 1.0
 ## HP ratio above which the bar fades to low opacity (becomes more transparent)
@@ -11,11 +11,11 @@ const HIGH_HP_THRESHOLD: float = 0.8
 const LOW_HP_THRESHOLD: float = 0.3
 
 ## Health bar fill colors keyed to zombie/entity type themes (Visual Style Guide)
-const COLOR_ZOMBIE_STANDARD: Color = Color(0.478, 0.608, 0.463, 1.0)  # desaturated green #7A9B76
-const COLOR_ZOMBIE_FAST: Color = Color(0.788, 0.365, 0.310, 1.0)      # warm red/orange #C95D4F
-const COLOR_ZOMBIE_TANK: Color = Color(0.420, 0.447, 0.502, 1.0)      # cool gray #6B7280
-const COLOR_SURVIVOR: Color = Color(0.949, 0.655, 0.353, 1.0)         # orange accent #F2A75A
-const COLOR_DEFAULT: Color = Color(0.349, 0.431, 0.286, 1.0)          # zombie_flesh from palette
+const COLOR_ZOMBIE_STANDARD: Color = Color(0.478, 0.608, 0.463, 1.0) # desaturated green #7A9B76
+const COLOR_ZOMBIE_FAST: Color = Color(0.788, 0.365, 0.310, 1.0) # warm red/orange #C95D4F
+const COLOR_ZOMBIE_TANK: Color = Color(0.420, 0.447, 0.502, 1.0) # cool gray #6B7280
+const COLOR_SURVIVOR: Color = Color(0.949, 0.655, 0.353, 1.0) # orange accent #F2A75A
+const COLOR_DEFAULT: Color = Color(0.349, 0.431, 0.286, 1.0) # zombie_flesh from palette
 
 @export_group("Health Settings")
 @export var hitpoints: int = 100
@@ -39,8 +39,9 @@ const COLOR_DEFAULT: Color = Color(0.349, 0.431, 0.286, 1.0)          # zombie_f
 @export var audio_player: AudioStreamPlayer3D
 
 
-@onready var health_bar := $SubViewportContainer/SubViewport/VBoxContainer/HealthBar
-@onready var health_label := $SubViewportContainer/SubViewport/VBoxContainer/HealthLabel
+@onready var health_bar := $SubViewportContainer/SubViewport/VBoxContainer/BarOverlay/HealthBar
+@onready var health_label := $SubViewportContainer/SubViewport/VBoxContainer/BarOverlay/HealthLabel
+@onready var background := $SubViewportContainer/SubViewport/Background
 @onready var subviewport := $SubViewportContainer/SubViewport
 @onready var sprite := $Sprite3D
 
@@ -150,16 +151,22 @@ func _update_health_bar_visuals():
   if not is_node_ready():
     return
 
-  # Apply fill color
-  var fill_color := _get_effective_bar_color()
+  var hp_ratio: float = float(hitpoints) / float(max_hitpoints) if max_hitpoints > 0 else 0.0
+
+  # Apply fill color, lerping toward saturated red as HP drops
+  var base_color := _get_effective_bar_color()
+  var danger_color := Color(0.85, 0.10, 0.10, 1.0) # vivid red
+  # Color starts shifting at 60% HP and is fully red at 0%
+  var color_lerp_weight: float = clampf(1.0 - (hp_ratio / 0.6), 0.0, 1.0)
+  # Increase saturation as well: convert to HSV, boost saturation, convert back
+  var lerped := base_color.lerp(danger_color, color_lerp_weight)
   if _bar_fill_style:
-    _bar_fill_style.bg_color = fill_color
+    _bar_fill_style.bg_color = lerped
 
   # Compute transparency using three zones:
   #   hp >= HIGH_HP_THRESHOLD : faded (HIGH_HP_OPACITY)
   #   hp <= LOW_HP_THRESHOLD  : fully opaque (FULL_OPACITY)
   #   between thresholds      : linear interpolation
-  var hp_ratio: float = float(hitpoints) / float(max_hitpoints) if max_hitpoints > 0 else 0.0
   var target_alpha: float
   if hp_ratio >= HIGH_HP_THRESHOLD:
     target_alpha = HIGH_HP_OPACITY
@@ -169,9 +176,11 @@ func _update_health_bar_visuals():
     var lerp_weight: float = (hp_ratio - LOW_HP_THRESHOLD) / (HIGH_HP_THRESHOLD - LOW_HP_THRESHOLD)
     target_alpha = lerp(FULL_OPACITY, HIGH_HP_OPACITY, lerp_weight)
 
-  sprite.modulate.a = target_alpha
-  # Keep label readable — never drop below 60% opacity
-  health_label.modulate.a = maxf(target_alpha, 0.6)
+  # Modulate the bar and background individually inside the SubViewport.
+  # Sprite3D.modulate is left at full opacity so the label (baked into the
+  # same SubViewport texture) is never dimmed — it stays fully readable.
+  health_bar.modulate.a = target_alpha
+  background.modulate.a = target_alpha
 
 func _die(damage_source: String = "unknown"):
   if dead:
