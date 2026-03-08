@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=4 uid="uid://bwhean8gy2rcd"]
+[gd_scene format=4 uid="uid://bwhean8gy2rcd"]
 
 [ext_resource type="Script" uid="uid://bllk3lva37p4k" path="res://Entities/Enemies/Templates/base_enemy/enemy.gd" id="2_4gyqm"]
 [ext_resource type="Material" uid="uid://cm7vfxtn1k3it" path="res://Assets/Textures/zombieA.material" id="2_s6e6n"]
@@ -976,19 +976,19 @@ _data = {
 radius = 0.465962
 height = 4.10729
 
-[node name="enemy" type="CharacterBody3D" groups=["enemies"]]
+[node name="enemy" type="CharacterBody3D" unique_id=565185977 groups=["enemies"]]
 collision_layer = 4
 collision_mask = 7
 safe_margin = 0.5
 script = ExtResource("2_4gyqm")
 movement_speed = 20.0
 
-[node name="characterMedium" type="MeshInstance3D" parent="."]
+[node name="characterMedium" type="MeshInstance3D" parent="." unique_id=960081757]
 mesh = SubResource("ArrayMesh_s6e6n")
 skin = SubResource("Skin_s8arm")
 skeleton = NodePath("../Skeleton3D")
 
-[node name="Skeleton3D" type="Skeleton3D" parent="."]
+[node name="Skeleton3D" type="Skeleton3D" parent="." unique_id=1624942205]
 motion_scale = 1.24222
 animate_physical_bones = false
 bones/0/name = "LeftFootCtrl"
@@ -1398,48 +1398,45 @@ bones/57/position = Vector3(-0.0255165, 0.211536, 0.00843864)
 bones/57/rotation = Quaternion(-0.0598794, 0.997998, 0.0200427, 0.00359886)
 bones/57/scale = Vector3(1, 1, 1)
 
-[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1047412762]
 path_max_distance = 10.01
 path_postprocessing = 2
 simplify_path = true
 simplify_epsilon = 5.0
-debug_enabled = true
 debug_path_custom_color = Color(1, 0.0392157, 0.0352941, 1)
 
-[node name="Attack" parent="." node_paths=PackedStringArray("audio_player") instance=ExtResource("3_qi2p4")]
+[node name="Attack" parent="." unique_id=1650386457 node_paths=PackedStringArray("audio_player") instance=ExtResource("3_qi2p4")]
 damage_source = "base_enemy"
 hit_sound = 18
 audio_player = NodePath("../AudioStreamPlayer3D")
 
-[node name="Health" parent="." node_paths=PackedStringArray("audio_player") instance=ExtResource("4_iifgy")]
+[node name="Health" parent="." unique_id=734302112 node_paths=PackedStringArray("audio_player") instance=ExtResource("4_iifgy")]
 hitpoints = 2
 hit_sound = 1
 death_sound = 4
 audio_player = NodePath("../AudioStreamPlayer3D")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_e25lm")
-}
-autoplay = "Idle"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2075725855]
+libraries/ = SubResource("AnimationLibrary_e25lm")
+autoplay = &"Idle"
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1571389275]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0118122, 2.05365, 0.171304)
 shape = SubResource("CapsuleShape3D_s6e6n")
 
-[node name="ShakeEffect" type="Node" parent="."]
+[node name="ShakeEffect" type="Node" parent="." unique_id=1766538940]
 script = ExtResource("5_s6e6n")
 metadata/_custom_type_script = "uid://1es12v0p8gvh"
 
-[node name="Component_DamageNumbers" type="Node" parent="."]
+[node name="Component_DamageNumbers" type="Node" parent="." unique_id=377778520]
 script = ExtResource("6_s8arm")
 metadata/_custom_type_script = "uid://d2guk20uq6gui"
 
-[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1909897792]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7646298, 0.5170518)
 bus = &"Sound Effects"
 
-[node name="Component_IdleSounds" type="Node3D" parent="." node_paths=PackedStringArray("audio_player")]
+[node name="Component_IdleSounds" type="Node3D" parent="." unique_id=373453345 node_paths=PackedStringArray("audio_player")]
 script = ExtResource("7_sm4ql")
 idle_sound = 12
 audio_player = NodePath("../AudioStreamPlayer3D")
