@@ -59,16 +59,11 @@ var used_names: Array[String] = []
 ## on assignment and never reassigned (see _spent_priority_names).
 var priority_pool: Array[String] = []
 
-## Priority names that have already been assigned (may still be in use) and
-## are excluded from future assignments so each priority name is a once-only
-## identity.
-var _spent_priority_names: Array[String] = []
-
 signal name_assigned(survivor_name: String)
 signal name_released(survivor_name: String)
 
 func _ready() -> void:
-  SaveManager.register_system(self)
+  SaveManager.register_system(self )
   MyLogger.info("SurvivorNameManager", "Survivor Name Manager initialized - Pool size: %d" % NAME_POOL.size())
 
 ## Assign an available name to a new survivor.
@@ -78,15 +73,12 @@ func _ready() -> void:
 func assign_name() -> String:
   var chosen: String
 
-  var available_priority = _get_available_priority_names()
-  if not available_priority.is_empty():
-    chosen = available_priority.pick_random()
-    # Mark as spent at assignment time so the check in release_name() remains
-    # correct even if priority_pool is later modified.
-    _spent_priority_names.append(chosen)
+  var available_priority_name = _get_next_available_priority_name()
+  if not available_priority_name.is_empty():
+    chosen = available_priority_name
     MyLogger.info("SurvivorNameManager", "Assigning priority name '%s'" % chosen)
   else:
-    var available = _get_available_names()
+    var available = _get_normal_pool_names()
     if available.is_empty():
       MyLogger.info("SurvivorNameManager", "Name pool exhausted - generating a fallback name")
       chosen = _generate_unique_name()
@@ -113,29 +105,40 @@ func release_name(survivor_name: String) -> void:
 
   used_names.remove_at(idx)
 
-  if survivor_name in _spent_priority_names:
-    MyLogger.info("SurvivorNameManager", "Consumed priority name '%s' (permanently retired)" % survivor_name)
-  else:
-    MyLogger.info("SurvivorNameManager", "Released name '%s' back to pool (%d names in use)" % [survivor_name, used_names.size()])
+  MyLogger.info("SurvivorNameManager", "Released name '%s' back to pool (%d names in use)" % [survivor_name, used_names.size()])
 
   name_released.emit(survivor_name)
 
+func add_name_to_priority_pool(new_name: String) -> bool:
+  # Checks to prevent adding empty or duplicate names to the priority pool,
+  # which could cause confusion and unintended behavior in name assignment
+  # and release logic.
+  if new_name.is_empty():
+    return false
+
+  if new_name in priority_pool:
+    MyLogger.warn("SurvivorNameManager", "Tried to add name '%s' to priority pool but it's already there" % new_name)
+    return false
+
+  priority_pool.append(new_name)
+  MyLogger.info("SurvivorNameManager", "Added name '%s' to priority pool" % new_name)
+  return true
+
 ## Returns all names that are not currently assigned to a living survivor
-## and have not been permanently consumed as priority names.
-func _get_available_names() -> Array[String]:
+func _get_normal_pool_names() -> Array[String]:
   var available: Array[String] = []
   for n in NAME_POOL:
-    if n not in used_names and n not in _spent_priority_names:
+    if n not in used_names:
       available.append(n)
   return available
 
-## Returns priority pool names that are available (not in use and not spent).
-func _get_available_priority_names() -> Array[String]:
-  var available: Array[String] = []
+## Returns first priority pool name that is available
+func _get_next_available_priority_name() -> String:
   for n in priority_pool:
-    if n not in used_names and n not in _spent_priority_names:
-      available.append(n)
-  return available
+    if n not in used_names:
+      priority_pool.erase(n) # Remove from priority pool to prevent future assignment
+      return n
+  return ""
 
 ## Generate a unique name by combining a random adjective prefix with a random
 ## base pool name, retrying until the combination is not already in use.
@@ -154,10 +157,9 @@ func _generate_unique_name() -> String:
 ## Number of primary pool names still available (excludes generated names and
 ## names permanently consumed via the priority pool).
 func get_available_count() -> int:
-  # Delegate to _get_available_names so we correctly exclude both names that are
-  # currently in use and names that have been permanently consumed via the
-  # priority pool (_spent_priority_names).
-  return _get_available_names().size()
+  # Delegate to _get_normal_pool_names so we correctly exclude
+  # names currently in use by survivors
+  return _get_normal_pool_names().size()
 
 ## SaveableSystem Interface Implementation
 
@@ -168,13 +170,11 @@ func get_save_data() -> Dictionary:
   return {
     "used_names": used_names.duplicate(),
     "priority_pool": priority_pool.duplicate(),
-    "spent_priority_names": _spent_priority_names.duplicate(),
   }
 
 func load_data(data: Dictionary) -> void:
   used_names.clear()
   priority_pool.clear()
-  _spent_priority_names.clear()
 
   var loaded_used: Array = data.get("used_names", [])
   for n in loaded_used:
@@ -186,15 +186,10 @@ func load_data(data: Dictionary) -> void:
     if n is String and not n.strip_edges().is_empty():
       priority_pool.append(n)
 
-  var loaded_spent: Array = data.get("spent_priority_names", [])
-  for n in loaded_spent:
-    if n is String and not n.strip_edges().is_empty():
-      _spent_priority_names.append(n)
 
-  MyLogger.info("SurvivorNameManager", "Loaded %d used names, %d priority names, %d spent priority names from save" % [used_names.size(), priority_pool.size(), _spent_priority_names.size()])
+  MyLogger.info("SurvivorNameManager", "Loaded %d used names, %d priority names from save" % [used_names.size(), priority_pool.size()])
 
 func reset_data() -> void:
   used_names.clear()
   priority_pool.clear()
-  _spent_priority_names.clear()
   MyLogger.info("SurvivorNameManager", "Survivor names reset")
