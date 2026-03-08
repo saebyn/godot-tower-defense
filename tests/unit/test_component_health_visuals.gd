@@ -82,6 +82,26 @@ func test_unit_frame_stays_visible_while_hovered_after_hover_ends_with_recent_da
   assert_true(health.sprite.visible,
     "Unit frame should stay visible after hover ends if damage timer is still running")
 
+func test_survivor_unit_frame_always_visible():
+  var parent := _make_survivor_parent("Carol")
+  var health := _make_health(parent)
+  await get_tree().process_frame
+
+  # No hover, no recent damage — survivor unit frame should still be visible
+  assert_true(health.sprite.visible,
+    "Survivor unit frame should always be visible regardless of hover or damage")
+
+func test_survivor_unit_frame_visible_after_hide():
+  var parent := _make_survivor_parent("Dave")
+  var health := _make_health(parent)
+  await get_tree().process_frame
+
+  health.show_unit_frame()
+  health.hide_unit_frame()
+
+  assert_true(health.sprite.visible,
+    "Survivor unit frame should stay visible even after hide_unit_frame()")
+
 
 # ────────────────────────────────────────────────────────────────
 # Transparency tests (unit frame must be revealed first)
