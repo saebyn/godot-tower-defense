@@ -259,7 +259,7 @@ func test_explicit_bar_color_overrides_auto():
 # Name label tests
 # ────────────────────────────────────────────────────────────────
 
-## Helper: create a Node3D in the "survivors" group with a survivor_name property.
+## Helper: create a Node3D in the "targets" group with a survivor_name property.
 func _make_survivor_parent(survivor_name_value: String) -> Node3D:
   var script = GDScript.new()
   script.source_code = "extends Node3D\nvar survivor_name: String = \"\""
