@@ -10,6 +10,9 @@ const HIGH_HP_THRESHOLD: float = 0.8
 ## HP ratio at or below which the bar is always fully opaque
 const LOW_HP_THRESHOLD: float = 0.3
 
+## Seconds the unit frame remains visible after taking damage
+const DAMAGE_REVEAL_DURATION: float = 3.0
+
 ## Health bar fill colors keyed to zombie/entity type themes (Visual Style Guide)
 const COLOR_ZOMBIE_STANDARD: Color = Color(0.478, 0.608, 0.463, 1.0) # desaturated green #7A9B76
 const COLOR_ZOMBIE_FAST: Color = Color(0.788, 0.365, 0.310, 1.0) # warm red/orange #C95D4F
@@ -50,6 +53,11 @@ const COLOR_DEFAULT: Color = Color(0.349, 0.431, 0.286, 1.0) # zombie_flesh from
 var max_hitpoints: int
 var dead: bool = false
 
+## Whether the player is currently hovering over the parent entity
+var _hovered: bool = false
+## Seconds remaining before the unit frame auto-hides after damage
+var _damage_reveal_timer: float = 0.0
+
 var damage_numbers: Component_DamageNumbers
 
 ## StyleBoxFlat used to apply fill color to the health bar (created once in _ready)
@@ -67,6 +75,7 @@ func take_damage(amount: float, damage_source: String = "unknown"):
   var damage = floori(min(amount, max_damage_per_hit))
   hitpoints = max(hitpoints - damage, 0)
   damaged.emit(damage, hitpoints, damage_source)
+  _damage_reveal_timer = DAMAGE_REVEAL_DURATION
   _update_display()
   
   # Show damage number via damage numbers component if available
@@ -87,6 +96,13 @@ func take_damage(amount: float, damage_source: String = "unknown"):
 func _ready():
   # Store the initial hitpoints as max_hitpoints
   max_hitpoints = hitpoints
+
+func _process(delta: float) -> void:
+  if _damage_reveal_timer > 0.0:
+    _damage_reveal_timer -= delta
+    if _damage_reveal_timer <= 0.0 and not _hovered:
+      _damage_reveal_timer = 0.0
+      _update_display()
 
   # Create a reusable StyleBoxFlat for bar fill color (avoids allocating per update)
   _bar_fill_style = StyleBoxFlat.new()
@@ -113,7 +129,8 @@ func _update_display():
   if not is_node_ready():
     return
   
-  sprite.visible = (not disabled) and show_health_bar
+  var unit_frame_visible: bool = show_health_bar and (_hovered or _damage_reveal_timer > 0.0)
+  sprite.visible = (not disabled) and unit_frame_visible
 
   # Set up health display UI
   health_bar.max_value = max_hitpoints
@@ -121,6 +138,16 @@ func _update_display():
   health_label.text = str(hitpoints) + " / " + str(max_hitpoints)
 
   _update_health_bar_visuals()
+
+## Called by external hover detection to make the unit frame visible.
+func show_unit_frame() -> void:
+  _hovered = true
+  _update_display()
+
+## Called by external hover detection to hide the unit frame (unless recently damaged).
+func hide_unit_frame() -> void:
+  _hovered = false
+  _update_display()
 
 ## Determine the fill color for the health bar based on the entity type.
 ## Returns bar_color if use_custom_bar_color is true, otherwise infers from parent entity type.

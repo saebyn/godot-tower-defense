@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://b3ntnuvrvys63"]
+[gd_scene format=3 uid="uid://b3ntnuvrvys63"]
 
 [ext_resource type="Script" uid="uid://2x2o4sni7v6q" path="res://Stages/Game/main/main.gd" id="1_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://d2nt6gtj5g3cm" path="res://Common/Components/attack/attack.tscn" id="2_kek77"]
@@ -29,22 +29,23 @@ shuffle = true
 stream_count = 1
 stream_0 = ExtResource("9_i0vvu")
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=142569674]
+process_mode = 1
 script = ExtResource("1_1bvp3")
 attack_waiting_cursor_image = ExtResource("2_wy7n0")
 obstacle_tooltip_scene = ExtResource("4_tooltip")
 
-[node name="Attack" parent="." node_paths=PackedStringArray("audio_player") instance=ExtResource("2_kek77")]
+[node name="Attack" parent="." unique_id=532095815 node_paths=PackedStringArray("audio_player") instance=ExtResource("2_kek77")]
 damage_amount = 1
 attack_speed = 10
 damage_source = "player"
 hit_sound = 18
 audio_player = NodePath("../AudioStreamPlayer")
 
-[node name="UI" parent="." instance=ExtResource("3_272bh")]
+[node name="UI" parent="." unique_id=321578720 instance=ExtResource("3_272bh")]
 process_mode = 3
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Camera3D" type="Camera3D" parent="." unique_id=2044361057]
 process_mode = 3
 transform = Transform3D(-4.37114e-08, 0.707107, -0.707107, 0, 0.707107, 0.707107, 1, 3.09086e-08, -3.09086e-08, -117.333, 113.256, 1.30774)
 projection = 1
@@ -56,30 +57,30 @@ camera_move_speed = 30.0
 camera_zoom_fast_multiplier = 5.0
 camera_max_size = 300.0
 
-[node name="AudioListener3D" type="AudioListener3D" parent="." node_paths=PackedStringArray("camera")]
+[node name="AudioListener3D" type="AudioListener3D" parent="." unique_id=1017148499 node_paths=PackedStringArray("camera")]
 script = ExtResource("8_audio_listener")
 camera = NodePath("../Camera3D")
 
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=609461712]
 navigation_mesh = SubResource("NavigationMesh_pcgyj")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=148050919]
 camera_attributes = SubResource("CameraAttributesPractical_i0vvu")
 compositor = SubResource("Compositor_hjeu7")
 
-[node name="EnemyRayCast3D" type="RayCast3D" parent="."]
+[node name="EnemyRayCast3D" type="RayCast3D" parent="." unique_id=476753059]
 enabled = false
 collision_mask = 4
 
-[node name="ObstaclePlacement" parent="." node_paths=PackedStringArray("audio_player", "navigation_region", "camera") instance=ExtResource("7_kek77")]
+[node name="ObstaclePlacement" parent="." unique_id=977494137 node_paths=PackedStringArray("audio_player", "navigation_region", "camera") instance=ExtResource("7_kek77")]
 audio_player = NodePath("../AudioStreamPlayer")
 navigation_region = NodePath("../NavigationRegion3D")
 camera = NodePath("../Camera3D")
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=704157109]
 bus = &"Sound Effects"
 
-[node name="BgMusicAudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="BgMusicAudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1459015999]
 stream = SubResource("AudioStreamPlaylist_hjeu7")
 bus = &"Music"
 

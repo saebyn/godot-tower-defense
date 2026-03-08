@@ -28,13 +28,70 @@ func _make_enemy_parent(enemy_type_value: String) -> Node3D:
 
 
 # ────────────────────────────────────────────────────────────────
-# Transparency tests
+# Unit-frame visibility tests
+# ────────────────────────────────────────────────────────────────
+
+func test_unit_frame_hidden_at_full_health_by_default():
+  var health := _make_health()
+  await get_tree().process_frame
+
+  # No damage taken, not hovered — sprite should be hidden
+  assert_false(health.sprite.visible,
+    "Unit frame should be hidden at full health with no hover")
+
+func test_unit_frame_shown_on_hover():
+  var health := _make_health()
+  await get_tree().process_frame
+
+  health.show_unit_frame()
+
+  assert_true(health.sprite.visible,
+    "Unit frame should be visible while hovered")
+
+func test_unit_frame_hidden_after_hover_ends():
+  var health := _make_health()
+  await get_tree().process_frame
+
+  health.show_unit_frame()
+  health.hide_unit_frame()
+
+  assert_false(health.sprite.visible,
+    "Unit frame should hide when hover ends (no recent damage)")
+
+func test_unit_frame_shown_after_damage():
+  var health := _make_health()
+  await get_tree().process_frame
+
+  # Manually set the damage-reveal timer as take_damage would
+  health._damage_reveal_timer = Component_Health.DAMAGE_REVEAL_DURATION
+  health._update_display()
+
+  assert_true(health.sprite.visible,
+    "Unit frame should be visible immediately after taking damage")
+
+func test_unit_frame_stays_visible_while_hovered_after_hover_ends_with_recent_damage():
+  var health := _make_health()
+  await get_tree().process_frame
+
+  # Hover + recent damage
+  health._damage_reveal_timer = Component_Health.DAMAGE_REVEAL_DURATION
+  health.show_unit_frame()
+  # End hover — timer still running, should stay visible
+  health.hide_unit_frame()
+
+  assert_true(health.sprite.visible,
+    "Unit frame should stay visible after hover ends if damage timer is still running")
+
+
+# ────────────────────────────────────────────────────────────────
+# Transparency tests (unit frame must be revealed first)
 # ────────────────────────────────────────────────────────────────
 
 func test_full_health_fades_to_high_opacity():
   var health := _make_health()
   await get_tree().process_frame
 
+  health.show_unit_frame() # reveal so bar alpha is meaningful
   # At 100% HP the bar should be nearly invisible (HIGH_HP_OPACITY)
   assert_almost_eq(health.health_bar.modulate.a, Component_Health.HIGH_HP_OPACITY, 0.01,
     "Full HP should use HIGH_HP_OPACITY")
@@ -43,6 +100,7 @@ func test_low_health_shows_full_opacity():
   var health := _make_health()
   await get_tree().process_frame
 
+  health.show_unit_frame()
   # Drop HP to or below LOW_HP_THRESHOLD — bar must be fully opaque
   health.hitpoints = int(health.max_hitpoints * Component_Health.LOW_HP_THRESHOLD)
   health._update_display()
@@ -54,6 +112,7 @@ func test_zero_health_shows_full_opacity():
   var health := _make_health()
   await get_tree().process_frame
 
+  health.show_unit_frame()
   health.hitpoints = 0
   health._update_display()
 
@@ -64,6 +123,7 @@ func test_opacity_at_high_hp_threshold_boundary():
   var health := _make_health()
   await get_tree().process_frame
 
+  health.show_unit_frame()
   # Exactly at HIGH_HP_THRESHOLD (80%)
   health.hitpoints = int(health.max_hitpoints * Component_Health.HIGH_HP_THRESHOLD)
   health._update_display()
@@ -76,6 +136,7 @@ func test_opacity_interpolates_between_thresholds():
   var health := _make_health()
   await get_tree().process_frame
 
+  health.show_unit_frame()
   # Set HP midway between LOW_HP_THRESHOLD and HIGH_HP_THRESHOLD
   var mid_hp_ratio: float = (Component_Health.LOW_HP_THRESHOLD + Component_Health.HIGH_HP_THRESHOLD) / 2.0
   health.hitpoints = int(health.max_hitpoints * mid_hp_ratio)
