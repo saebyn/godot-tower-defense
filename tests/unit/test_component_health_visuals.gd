@@ -214,7 +214,7 @@ func test_standard_enemy_type_yields_standard_color():
 func test_survivor_group_yields_survivor_color():
   var parent = Node3D.new()
   add_child_autofree(parent)
-  parent.add_to_group("survivors")
+  parent.add_to_group("targets")
   var health_scene = load("res://Common/Components/health/health.tscn")
   var health: Component_Health = health_scene.instantiate()
   parent.add_child(health)
@@ -248,7 +248,7 @@ func _make_survivor_parent(survivor_name_value: String) -> Node3D:
   var parent = Node3D.new()
   parent.set_script(script)
   parent.survivor_name = survivor_name_value
-  parent.add_to_group("survivors")
+  parent.add_to_group("targets")
   return parent
 
 func test_get_entity_display_name_empty_when_no_type():
