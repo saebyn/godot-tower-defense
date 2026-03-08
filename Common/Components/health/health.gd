@@ -96,6 +96,13 @@ func take_damage(amount: float, damage_source: String = "unknown"):
 func _ready():
   # Store the initial hitpoints as max_hitpoints
   max_hitpoints = hitpoints
+  GameManager.speed_changed.connect(_on_game_speed_changed)
+
+func _on_game_speed_changed(new_speed: float):
+  if new_speed <= 0:
+    show_unit_frame()
+  else:
+    hide_unit_frame()
 
 func _process(delta: float) -> void:
   if _damage_reveal_timer > 0.0:
