@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=4 uid="uid://b1yehhqyw2nfo"]
+[gd_scene format=4 uid="uid://b1yehhqyw2nfo"]
 
 [ext_resource type="Script" uid="uid://ef5o7bdag8pq" path="res://Entities/Targets/Templates/base_target/target.gd" id="1_e1yvt"]
 [ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="2_5ebp1"]
@@ -968,26 +968,30 @@ _data = {
 &"Run": SubResource("Animation_sm4ql")
 }
 
-[node name="Target" type="Node3D" groups=["targets"]]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hover"]
+radius = 0.88671875
+height = 3.724055
+
+[node name="Target" type="Node3D" unique_id=1795138384 groups=["targets"]]
 transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0, 0, 0)
 script = ExtResource("1_e1yvt")
 
-[node name="Health" parent="." node_paths=PackedStringArray("audio_player") instance=ExtResource("2_5ebp1")]
+[node name="Health" parent="." unique_id=850190797 node_paths=PackedStringArray("audio_player") instance=ExtResource("2_5ebp1")]
 hitpoints = 5
 hit_sound = 19
 death_sound = 5
 audio_player = NodePath("../AudioStreamPlayer3D")
 
-[node name="ShakeEffect" type="Node" parent="."]
+[node name="ShakeEffect" type="Node" parent="." unique_id=448051785]
 script = ExtResource("3_n2scg")
 metadata/_custom_type_script = "uid://1es12v0p8gvh"
 
-[node name="characterMedium" type="MeshInstance3D" parent="."]
+[node name="characterMedium" type="MeshInstance3D" parent="." unique_id=286343175]
 mesh = SubResource("ArrayMesh_tdtg0")
 skin = SubResource("Skin_iu6f8")
 skeleton = NodePath("../Skeleton3D")
 
-[node name="Skeleton3D" type="Skeleton3D" parent="."]
+[node name="Skeleton3D" type="Skeleton3D" parent="." unique_id=1418949546]
 motion_scale = 1.24222
 animate_physical_bones = false
 bones/0/name = "LeftFootCtrl"
@@ -1397,21 +1401,26 @@ bones/57/position = Vector3(-0.0255165, 0.211536, 0.00843864)
 bones/57/rotation = Quaternion(-0.0598794, 0.997998, 0.0200427, 0.00359886)
 bones/57/scale = Vector3(1, 1, 1)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_e25lm")
-}
-autoplay = "Idle"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=931396292]
+libraries/ = SubResource("AnimationLibrary_e25lm")
+autoplay = &"Idle"
 
-[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1093904899]
 transform = Transform3D(0.9999998, 0, 0, 0, 1, 0, 0, 0, 0.9999998, -0.0522452, 2.7797458, 0.698045)
 bus = &"Sound Effects"
 
-[node name="Component_PanicBehavior" type="Node" parent="."]
+[node name="Component_PanicBehavior" type="Node" parent="." unique_id=749990093]
 script = ExtResource("4_jt1q2")
 panic_detection_radius = 30.0
 yelp_sound_chance = 0.5
 metadata/_custom_type_script = "uid://b81o4afla2kvg"
+
+[node name="HoverBody" type="StaticBody3D" parent="." unique_id=1012599723]
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HoverBody" unique_id=580128914]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8723701, 0)
+shape = SubResource("CapsuleShape3D_hover")
 
 [connection signal="damaged" from="Health" to="." method="_on_health_damaged"]
 [connection signal="damaged" from="Health" to="ShakeEffect" method="damage_taken"]

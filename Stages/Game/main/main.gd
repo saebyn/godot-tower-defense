@@ -23,6 +23,8 @@ var obstacle_raycast: RayCast3D
 var current_scenario: Stage_Scenario = null
 ## Currently hovered ranged obstacle for range preview
 var _hovered_ranged_obstacle: Entity_RangedObstacle = null
+## Any entity (enemy, obstacle, target) currently under the cursor — used for unit-frame hover
+var _hovered_entity: Node3D = null
 ## Raycast for detecting ranged obstacles on hover
 var _hover_raycast: RayCast3D
 ## Obstacle tooltip for displaying stats on hover
@@ -46,7 +48,7 @@ func _ready() -> void:
   # Create hover detection raycast
   _hover_raycast = RayCast3D.new()
   _hover_raycast.enabled = false
-  _hover_raycast.collision_mask = 2 # Only detect obstacles (layer 2)
+  _hover_raycast.collision_mask = 1 | 2 | 4 # Targets/survivors (layer 1) + obstacles (layer 2) + enemies (layer 4)
   add_child(_hover_raycast)
   
   # Set player attack damage source
@@ -165,7 +167,7 @@ func _input(event: InputEvent) -> void:
     elif event.button_index == MOUSE_BUTTON_RIGHT:
       _handle_obstacle_remove_click(event.position)
   elif event is InputEventMouseMotion and not obstacle_placement.busy:
-    _handle_ranged_obstacle_hover(event.position)
+    _handle_hover(event.position)
 
 
 func _handle_enemy_click(click_position: Vector2):
@@ -222,6 +224,10 @@ func _handle_obstacle_remove_click(click_position: Vector2):
         _hovered_ranged_obstacle = null
         MyLogger.debug("Player", "Cleared hover state for removed obstacle")
       
+      if _hovered_entity == obstacle:
+        _hide_entity_unit_frame(_hovered_entity)
+        _hovered_entity = null
+      
       # Also check if the tooltip is showing this obstacle and hide it
       # This is a defensive check that handles both current and future cases
       # where non-ranged obstacles might show tooltips
@@ -275,41 +281,80 @@ func _on_placement_mode_exited() -> void:
       obstacle.hide_range_indicator(true) # Force hide even if hovered
 
 
-## Handles hover detection for ranged obstacles to show their range indicators.
-func _handle_ranged_obstacle_hover(mouse_position: Vector2) -> void:
+## Walks up the parent chain from node to find a node with "health_component" metadata.
+## Returns the Component_Health, or null if none is found.
+func _find_health_component(node: Node) -> Component_Health:
+  var current: Node = node
+  while current != null:
+    if current.has_meta("health_component"):
+      return current.get_meta("health_component") as Component_Health
+    current = current.get_parent()
+  return null
+
+## Show the unit frame on the health component of a node, if it has one.
+## Searches the node and its ancestors for a health_component.
+func _show_entity_unit_frame(entity: Node3D) -> void:
+  if entity == null:
+    return
+  var health := _find_health_component(entity)
+  if health:
+    health.show_unit_frame()
+
+## Hide the unit frame on the health component of a node, if it has one.
+## Searches the node and its ancestors for a health_component.
+func _hide_entity_unit_frame(entity: Node3D) -> void:
+  if entity == null or not is_instance_valid(entity):
+    return
+  var health := _find_health_component(entity)
+  if health:
+    health.hide_unit_frame()
+
+## Unified hover handler: drives ranged-obstacle range indicators, tooltips,
+## and unit-frame visibility for any entity with a health component.
+func _handle_hover(mouse_position: Vector2) -> void:
   # Skip if mouse hasn't moved enough to warrant a new raycast
   if _last_hover_check_position.distance_to(mouse_position) < HOVER_CHECK_THRESHOLD:
     return
   _last_hover_check_position = mouse_position
-  
+
   var ray_origin = camera.project_ray_origin(mouse_position)
   var ray_direction = camera.project_ray_normal(mouse_position)
-  
+
   _hover_raycast.enabled = true
   _hover_raycast.position = ray_origin
   _hover_raycast.target_position = ray_direction * raycast_length
   _hover_raycast.force_raycast_update()
-  
+
   var new_hovered_obstacle: Entity_RangedObstacle = null
-  
+  var new_hovered_entity: Node3D = null
+
   if _hover_raycast.is_colliding():
     var collider = _hover_raycast.get_collider()
+    if collider is Node3D:
+      new_hovered_entity = collider as Node3D
     if collider is Entity_RangedObstacle:
-      new_hovered_obstacle = collider
-  
+      new_hovered_obstacle = collider as Entity_RangedObstacle
+
   _hover_raycast.enabled = false
-  
-  # Update hover state if changed
+
+  # ── Ranged-obstacle range indicator + tooltip ──────────────────────────────
   if new_hovered_obstacle != _hovered_ranged_obstacle:
-    # Exit old hover
     if _hovered_ranged_obstacle and is_instance_valid(_hovered_ranged_obstacle):
       _hovered_ranged_obstacle.on_mouse_exit()
       if _obstacle_tooltip:
         _obstacle_tooltip.hide_tooltip()
-    
-    # Enter new hover
     _hovered_ranged_obstacle = new_hovered_obstacle
     if _hovered_ranged_obstacle:
       _hovered_ranged_obstacle.on_mouse_enter()
       if _obstacle_tooltip:
         _obstacle_tooltip.show_tooltip(_hovered_ranged_obstacle, mouse_position)
+
+  # ── Unit-frame hover for any entity with a health component ────────────────
+  # Clear stale reference if the previously hovered entity was freed (e.g. scrap collected)
+  if _hovered_entity != null and not is_instance_valid(_hovered_entity):
+    _hovered_entity = null
+  if new_hovered_entity != _hovered_entity:
+    if _hovered_entity != null:
+      _hide_entity_unit_frame(_hovered_entity)
+    _hovered_entity = new_hovered_entity
+    _show_entity_unit_frame(_hovered_entity)
