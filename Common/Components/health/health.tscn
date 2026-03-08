@@ -27,7 +27,7 @@ offset_bottom = -167.0
 transparent_bg = true
 handle_input_locally = false
 canvas_cull_mask = 4293918721
-size = Vector2i(160, 26)
+size = Vector2i(160, 42)
 render_target_update_mode = 4
 
 [node name="Background" type="NinePatchRect" parent="SubViewportContainer/SubViewport" unique_id=233114201]
@@ -43,6 +43,16 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 2
+
+[node name="NameLabel" type="Label" parent="SubViewportContainer/SubViewport/VBoxContainer" unique_id=1583921847]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+size_flags_vertical = 4
+text = ""
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 10
 
 [node name="BarOverlay" type="Control" parent="SubViewportContainer/SubViewport/VBoxContainer" unique_id=2025643628]
 custom_minimum_size = Vector2(0, 26)

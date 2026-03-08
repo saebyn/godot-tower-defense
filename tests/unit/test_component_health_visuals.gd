@@ -233,3 +233,91 @@ func test_explicit_bar_color_overrides_auto():
   var color := health._get_effective_bar_color()
   assert_eq(color, Color(1.0, 0.0, 0.0, 1.0),
     "Explicit bar_color should override auto-detection")
+
+
+# ────────────────────────────────────────────────────────────────
+# Name label tests
+# ────────────────────────────────────────────────────────────────
+
+## Helper: create a Node3D in the "survivors" group with a survivor_name property.
+func _make_survivor_parent(survivor_name_value: String) -> Node3D:
+  var script = GDScript.new()
+  script.source_code = "extends Node3D\nvar survivor_name: String = \"\""
+  var err = script.reload()
+  assert_eq(err, OK, "_make_survivor_parent: inline script failed to compile")
+  var parent = Node3D.new()
+  parent.set_script(script)
+  parent.survivor_name = survivor_name_value
+  parent.add_to_group("survivors")
+  return parent
+
+func test_get_entity_display_name_empty_when_no_type():
+  var health := _make_health()
+  await get_tree().process_frame
+
+  assert_eq(health._get_entity_display_name(), "",
+    "Entity with no type should return empty display name")
+
+func test_get_entity_display_name_formats_basic_enemy_type():
+  var parent := _make_enemy_parent("basic_zombie")
+  var health := _make_health(parent)
+  await get_tree().process_frame
+
+  assert_eq(health._get_entity_display_name(), "Basic Zombie",
+    "basic_zombie enemy_type should format to 'Basic Zombie'")
+
+func test_get_entity_display_name_formats_sprinter_enemy_type():
+  var parent := _make_enemy_parent("sprinter_zombie")
+  var health := _make_health(parent)
+  await get_tree().process_frame
+
+  assert_eq(health._get_entity_display_name(), "Sprinter Zombie",
+    "sprinter_zombie enemy_type should format to 'Sprinter Zombie'")
+
+func test_get_entity_display_name_returns_survivor_name():
+  var parent := _make_survivor_parent("Alice")
+  var health := _make_health(parent)
+  await get_tree().process_frame
+
+  assert_eq(health._get_entity_display_name(), "Alice",
+    "Survivor should return their assigned name")
+
+func test_name_label_text_set_for_enemy():
+  var parent := _make_enemy_parent("tank_zombie")
+  var health := _make_health(parent)
+  await get_tree().process_frame
+
+  health._update_display()
+
+  assert_eq(health.name_label.text, "Tank Zombie",
+    "Name label should show formatted enemy type")
+
+func test_name_label_text_set_for_survivor():
+  var parent := _make_survivor_parent("Bob")
+  var health := _make_health(parent)
+  await get_tree().process_frame
+
+  health._update_display()
+
+  assert_eq(health.name_label.text, "Bob",
+    "Name label should show survivor name")
+
+func test_name_label_empty_for_plain_node():
+  var health := _make_health()
+  await get_tree().process_frame
+
+  health._update_display()
+
+  assert_eq(health.name_label.text, "",
+    "Name label should be empty for entity with no type or survivor_name")
+
+func test_name_label_font_color_override_applied():
+  var parent := _make_enemy_parent("basic_zombie")
+  var health := _make_health(parent)
+  await get_tree().process_frame
+
+  # _update_display → _update_health_bar_visuals applies the color override
+  health._update_display()
+
+  assert_true(health.name_label.has_theme_color_override("font_color"),
+    "Name label should have a font_color theme override after display update")

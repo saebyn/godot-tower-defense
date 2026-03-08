@@ -46,6 +46,7 @@ const COLOR_DEFAULT: Color = Color(0.349, 0.431, 0.286, 1.0) # zombie_flesh from
 
 @onready var health_bar := $SubViewportContainer/SubViewport/VBoxContainer/BarOverlay/HealthBar
 @onready var health_label := $SubViewportContainer/SubViewport/VBoxContainer/BarOverlay/HealthLabel
+@onready var name_label := $SubViewportContainer/SubViewport/VBoxContainer/NameLabel
 @onready var background := $SubViewportContainer/SubViewport/Background
 @onready var subviewport := $SubViewportContainer/SubViewport
 @onready var sprite := $Sprite3D
@@ -144,6 +145,9 @@ func _update_display():
   health_bar.value = hitpoints
   health_label.text = str(hitpoints) + " / " + str(max_hitpoints)
 
+  # Set entity name / type label
+  name_label.text = _get_entity_display_name()
+
   _update_health_bar_visuals()
 
 ## Called by external hover detection to make the unit frame visible.
@@ -182,6 +186,33 @@ func _get_effective_bar_color() -> Color:
 
   return COLOR_DEFAULT
 
+## Return a human-readable display name for the parent entity.
+## Survivors yield their assigned survivor_name; enemies yield their enemy_type
+## formatted as title-case words (e.g. "sprinter_zombie" → "Sprinter Zombie").
+## Returns an empty string when the entity has neither property.
+func _get_entity_display_name() -> String:
+  var parent = get_parent()
+  if not parent:
+    return ""
+
+  # Survivors: use the assigned survivor name
+  if parent.is_in_group("survivors") and "survivor_name" in parent:
+    var sname: String = str(parent.survivor_name)
+    if not sname.is_empty():
+      return sname
+
+  # Enemies: format the enemy_type identifier as title-case words
+  if "enemy_type" in parent:
+    var type: String = str(parent.enemy_type)
+    if not type.is_empty():
+      var words := type.split("_")
+      var parts: PackedStringArray = []
+      for word in words:
+        parts.append(word.capitalize())
+      return " ".join(parts)
+
+  return ""
+
 ## Update health bar fill color and sprite transparency based on current HP ratio.
 func _update_health_bar_visuals():
   if not is_node_ready():
@@ -198,6 +229,10 @@ func _update_health_bar_visuals():
   var lerped := base_color.lerp(danger_color, color_lerp_weight)
   if _bar_fill_style:
     _bar_fill_style.bg_color = lerped
+
+  # Apply a lightened version of the bar color to the name label so it is
+  # visually distinct from the white HP numbers but still entity-type-coded.
+  name_label.add_theme_color_override("font_color", base_color.lerp(Color.WHITE, 0.55))
 
   # Compute transparency using three zones:
   #   hp >= HIGH_HP_THRESHOLD : faded (HIGH_HP_OPACITY)
