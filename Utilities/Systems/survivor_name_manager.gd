@@ -150,14 +150,13 @@ func _generate_unique_name() -> String:
   MyLogger.error("SurvivorNameManager", "Could not generate a unique name after %d attempts" % MAX_ATTEMPTS)
   return "Unknown"
 
-## Number of primary pool names still available (excludes generated names).
-## Returns 0 rather than a negative number when generated names fill used_names.
+## Number of primary pool names still available (excludes generated names and
+## names permanently consumed via the priority pool).
 func get_available_count() -> int:
-  var pool_names_in_use: int = 0
-  for n in used_names:
-    if n in NAME_POOL:
-      pool_names_in_use += 1
-  return NAME_POOL.size() - pool_names_in_use
+  # Delegate to _get_available_names so we correctly exclude both names that are
+  # currently in use and names that have been permanently consumed via the
+  # priority pool (_spent_priority_names).
+  return _get_available_names().size()
 
 ## SaveableSystem Interface Implementation
 
