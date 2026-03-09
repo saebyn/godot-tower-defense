@@ -83,14 +83,18 @@ func _ready() -> void:
     if setup_successful:
       MyLogger.info("Main", "Twitch setup successful")
       var me = await Twitch.get_current_user()
-      # Requires 'chat:read' and 'chat:edit' scopes
       MyLogger.info("Main", "Twitch authenticated as %s (ID: %s)" % [me.display_name, me.id])
       Twitch.chat("Hello from Godot!")
+      Twitch.auth.unauthenticated.connect(_on_twitch_unauthenticated)
     else:
       # display a message to the user if Twitch setup failed, but don't disable the game features since Twitch is optional
       MyLogger.error("Main", "Twitch setup failed - Twitch features will be unavailable")
       ui.call_deferred("show_problem_message", "Twitch integration failed to set up. Twitch features will be unavailable. Please check the logs for more details.")
 
+
+func _on_twitch_unauthenticated() -> void:
+  MyLogger.warning("Main", "Twitch token lost during gameplay - Twitch features will be unavailable until re-authenticated")
+  ui.call_deferred("show_problem_message", "Twitch connection was lost. Open Settings to reconnect.")
 
 func _on_settings_changed() -> void:
   print("Applying music pause setting: %s" % SettingsManager.music_pause)

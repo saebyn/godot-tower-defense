@@ -112,6 +112,8 @@ func _connect_signals() -> void:
   # Twitch settings
   twitch_enabled_check.toggled.connect(_on_twitch_enabled_toggled)
   twitch_auth_button.pressed.connect(_on_twitch_auth_pressed)
+  if SettingsManager.twitch_enabled and is_instance_valid(Twitch.auth):
+    Twitch.auth.unauthenticated.connect(_on_twitch_unauthenticated)
   
   # Debug settings
   debug_check.toggled.connect(_on_debug_mode_toggled)
@@ -234,6 +236,11 @@ func _on_music_pause_toggled(pressed: bool) -> void:
   SettingsManager.music_pause = temp_music_pause
   SettingsManager.apply_audio_settings()
 
+func _on_twitch_unauthenticated() -> void:
+  MyLogger.warning("SettingsMenu", "Twitch token lost - re-authentication required")
+  twitch_status_label.text = "Twitch: Disconnected"
+  twitch_auth_button.disabled = false
+
 func _on_twitch_enabled_toggled(pressed: bool) -> void:
   temp_twitch_enabled = pressed
   SettingsManager.twitch_enabled = temp_twitch_enabled
@@ -263,19 +270,21 @@ func _update_twitch_status() -> void:
     twitch_status_label.text = "Twitch: Disabled"
     twitch_auth_button.disabled = true
   elif Twitch.auth.is_authenticated:
-    var display_name = await _get_twitch_self_info()
-    twitch_status_label.text = "Twitch: Connected as %s" % display_name
+    var display_name: String = await _get_twitch_display_name()
+    if display_name.is_empty():
+      twitch_status_label.text = "Twitch: Connected (unknown user)"
+    else:
+      twitch_status_label.text = "Twitch: Connected as %s" % display_name
     twitch_auth_button.disabled = true
   else:
     twitch_status_label.text = "Twitch: Not Connected"
     twitch_auth_button.disabled = false
 
-func _get_twitch_self_info():
+func _get_twitch_display_name() -> String:
   var current_user: TwitchUser = await Twitch.get_current_user()
-  if current_user:
+  if is_instance_valid(current_user) and not current_user.display_name.is_empty():
     return current_user.display_name
-  else:
-    return false
+  return ""
 
 func _on_debug_mode_toggled(pressed: bool) -> void:
   SettingsManager.set_debug_mode(pressed)
