@@ -37,10 +37,11 @@ ScenarioManager="*res://Utilities/Systems/scenario_manager.gd"
 DamageNumbersManager="*res://Utilities/Systems/damage_numbers_manager.gd"
 SceneReferences="*res://Utilities/Systems/scene_references.gd"
 SurvivorNameManager="*res://Utilities/Systems/survivor_name_manager.gd"
+Twitch="*uid://djt5lvmwxbq4a"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/tech_tree_editor/plugin.cfg")
+enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/tech_tree_editor/plugin.cfg", "res://addons/twitcher/plugin.cfg")
 
 [global_group]
 
@@ -273,9 +274,21 @@ camera_zoom_out_max={
 
 [logging]
 
-log_level=1
+log_level=2
 enabled_scopes="*"
 
 [physics]
 
 3d/physics_engine="Jolt Physics"
+
+[twitcher]
+
+editor/game_oauth_token="res://Config/Twitch/default_oauth_token.tres"
+editor/game_oauth_setting="res://Config/Twitch/twitch_oauth_setting.tres"
+editor/default_scopes="res://Config/Twitch/twitch_scopes.tres"
+editor/project_preset=&"Game"
+editor/show_setup_on_startup=false
+logs/TwitchAuth="debug"
+logs/TwitchAPI="debug"
+logs/TwitchService="debug"
+logs/Http="info"
