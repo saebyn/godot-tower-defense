@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="Resource_SoundEffect" load_steps=3 format=3 uid="uid://b45ua4u3d70rr"]
+[gd_resource type="Resource" script_class="Resource_SoundEffect" format=3 uid="uid://b45ua4u3d70rr"]
 
-[ext_resource type="AudioStream" uid="uid://dttmru4x061k4" path="res://Assets/Audio/SFX/ui/hover.wav" id="1_kxpg2"]
+[ext_resource type="AudioStream" uid="uid://du0ri05riul7u" path="res://Assets/Audio/SFX/ui/hover.wav" id="1_kxpg2"]
 [ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_nwj0o"]
 
 [resource]
