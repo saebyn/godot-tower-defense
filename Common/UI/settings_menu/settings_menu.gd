@@ -33,6 +33,11 @@ signal closed()
 @onready var apply_button: Button = $Panel/MarginContainer/VBoxContainer/ButtonContainer/ApplyButton
 @onready var cancel_button: Button = $Panel/MarginContainer/VBoxContainer/ButtonContainer/CancelButton
 
+# Twitch settings UI elements
+@onready var twitch_auth_button: Button = %TwitchAuthButton
+@onready var twitch_status_label: Label = %TwitchStatusLabel
+@onready var twitch_enabled_check: CheckButton = %TwitchEnabledCheckButton
+
 # Keybind button scene
 const KeybindButtonScene = preload("res://Common/UI/settings_menu/keybind_button.tscn")
 const VideoConfirmDialogScene = preload("res://Common/UI/settings_menu/video_confirm_dialog.tscn")
@@ -45,6 +50,7 @@ var temp_master_volume: float
 var temp_music_volume: float
 var temp_sfx_volume: float
 var temp_music_pause: bool
+var temp_twitch_enabled: bool
 
 # Store original keybinds to restore on cancel
 var original_keybinds: Dictionary = {}
@@ -59,6 +65,7 @@ var previous_master_volume: float
 var previous_music_volume: float
 var previous_sfx_volume: float
 var previous_music_pause: bool
+var previous_twitch_enabled: bool
 
 # Video confirmation dialog
 var video_confirm_dialog = null
@@ -78,9 +85,13 @@ func _ready() -> void:
   
   # Setup keybind buttons
   _setup_keybind_buttons()
+
+  # Setup Twitch status
+  _update_twitch_status()
   
   # Connect signals
   _connect_signals()
+
 
 func _connect_signals() -> void:
   # Video settings
@@ -97,6 +108,10 @@ func _connect_signals() -> void:
   # Bottom buttons
   apply_button.pressed.connect(_on_apply_pressed)
   cancel_button.pressed.connect(_on_cancel_pressed)
+
+  # Twitch settings
+  twitch_enabled_check.toggled.connect(_on_twitch_enabled_toggled)
+  twitch_auth_button.pressed.connect(_on_twitch_auth_pressed)
   
   # Debug settings
   debug_check.toggled.connect(_on_debug_mode_toggled)
@@ -142,13 +157,18 @@ func _load_current_settings() -> void:
   temp_music_volume = SettingsManager.music_volume
   temp_sfx_volume = SettingsManager.sfx_volume
   temp_music_pause = SettingsManager.music_pause
+  temp_twitch_enabled = SettingsManager.twitch_enabled
 
-  # Save original audio settings for potential revert
+  # Save original settings for potential revert
+  previous_fullscreen = temp_fullscreen
+  previous_vsync = temp_vsync
+  previous_resolution = temp_resolution
   previous_master_volume = temp_master_volume
   previous_music_volume = temp_music_volume
   previous_sfx_volume = temp_sfx_volume
   previous_music_pause = temp_music_pause
-  
+  previous_twitch_enabled = temp_twitch_enabled
+
   # Update UI controls
   fullscreen_check.button_pressed = temp_fullscreen
   vsync_check.button_pressed = temp_vsync
@@ -162,6 +182,9 @@ func _load_current_settings() -> void:
   
   # Debug settings
   debug_check.button_pressed = SettingsManager.debug_mode
+
+  # Twitch settings
+  twitch_enabled_check.button_pressed = temp_twitch_enabled
   
   _update_volume_labels()
 
@@ -211,6 +234,49 @@ func _on_music_pause_toggled(pressed: bool) -> void:
   SettingsManager.music_pause = temp_music_pause
   SettingsManager.apply_audio_settings()
 
+func _on_twitch_enabled_toggled(pressed: bool) -> void:
+  temp_twitch_enabled = pressed
+  SettingsManager.twitch_enabled = temp_twitch_enabled
+  _update_twitch_status()
+
+func _on_twitch_auth_pressed() -> void:
+  # Start Twitch authentication process
+  MyLogger.info("SettingsMenu", "Starting Twitch authentication process")
+
+  # Disable the auth button while authenticating to prevent multiple clicks
+  twitch_auth_button.disabled = true
+  twitch_status_label.text = "Twitch: Authenticating..."
+
+  var setup_successful: bool = await Twitch.setup()
+
+  if setup_successful:
+    MyLogger.info("SettingsMenu", "Twitch authentication successful")
+    twitch_status_label.text = "Twitch: Connected"
+    twitch_auth_button.disabled = true
+  else:
+    MyLogger.warning("SettingsMenu", "Twitch authentication failed")
+    twitch_status_label.text = "Twitch: Connection Failed"
+    twitch_auth_button.disabled = false
+
+func _update_twitch_status() -> void:
+  if not SettingsManager.twitch_enabled:
+    twitch_status_label.text = "Twitch: Disabled"
+    twitch_auth_button.disabled = true
+  elif Twitch.auth.is_authenticated:
+    var display_name = await _get_twitch_self_info()
+    twitch_status_label.text = "Twitch: Connected as %s" % display_name
+    twitch_auth_button.disabled = true
+  else:
+    twitch_status_label.text = "Twitch: Not Connected"
+    twitch_auth_button.disabled = false
+
+func _get_twitch_self_info():
+  var current_user: TwitchUser = await Twitch.get_current_user()
+  if current_user:
+    return current_user.display_name
+  else:
+    return false
+
 func _on_debug_mode_toggled(pressed: bool) -> void:
   SettingsManager.set_debug_mode(pressed)
 
@@ -221,11 +287,6 @@ func _on_apply_pressed() -> void:
     temp_vsync != SettingsManager.vsync_enabled or
     temp_resolution != SettingsManager.resolution_index
   )
-  
-  # Store previous video settings for potential revert
-  previous_fullscreen = SettingsManager.fullscreen
-  previous_vsync = SettingsManager.vsync_enabled
-  previous_resolution = SettingsManager.resolution_index
   
   # Apply audio settings immediately (no confirmation needed)
   SettingsManager.master_volume = temp_master_volume
@@ -254,7 +315,7 @@ func _on_apply_pressed() -> void:
 func _on_cancel_pressed() -> void:
   MyLogger.debug("SettingsMenu", "Settings cancelled")
   _restore_original_keybinds()
-  _restore_original_audio_settings()
+  _restore_original_settings()
   hide_menu()
   closed.emit()
 
@@ -324,9 +385,18 @@ func _restore_original_keybinds() -> void:
   
   MyLogger.debug("SettingsMenu", "Keybinds restored to original state")
 
-func _restore_original_audio_settings() -> void:
+func _restore_original_settings() -> void:
   SettingsManager.master_volume = previous_master_volume
   SettingsManager.music_volume = previous_music_volume
   SettingsManager.sfx_volume = previous_sfx_volume
   SettingsManager.music_pause = previous_music_pause
   SettingsManager.apply_audio_settings()
+
+  SettingsManager.fullscreen = previous_fullscreen
+  SettingsManager.vsync_enabled = previous_vsync
+  SettingsManager.resolution_index = previous_resolution
+  # no need to apply video settings here since we will
+  # revert to the previous settings immediately in the
+  # video settings revert function
+
+  SettingsManager.twitch_enabled = previous_twitch_enabled

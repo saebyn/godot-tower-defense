@@ -25,6 +25,9 @@ var music_volume: float = 0.0
 var sfx_volume: float = 0.0
 var music_pause: bool = false
 
+# Twitch settings
+var twitch_enabled: bool = false
+
 # Available resolutions
 const RESOLUTIONS: Array[Vector2i] = [
   Vector2i(1280, 720),
@@ -59,6 +62,9 @@ func load_settings() -> void:
   music_volume = config.get_value("audio", "music_volume", music_volume)
   sfx_volume = config.get_value("audio", "sfx_volume", sfx_volume)
   music_pause = config.get_value("audio", "music_pause", music_pause)
+
+  # Twitch settings
+  twitch_enabled = config.get_value("twitch", "enabled", twitch_enabled)
   
   # Load keybind settings
   _load_keybinds(config)
@@ -79,6 +85,9 @@ func save_settings() -> void:
   config.set_value("audio", "music_volume", music_volume)
   config.set_value("audio", "sfx_volume", sfx_volume)
   config.set_value("audio", "music_pause", music_pause)
+
+  # Save Twitch settings
+  config.set_value("twitch", "enabled", twitch_enabled)
   
   # Save keybind settings
   _save_keybinds(config)
@@ -189,6 +198,12 @@ func set_debug_mode(enabled: bool) -> void:
     debug_mode = enabled
     debug_mode_changed.emit(debug_mode)
     MyLogger.info("SettingsManager", "Debug mode %s" % ("enabled" if debug_mode else "disabled"))
+
+## Set Twitch enabled
+func set_twitch_enabled(enabled: bool) -> void:
+  if twitch_enabled != enabled:
+    twitch_enabled = enabled
+    save_settings()
 
 ## Get resolution string for display
 func get_resolution_string(index: int) -> String:
