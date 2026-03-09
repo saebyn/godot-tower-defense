@@ -23,7 +23,7 @@ signal enemy_spawner_unregistered()
 ## Logs a warning if replacing an existing camera reference.
 func register_camera(new_camera: Camera3D) -> void:
   if camera and camera != new_camera:
-    MyLogger.warning("SceneReferences", "Replacing existing camera reference")
+    MyLogger.warn("SceneReferences", "Replacing existing camera reference")
   camera = new_camera
   camera_registered.emit(new_camera)
   MyLogger.info("SceneReferences", "Camera registered")
@@ -38,7 +38,7 @@ func unregister_camera() -> void:
 ## Logs a warning if replacing an existing spawner reference.
 func register_enemy_spawner(spawner: System_EnemySpawner) -> void:
   if enemy_spawner and enemy_spawner != spawner:
-    MyLogger.warning("SceneReferences", "Replacing existing enemy spawner reference")
+    MyLogger.warn("SceneReferences", "Replacing existing enemy spawner reference")
   enemy_spawner = spawner
   enemy_spawner_registered.emit(spawner)
   MyLogger.info("SceneReferences", "Enemy spawner registered")

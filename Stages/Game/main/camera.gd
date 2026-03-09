@@ -40,7 +40,7 @@ const CAMERA_VIEW_ALIGNMENT_OFFSET := PI / 2 ## 90 degrees in radians rotation t
 
 func _ready():
   # Register with SceneReferences autoload
-  SceneReferences.register_camera(self)
+  SceneReferences.register_camera(self )
   
   # Initialize the orbit center to the current ground projection
   _update_orbit_center()
@@ -214,7 +214,7 @@ func _process(delta: float) -> void:
       zoom_tween = create_tween()
       zoom_tween.set_ease(Tween.EASE_OUT)
       zoom_tween.set_trans(Tween.TRANS_QUART)
-      zoom_tween.tween_property(self, "size", target_size, camera_zoom_duration)
+      zoom_tween.tween_property(self , "size", target_size, camera_zoom_duration)
 
 
 func _update_orbit_center():
@@ -273,7 +273,7 @@ func _apply_boundary_constraints():
 func zoom_to_survivors() -> void:
   var targets = get_tree().get_nodes_in_group("targets")
   if targets.is_empty():
-    MyLogger.warning("Camera", "No survivors found to zoom to")
+    MyLogger.warn("Camera", "No survivors found to zoom to")
     return
   
   # Calculate center position of all Node3D targets
@@ -285,7 +285,7 @@ func zoom_to_survivors() -> void:
       count += 1
   
   if count == 0:
-    MyLogger.warning("Camera", "No valid Node3D survivors found to zoom to")
+    MyLogger.warn("Camera", "No valid Node3D survivors found to zoom to")
     return
   
   center /= count
@@ -329,7 +329,7 @@ func _animate_to_ground_position(ground_target: Vector3, target_zoom: float) -> 
   move_tween = create_tween()
   move_tween.set_ease(Tween.EASE_IN_OUT)
   move_tween.set_trans(Tween.TRANS_QUAD)
-  move_tween.tween_property(self, "global_position", target_position, zoom_preset_duration)
+  move_tween.tween_property(self , "global_position", target_position, zoom_preset_duration)
   
   # Animate zoom
   _animate_zoom(target_zoom)
@@ -345,4 +345,4 @@ func _animate_zoom(target_zoom: float) -> void:
   zoom_tween = create_tween()
   zoom_tween.set_ease(Tween.EASE_IN_OUT)
   zoom_tween.set_trans(Tween.TRANS_QUAD)
-  zoom_tween.tween_property(self, "size", target_zoom, zoom_preset_duration)
+  zoom_tween.tween_property(self , "size", target_zoom, zoom_preset_duration)

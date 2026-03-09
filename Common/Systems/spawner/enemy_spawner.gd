@@ -20,7 +20,7 @@ signal enemy_spawned(enemy: Node3D)
 
 func _ready() -> void:
     # Register with SceneReferences autoload
-    SceneReferences.register_enemy_spawner(self)
+    SceneReferences.register_enemy_spawner(self )
     
     # Monitor child nodes exiting tree to track enemies
     child_exiting_tree.connect(_on_child_exiting_tree)
@@ -34,7 +34,7 @@ func _exit_tree() -> void:
 func _detect_node() -> void:
     spawn_areas = spawn_areas.filter(func(a): return a != null)
     if spawn_areas.is_empty():
-        MyLogger.warning("Spawner", "No spawn areas assigned in EnemySpawner!")
+        MyLogger.warn("Spawner", "No spawn areas assigned in EnemySpawner!")
 
     # Check for Wave child nodes
     _waves.clear() # Clear in case of multiple calls

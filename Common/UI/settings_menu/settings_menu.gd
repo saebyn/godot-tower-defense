@@ -237,7 +237,7 @@ func _on_music_pause_toggled(pressed: bool) -> void:
   SettingsManager.apply_audio_settings()
 
 func _on_twitch_unauthenticated() -> void:
-  MyLogger.warning("SettingsMenu", "Twitch token lost - re-authentication required")
+  MyLogger.warn("SettingsMenu", "Twitch token lost - re-authentication required")
   twitch_status_label.text = "Twitch: Disconnected"
   twitch_auth_button.disabled = false
 
@@ -261,7 +261,7 @@ func _on_twitch_auth_pressed() -> void:
     twitch_status_label.text = "Twitch: Connected"
     twitch_auth_button.disabled = true
   else:
-    MyLogger.warning("SettingsMenu", "Twitch authentication failed")
+    MyLogger.warn("SettingsMenu", "Twitch authentication failed")
     twitch_status_label.text = "Twitch: Connection Failed"
     twitch_auth_button.disabled = false
 

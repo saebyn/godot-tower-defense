@@ -93,7 +93,7 @@ func _ready() -> void:
 
 
 func _on_twitch_unauthenticated() -> void:
-  MyLogger.warning("Main", "Twitch token lost during gameplay - Twitch features will be unavailable until re-authenticated")
+  MyLogger.warn("Main", "Twitch token lost during gameplay - Twitch features will be unavailable until re-authenticated")
   ui.call_deferred("show_problem_message", "Twitch connection was lost. Open Settings to reconnect.")
 
 func _on_settings_changed() -> void:
@@ -142,7 +142,7 @@ func _load_scenario() -> void:
 
 func _configure_boundaries_from_scenario() -> void:
   if not current_scenario:
-    MyLogger.warning("Main", "Cannot configure boundaries - no scenario loaded")
+    MyLogger.warn("Main", "Cannot configure boundaries - no scenario loaded")
     return
   
   # Get boundary values from the scenario
