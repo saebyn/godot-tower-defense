@@ -156,6 +156,12 @@ func _update_display():
 
   _update_health_bar_visuals()
 
+## Refresh the unit-frame display without changing hover state.
+## Call this after updating data on the parent node (e.g. assigning survivor_name)
+## so the label reflects the latest values immediately.
+func refresh_display() -> void:
+  _update_display()
+
 ## Called by external hover detection to make the unit frame visible.
 func show_unit_frame() -> void:
   _hovered = true
