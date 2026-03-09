@@ -129,7 +129,7 @@ func _on_all_waves_completed() -> void:
 
 func on_target_died(_target: Node3D, _damage_source: String) -> void:
   if survivor_count <= 0:
-    MyLogger.warning("Scenario", "All survivors already dead, ignoring target death.")
+    MyLogger.warn("Scenario", "All survivors already dead, ignoring target death.")
     return
 
   survivor_count -= 1
