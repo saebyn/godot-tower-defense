@@ -97,31 +97,33 @@ func test_priority_pool_name_is_not_reassigned_after_release():
   var name = SurvivorNameManager.assign_name()
   assert_eq(name, "ZSpecialHero")
 
-  # _spent_priority_names is populated at assignment time
-  assert_true(SurvivorNameManager.get("_spent_priority_names").has(name),
-    "Priority name should appear in _spent_priority_names immediately after assignment")
+  # Priority name is consumed at assignment — removed from priority_pool
+  assert_false(SurvivorNameManager.priority_pool.has(name),
+    "Priority name should be removed from priority_pool immediately after assignment")
 
   SurvivorNameManager.release_name(name)
 
   # name should NOT be in used_names any more
   assert_false(SurvivorNameManager.used_names.has(name),
     "Released priority name should not be in used_names")
-  # name should still be in _spent_priority_names (permanently consumed)
-  assert_true(SurvivorNameManager.get("_spent_priority_names").has(name),
-    "Released priority name should remain in _spent_priority_names")
+  # name should NOT be back in priority_pool (permanently consumed)
+  assert_false(SurvivorNameManager.priority_pool.has(name),
+    "Released priority name should not be re-added to priority_pool")
 
 func test_priority_pool_name_cannot_be_reassigned_after_release():
+  # Use a name NOT in NAME_POOL so it cannot come back through the regular pool
   SurvivorNameManager.priority_pool.append("ZSpecialHero")
   var first = SurvivorNameManager.assign_name()
+  assert_eq(first, "ZSpecialHero")
   SurvivorNameManager.release_name(first)
 
-  # Exhaust NAME_POOL so generator would also be used — priority slot is spent
+  # Exhaust NAME_POOL so only the generator would produce names
   for n in SurvivorNameManager.NAME_POOL:
     SurvivorNameManager.used_names.append(n)
 
   var second = SurvivorNameManager.assign_name()
   assert_ne(second, "ZSpecialHero",
-    "Spent priority name should never be reassigned")
+    "Consumed priority name (not in NAME_POOL) should never be reassigned")
 
 func test_multiple_priority_names_are_each_assigned_before_regular_pool():
   SurvivorNameManager.priority_pool.append("Alpha")
@@ -136,46 +138,46 @@ func test_multiple_priority_names_are_each_assigned_before_regular_pool():
 
 func test_falls_back_to_regular_pool_when_priority_pool_exhausted():
   SurvivorNameManager.priority_pool.append("Alpha")
-  SurvivorNameManager.assign_name()  # consumes "Alpha"
+  SurvivorNameManager.assign_name() # consumes "Alpha"
   var second = SurvivorNameManager.assign_name()
   assert_true(SurvivorNameManager.NAME_POOL.has(second),
     "Should fall back to regular NAME_POOL once priority pool is exhausted")
 
 func test_priority_name_consumed_even_if_priority_pool_cleared_before_release():
-  # Assign a priority name, then clear the priority_pool before the survivor dies
+  # Assign a priority name — it is removed from priority_pool at assignment time,
+  # so clearing priority_pool afterward has no effect on consumption.
   SurvivorNameManager.priority_pool.append("ZSpecialHero")
   var name = SurvivorNameManager.assign_name()
   assert_eq(name, "ZSpecialHero")
+  assert_false(SurvivorNameManager.priority_pool.has(name),
+    "Priority name should already be removed from priority_pool at assignment")
 
-  SurvivorNameManager.priority_pool.clear()  # simulates pool being modified
+  SurvivorNameManager.priority_pool.clear() # simulates pool being modified (no-op here)
   SurvivorNameManager.release_name(name)
 
-  # The name should still be permanently consumed, not recycled to the regular pool
+  # The name should not be in used_names and should not be re-added to priority_pool
   assert_false(SurvivorNameManager.used_names.has(name),
     "Name should not be in used_names after release")
-  assert_true(SurvivorNameManager.get("_spent_priority_names").has(name),
-    "Priority name should remain spent even if priority_pool was cleared before release")
+  assert_false(SurvivorNameManager.priority_pool.has(name),
+    "Priority name should not be re-added to priority_pool after release")
 
-func test_priority_name_already_in_regular_pool_is_consumed_not_recycled():
-  # "Ada" is in NAME_POOL — adding it to priority_pool means it gets consumed
+func test_priority_name_also_in_regular_pool_returns_to_pool_on_release():
+  # "Ada" is in NAME_POOL — when used as a priority name it is assigned first,
+  # but after release it becomes available again from the regular pool.
   var priority_name: String = "Ada"
   SurvivorNameManager.priority_pool.append(priority_name)
   var name = SurvivorNameManager.assign_name()
-  assert_eq(name, priority_name)
+  assert_eq(name, priority_name,
+    "Priority name should be assigned before regular pool names")
+  assert_false(SurvivorNameManager.priority_pool.has(priority_name),
+    "Name should be removed from priority_pool at assignment")
   SurvivorNameManager.release_name(name)
-  # Removing from used_names but also spending it — it must NOT be reassignable
-  assert_true(SurvivorNameManager.get("_spent_priority_names").has(priority_name),
-    "Name that exists in both pools should be treated as priority when released")
 
-  # Exhaust all other NAME_POOL names so that if "Ada" were still available
-  # from the regular pool, it would be the only remaining candidate.
-  for n in SurvivorNameManager.NAME_POOL:
-    if n != priority_name:
-      SurvivorNameManager.used_names.append(n)
-
-  var reassigned = SurvivorNameManager.assign_name()
-  assert_ne(reassigned, priority_name,
-    "Name that exists in both pools and was spent as priority must never be reassigned from NAME_POOL")
+  # The name is back in the regular pool (it was never removed from NAME_POOL)
+  assert_false(SurvivorNameManager.used_names.has(priority_name),
+    "Name should not be in used_names after release")
+  assert_true(SurvivorNameManager.get_available_count() > 0,
+    "Regular pool should have available names including the released one")
 
 # --- fallback name generator ---
 
@@ -257,17 +259,19 @@ func test_priority_pool_survives_save_load_round_trip():
   assert_true(SurvivorNameManager.priority_pool.has("Bravo"),
     "Priority pool should survive save/load")
 
-func test_spent_priority_names_survive_save_load_round_trip():
+func test_consumed_priority_name_not_reassigned_after_save_load_round_trip():
+  # Assign and release a priority name so it is consumed and removed from priority_pool
   SurvivorNameManager.priority_pool.append("Alpha")
   var name = SurvivorNameManager.assign_name()
-  SurvivorNameManager.release_name(name)  # "Alpha" is now spent
+  SurvivorNameManager.release_name(name) # "Alpha" is now consumed
 
   var save_data = SurvivorNameManager.get_save_data()
   SurvivorNameManager.reset_data()
   SurvivorNameManager.load_data(save_data)
 
-  assert_true(SurvivorNameManager.get("_spent_priority_names").has("Alpha"),
-    "Spent priority names should survive save/load so they are never reassigned")
+  # After round-trip, "Alpha" must not be in priority_pool (it was consumed before save)
+  assert_false(SurvivorNameManager.priority_pool.has("Alpha"),
+    "Consumed priority name should not reappear in priority_pool after save/load")
 
 func test_generated_name_survives_save_load_round_trip():
   # Exhaust the pool then generate a fallback name
@@ -283,7 +287,7 @@ func test_generated_name_survives_save_load_round_trip():
     "Generated name should survive a save/load round trip")
 
 func test_load_data_ignores_empty_strings():
-  var data = {"used_names": ["", " "], "priority_pool": [], "spent_priority_names": []}
+  var data = {"used_names": ["", " "], "priority_pool": []}
   SurvivorNameManager.load_data(data)
   assert_false(SurvivorNameManager.used_names.has(""),
     "Empty string should not be loaded as a used name")
@@ -292,7 +296,7 @@ func test_load_data_ignores_empty_strings():
 
 func test_load_data_accepts_empty_array():
   SurvivorNameManager.assign_name()
-  SurvivorNameManager.load_data({"used_names": [], "priority_pool": [], "spent_priority_names": []})
+  SurvivorNameManager.load_data({"used_names": [], "priority_pool": []})
   assert_eq(SurvivorNameManager.used_names.size(), 0, "Loading empty array should clear used names")
 
 func test_reset_data_clears_used_names():
@@ -306,13 +310,14 @@ func test_reset_data_clears_priority_pool():
   SurvivorNameManager.reset_data()
   assert_eq(SurvivorNameManager.priority_pool.size(), 0, "reset_data should clear priority_pool")
 
-func test_reset_data_clears_spent_priority_names():
+func test_reset_data_clears_used_names_including_consumed_priority():
   SurvivorNameManager.priority_pool.append("Alpha")
   var name = SurvivorNameManager.assign_name()
   SurvivorNameManager.release_name(name)
+  assert_eq(SurvivorNameManager.used_names.size(), 0, "used_names should be empty after release")
   SurvivorNameManager.reset_data()
-  assert_eq(SurvivorNameManager.get("_spent_priority_names").size(), 0,
-    "reset_data should clear _spent_priority_names")
+  assert_eq(SurvivorNameManager.used_names.size(), 0,
+    "reset_data should leave used_names empty")
 
 # --- pool integrity ---
 
