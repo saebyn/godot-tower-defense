@@ -112,8 +112,8 @@ func _connect_signals() -> void:
   # Twitch settings
   twitch_enabled_check.toggled.connect(_on_twitch_enabled_toggled)
   twitch_auth_button.pressed.connect(_on_twitch_auth_pressed)
-  if SettingsManager.twitch_enabled and is_instance_valid(Twitch.auth):
-    Twitch.auth.unauthenticated.connect(_on_twitch_unauthenticated)
+  if SettingsManager.twitch_enabled and is_instance_valid(Twitch.api):
+    Twitch.api.unauthenticated.connect(_on_twitch_unauthenticated)
   
   # Debug settings
   debug_check.toggled.connect(_on_debug_mode_toggled)
@@ -265,11 +265,15 @@ func _on_twitch_auth_pressed() -> void:
     twitch_status_label.text = "Twitch: Connection Failed"
     twitch_auth_button.disabled = false
 
+  # if the signal wasn't connected in _ready (because Twitch.api wasn't valid at that time), connect it now
+  if SettingsManager.twitch_enabled and is_instance_valid(Twitch.api) and not Twitch.api.unauthenticated.is_connected(_on_twitch_unauthenticated):
+    Twitch.api.unauthenticated.connect(_on_twitch_unauthenticated)
+
 func _update_twitch_status() -> void:
   if not SettingsManager.twitch_enabled:
     twitch_status_label.text = "Twitch: Disabled"
     twitch_auth_button.disabled = true
-  elif Twitch.auth.is_authenticated:
+  elif Twitch.auth != null and Twitch.auth.is_authenticated:
     var display_name: String = await _get_twitch_display_name()
     if display_name.is_empty():
       twitch_status_label.text = "Twitch: Connected (unknown user)"
