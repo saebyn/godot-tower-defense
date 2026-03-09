@@ -50,6 +50,18 @@ func show_obstacle_removed(refund_amount: int) -> void:
   if spawn_indicator and spawn_indicator.has_method("show_obstacle_removed"):
     spawn_indicator.show_obstacle_removed(refund_amount)
 
+## Called to show a problem message to the user (e.g. Twitch setup failed)
+func show_problem_message(message: String) -> void:
+  # This can be used for any non-critical issues that the user should be aware of, 
+  # without disrupting gameplay with a modal dialog
+    var dialog = AcceptDialog.new()
+    dialog.dialog_text = message
+    dialog.window_title = "Problem"
+    # Connect the 'modal_closed' signal to free the dialog from memory when closed
+    dialog.modal_closed.connect(func(): dialog.queue_free())
+    get_tree().current_scene.add_child(dialog)
+    dialog.popup_centered() # Make the dialog box visible and centered
+
 ## Toggle the tech tree UI visibility
 func _toggle_tech_tree() -> void:
   MyLogger.info("UI", "Toggling Tech Tree UI")
