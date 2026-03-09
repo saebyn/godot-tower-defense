@@ -37,7 +37,7 @@ ScenarioManager="*res://Utilities/Systems/scenario_manager.gd"
 DamageNumbersManager="*res://Utilities/Systems/damage_numbers_manager.gd"
 SceneReferences="*res://Utilities/Systems/scene_references.gd"
 SurvivorNameManager="*res://Utilities/Systems/survivor_name_manager.gd"
-Twitch="*uid://djt5lvmwxbq4a"
+Twitch="*res://Config/Twitch/twitch_service.tscn"
 
 [editor_plugins]
 
