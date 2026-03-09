@@ -25,6 +25,13 @@ var timer_started: bool = false # Whether timer has been started at all
 var survivor_count: int = 1
 
 
+func _enter_tree() -> void:
+  # Reset profile assignment index before any survivor nodes' _ready() runs.
+  # Because _enter_tree() propagates top-down (parent before children) while
+  # _ready() propagates bottom-up (children before parent), this call happens
+  # before every pre-placed survivor picks up its carry-forward profile.
+  SurvivorNameManager.prepare_for_scenario()
+
 func _ready() -> void:
   # Apply custom environment if configured
   if scenario_environment:
