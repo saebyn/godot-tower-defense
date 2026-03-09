@@ -8,15 +8,13 @@ var SoundBoardScene = preload("res://Stages/UI/sound_board/sound_board.tscn")
 var test_resource_path = "res://Config/SoundEffects/default.tres"
 
 func before_each():
-  # Backup original resource
-  var original = ResourceLoader.load(test_resource_path)
-  if original:
-    # Store original values for restoration
-    set_meta("original_pitch_min", original.pitch_variation_min)
-    set_meta("original_pitch_max", original.pitch_variation_max)
-    set_meta("original_volume", original.volume_db)
-    set_meta("original_category", original.category)
-  
+  # Backup original file contents so we can do a byte-perfect restore after the test,
+  # regardless of what the resource cache contains.
+  var file = FileAccess.open(ProjectSettings.globalize_path(test_resource_path), FileAccess.READ)
+  if file:
+    set_meta("original_file_content", file.get_as_text())
+    file.close()
+
   # Instantiate the sound board scene
   sound_board = SoundBoardScene.instantiate()
   add_child(sound_board)
@@ -24,15 +22,15 @@ func before_each():
   await wait_process_frames(1)
 
 func after_each():
-  # Restore original resource
-  var original = ResourceLoader.load(test_resource_path)
-  if original and has_meta("original_pitch_min"):
-    original.pitch_variation_min = get_meta("original_pitch_min")
-    original.pitch_variation_max = get_meta("original_pitch_max")
-    original.volume_db = get_meta("original_volume")
-    original.category = get_meta("original_category")
-    ResourceSaver.save(original, test_resource_path)
-  
+  # Restore the file from the backed-up raw content
+  if has_meta("original_file_content"):
+    var file = FileAccess.open(ProjectSettings.globalize_path(test_resource_path), FileAccess.WRITE)
+    if file:
+      file.store_string(get_meta("original_file_content"))
+      file.close()
+    # Invalidate the resource cache entry so future loads reflect the restored file
+    ResourceLoader.load(test_resource_path, "", ResourceLoader.CACHE_MODE_REPLACE)
+
   # Clean up the sound board
   if sound_board:
     sound_board.queue_free()
