@@ -75,6 +75,22 @@ func _ready() -> void:
   SettingsManager.audio_settings_changed.connect(_on_settings_changed)
   background_music_player.play()
 
+  # Check if twitch integration is enabled and then set it up if so
+  if SettingsManager.twitch_enabled:
+    MyLogger.info("Main", "Twitch integration enabled - setting up Twitch connection")
+    var setup_successful: bool = await Twitch.setup()
+
+    if setup_successful:
+      MyLogger.info("Main", "Twitch setup successful")
+      var me = await Twitch.get_current_user()
+      # Requires 'chat:read' and 'chat:edit' scopes
+      MyLogger.info("Main", "Twitch authenticated as %s (ID: %s)" % [me.display_name, me.id])
+      Twitch.chat("Hello from Godot!")
+    else:
+      # display a message to the user if Twitch setup failed, but don't disable the game features since Twitch is optional
+      MyLogger.error("Main", "Twitch setup failed - Twitch features will be unavailable")
+      ui.call_deferred("show_problem_message", "Twitch integration failed to set up. Twitch features will be unavailable. Please check the logs for more details.")
+
 
 func _on_settings_changed() -> void:
   print("Applying music pause setting: %s" % SettingsManager.music_pause)
