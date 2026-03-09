@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="TwitchReward" format=3 uid="uid://dwmef3hbrom4k"]
+
+[ext_resource type="Texture2D" uid="uid://co54e4bvuxyg4" path="res://addons/twitcher/assets/default-1.png" id="1_0fr4b"]
+[ext_resource type="Script" uid="uid://cnmohrdxqihr0" path="res://addons/twitcher/generated/twitch_user.gd" id="1_w4quj"]
+[ext_resource type="Texture2D" uid="uid://bnde37257f2m6" path="res://addons/twitcher/assets/default-2.png" id="2_w4quj"]
+[ext_resource type="Texture2D" uid="uid://cywqsjbcrlg4i" path="res://addons/twitcher/assets/default-4.png" id="3_mykuy"]
+[ext_resource type="Script" uid="uid://yxws8ofwmdiy" path="res://addons/twitcher/reward/twitch_reward.gd" id="4_gsasv"]
+
+[sub_resource type="Resource" id="Resource_mykuy"]
+script = ExtResource("1_w4quj")
+id = "132799162"
+login = "kani_dev"
+display_name = "kani_dev"
+broadcaster_type = "affiliate"
+description = "The Kani is a unique lifeform that has developed to a software architect over a long timespan. It's highly interested in gamedev and likes technology. "
+profile_image_url = "https://static-cdn.jtvnw.net/jtv_user_pictures/7e6b3d9f-3498-4662-b71b-19fd314148c3-profile_image-300x300.png"
+created_at = "2016-08-21T18:50:12Z"
+
+[resource]
+script = ExtResource("4_gsasv")
+broadcaster_user = SubResource("Resource_mykuy")
+title = "Twitcher Test Reward"
+is_enabled = true
+metadata/_custom_type_script = "uid://yxws8ofwmdiy"
