@@ -1,4 +1,5 @@
 extends Control
+class_name MainUI
 
 signal obstacle_spawn_requested(obstacle: Resource_ObstacleType)
 

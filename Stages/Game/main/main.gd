@@ -14,7 +14,7 @@ extends Node3D
 @onready var navigation_region: NavigationRegion3D = $NavigationRegion3D
 @onready var enemy_raycast: RayCast3D = $EnemyRayCast3D
 var attack: Component_Attack
-@onready var ui: Control = $UI
+@onready var ui: MainUI = $UI
 @onready var background_music_player: AudioStreamPlayer = $BgMusicAudioStreamPlayer
 
 @onready var obstacle_placement: Utility_ObstaclePlacement = $ObstaclePlacement
