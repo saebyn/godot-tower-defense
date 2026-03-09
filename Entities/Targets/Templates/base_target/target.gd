@@ -5,18 +5,21 @@ extends Node3D
 @export_range(0.5, 2.0) var voice_pitch: float = 1.0 ## Pitch override for this survivor's voice sounds
 
 var health: Component_Health
-var survivor_name: String = "" ## Name assigned to this survivor from the name pool
+var survivor_name: String = "" ## Name of this survivor (from their persistent profile)
+var profile_id: String = "" ## Persistent profile id assigned by SurvivorNameManager
 
 @onready var mesh: MeshInstance3D = $characterMedium
 @onready var audio_player: AudioStreamPlayer3D = $AudioStreamPlayer3D
 
 func _ready():
-  # Assign a unique name from the pool
-  survivor_name = SurvivorNameManager.assign_name()
+  # Assign (or create) a persistent survivor profile.
+  # Returns the id of an alive carry-forward profile, or a freshly created one.
+  profile_id = SurvivorNameManager.assign_next_profile()
+  survivor_name = SurvivorNameManager.get_profile_name(profile_id)
   if survivor_name.is_empty():
-    MyLogger.warn("Target", "Could not assign a name - pool may be exhausted")
+    MyLogger.warn("Target", "Could not get name for profile id '%s'" % profile_id)
   else:
-    MyLogger.info("Target", "Survivor '%s' created" % survivor_name)
+    MyLogger.info("Target", "Survivor '%s' (profile %s) created" % [survivor_name, profile_id])
 
   # Find Health component via metadata
   if has_meta("health_component"):
@@ -43,9 +46,9 @@ func _ready():
 
 
 func _on_died(damage_source: String = "unknown") -> void:
-  MyLogger.info("Target", "Survivor '%s' has died. Source: %s" % [survivor_name, damage_source])
-  # Return the name to the pool so it can be reused
-  SurvivorNameManager.release_name(survivor_name)
+  MyLogger.info("Target", "Survivor '%s' (profile %s) has died. Source: %s" % [survivor_name, profile_id, damage_source])
+  # Mark the profile as dead (releases name for future reuse)
+  SurvivorNameManager.mark_profile_dead(profile_id)
   var parent := get_parent()
   if parent and parent.has_method("on_target_died"):
     parent.on_target_died(self, damage_source)
