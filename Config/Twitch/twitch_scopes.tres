@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="TwitchOAuthScopes" format=3 uid="uid://cc8c2vndyaecp"]
+
+[ext_resource type="Script" uid="uid://b3n3et8mebjcc" path="res://addons/twitcher/auth/twitch_oauth_scopes.gd" id="1_1b1h8"]
+
+[resource]
+script = ExtResource("1_1b1h8")
+used_scopes = Array[StringName]([&"user:read:chat", &"user:write:chat", &"user:bot", &"channel:manage:polls", &"channel:manage:predictions", &"channel:manage:redemptions", &"channel:read:predictions", &"channel:read:redemptions", &"channel:read:polls"])
+metadata/_custom_type_script = "uid://b3n3et8mebjcc"
