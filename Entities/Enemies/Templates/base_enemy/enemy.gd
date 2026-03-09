@@ -3,6 +3,7 @@ extends CharacterBody3D
 @export var movement_speed: float = 2.0
 @export var path_desired_distance: float = 0.5
 @export var target_desired_distance: float = 4.0
+@export var target_attack_range: float = 2.0
 @export var target_group: String = "targets"
 @export var obstacle_group: String = "obstacles"
 @export var obstacle_attack_range: float = 6.0
@@ -55,6 +56,7 @@ func load_resource(resource: Resource_EnemyType) -> void:
     # Override properties from resource
     movement_speed = resource.speed
     target_desired_distance = resource.target_desired_distance
+    target_attack_range = resource.target_attack_range
     obstacle_attack_range = resource.obstacle_attack_range
     scrap_reward = resource.scrap_reward
     xp_reward = resource.xp_reward
@@ -209,7 +211,7 @@ func _attack_target():
 
   # Attack primary target if in range (higher priority)
   var distance_to_target: float = global_position.distance_to(current_target.global_position)
-  if distance_to_target <= target_desired_distance:
+  if distance_to_target <= target_attack_range:
       attack.perform_attack(current_target)
       return
 
