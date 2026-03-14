@@ -326,7 +326,7 @@ func test_name_label_populated_after_late_name_assignment():
   # Simulate the Godot _ready() ordering issue:
   # health._ready() runs before target._ready(), so survivor_name is "" when
   # the health component first calls _update_display(). target._ready() must
-  # call health._update_display() again after assigning the name.
+  # call health.refresh_display() again after assigning the name.
   var script = GDScript.new()
   script.source_code = "extends Node3D\nvar survivor_name: String = \"\""
   var err = script.reload()
@@ -336,7 +336,7 @@ func test_name_label_populated_after_late_name_assignment():
   parent.add_to_group("targets")
   # survivor_name is empty here (mimics target._ready() not yet having run)
   var health := _make_health(parent)
-  await get_tree().process_frame
+  await wait_process_frames(1) # Let health._ready() run with survivor_name == ""
 
   # At this point health._ready() has run with survivor_name == "", so label is blank
   assert_eq(health.name_label.text, "",
@@ -347,7 +347,7 @@ func test_name_label_populated_after_late_name_assignment():
   health.refresh_display()
 
   assert_eq(health.name_label.text, "Eve",
-    "Name label should show survivor name after _update_display() is called post-assignment")
+    "Name label should show survivor name after refresh_display() is called post-assignment")
 
 func test_name_label_empty_for_plain_node():
   var health := _make_health()
