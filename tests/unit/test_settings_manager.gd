@@ -12,6 +12,7 @@ func after_each():
   pass
 
 func test_default_master_volume_is_50_percent():
+  # Note: This test will fail locally if you have changed the master volume
   # Arrange - SettingsManager is already initialized as an autoload
   # Act - Get the default master volume in dB
   var master_volume_db = SettingsManager.master_volume
@@ -20,6 +21,7 @@ func test_default_master_volume_is_50_percent():
   assert_almost_eq(master_volume_db, -6.02, 0.1, "Default master volume should be -6.02 dB")
 
 func test_default_music_volume():
+  # Note: This test will fail locally if you have changed the music volume
   # Arrange - SettingsManager is already initialized
   # Act
   var music_volume_db = SettingsManager.music_volume
@@ -85,7 +87,7 @@ func test_load_keybinds_applies_key_event_to_input_map():
   # Arrange - create a config with a known keybind (array format)
   var test_action = "camera_move_left"
   var config = ConfigFile.new()
-  config.set_value("keybinds", test_action, [{
+  config.set_value("keybinds", test_action, [ {
     "type": "key",
     "physical_keycode": KEY_Z,
     "ctrl_pressed": false,
@@ -111,7 +113,7 @@ func test_load_keybinds_applies_mouse_event_to_input_map():
   # Arrange
   var test_action = "camera_move_left"
   var config = ConfigFile.new()
-  config.set_value("keybinds", test_action, [{
+  config.set_value("keybinds", test_action, [ {
     "type": "mouse",
     "button_index": int(MOUSE_BUTTON_RIGHT)
   }])
@@ -130,7 +132,7 @@ func test_load_keybinds_applies_mouse_event_to_input_map():
 func test_load_keybinds_ignores_unknown_actions():
   # Arrange - config with an action that doesn't exist in InputMap
   var config = ConfigFile.new()
-  config.set_value("keybinds", "nonexistent_action_xyz", [{
+  config.set_value("keybinds", "nonexistent_action_xyz", [ {
     "type": "key",
     "physical_keycode": KEY_A,
     "ctrl_pressed": false,
