@@ -1,6 +1,7 @@
 extends CharacterBody3D
 
 @export var movement_speed: float = 2.0
+@export var path_desired_distance: float = 0.5
 @export var target_desired_distance: float = 4.0
 @export var target_group: String = "targets"
 @export var obstacle_group: String = "obstacles"
@@ -32,7 +33,7 @@ func _ready():
   
   # These values need to be adjusted for the actor's speed
   # and the navigation layout.
-  navigation_agent.path_desired_distance = 0.5
+  navigation_agent.path_desired_distance = path_desired_distance
   navigation_agent.target_desired_distance = target_desired_distance
 
   # Sync NavigationAgent3D debug display with the current debug mode
