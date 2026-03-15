@@ -17,7 +17,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0152402, 1.0123842, -0.281
 
 [node name="Health" parent="." index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0152402, 0.4258511, 0)
-hitpoints = 5
+hitpoints = 10
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." index="2" unique_id=846593028]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15926981, 1.9883511, -0.129532)
