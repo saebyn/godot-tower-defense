@@ -38,12 +38,13 @@ The `ConditionType` enum supports the following tracking types:
 
 1. **ENEMIES_DEFEATED_TOTAL**: Track total enemies defeated across all types
 2. **ENEMIES_DEFEATED_BY_TYPE**: Track enemies defeated of a specific type (requires `condition_target`)
-3. **CLICKS_PERFORMED**: Track total clicks performed (hand defeats)
-4. **SCRAP_EARNED**: Track total scrap earned over all time
-5. **OBSTACLES_PLACED**: Track total obstacles placed
-6. **WAVE_COMPLETED**: Track waves completed in a single game
-7. **GAME_SCENARIO_REACHED**: Track highest game scenario reached
-8. **PLAYER_LEVEL_REACHED**: Track player XP level reached
+3. **CLICKS_PERFORMED**: Track total raw clicks performed by the player
+4. **HAND_KILLS**: Track total enemies defeated by hand (player clicks)
+5. **SCRAP_EARNED**: Track total scrap earned over all time
+6. **OBSTACLES_PLACED**: Track total obstacles placed
+7. **WAVE_COMPLETED**: Track waves completed in a single game
+8. **GAME_SCENARIO_REACHED**: Track highest game scenario reached
+9. **PLAYER_LEVEL_REACHED**: Track player XP level reached
 
 ### Methods
 
@@ -198,7 +199,8 @@ The achievement system is integrated with the existing singleton systems:
 
 **StatsManager** tracks:
 - `enemies_defeated_total` and `enemies_defeated_by_type`
-- `enemies_defeated_by_hand` (for CLICKS_PERFORMED)
+- `enemies_defeated_by_hand` (for HAND_KILLS)
+- `clicks_performed` (for CLICKS_PERFORMED — raw player clicks)
 - `obstacles_placed_total` and `obstacles_placed_by_type`
 - `total_scrap_earned`
 - `total_xp_earned`
