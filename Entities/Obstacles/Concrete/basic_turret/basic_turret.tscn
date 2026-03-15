@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bl5g2v8n3jkph"]
+[gd_scene format=3 uid="uid://bl5g2v8n3jkph"]
 
 [ext_resource type="PackedScene" uid="uid://dhxe3f6ho8qma" path="res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.tscn" id="1_turret"]
 [ext_resource type="Script" uid="uid://0yy8udbhaakj" path="res://Entities/Obstacles/Concrete/basic_turret/basic_turret.gd" id="2_6y5ob"]
@@ -67,7 +67,7 @@ _data = {
 &"idle": SubResource("Animation_6y5ob")
 }
 
-[node name="BasicTurret" node_paths=PackedStringArray("attack_particle_system", "mesh_instances") instance=ExtResource("1_turret")]
+[node name="BasicTurret" unique_id=693839905 node_paths=PackedStringArray("attack_particle_system", "mesh_instances") instance=ExtResource("1_turret")]
 script = ExtResource("2_6y5ob")
 rotation_speed = 360.0
 idle_animation = "idle"
@@ -78,16 +78,16 @@ detection_interval = 0.5
 mesh_instances = [NodePath("turret/TurretBase/Leg_000"), NodePath("turret/TurretBase/Leg_001"), NodePath("turret/TurretBase/Leg_002"), NodePath("turret/TurretBase/Screw"), NodePath("turret/TurretBase/ScrewBase"), NodePath("turret/TurretBase/Table"), NodePath("turret/TurretYaw/Top/Barrel"), NodePath("turret/TurretYaw/Top/BarrelStraps")]
 
 [node name="Attack" parent="." index="1"]
-damage_amount = 1
+damage_amount = 3.0
 attack_speed = 0.75
 damage_source = "turret"
 hit_sound = 2
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="2" unique_id=765644085]
 transform = Transform3D(1.74, 0, 0, 0, 1.74, 0, 0, 0, 1.74, 0.234956, 1.8958529, 0.0292969)
 shape = SubResource("BoxShape3D_sl1jc")
 
-[node name="turret" parent="." index="4" instance=ExtResource("3_cvjpm")]
+[node name="turret" parent="." index="4" unique_id=1882957817 instance=ExtResource("3_cvjpm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.022, -0.93759286, 0.036)
 
 [node name="Leg_000" parent="turret/TurretBase" index="0"]
@@ -111,7 +111,7 @@ transform = Transform3D(0.27080587, 0, 0, 0, 0.052019835, 0, 0, 0, 0.27080587, -
 [node name="Barrel" parent="turret/TurretYaw/Top" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.11129147, 1.1795998, 0.0047358274)
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="turret/TurretYaw/Top/Barrel" index="0"]
+[node name="GPUParticles3D" type="GPUParticles3D" parent="turret/TurretYaw/Top/Barrel" index="0" unique_id=1721422763]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.3402462, 0, 0)
 emitting = false
 amount = 90
@@ -126,13 +126,11 @@ draw_pass_1 = SubResource("QuadMesh_3mut8")
 [node name="BarrelStraps" parent="turret/TurretYaw/Top" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.11129147, 1.1795998, 0.0047358274)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="5"]
-libraries = {
-&"": SubResource("AnimationLibrary_2a5gv")
-}
-autoplay = "idle"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="5" unique_id=2046900780]
+libraries/ = SubResource("AnimationLibrary_2a5gv")
+autoplay = &"idle"
 
-[node name="Component_IdleSounds" type="Node3D" parent="." index="7" node_paths=PackedStringArray("audio_player")]
+[node name="Component_IdleSounds" type="Node3D" parent="." index="7" unique_id=1302254347 node_paths=PackedStringArray("audio_player")]
 script = ExtResource("4_cvjpm")
 idle_sound = 3
 audio_player = NodePath("../AudioStreamPlayer3D")
