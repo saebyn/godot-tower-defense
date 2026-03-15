@@ -110,6 +110,10 @@ func _update_slot_visual(slot_index: int) -> void:
 
 func _on_slot_pressed(slot_index: int) -> void:
   """Handle left click on slot - select obstacle for placement"""
+  # Block world placement when the game is paused (speed = 0 or in-game menu)
+  if GameManager.is_paused():
+    return
+  
   var obstacle_id = slot_obstacle_ids[slot_index] if slot_index < slot_obstacle_ids.size() else ""
   var obstacle = _get_obstacle_by_id(obstacle_id)
   
@@ -119,6 +123,10 @@ func _on_slot_pressed(slot_index: int) -> void:
 
 func _on_slot_gui_input(event: InputEvent, slot_index: int) -> void:
   """Handle GUI input for advanced slot interactions"""
+  # Block hotbar configuration when the in-game menu is open
+  if GameManager.current_state == GameManager.GameState.IN_GAME_MENU:
+    return
+  
   if event is InputEventMouseButton and event.pressed:
     if event.button_index == MOUSE_BUTTON_RIGHT:
       _show_obstacle_selection_menu(slot_index)
