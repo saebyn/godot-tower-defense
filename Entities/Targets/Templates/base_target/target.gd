@@ -35,6 +35,12 @@ func _ready():
   if skin_material and mesh:
     mesh.set_surface_override_material(0, skin_material)
 
+  # Refresh health display now that survivor_name is set.
+  # health._ready() runs before target._ready() (children initialise first),
+  # so the name label would otherwise remain blank until the first hover event.
+  if health:
+    health.refresh_display()
+
 
 func _on_died(damage_source: String = "unknown") -> void:
   MyLogger.info("Target", "Survivor '%s' has died. Source: %s" % [survivor_name, damage_source])
