@@ -37,6 +37,7 @@ signal closed()
 @onready var twitch_auth_button: Button = %TwitchAuthButton
 @onready var twitch_status_label: Label = %TwitchStatusLabel
 @onready var twitch_enabled_check: CheckButton = %TwitchEnabledCheckButton
+@onready var twitch_welcome_message: TextEdit = %TwitchWelcomeMessageEdit
 
 # Keybind button scene
 const KeybindButtonScene = preload("res://Common/UI/settings_menu/keybind_button.tscn")
@@ -51,6 +52,7 @@ var temp_music_volume: float
 var temp_sfx_volume: float
 var temp_music_pause: bool
 var temp_twitch_enabled: bool
+var temp_twitch_welcome_message: String
 
 # Store original keybinds to restore on cancel
 var original_keybinds: Dictionary = {}
@@ -65,7 +67,10 @@ var previous_master_volume: float
 var previous_music_volume: float
 var previous_sfx_volume: float
 var previous_music_pause: bool
+
+# Previous Twitch settings for revert
 var previous_twitch_enabled: bool
+var previous_twitch_welcome_message: String
 
 # Video confirmation dialog
 var video_confirm_dialog = null
@@ -114,6 +119,7 @@ func _connect_signals() -> void:
   twitch_auth_button.pressed.connect(_on_twitch_auth_pressed)
   if SettingsManager.twitch_enabled and is_instance_valid(Twitch.api):
     Twitch.api.unauthenticated.connect(_on_twitch_unauthenticated)
+  twitch_welcome_message.text_changed.connect(_on_twitch_welcome_message_changed)
   
   # Debug settings
   debug_check.toggled.connect(_on_debug_mode_toggled)
@@ -160,6 +166,7 @@ func _load_current_settings() -> void:
   temp_sfx_volume = SettingsManager.sfx_volume
   temp_music_pause = SettingsManager.music_pause
   temp_twitch_enabled = SettingsManager.twitch_enabled
+  temp_twitch_welcome_message = SettingsManager.twitch_welcome_message
 
   # Save original settings for potential revert
   previous_fullscreen = temp_fullscreen
@@ -170,6 +177,7 @@ func _load_current_settings() -> void:
   previous_sfx_volume = temp_sfx_volume
   previous_music_pause = temp_music_pause
   previous_twitch_enabled = temp_twitch_enabled
+  previous_twitch_welcome_message = temp_twitch_welcome_message
 
   # Update UI controls
   fullscreen_check.button_pressed = temp_fullscreen
@@ -187,6 +195,7 @@ func _load_current_settings() -> void:
 
   # Twitch settings
   twitch_enabled_check.button_pressed = temp_twitch_enabled
+  twitch_welcome_message.text = temp_twitch_welcome_message
   
   _update_volume_labels()
 
@@ -289,6 +298,10 @@ func _get_twitch_display_name() -> String:
   if is_instance_valid(current_user) and not current_user.display_name.is_empty():
     return current_user.display_name
   return ""
+
+func _on_twitch_welcome_message_changed() -> void:
+  temp_twitch_welcome_message = twitch_welcome_message.text
+  SettingsManager.twitch_welcome_message = temp_twitch_welcome_message
 
 func _on_debug_mode_toggled(pressed: bool) -> void:
   SettingsManager.set_debug_mode(pressed)
@@ -413,3 +426,4 @@ func _restore_original_settings() -> void:
   # video settings revert function
 
   SettingsManager.twitch_enabled = previous_twitch_enabled
+  SettingsManager.twitch_welcome_message = previous_twitch_welcome_message

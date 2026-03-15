@@ -27,6 +27,7 @@ var music_pause: bool = false
 
 # Twitch settings
 var twitch_enabled: bool = false
+var twitch_welcome_message: String = ""
 
 # Available resolutions
 const RESOLUTIONS: Array[Vector2i] = [
@@ -65,6 +66,7 @@ func load_settings() -> void:
 
   # Twitch settings
   twitch_enabled = config.get_value("twitch", "enabled", twitch_enabled)
+  twitch_welcome_message = config.get_value("twitch", "welcome_message", twitch_welcome_message)
   
   # Load keybind settings
   _load_keybinds(config)
@@ -88,6 +90,7 @@ func save_settings() -> void:
 
   # Save Twitch settings
   config.set_value("twitch", "enabled", twitch_enabled)
+  config.set_value("twitch", "welcome_message", twitch_welcome_message)
   
   # Save keybind settings
   _save_keybinds(config)
