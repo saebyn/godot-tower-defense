@@ -16,7 +16,7 @@ extends Resource
 @export var scrap_reward: int = 10 ## Scrap awarded when enemy dies
 @export var xp_reward: int = 10 ## XP awarded when enemy dies
 @export var target_desired_distance: float = 4.0 ## Desired distance to target when approaching (navigation stopping distance)
-@export var target_attack_range: float = 2.0 ## Range at which the enemy will attack the primary target
+@export var target_attack_range: float = 4.0 ## Range at which the enemy will attack the primary target
 @export var obstacle_attack_range: float = 6.0 ## Range at which the enemy will start attacking obstacles
 
 @export_category("Visual Properties")

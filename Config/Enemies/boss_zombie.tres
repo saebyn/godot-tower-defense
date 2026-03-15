@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Resource_EnemyType" load_steps=4 format=3 uid="uid://b07wewlgyi6ur"]
+[gd_resource type="Resource" script_class="Resource_EnemyType" format=3 uid="uid://b07wewlgyi6ur"]
 
 [ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://Entities/Enemies/Templates/base_enemy/enemy.tscn" id="1_3k4wb"]
 [ext_resource type="Script" uid="uid://veme7gd0dvne" path="res://Config/Enemies/enemy_type_resource.gd" id="2_0bpcg"]
@@ -13,11 +13,7 @@ scene = ExtResource("1_3k4wb")
 scale_multiplier = 1.5
 hitpoints = 500
 speed = 5.0
-damage_amount = 25
-attack_speed = 1.0
 scrap_reward = 100
 xp_reward = 500
-target_desired_distance = 4.0
-obstacle_attack_range = 6.0
 skin_material = ExtResource("3_ggg66")
 metadata/_custom_type_script = "uid://veme7gd0dvne"
