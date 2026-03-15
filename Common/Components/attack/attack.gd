@@ -33,7 +33,7 @@ var is_on_cooldown: bool = false
 func _ready():
   # Register this component in parent's metadata for discovery
   if get_parent():
-    get_parent().set_meta("attack_component", self)
+    get_parent().set_meta("attack_component", self )
 
   if not audio_player:
     MyLogger.warn("Attack", "No AudioStreamPlayer assigned for Attack effect sounds.")
@@ -41,6 +41,7 @@ func _ready():
 
 func perform_attack(target: Node) -> AttackResult:
   if not is_on_cooldown:
+    MyLogger.debug("Attack", "Attempting to perform attack on target: %s" % target)
     # Find Health component via metadata
     var health = null
     if target.has_meta("health_component"):
@@ -60,6 +61,7 @@ func perform_attack(target: Node) -> AttackResult:
     else:
       return AttackResult.INVALID_TARGET
    
+  MyLogger.debug("Attack", "Attack is on cooldown. Cannot perform attack on target: %s" % target)
   return AttackResult.ON_COOLDOWN
 
 func cancel():
