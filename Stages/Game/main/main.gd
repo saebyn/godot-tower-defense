@@ -84,7 +84,10 @@ func _ready() -> void:
       MyLogger.info("Main", "Twitch setup successful")
       var me = await Twitch.get_current_user()
       MyLogger.info("Main", "Twitch authenticated as %s (ID: %s)" % [me.display_name, me.id])
-      Twitch.chat("Hello from Godot!")
+
+      if SettingsManager.twitch_welcome_message != "":
+        Twitch.chat(SettingsManager.twitch_welcome_message)
+
       Twitch.api.unauthenticated.connect(_on_twitch_unauthenticated)
     else:
       # display a message to the user if Twitch setup failed, but don't disable the game features since Twitch is optional

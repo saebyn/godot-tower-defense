@@ -234,6 +234,21 @@ alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="TwitchWelcomeMessageContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Twitch/VBoxContainer" unique_id=792945256]
+layout_mode = 2
+
+[node name="TwitchWelcomeMessageLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Twitch/VBoxContainer/TwitchWelcomeMessageContainer" unique_id=1916748081]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+text = "Message to put in chat when the integration starts"
+autowrap_mode = 2
+
+[node name="TwitchWelcomeMessageEdit" type="TextEdit" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Twitch/VBoxContainer/TwitchWelcomeMessageContainer" unique_id=1059340932]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 150)
+layout_mode = 2
+placeholder_text = "If blank, no message is sent"
+
 [node name="Debug" type="MarginContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer" unique_id=38732812]
 visible = false
 layout_mode = 2
