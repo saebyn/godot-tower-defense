@@ -180,6 +180,8 @@ func _check_and_set_fallback_target() -> void:
 
 
 func _attack_target():
+  MyLogger.debug("Enemy", "Attempting to attack target. Current target: %s, Fallback obstacle: %s" % [current_target, fallback_obstacle_target])
+
   if not current_target:
     MyLogger.trace("Enemy", "No current target to attack.")
     _choose_target()
@@ -194,6 +196,7 @@ func _attack_target():
 
   # If we have a fallback obstacle target, prioritize it
   if fallback_obstacle_target and is_instance_valid(fallback_obstacle_target):
+    MyLogger.debug("Enemy", "Fallback obstacle target is valid, checking distance to attack.")
     var distance_to_fallback: float = global_position.distance_to(fallback_obstacle_target.global_position)
     
     # Attack the fallback obstacle if in range
@@ -202,15 +205,15 @@ func _attack_target():
       attack.perform_attack(fallback_obstacle_target)
       return
   else:
+    MyLogger.debug("Enemy", "No valid fallback obstacle target currently set.")
     # Fallback target was destroyed or is invalid, recheck path
-    if fallback_obstacle_target != null:
-      MyLogger.info("Enemy.Navigation", "Fallback obstacle destroyed, rechecking path to target")
-      fallback_obstacle_target = null
-      navigation_agent.set_target_position(current_target.global_position)
-      _check_and_set_fallback_target()
+    MyLogger.info("Enemy.Navigation", "Fallback obstacle destroyed, rechecking path to target")
+    navigation_agent.set_target_position(current_target.global_position)
+    _check_and_set_fallback_target()
 
   # Attack primary target if in range (higher priority)
   var distance_to_target: float = global_position.distance_to(current_target.global_position)
+  MyLogger.debug("Enemy", "Distance to primary target: %f. Minimum attack range: %f" % [distance_to_target, target_attack_range])
   if distance_to_target <= target_attack_range:
       attack.perform_attack(current_target)
       return
