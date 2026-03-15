@@ -15,4 +15,5 @@ damage_amount = 8.0
 scrap_reward = 15
 xp_reward = 50
 target_desired_distance = 0.5
+target_attack_range = 4.0
 metadata/_custom_type_script = "uid://veme7gd0dvne"
