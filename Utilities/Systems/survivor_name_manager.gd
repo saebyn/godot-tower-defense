@@ -62,8 +62,7 @@ const _GENERATED_NAME_PREFIXES: Array[String] = [
 var used_names: Array[String] = []
 
 ## Priority pool — checked before NAME_POOL. Add names here to give specific
-## survivors memorable identities. Priority names are permanently consumed
-## on assignment and never reassigned (see _spent_priority_names).
+## survivors memorable identities.
 var priority_pool: Array[String] = []
 
 ## Persistent survivor profiles. Each entry is a Dictionary with:
@@ -84,7 +83,7 @@ signal name_assigned(survivor_name: String)
 signal name_released(survivor_name: String)
 
 func _ready() -> void:
-  SaveManager.register_system(self)
+  SaveManager.register_system(self )
   MyLogger.info("SurvivorNameManager", "Survivor Name Manager initialized - Pool size: %d" % NAME_POOL.size())
 
 ## Assign an available name to a new survivor.
@@ -112,8 +111,6 @@ func assign_name() -> String:
   return chosen
 
 ## Return a name when the survivor who held it dies.
-## Priority names (recorded in _spent_priority_names at assignment) are
-## permanently consumed and never reassigned.
 ## Regular pool names are simply removed from used_names and become available again.
 func release_name(survivor_name: String) -> void:
   if survivor_name.is_empty():
