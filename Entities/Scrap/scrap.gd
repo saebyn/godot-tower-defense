@@ -18,7 +18,7 @@ func _on_health_died(_damage_source: String) -> void:
 func _on_health_damaged(_amount: int, _hitpoints: int, damage_source: String) -> void:
   # Only reward scrap if the damage source is a player attack. This prevents
   # rewarding scrap for environmental damage or other non-player sources.
-  if damage_source != "player_attack":
+  if damage_source != "player":
     return
 
   CurrencyManager.earn_scrap(scrap_reward)
