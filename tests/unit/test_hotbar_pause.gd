@@ -7,10 +7,23 @@ extends GutTest
 var hotbar_scene = preload("res://Common/UI/hotbar/hotbar.tscn")
 var hotbar: UI_Hotbar
 
+## A minimal obstacle type added to ObstacleRegistry for tests that need it
+var _test_obstacle: Resource_ObstacleType
+## The original available_obstacle_types list to restore after each test
+var _original_available: Array[Resource_ObstacleType] = []
+
 func before_each():
   # Reset GameManager to known state
   GameManager.set_game_state(GameManager.GameState.PLAYING)
   GameManager.resume_game()
+
+  # Snapshot existing available obstacles so we can restore them after the test
+  _original_available = ObstacleRegistry.available_obstacle_types.duplicate()
+
+  # Create a minimal obstacle for tests that need a populated slot
+  _test_obstacle = Resource_ObstacleType.new()
+  _test_obstacle.id = "_test_hotbar_obstacle"
+  _test_obstacle.name = "Test Obstacle"
 
   # Instantiate hotbar
   hotbar = hotbar_scene.instantiate()
@@ -18,9 +31,17 @@ func before_each():
   await wait_process_frames(2)
 
 func after_each():
+  # Restore ObstacleRegistry to its original state
+  ObstacleRegistry.available_obstacle_types = _original_available
+
   # Ensure game is not paused after tests
   GameManager.set_game_state(GameManager.GameState.PLAYING)
   GameManager.resume_game()
+
+## Helper: inject the test obstacle into the registry and configure slot 0
+func _setup_populated_slot() -> void:
+  ObstacleRegistry.available_obstacle_types.append(_test_obstacle)
+  hotbar.slot_obstacle_ids[0] = _test_obstacle.id
 
 ## Process Mode Tests
 
@@ -33,36 +54,37 @@ func test_hotbar_process_mode_is_always():
 ## World Placement Blocking Tests
 
 func test_slot_pressed_emits_obstacle_selected_when_not_paused():
-  # Arrange - watch for the signal
+  # Arrange - populate slot 0 with a test obstacle and watch for the signal
+  _setup_populated_slot()
   watch_signals(hotbar)
 
-  # Act - call _on_slot_pressed (slot is empty so signal won't emit due to null obstacle,
-  # but we verify no early return from the pause guard)
+  # Act - game is not paused; pressing the slot should emit obstacle_selected
   GameManager.resume_game()
   hotbar._on_slot_pressed(0)
 
-  # If the slot is empty no signal is emitted; this test confirms the pause guard
-  # does NOT block when game is not paused. Signal emission depends on slot content.
-  # We simply assert no error occurred and the function ran to completion.
-  assert_true(true, "Should reach end of _on_slot_pressed without error when not paused")
+  # Assert - the signal must be emitted with the test obstacle
+  assert_signal_emitted(hotbar, "obstacle_selected",
+    "obstacle_selected should be emitted when game is not paused")
+  assert_signal_emitted_with_parameters(hotbar, "obstacle_selected", [_test_obstacle],
+    "obstacle_selected should carry the selected obstacle")
 
 func test_slot_pressed_does_not_emit_obstacle_selected_when_paused():
-  # Arrange - manually set a slot obstacle ID and watch the signal
+  # Arrange - populate slot 0 and watch the signal
+  _setup_populated_slot()
   watch_signals(hotbar)
-  hotbar.slot_obstacle_ids[0] = "dummy_obstacle_id"
 
   # Act - pause the game and press the slot
   GameManager.pause_game()
   hotbar._on_slot_pressed(0)
 
-  # Assert - obstacle_selected must not be emitted when game is paused
+  # Assert - obstacle_selected must not be emitted when game is paused (speed = 0)
   assert_signal_not_emitted(hotbar, "obstacle_selected",
     "obstacle_selected should not be emitted when game is paused (speed = 0)")
 
 func test_slot_pressed_does_not_emit_obstacle_selected_in_game_menu():
-  # Arrange
+  # Arrange - populate slot 0 and watch the signal
+  _setup_populated_slot()
   watch_signals(hotbar)
-  hotbar.slot_obstacle_ids[0] = "dummy_obstacle_id"
 
   # Act - open in-game menu (pauses the game and sets IN_GAME_MENU state)
   GameManager.pause_game()
@@ -76,9 +98,10 @@ func test_slot_pressed_does_not_emit_obstacle_selected_in_game_menu():
 ## Hotbar Configuration Blocking Tests
 
 func test_right_click_config_allowed_when_paused_via_speed_control():
-  # Arrange - simulate speed-control pause (game is paused but state is PLAYING)
+  # Arrange - populate slot 0 so the config menu has something to show,
+  # then simulate speed-control pause (game is paused but state is PLAYING)
+  _setup_populated_slot()
   GameManager.pause_game()
-  # State remains PLAYING (not IN_GAME_MENU)
   assert_eq(GameManager.current_state, GameManager.GameState.PLAYING,
     "State should remain PLAYING when paused via speed control")
 
@@ -87,15 +110,16 @@ func test_right_click_config_allowed_when_paused_via_speed_control():
   event.button_index = MOUSE_BUTTON_RIGHT
   event.pressed = true
 
-  # Call _on_slot_gui_input directly – it should NOT return early for speed-pause
-  # We verify this by checking that it doesn't throw and would proceed to show the menu.
-  # (The menu itself won't show without ObstacleRegistry having entries, which is fine here.)
+  hotbar.current_configuring_slot = -1
   hotbar._on_slot_gui_input(event, 0)
 
-  assert_true(true, "Right-click config should not be blocked when paused via speed control")
+  # Assert - current_configuring_slot should be set, meaning the guard did NOT block
+  assert_eq(hotbar.current_configuring_slot, 0,
+    "Slot configuration should be allowed when paused via speed control (state = PLAYING)")
 
 func test_right_click_config_blocked_when_in_game_menu():
   # Arrange - open in-game menu
+  _setup_populated_slot()
   GameManager.pause_game()
   GameManager.set_game_state(GameManager.GameState.IN_GAME_MENU)
 
@@ -104,11 +128,9 @@ func test_right_click_config_blocked_when_in_game_menu():
   event.button_index = MOUSE_BUTTON_RIGHT
   event.pressed = true
 
-  # _on_slot_gui_input returns early for IN_GAME_MENU; current_configuring_slot must stay at -1
   hotbar.current_configuring_slot = -1
   hotbar._on_slot_gui_input(event, 0)
 
-  # If the guard works, _show_obstacle_selection_menu was never called
-  # and current_configuring_slot remains -1
+  # Assert - current_configuring_slot must remain -1 because the guard blocked the call
   assert_eq(hotbar.current_configuring_slot, -1,
     "Slot configuration should be blocked when in-game menu is open")
