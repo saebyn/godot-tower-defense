@@ -100,10 +100,7 @@ shape = SubResource("ConcavePolygonShape3D_8lne4")
 transform = Transform3D(0.8162794, 0, -0.5776592, 0, 1, 0, 0.5776592, 0, 0.8162794, -9.937922, 3.2032154, -9.683429)
 skin_material = ExtResource("7_vi6mr")
 
-[node name="AnimationPlayer" parent="Survivor1" index="4"]
-autoplay = &"Idle"
-
-[node name="Component_PanicBehavior" parent="Survivor1" index="6"]
+[node name="Component_PanicBehavior" parent="Survivor1" index="6" unique_id=749990093]
 panic_move_radius = 0.0
 
 [node name="MuscleCar" parent="." unique_id=1065602798 groups=["obstacles"] instance=ExtResource("9_5hngp")]
@@ -117,7 +114,7 @@ collision_mask = 0
 transform = Transform3D(100, 0, 0, 0, 64.28409, 76.59997, 0, -76.59997, 64.28409, 0.0023932643, 1.1999701, -2.0580146)
 
 [node name="Health" parent="MuscleCar" unique_id=1701891090 node_paths=PackedStringArray("audio_player") instance=ExtResource("10_ffud3")]
-hitpoints = 500
+hitpoints = 300
 hit_sound = 16
 death_sound = 17
 audio_player = NodePath("../AudioStreamPlayer3D")
