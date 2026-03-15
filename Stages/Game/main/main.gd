@@ -19,6 +19,9 @@ var attack: Component_Attack
 
 @onready var obstacle_placement: Utility_ObstaclePlacement = $ObstaclePlacement
 
+@onready var twitch_eventsub: TwitchEventsub = $TwitchEventsub
+@onready var joinqueue_command: TwitchCommand = $JoinQueueCommand
+
 var obstacle_raycast: RayCast3D
 var current_scenario: Stage_Scenario = null
 ## Currently hovered ranged obstacle for range preview
@@ -89,6 +92,11 @@ func _ready() -> void:
         Twitch.chat(SettingsManager.twitch_welcome_message)
 
       Twitch.api.unauthenticated.connect(_on_twitch_unauthenticated)
+
+      # Set up eventsub to listen to chat
+      Twitch.eventsub.subscribe(
+        TwitchEventsubConfig.create(TwitchEventsubDefinition.CHANNEL_CHAT_MESSAGE, {"broadcaster_user_id": me.id, "user_id": me.id}),
+      )
     else:
       # display a message to the user if Twitch setup failed, but don't disable the game features since Twitch is optional
       MyLogger.error("Main", "Twitch setup failed - Twitch features will be unavailable")
@@ -381,3 +389,15 @@ func _handle_hover(mouse_position: Vector2) -> void:
       _hide_entity_unit_frame(_hovered_entity)
     _hovered_entity = new_hovered_entity
     _show_entity_unit_frame(_hovered_entity)
+
+
+func _on_joinqueue_command_received(from_username: String, info: TwitchCommandInfo, _arguments: PackedStringArray) -> void:
+  MyLogger.info("Main.Twitch", "Received !joinqueue command from %s" % from_username)
+  var survivor_name := from_username
+
+  if SurvivorNameManager.add_name_to_priority_pool(survivor_name):
+    MyLogger.info("Main.Twitch", "Added survivor name '%s' to priority pool" % survivor_name)
+    Twitch.chat("Thanks @%s! Your survivor name '%s' has been added to the priority pool for the next scenario." % [from_username, survivor_name])
+  else:
+    MyLogger.warn("Main.Twitch", "Survivor name '%s' is already in the priority pool" % survivor_name)
+    Twitch.chat("@%s, the survivor name '%s' is already in the priority pool." % [from_username, survivor_name])
