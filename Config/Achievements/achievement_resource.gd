@@ -29,7 +29,8 @@ extends Resource
 enum ConditionType {
   ENEMIES_DEFEATED_TOTAL, ## Track total enemies defeated across all types
   ENEMIES_DEFEATED_BY_TYPE, ## Track enemies defeated of a specific type
-  CLICKS_PERFORMED, ## Track total clicks performed (hand defeats)
+  CLICKS_PERFORMED, ## Track total raw clicks performed by the player
+  HAND_KILLS, ## Track total enemies defeated by hand (player clicks)
   SCRAP_EARNED, ## Track total scrap earned over all time
   OBSTACLES_PLACED, ## Track total obstacles placed
   WAVE_COMPLETED, ## Track waves completed in a single game
@@ -68,6 +69,8 @@ class AchievementCondition extends Resource:
         desc = "Defeat %d %s enemies" % [threshold, condition_target]
       ConditionType.CLICKS_PERFORMED:
         desc = "Perform %d clicks" % threshold
+      ConditionType.HAND_KILLS:
+        desc = "Defeat %d enemies by hand" % threshold
       ConditionType.SCRAP_EARNED:
         desc = "Earn %d scrap" % threshold
       ConditionType.OBSTACLES_PLACED:
@@ -162,6 +165,8 @@ func get_condition_description() -> String:
         condition_desc = "Defeat %d %s enemies" % [threshold, condition_target]
       ConditionType.CLICKS_PERFORMED:
         condition_desc = "Perform %d clicks" % threshold
+      ConditionType.HAND_KILLS:
+        condition_desc = "Defeat %d enemies by hand" % threshold
       ConditionType.SCRAP_EARNED:
         condition_desc = "Earn %d scrap" % threshold
       ConditionType.OBSTACLES_PLACED:

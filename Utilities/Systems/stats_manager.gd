@@ -8,11 +8,16 @@ extends Node
 ##   StatsManager.track_enemy_defeated("basic_enemy", false)
 ##   StatsManager.track_obstacle_placed("turret")
 ##   StatsManager.get_enemies_defeated_by_type("basic_enemy")
+##   StatsManager.track_click_performed()
+##   StatsManager.get_clicks_performed()
 
 # Enemy defeat tracking
 var enemies_defeated_total: int = 0
 var enemies_defeated_by_type: Dictionary = {} # String -> int
 var enemies_defeated_by_hand: int = 0
+
+# Player action tracking
+var clicks_performed: int = 0
 
 # Obstacle placement tracking
 var obstacles_placed_total: int = 0
@@ -87,6 +92,12 @@ func track_enemy_defeated(enemy_type: String, defeated_by_hand: bool = false) ->
   enemy_defeated.emit(enemy_type, defeated_by_hand)
   stats_updated.emit()
 
+## Track a player click (raw click count, regardless of hit or kill)
+func track_click_performed() -> void:
+  clicks_performed += 1
+  MyLogger.debug("Stats", "Click performed. Total clicks: %d" % clicks_performed)
+  stats_updated.emit()
+
 ## Track an obstacle placement
 func track_obstacle_placed(obstacle_type: String) -> void:
   obstacles_placed_total += 1
@@ -139,6 +150,9 @@ func get_enemies_defeated_by_type(enemy_type: String) -> int:
 func get_enemies_defeated_by_hand() -> int:
   return enemies_defeated_by_hand
 
+func get_clicks_performed() -> int:
+  return clicks_performed
+
 func get_obstacles_placed_total() -> int:
   return obstacles_placed_total
 
@@ -169,6 +183,7 @@ func get_stats_summary() -> Dictionary:
     "enemies_defeated_total": enemies_defeated_total,
     "enemies_defeated_by_type": enemies_defeated_by_type.duplicate(),
     "enemies_defeated_by_hand": enemies_defeated_by_hand,
+    "clicks_performed": clicks_performed,
     "obstacles_placed_total": obstacles_placed_total,
     "obstacles_placed_by_type": obstacles_placed_by_type.duplicate(),
     "total_scrap_earned": total_scrap_earned,
@@ -182,6 +197,7 @@ func reset_stats() -> void:
   enemies_defeated_total = 0
   enemies_defeated_by_type.clear()
   enemies_defeated_by_hand = 0
+  clicks_performed = 0
   obstacles_placed_total = 0
   obstacles_placed_by_type.clear()
   total_scrap_earned = 0
@@ -204,6 +220,7 @@ func get_save_data() -> Dictionary:
     "enemies_defeated_total": enemies_defeated_total,
     "enemies_defeated_by_type": enemies_defeated_by_type,
     "enemies_defeated_by_hand": enemies_defeated_by_hand,
+    "clicks_performed": clicks_performed,
     "obstacles_placed_total": obstacles_placed_total,
     "obstacles_placed_by_type": obstacles_placed_by_type,
     "total_scrap_earned": total_scrap_earned,
@@ -217,6 +234,7 @@ func load_data(data: Dictionary) -> void:
   enemies_defeated_total = data.get("enemies_defeated_total", 0)
   enemies_defeated_by_type = data.get("enemies_defeated_by_type", {})
   enemies_defeated_by_hand = data.get("enemies_defeated_by_hand", 0)
+  clicks_performed = data.get("clicks_performed", 0)
   obstacles_placed_total = data.get("obstacles_placed_total", 0)
   obstacles_placed_by_type = data.get("obstacles_placed_by_type", {})
   total_scrap_earned = data.get("total_scrap_earned", data.get("total_currency_earned", 0))
