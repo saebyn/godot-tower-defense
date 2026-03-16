@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://q4474n3vbxwb" path="res://Common/UI/settings_menu/settings_menu.gd" id="1_settings"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
+[ext_resource type="Script" uid="uid://c1g3vqaakxkv2" path="res://Common/UI/settings_menu/SettingBinding.gd" id="3_settingbinding"]
 
 [node name="SettingsMenu" type="Control" unique_id=2049746040]
 process_mode = 3
@@ -88,6 +89,14 @@ vertical_alignment = 1
 [node name="FullscreenCheck" type="CheckButton" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Video/VBoxContainer/FullscreenContainer" unique_id=7163148]
 layout_mode = 2
 
+[node name="FullscreenBinding" type="Node" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Video/VBoxContainer/FullscreenContainer"]
+script = ExtResource("3_settingbinding")
+setting_key = &"fullscreen"
+control_path = NodePath("../FullscreenCheck")
+control_property = &"button_pressed"
+apply_group = "video"
+confirm_required = true
+
 [node name="VsyncContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Video/VBoxContainer" unique_id=791757886]
 layout_mode = 2
 
@@ -99,6 +108,14 @@ vertical_alignment = 1
 
 [node name="VsyncCheck" type="CheckButton" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Video/VBoxContainer/VsyncContainer" unique_id=876484672]
 layout_mode = 2
+
+[node name="VsyncBinding" type="Node" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Video/VBoxContainer/VsyncContainer"]
+script = ExtResource("3_settingbinding")
+setting_key = &"vsync_enabled"
+control_path = NodePath("../VsyncCheck")
+control_property = &"button_pressed"
+apply_group = "video"
+confirm_required = true
 
 [node name="ResolutionContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Video/VBoxContainer" unique_id=418705244]
 layout_mode = 2
@@ -112,6 +129,14 @@ vertical_alignment = 1
 [node name="ResolutionOption" type="OptionButton" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Video/VBoxContainer/ResolutionContainer" unique_id=569704680]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+
+[node name="ResolutionBinding" type="Node" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Video/VBoxContainer/ResolutionContainer"]
+script = ExtResource("3_settingbinding")
+setting_key = &"resolution_index"
+control_path = NodePath("../ResolutionOption")
+control_property = &"selected"
+apply_group = "video"
+confirm_required = true
 
 [node name="Audio" type="MarginContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer" unique_id=2103301877]
 visible = false
@@ -137,6 +162,16 @@ text = "Master: 100%"
 layout_mode = 2
 value = 100.0
 
+[node name="MasterBinding" type="Node" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/MasterContainer"]
+script = ExtResource("3_settingbinding")
+setting_key = &"master_volume"
+control_path = NodePath("../MasterSlider")
+apply_group = "audio"
+live_preview = true
+conversion = "db_to_percentage"
+value_label_path = NodePath("../MasterLabel")
+label_format = "Master: %d%%"
+
 [node name="MusicContainer" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer" unique_id=624185837]
 layout_mode = 2
 
@@ -147,6 +182,16 @@ text = "Music: 100%"
 [node name="MusicSlider" type="HSlider" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/MusicContainer" unique_id=429448199]
 layout_mode = 2
 value = 100.0
+
+[node name="MusicBinding" type="Node" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/MusicContainer"]
+script = ExtResource("3_settingbinding")
+setting_key = &"music_volume"
+control_path = NodePath("../MusicSlider")
+apply_group = "audio"
+live_preview = true
+conversion = "db_to_percentage"
+value_label_path = NodePath("../MusicLabel")
+label_format = "Music: %d%%"
 
 [node name="SFXContainer" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer" unique_id=73620275]
 layout_mode = 2
@@ -159,6 +204,16 @@ text = "SFX: 100%"
 layout_mode = 2
 value = 100.0
 
+[node name="SFXBinding" type="Node" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/SFXContainer"]
+script = ExtResource("3_settingbinding")
+setting_key = &"sfx_volume"
+control_path = NodePath("../SFXSlider")
+apply_group = "audio"
+live_preview = true
+conversion = "db_to_percentage"
+value_label_path = NodePath("../SFXLabel")
+label_format = "SFX: %d%%"
+
 [node name="MusicPauseContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer" unique_id=1576115018]
 layout_mode = 2
 
@@ -170,6 +225,14 @@ vertical_alignment = 1
 
 [node name="MusicPauseCheck" type="CheckButton" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/MusicPauseContainer" unique_id=864624287]
 layout_mode = 2
+
+[node name="MusicPauseBinding" type="Node" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/MusicPauseContainer"]
+script = ExtResource("3_settingbinding")
+setting_key = &"music_pause"
+control_path = NodePath("../MusicPauseCheck")
+control_property = &"button_pressed"
+apply_group = "audio"
+live_preview = true
 
 [node name="Keybinds" type="MarginContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer" unique_id=1532866151]
 visible = false
@@ -211,6 +274,14 @@ text = "Enable Twitch Integration"
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="TwitchEnabledBinding" type="Node" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Twitch/VBoxContainer/TwitchEnabledContainer"]
+script = ExtResource("3_settingbinding")
+setting_key = &"twitch_enabled"
+control_path = NodePath("../TwitchEnabledCheckButton")
+control_property = &"button_pressed"
+apply_group = "twitch"
+live_preview = true
+
 [node name="TwitchAuthContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Twitch/VBoxContainer" unique_id=459364355]
 layout_mode = 2
 
@@ -249,6 +320,14 @@ custom_minimum_size = Vector2(400, 150)
 layout_mode = 2
 placeholder_text = "If blank, no message is sent"
 
+[node name="TwitchWelcomeBinding" type="Node" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Twitch/VBoxContainer/TwitchWelcomeMessageContainer"]
+script = ExtResource("3_settingbinding")
+setting_key = &"twitch_welcome_message"
+control_path = NodePath("../TwitchWelcomeMessageEdit")
+control_property = &"text"
+apply_group = "twitch"
+live_preview = true
+
 [node name="Debug" type="MarginContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer" unique_id=38732812]
 visible = false
 layout_mode = 2
@@ -273,6 +352,15 @@ vertical_alignment = 1
 
 [node name="DebugModeCheck" type="CheckButton" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Debug/VBoxContainer/DebugModeContainer" unique_id=426405189]
 layout_mode = 2
+
+[node name="DebugModeBinding" type="Node" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Debug/VBoxContainer/DebugModeContainer"]
+script = ExtResource("3_settingbinding")
+setting_key = &"debug_mode"
+control_path = NodePath("../DebugModeCheck")
+control_property = &"button_pressed"
+apply_group = "debug"
+live_preview = true
+revert_on_cancel = false
 
 [node name="ButtonContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer" unique_id=775830852]
 layout_mode = 2
