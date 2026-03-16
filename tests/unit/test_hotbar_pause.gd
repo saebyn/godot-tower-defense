@@ -4,7 +4,7 @@ extends GutTest
 ## Tests that hotbar slot management works when the game is paused via speed control
 ## and that world placement is correctly blocked when the game is paused.
 
-var hotbar_scene = preload("res://Common/UI/hotbar/hotbar.tscn")
+var main_ui_scene = preload("res://Stages/UI/main_ui/ui.tscn")
 var hotbar: UI_Hotbar
 
 ## A minimal obstacle type added to ObstacleRegistry for tests that need it
@@ -25,9 +25,10 @@ func before_each():
   _test_obstacle.id = "_test_hotbar_obstacle"
   _test_obstacle.name = "Test Obstacle"
 
-  # Instantiate hotbar
-  hotbar = hotbar_scene.instantiate()
-  add_child_autofree(hotbar)
+  # Instantiate main UI and grab the Hotbar node so we see the instance overrides
+  var main_ui = main_ui_scene.instantiate()
+  add_child_autofree(main_ui)
+  hotbar = main_ui.get_node("Hotbar")
   await wait_process_frames(2)
 
 func after_each():
