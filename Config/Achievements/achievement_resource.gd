@@ -27,15 +27,15 @@ extends Resource
 ##   complex_achievement.conditions = [cond1, cond2]
 
 enum ConditionType {
-  ENEMIES_DEFEATED_TOTAL, ## Track total enemies defeated across all types
-  ENEMIES_DEFEATED_BY_TYPE, ## Track enemies defeated of a specific type
-  CLICKS_PERFORMED, ## Track total raw clicks performed by the player
-  HAND_KILLS, ## Track total enemies defeated by hand (player clicks)
-  SCRAP_EARNED, ## Track total scrap earned over all time
-  OBSTACLES_PLACED, ## Track total obstacles placed
-  WAVE_COMPLETED, ## Track waves completed in a single game
-  GAME_SCENARIO_REACHED, ## Track highest game scenario reached
-  PLAYER_LEVEL_REACHED ## Track player XP level reached
+  ENEMIES_DEFEATED_TOTAL = 0, ## Track total enemies defeated across all types
+  ENEMIES_DEFEATED_BY_TYPE = 1, ## Track enemies defeated of a specific type
+  CLICKS_PERFORMED = 2, ## Track total raw clicks performed by the player
+  SCRAP_EARNED = 3, ## Track total scrap earned over all time
+  OBSTACLES_PLACED = 4, ## Track total obstacles placed
+  WAVE_COMPLETED = 5, ## Track waves completed in a single game
+  GAME_SCENARIO_REACHED = 6, ## Track highest game scenario reached
+  PLAYER_LEVEL_REACHED = 7, ## Track player XP level reached
+  HAND_KILLS = 8, ## Track total enemies defeated by hand (player clicks)
 }
 
 enum ConditionLogic {
