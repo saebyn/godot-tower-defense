@@ -11,7 +11,12 @@ signal debug_mode_changed(enabled: bool)
 const SETTINGS_FILE = "user://settings.cfg"
 
 # Debug settings (runtime only, not persisted)
-var debug_mode: bool = false
+var debug_mode: bool = false:
+  set(value):
+    if debug_mode != value:
+      debug_mode = value
+      debug_mode_changed.emit(debug_mode)
+      MyLogger.info("SettingsManager", "Debug mode %s" % ("enabled" if debug_mode else "disabled"))
 
 # Video settings
 var fullscreen: bool = false
@@ -197,10 +202,7 @@ func set_sfx_volume(volume_db: float) -> void:
 
 ## Set debug mode (runtime only, not persisted)
 func set_debug_mode(enabled: bool) -> void:
-  if debug_mode != enabled:
-    debug_mode = enabled
-    debug_mode_changed.emit(debug_mode)
-    MyLogger.info("SettingsManager", "Debug mode %s" % ("enabled" if debug_mode else "disabled"))
+  debug_mode = enabled
 
 ## Set Twitch enabled
 func set_twitch_enabled(enabled: bool) -> void:

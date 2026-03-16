@@ -2,32 +2,16 @@ extends Control
 class_name UI_SettingsMenu
 
 ## Settings Menu UI
-## Provides interface for adjusting video, audio, and input settings
+## Provides interface for adjusting video, audio, and input settings.
+## Per-setting logic is handled by SettingBinding child nodes; this script
+## only manages high-level flows (apply, cancel, video confirmation, Twitch auth).
 
 signal closed()
 
 @onready var tab_container: TabContainer = $Panel/MarginContainer/VBoxContainer/TabContainer
 
-# Video tab controls
-@onready var fullscreen_check: CheckButton = $Panel/MarginContainer/VBoxContainer/TabContainer/Video/VBoxContainer/FullscreenContainer/FullscreenCheck
-@onready var vsync_check: CheckButton = $Panel/MarginContainer/VBoxContainer/TabContainer/Video/VBoxContainer/VsyncContainer/VsyncCheck
-@onready var resolution_option: OptionButton = $Panel/MarginContainer/VBoxContainer/TabContainer/Video/VBoxContainer/ResolutionContainer/ResolutionOption
-
-# Audio tab controls
-@onready var master_slider: HSlider = $Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/MasterContainer/MasterSlider
-@onready var master_label: Label = $Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/MasterContainer/MasterLabel
-@onready var music_slider: HSlider = $Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/MusicContainer/MusicSlider
-@onready var music_label: Label = $Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/MusicContainer/MusicLabel
-@onready var sfx_slider: HSlider = $Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/SFXContainer/SFXSlider
-@onready var sfx_label: Label = $Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/SFXContainer/SFXLabel
-@onready var music_pause_label: Label = $Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/MusicPauseContainer/MusicPauseLabel
-@onready var music_pause_check: CheckButton = $Panel/MarginContainer/VBoxContainer/TabContainer/Audio/VBoxContainer/MusicPauseContainer/MusicPauseCheck
-
 # Keybinds tab controls
 @onready var keybinds_container: VBoxContainer = $Panel/MarginContainer/VBoxContainer/TabContainer/Keybinds/ScrollContainer/KeybindsContainer
-
-# Debug tab controls
-@onready var debug_check: CheckButton = $Panel/MarginContainer/VBoxContainer/TabContainer/Debug/VBoxContainer/DebugModeContainer/DebugModeCheck
 
 # Bottom buttons
 @onready var apply_button: Button = $Panel/MarginContainer/VBoxContainer/ButtonContainer/ApplyButton
@@ -36,224 +20,228 @@ signal closed()
 # Twitch settings UI elements
 @onready var twitch_auth_button: Button = %TwitchAuthButton
 @onready var twitch_status_label: Label = %TwitchStatusLabel
-@onready var twitch_enabled_check: CheckButton = %TwitchEnabledCheckButton
-@onready var twitch_welcome_message: TextEdit = %TwitchWelcomeMessageEdit
 
 # Keybind button scene
 const KeybindButtonScene = preload("res://Common/UI/settings_menu/keybind_button.tscn")
 const VideoConfirmDialogScene = preload("res://Common/UI/settings_menu/video_confirm_dialog.tscn")
 
-# Temporary settings storage
-var temp_fullscreen: bool
-var temp_vsync: bool
-var temp_resolution: int
-var temp_master_volume: float
-var temp_music_volume: float
-var temp_sfx_volume: float
-var temp_music_pause: bool
-var temp_twitch_enabled: bool
-var temp_twitch_welcome_message: String
-
 # Store original keybinds to restore on cancel
 var original_keybinds: Dictionary = {}
-
-# Previous video settings for revert
-var previous_fullscreen: bool
-var previous_vsync: bool
-var previous_resolution: int
-
-# Previous audio settings for revert
-var previous_master_volume: float
-var previous_music_volume: float
-var previous_sfx_volume: float
-var previous_music_pause: bool
-
-# Previous Twitch settings for revert
-var previous_twitch_enabled: bool
-var previous_twitch_welcome_message: String
 
 # Video confirmation dialog
 var video_confirm_dialog = null
 
+
 func _ready() -> void:
   # Hide by default
   visible = false
-  
+
   # Create video confirmation dialog
   video_confirm_dialog = VideoConfirmDialogScene.instantiate()
   add_child(video_confirm_dialog)
   video_confirm_dialog.settings_confirmed.connect(_on_video_settings_confirmed)
   video_confirm_dialog.settings_reverted.connect(_on_video_settings_reverted)
-  
-  # Setup resolution options
+
+  # Setup resolution options via the resolution binding's control
   _setup_resolution_options()
-  
+
   # Setup keybind buttons
   _setup_keybind_buttons()
 
   # Setup Twitch status
   _update_twitch_status()
-  
-  # Connect signals
-  _connect_signals()
 
-
-func _connect_signals() -> void:
-  # Video settings
-  fullscreen_check.toggled.connect(_on_fullscreen_toggled)
-  vsync_check.toggled.connect(_on_vsync_toggled)
-  resolution_option.item_selected.connect(_on_resolution_selected)
-  
-  # Audio settings
-  master_slider.value_changed.connect(_on_master_volume_changed)
-  music_slider.value_changed.connect(_on_music_volume_changed)
-  sfx_slider.value_changed.connect(_on_sfx_volume_changed)
-  music_pause_check.toggled.connect(_on_music_pause_toggled)
-  
-  # Bottom buttons
+  # Connect bottom buttons
   apply_button.pressed.connect(_on_apply_pressed)
   cancel_button.pressed.connect(_on_cancel_pressed)
 
-  # Twitch settings
-  twitch_enabled_check.toggled.connect(_on_twitch_enabled_toggled)
+  # Connect Twitch auth button
   twitch_auth_button.pressed.connect(_on_twitch_auth_pressed)
   if SettingsManager.twitch_enabled and is_instance_valid(Twitch.api):
     Twitch.api.unauthenticated.connect(_on_twitch_unauthenticated)
-  twitch_welcome_message.text_changed.connect(_on_twitch_welcome_message_changed)
-  
-  # Debug settings
-  debug_check.toggled.connect(_on_debug_mode_toggled)
+
+  # Connect binding signals that require menu-level side effects
+  _connect_binding_signals()
+
+
+# ---------------------------------------------------------------------------
+# SettingBinding helpers
+# ---------------------------------------------------------------------------
+
+func _get_all_bindings() -> Array:
+  var result: Array = []
+  for node in find_children("*", "", true, false):
+    if node is SettingBinding:
+      result.append(node)
+  return result
+
+
+func _get_bindings_by_group(group: String) -> Array:
+  var result: Array = []
+  for binding in _get_all_bindings():
+    if (binding as SettingBinding).apply_group == group:
+      result.append(binding)
+  return result
+
+
+func _find_binding_for_key(key: StringName) -> SettingBinding:
+  for binding in _get_all_bindings():
+    if (binding as SettingBinding).setting_key == key:
+      return binding as SettingBinding
+  return null
+
+
+func _connect_binding_signals() -> void:
+  for raw in _get_all_bindings():
+    var binding := raw as SettingBinding
+    if binding.apply_group == "audio":
+      binding.value_changed.connect(_on_audio_binding_changed)
+    elif binding.setting_key == &"twitch_enabled":
+      binding.value_changed.connect(_on_twitch_enabled_changed)
+
+
+# ---------------------------------------------------------------------------
+# Setup helpers
+# ---------------------------------------------------------------------------
 
 func _setup_resolution_options() -> void:
-  resolution_option.clear()
+  var resolution_binding := _find_binding_for_key(&"resolution_index")
+  if not resolution_binding:
+    return
+  var option := resolution_binding.get_control() as OptionButton
+  if not option:
+    return
+  option.clear()
   for i in range(SettingsManager.RESOLUTIONS.size()):
-    var res_string = SettingsManager.get_resolution_string(i)
-    resolution_option.add_item(res_string, i)
+    option.add_item(SettingsManager.get_resolution_string(i), i)
+
 
 func _setup_keybind_buttons() -> void:
   # Get all input actions
   var actions = InputMap.get_actions()
-  
+
   for action in actions:
     # Skip UI actions and built-in actions
     if action.begins_with("ui_") or action.begins_with("spatial_editor"):
       continue
-    
+
     # Create keybind button for this action
     var keybind_button = KeybindButtonScene.instantiate()
     keybind_button.action_name = action
     keybinds_container.add_child(keybind_button)
 
+
+# ---------------------------------------------------------------------------
+# Menu lifecycle
+# ---------------------------------------------------------------------------
+
 func show_menu() -> void:
   visible = true
-  _load_current_settings()
   _store_original_keybinds()
-  
-  # Focus the first tab
+  for binding in _get_all_bindings():
+    (binding as SettingBinding).load_value()
   if tab_container:
     tab_container.current_tab = 0
+
 
 func hide_menu() -> void:
   visible = false
 
-func _load_current_settings() -> void:
-  # Load from SettingsManager into temporary variables
-  temp_fullscreen = SettingsManager.fullscreen
-  temp_vsync = SettingsManager.vsync_enabled
-  temp_resolution = SettingsManager.resolution_index
-  temp_master_volume = SettingsManager.master_volume
-  temp_music_volume = SettingsManager.music_volume
-  temp_sfx_volume = SettingsManager.sfx_volume
-  temp_music_pause = SettingsManager.music_pause
-  temp_twitch_enabled = SettingsManager.twitch_enabled
-  temp_twitch_welcome_message = SettingsManager.twitch_welcome_message
 
-  # Save original settings for potential revert
-  previous_fullscreen = temp_fullscreen
-  previous_vsync = temp_vsync
-  previous_resolution = temp_resolution
-  previous_master_volume = temp_master_volume
-  previous_music_volume = temp_music_volume
-  previous_sfx_volume = temp_sfx_volume
-  previous_music_pause = temp_music_pause
-  previous_twitch_enabled = temp_twitch_enabled
-  previous_twitch_welcome_message = temp_twitch_welcome_message
+# ---------------------------------------------------------------------------
+# Apply / Cancel
+# ---------------------------------------------------------------------------
 
-  # Update UI controls
-  fullscreen_check.button_pressed = temp_fullscreen
-  vsync_check.button_pressed = temp_vsync
-  resolution_option.selected = temp_resolution
-  
-  # Audio sliders (convert dB to 0-100 range)
-  master_slider.value = _db_to_percentage(temp_master_volume)
-  music_slider.value = _db_to_percentage(temp_music_volume)
-  sfx_slider.value = _db_to_percentage(temp_sfx_volume)
-  music_pause_check.button_pressed = temp_music_pause
-  
-  # Debug settings
-  debug_check.button_pressed = SettingsManager.debug_mode
+func _has_video_changes() -> bool:
+  for binding in _get_bindings_by_group("video"):
+    var b := binding as SettingBinding
+    if b.get_staged_value() != b.get_original_value():
+      return true
+  return false
 
-  # Twitch settings
-  twitch_enabled_check.button_pressed = temp_twitch_enabled
-  twitch_welcome_message.text = temp_twitch_welcome_message
-  
-  _update_volume_labels()
 
-func _db_to_percentage(db: float) -> float:
-  return db_to_linear(db) * 100.0
+func _on_apply_pressed() -> void:
+  # Check if video settings changed before applying anything
+  var video_settings_changed := _has_video_changes()
 
-func _percentage_to_db(percentage: float) -> float:
-  return linear_to_db(percentage / 100.0)
-
-func _update_volume_labels() -> void:
-  master_label.text = "Master: %d%%" % int(master_slider.value)
-  music_label.text = "Music: %d%%" % int(music_slider.value)
-  sfx_label.text = "SFX: %d%%" % int(sfx_slider.value)
-
-func _on_fullscreen_toggled(pressed: bool) -> void:
-  temp_fullscreen = pressed
-
-func _on_vsync_toggled(pressed: bool) -> void:
-  temp_vsync = pressed
-
-func _on_resolution_selected(index: int) -> void:
-  temp_resolution = index
-
-func _on_master_volume_changed(value: float) -> void:
-  temp_master_volume = _percentage_to_db(value)
-  # immediately change the master volume for instant feedback
-  SettingsManager.master_volume = temp_master_volume
+  # Apply audio settings (live preview keeps SettingsManager in sync, but apply explicitly)
+  for binding in _get_bindings_by_group("audio"):
+    (binding as SettingBinding).apply_value()
   SettingsManager.apply_audio_settings()
-  _update_volume_labels()
 
-func _on_music_volume_changed(value: float) -> void:
-  temp_music_volume = _percentage_to_db(value)
-  # immediately change the music volume for instant feedback
-  SettingsManager.music_volume = temp_music_volume
-  SettingsManager.apply_audio_settings()
-  _update_volume_labels()
+  # Apply Twitch settings
+  for binding in _get_bindings_by_group("twitch"):
+    (binding as SettingBinding).apply_value()
 
-func _on_sfx_volume_changed(value: float) -> void:
-  temp_sfx_volume = _percentage_to_db(value)
-  # immediately change the SFX volume for instant feedback
-  SettingsManager.sfx_volume = temp_sfx_volume
-  SettingsManager.apply_audio_settings()
-  _update_volume_labels()
+  if video_settings_changed:
+    # Apply video settings then show confirmation dialog
+    for binding in _get_bindings_by_group("video"):
+      (binding as SettingBinding).apply_value()
+    SettingsManager.apply_video_settings()
+    MyLogger.info("SettingsMenu", "Video settings changed, showing confirmation dialog")
+    video_confirm_dialog.show_dialog()
+  else:
+    # No video changes — save and close
+    SettingsManager.save_settings()
+    MyLogger.info("SettingsMenu", "Settings applied and saved")
+    hide_menu()
+    closed.emit()
 
-func _on_music_pause_toggled(pressed: bool) -> void:
-  temp_music_pause = pressed
-  SettingsManager.music_pause = temp_music_pause
+
+func _on_cancel_pressed() -> void:
+  MyLogger.debug("SettingsMenu", "Settings cancelled")
+  _restore_original_keybinds()
+  # Revert all bindings that support cancel-revert
+  for raw in _get_all_bindings():
+    var binding := raw as SettingBinding
+    if binding.revert_on_cancel:
+      binding.revert_value()
   SettingsManager.apply_audio_settings()
+  hide_menu()
+  closed.emit()
+
+
+func _on_video_settings_confirmed() -> void:
+  # User confirmed the video settings — save everything and close
+  SettingsManager.save_settings()
+  MyLogger.info("SettingsMenu", "Video settings confirmed and saved")
+  hide_menu()
+  closed.emit()
+
+
+func _on_video_settings_reverted() -> void:
+  # User rejected or timer expired — revert video settings
+  for binding in _get_bindings_by_group("video"):
+    (binding as SettingBinding).revert_value()
+  SettingsManager.apply_video_settings()
+  MyLogger.info("SettingsMenu", "Video settings reverted to previous state")
+  # Audio settings were already applied, so save those
+  SettingsManager.save_settings()
+  hide_menu()
+  closed.emit()
+
+
+# ---------------------------------------------------------------------------
+# Binding-triggered side effects
+# ---------------------------------------------------------------------------
+
+func _on_audio_binding_changed(_value: Variant) -> void:
+  SettingsManager.apply_audio_settings()
+
+
+func _on_twitch_enabled_changed(_value: Variant) -> void:
+  _update_twitch_status()
+
+
+# ---------------------------------------------------------------------------
+# Twitch
+# ---------------------------------------------------------------------------
 
 func _on_twitch_unauthenticated() -> void:
   MyLogger.warn("SettingsMenu", "Twitch token lost - re-authentication required")
   twitch_status_label.text = "Twitch: Disconnected"
   twitch_auth_button.disabled = false
 
-func _on_twitch_enabled_toggled(pressed: bool) -> void:
-  temp_twitch_enabled = pressed
-  SettingsManager.twitch_enabled = temp_twitch_enabled
-  _update_twitch_status()
 
 func _on_twitch_auth_pressed() -> void:
   # Start Twitch authentication process
@@ -278,6 +266,7 @@ func _on_twitch_auth_pressed() -> void:
   if SettingsManager.twitch_enabled and is_instance_valid(Twitch.api) and not Twitch.api.unauthenticated.is_connected(_on_twitch_unauthenticated):
     Twitch.api.unauthenticated.connect(_on_twitch_unauthenticated)
 
+
 func _update_twitch_status() -> void:
   if not SettingsManager.twitch_enabled:
     twitch_status_label.text = "Twitch: Disabled"
@@ -293,99 +282,28 @@ func _update_twitch_status() -> void:
     twitch_status_label.text = "Twitch: Not Connected"
     twitch_auth_button.disabled = false
 
+
 func _get_twitch_display_name() -> String:
   var current_user: TwitchUser = await Twitch.get_current_user()
   if is_instance_valid(current_user) and not current_user.display_name.is_empty():
     return current_user.display_name
   return ""
 
-func _on_twitch_welcome_message_changed() -> void:
-  temp_twitch_welcome_message = twitch_welcome_message.text
-  SettingsManager.twitch_welcome_message = temp_twitch_welcome_message
 
-func _on_debug_mode_toggled(pressed: bool) -> void:
-  SettingsManager.set_debug_mode(pressed)
-
-func _on_apply_pressed() -> void:
-  # Check if video settings changed
-  var video_settings_changed = (
-    temp_fullscreen != SettingsManager.fullscreen or
-    temp_vsync != SettingsManager.vsync_enabled or
-    temp_resolution != SettingsManager.resolution_index
-  )
-  
-  # Apply audio settings immediately (no confirmation needed)
-  SettingsManager.master_volume = temp_master_volume
-  SettingsManager.music_volume = temp_music_volume
-  SettingsManager.sfx_volume = temp_sfx_volume
-  SettingsManager.music_pause = temp_music_pause
-  SettingsManager.apply_audio_settings()
-  
-  if video_settings_changed:
-    # Apply video settings
-    SettingsManager.fullscreen = temp_fullscreen
-    SettingsManager.vsync_enabled = temp_vsync
-    SettingsManager.resolution_index = temp_resolution
-    SettingsManager.apply_video_settings()
-    
-    # Show confirmation dialog for video settings
-    MyLogger.info("SettingsMenu", "Video settings changed, showing confirmation dialog")
-    video_confirm_dialog.show_dialog()
-  else:
-    # No video changes, just save and close
-    SettingsManager.save_settings()
-    MyLogger.info("SettingsMenu", "Settings applied and saved")
-    hide_menu()
-    closed.emit()
-
-func _on_cancel_pressed() -> void:
-  MyLogger.debug("SettingsMenu", "Settings cancelled")
-  _restore_original_keybinds()
-  _restore_original_settings()
-  hide_menu()
-  closed.emit()
-
-func _on_video_settings_confirmed() -> void:
-  # User confirmed the video settings, save everything
-  SettingsManager.save_settings()
-  MyLogger.info("SettingsMenu", "Video settings confirmed and saved")
-  hide_menu()
-  closed.emit()
-
-func _on_video_settings_reverted() -> void:
-  # User rejected or timeout - revert video settings
-  SettingsManager.fullscreen = previous_fullscreen
-  SettingsManager.vsync_enabled = previous_vsync
-  SettingsManager.resolution_index = previous_resolution
-  SettingsManager.apply_video_settings()
-  
-  # Update temp settings to match reverted state
-  temp_fullscreen = previous_fullscreen
-  temp_vsync = previous_vsync
-  temp_resolution = previous_resolution
-  
-  # Update UI to reflect reverted settings
-  fullscreen_check.button_pressed = temp_fullscreen
-  vsync_check.button_pressed = temp_vsync
-  resolution_option.selected = temp_resolution
-  
-  MyLogger.info("SettingsMenu", "Video settings reverted to previous state")
-  
-  # Audio settings were already applied, so save those
-  SettingsManager.save_settings()
-  hide_menu()
-  closed.emit()
+# ---------------------------------------------------------------------------
+# Keybinds
+# ---------------------------------------------------------------------------
 
 func _store_original_keybinds() -> void:
   # Store the current keybinds so we can restore them if user cancels
   original_keybinds.clear()
   var actions = InputMap.get_actions()
-  
+
   for action in actions:
     # Skip UI actions and built-in actions
     if action.begins_with("ui_") or action.begins_with("spatial_editor"):
       continue
-    
+
     # Store a copy of all events for this action
     var events = InputMap.action_get_events(action)
     var events_copy = []
@@ -393,37 +311,21 @@ func _store_original_keybinds() -> void:
       events_copy.append(event.duplicate())
     original_keybinds[action] = events_copy
 
+
 func _restore_original_keybinds() -> void:
   # Restore keybinds to their original state
   for action in original_keybinds.keys():
     # Clear current bindings
     InputMap.action_erase_events(action)
-    
+
     # Restore original bindings
     for event in original_keybinds[action]:
       InputMap.action_add_event(action, event)
-  
+
   # Update the display of all keybind buttons
   if keybinds_container:
     for child in keybinds_container.get_children():
       if child.has_method("_update_display"):
         child._update_display()
-  
+
   MyLogger.debug("SettingsMenu", "Keybinds restored to original state")
-
-func _restore_original_settings() -> void:
-  SettingsManager.master_volume = previous_master_volume
-  SettingsManager.music_volume = previous_music_volume
-  SettingsManager.sfx_volume = previous_sfx_volume
-  SettingsManager.music_pause = previous_music_pause
-  SettingsManager.apply_audio_settings()
-
-  SettingsManager.fullscreen = previous_fullscreen
-  SettingsManager.vsync_enabled = previous_vsync
-  SettingsManager.resolution_index = previous_resolution
-  # no need to apply video settings here since we will
-  # revert to the previous settings immediately in the
-  # video settings revert function
-
-  SettingsManager.twitch_enabled = previous_twitch_enabled
-  SettingsManager.twitch_welcome_message = previous_twitch_welcome_message
