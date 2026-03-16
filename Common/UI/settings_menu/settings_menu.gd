@@ -31,6 +31,9 @@ var original_keybinds: Dictionary = {}
 # Video confirmation dialog
 var video_confirm_dialog = null
 
+# Cached array of all SettingBinding descendants (populated in _ready)
+var _bindings_cache: Array = []
+
 
 func _ready() -> void:
   # Hide by default
@@ -41,6 +44,11 @@ func _ready() -> void:
   add_child(video_confirm_dialog)
   video_confirm_dialog.settings_confirmed.connect(_on_video_settings_confirmed)
   video_confirm_dialog.settings_reverted.connect(_on_video_settings_reverted)
+
+  # Build bindings cache (all SettingBinding descendants, done after child _ready() calls)
+  for node in find_children("*", "", true, false):
+    if node is SettingBinding:
+      _bindings_cache.append(node)
 
   # Setup resolution options via the resolution binding's control
   _setup_resolution_options()
@@ -69,11 +77,7 @@ func _ready() -> void:
 # ---------------------------------------------------------------------------
 
 func _get_all_bindings() -> Array:
-  var result: Array = []
-  for node in find_children("*", "", true, false):
-    if node is SettingBinding:
-      result.append(node)
-  return result
+  return _bindings_cache
 
 
 func _get_bindings_by_group(group: String) -> Array:
