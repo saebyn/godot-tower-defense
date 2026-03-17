@@ -23,9 +23,6 @@ signal value_changed(new_value: Variant)
 ## Logical group used to batch apply/revert operations in the menu script
 @export_enum("video", "audio", "twitch", "debug", "none") var apply_group: String = "none"
 
-## When true, the staged value requires a confirmation dialog before being committed
-@export var confirm_required: bool = false
-
 ## When true, each user change is immediately forwarded to SettingsManager (e.g. audio sliders)
 @export var live_preview: bool = false
 
@@ -92,6 +89,8 @@ func _on_item_selected(index: int) -> void:
     return
   _staged_value = index
   value_changed.emit(_staged_value)
+  if live_preview:
+    _apply_to_manager()
 
 
 func _on_text_changed() -> void:

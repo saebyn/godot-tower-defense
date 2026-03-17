@@ -95,7 +95,6 @@ setting_key = &"fullscreen"
 control_path = NodePath("../FullscreenCheck")
 control_property = &"button_pressed"
 apply_group = "video"
-confirm_required = true
 
 [node name="VsyncContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Video/VBoxContainer" unique_id=791757886]
 layout_mode = 2
@@ -115,7 +114,6 @@ setting_key = &"vsync_enabled"
 control_path = NodePath("../VsyncCheck")
 control_property = &"button_pressed"
 apply_group = "video"
-confirm_required = true
 
 [node name="ResolutionContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Video/VBoxContainer" unique_id=418705244]
 layout_mode = 2
@@ -136,7 +134,6 @@ setting_key = &"resolution_index"
 control_path = NodePath("../ResolutionOption")
 control_property = &"selected"
 apply_group = "video"
-confirm_required = true
 
 [node name="Audio" type="MarginContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer" unique_id=2103301877]
 visible = false
