@@ -203,8 +203,7 @@ func _input(event: InputEvent) -> void:
 
 func _handle_enemy_click(click_position: Vector2):
   # Track every click for achievement purposes
-  if StatsManager:
-    StatsManager.track_click_performed()
+  StatsManager.track_click_performed()
   
   # Create a raycast from the camera to detect what was clicked
   var ray_origin = camera.project_ray_origin(click_position)
