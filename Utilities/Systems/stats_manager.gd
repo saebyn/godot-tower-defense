@@ -95,7 +95,9 @@ func track_enemy_defeated(enemy_type: String, defeated_by_hand: bool = false) ->
 ## Track a player click (raw click count, regardless of hit or kill)
 func track_click_performed() -> void:
   clicks_performed += 1
-  MyLogger.debug("Stats", "Click performed. Total clicks: %d" % clicks_performed)
+  # Throttle logging to avoid excessive debug output on every single click
+  if clicks_performed % 50 == 0:
+    MyLogger.debug("Stats", "Click performed. Total clicks: %d" % clicks_performed)
   stats_updated.emit()
 
 ## Track an obstacle placement
