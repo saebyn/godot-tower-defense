@@ -233,8 +233,8 @@ func _on_audio_binding_changed(_value: Variant) -> void:
   SettingsManager.apply_audio_settings()
 
 
-func _on_twitch_enabled_changed(value: Variant) -> void:
-  await _update_twitch_status(value as bool)
+func _on_twitch_enabled_changed(_value: Variant) -> void:
+  await _update_twitch_status()
 
 
 # ---------------------------------------------------------------------------
@@ -271,9 +271,8 @@ func _on_twitch_auth_pressed() -> void:
     Twitch.api.unauthenticated.connect(_on_twitch_unauthenticated)
 
 
-func _update_twitch_status(twitch_enabled_override: Variant = null) -> void:
-  var enabled: bool = (twitch_enabled_override as bool) if twitch_enabled_override != null else SettingsManager.twitch_enabled
-  if not enabled:
+func _update_twitch_status() -> void:
+  if not SettingsManager.twitch_enabled:
     twitch_status_label.text = "Twitch: Disabled"
     twitch_auth_button.disabled = true
   elif Twitch.auth != null and Twitch.auth.is_authenticated:

@@ -70,27 +70,27 @@ func _on_value_changed(value: float) -> void:
     return
   _staged_value = _convert_from_control(value)
   _update_label()
-  value_changed.emit(_staged_value)
   if live_preview:
     _apply_to_manager()
+  value_changed.emit(_staged_value)
 
 
 func _on_toggled(pressed: bool) -> void:
   if _loading:
     return
   _staged_value = pressed
-  value_changed.emit(_staged_value)
   if live_preview:
     _apply_to_manager()
+  value_changed.emit(_staged_value)
 
 
 func _on_item_selected(index: int) -> void:
   if _loading:
     return
   _staged_value = index
-  value_changed.emit(_staged_value)
   if live_preview:
     _apply_to_manager()
+  value_changed.emit(_staged_value)
 
 
 func _on_text_changed() -> void:
@@ -98,9 +98,9 @@ func _on_text_changed() -> void:
     return
   if _control is TextEdit:
     _staged_value = (_control as TextEdit).text
-  value_changed.emit(_staged_value)
   if live_preview:
     _apply_to_manager()
+  value_changed.emit(_staged_value)
 
 
 ## Load the current value from SettingsManager and update the UI control.
