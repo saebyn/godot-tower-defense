@@ -7,6 +7,8 @@ extends Node
 ## SettingsManager property. Configure all exported properties in the inspector.
 ## The menu script discovers these nodes automatically and calls load_value(),
 ## apply_value(), and revert_value() in bulk — no per-setting code required.
+##
+## For a step-by-step guide on adding new settings, see docs/adding_settings.md
 
 ## Emitted when the user changes the value (not during programmatic load/revert)
 signal value_changed(new_value: Variant)
