@@ -37,8 +37,8 @@ func after_each():
 func test_panic_behavior_initializes():
   # Assert
   assert_not_null(panic_behavior, "PanicBehavior should be created")
-  assert_not_null(panic_behavior.target, "PanicBehavior should have target reference")
-  assert_eq(panic_behavior.target, target_node, "Target should be the parent node")
+  assert_not_null(panic_behavior.survivor, "PanicBehavior should have survivor reference")
+  assert_eq(panic_behavior.survivor, target_node, "Survivor should be the parent node")
   assert_false(panic_behavior.is_panicking, "Should not be panicking initially")
 
 func test_panic_detection_radius():
