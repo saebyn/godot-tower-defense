@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cviggt4knmypm"]
+[gd_scene format=3 uid="uid://cviggt4knmypm"]
 
 [ext_resource type="PackedScene" uid="uid://deoia86ae444c" path="res://Assets/Models/Landscape1.blend" id="1_x2unt"]
 [ext_resource type="PackedScene" uid="uid://b1yehhqyw2nfo" path="res://Entities/Targets/Templates/base_target/target.tscn" id="2_fx4lu"]
@@ -85,19 +85,19 @@ data = PackedVector3Array(0.6855, 0.0439, -0.6798, 0.7138, 0.0431, -0.7079, 0.71
 [sub_resource type="BoxShape3D" id="BoxShape3D_srnku"]
 size = Vector3(113.034, 11.1602, 1)
 
-[node name="Level" instance=ExtResource("1_x2unt")]
+[node name="Level" unique_id=220321630 instance=ExtResource("1_x2unt")]
 script = ExtResource("2_hesga")
 
-[node name="Target" parent="." index="0" instance=ExtResource("2_fx4lu")]
+[node name="Target" parent="." index="0" unique_id=1496810992 instance=ExtResource("2_fx4lu")]
 transform = Transform3D(0.97459, 0, -0.223999, 0, 1, 0, 0.223999, 0, 0.97459, 16.1092, 2.80732, -17.0537)
 skin_material = ExtResource("3_hesga")
 
-[node name="EnemySpawner" type="Node3D" parent="." index="1" node_paths=PackedStringArray("spawn_areas")]
+[node name="EnemySpawner" type="Node3D" parent="." index="1" unique_id=671513329 node_paths=PackedStringArray("spawn_areas")]
 script = ExtResource("4_n5kqp")
 spawn_areas = [NodePath("Area1")]
 metadata/_custom_type_script = "uid://du3d1fs80prdm"
 
-[node name="Wave1" type="Node3D" parent="EnemySpawner" index="0"]
+[node name="Wave1" type="Node3D" parent="EnemySpawner" index="0" unique_id=1635992808]
 script = ExtResource("5_8cnow")
 duration = 100.0
 max_enemies = 1
@@ -106,51 +106,51 @@ enemy_counts = Array[int]([1, 1])
 spawn_interval = 1.0
 metadata/_custom_type_script = "uid://b7jdk6preu1s4"
 
-[node name="Area1" type="MeshInstance3D" parent="EnemySpawner" index="1"]
+[node name="Area1" type="MeshInstance3D" parent="EnemySpawner" index="1" unique_id=157495002]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34.0298, 1.88764, 30.4722)
 mesh = SubResource("PlaneMesh_su7sb")
 skeleton = NodePath("")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." index="2"]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." index="2" unique_id=264877827]
 transform = Transform3D(-0.518356, -0.427583, 0.740595, 2.18557e-08, 0.866025, 0.5, -0.855165, 0.259178, -0.448909, -140.339, 37.7537, 103.254)
 
 [node name="Water" parent="." index="4"]
 surface_material_override/0 = SubResource("StandardMaterial3D_agnyp")
 
-[node name="GroundBody" type="StaticBody3D" parent="." index="5" groups=["navigation_mesh_source_group"]]
+[node name="GroundBody" type="StaticBody3D" parent="." index="5" unique_id=1787263839 groups=["navigation_mesh_source_group"]]
 collision_layer = 17
 collision_mask = 0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="GroundBody" index="0"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GroundBody" index="0" unique_id=110473489]
 transform = Transform3D(50, 0, 0, 0, 50, 0, 0, 0, 50, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_srnku")
 
-[node name="WaterBarrier" type="StaticBody3D" parent="." index="6" groups=["navigation_mesh_source_group"]]
+[node name="WaterBarrier" type="StaticBody3D" parent="." index="6" unique_id=598489398 groups=["navigation_mesh_source_group"]]
 transform = Transform3D(0.665738, 0, -0.746185, 0, 1, 0, 0.746185, 0, 0.665738, 0, 0, 29.4513)
 collision_layer = 17
 collision_mask = 0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WaterBarrier" index="0"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WaterBarrier" index="0" unique_id=1476126499]
 transform = Transform3D(0.990122, 0, 0.14021, 0, 1, 0, -0.14021, 0, 0.990122, -11.2302, -4.81151, 1.5903)
 shape = SubResource("BoxShape3D_srnku")
 
-[node name="canal bridge" parent="." index="7" groups=["navigation_mesh_source_group"] instance=ExtResource("9_cekjo")]
+[node name="canal bridge" parent="." index="7" unique_id=494968138 groups=["navigation_mesh_source_group"] instance=ExtResource("9_cekjo")]
 transform = Transform3D(1.01724, 0, -0.881612, 0, 1, 0, 0.687633, 0, 1.30419, -24.5968, 1.02588, 5.42712)
 
-[node name="tree" parent="." index="8" instance=ExtResource("10_law7h")]
+[node name="tree" parent="." index="8" unique_id=1589969708 instance=ExtResource("10_law7h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.12514, -24.73)
 
-[node name="tree2" parent="." index="9" instance=ExtResource("10_law7h")]
+[node name="tree2" parent="." index="9" unique_id=728603648 instance=ExtResource("10_law7h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.4422, 2.60687, -26.2774)
 
-[node name="PileOfBoxes" parent="." index="10" instance=ExtResource("11_hhmrg")]
+[node name="PileOfBoxes" parent="." index="10" unique_id=1594183953 instance=ExtResource("11_hhmrg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.2394, 3.16202, -16.2439)
 
-[node name="PileOfBoxes2" parent="." index="11" instance=ExtResource("11_hhmrg")]
+[node name="PileOfBoxes2" parent="." index="11" unique_id=97796393 instance=ExtResource("11_hhmrg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.5594, 2.26055, -27.92)
 
-[node name="PileOfBoxes3" parent="." index="12" instance=ExtResource("11_hhmrg")]
+[node name="PileOfBoxes3" parent="." index="12" unique_id=2041102070 instance=ExtResource("11_hhmrg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.85619, 2.90484, -6.38448)
 
-[node name="PileOfBoxes4" parent="." index="13" instance=ExtResource("11_hhmrg")]
+[node name="PileOfBoxes4" parent="." index="13" unique_id=2061839397 instance=ExtResource("11_hhmrg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.4546, 1.20441, -38.9659)

@@ -1,61 +1,61 @@
-[gd_scene load_steps=3 format=3 uid="uid://djtvdl53kynpg"]
+[gd_scene format=3 uid="uid://djtvdl53kynpg"]
 
 [ext_resource type="Script" uid="uid://b74wqot6juxbr" path="res://Stages/UI/save_slot_selection/save_slot_card.gd" id="1_card_script"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
 
-[node name="SaveSlotCard" type="PanelContainer"]
+[node name="SaveSlotCard" type="PanelContainer" unique_id=952901930]
 custom_minimum_size = Vector2(700, 120)
 theme = ExtResource("2_theme")
 script = ExtResource("1_card_script")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=252286163]
 layout_mode = 2
 theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 15
 theme_override_constants/margin_bottom = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1621334603]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="ScreenshotContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+[node name="ScreenshotContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer" unique_id=819418355]
 custom_minimum_size = Vector2(160, 90)
 layout_mode = 2
 
-[node name="ScreenshotRect" type="TextureRect" parent="MarginContainer/HBoxContainer/ScreenshotContainer"]
+[node name="ScreenshotRect" type="TextureRect" parent="MarginContainer/HBoxContainer/ScreenshotContainer" unique_id=897644182]
 layout_mode = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="LeftContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+[node name="LeftContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=342986850]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 5
 
-[node name="SlotNameLabel" type="Label" parent="MarginContainer/HBoxContainer/LeftContainer"]
+[node name="SlotNameLabel" type="Label" parent="MarginContainer/HBoxContainer/LeftContainer" unique_id=34688485]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
 text = "Slot 1"
 
-[node name="SlotInfoLabel" type="Label" parent="MarginContainer/HBoxContainer/LeftContainer"]
+[node name="SlotInfoLabel" type="Label" parent="MarginContainer/HBoxContainer/LeftContainer" unique_id=669251320]
 layout_mode = 2
 text = "Empty Slot"
 
-[node name="SlotDetailsLabel" type="Label" parent="MarginContainer/HBoxContainer/LeftContainer"]
+[node name="SlotDetailsLabel" type="Label" parent="MarginContainer/HBoxContainer/LeftContainer" unique_id=1166337561]
 layout_mode = 2
 theme_type_variation = &"LabelDim"
 
-[node name="ButtonContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
+[node name="ButtonContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=709825694]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="ActionButton" type="Button" parent="MarginContainer/HBoxContainer/ButtonContainer"]
+[node name="ActionButton" type="Button" parent="MarginContainer/HBoxContainer/ButtonContainer" unique_id=697516218]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 text = "New Game"
 
-[node name="DeleteButton" type="Button" parent="MarginContainer/HBoxContainer/ButtonContainer"]
+[node name="DeleteButton" type="Button" parent="MarginContainer/HBoxContainer/ButtonContainer" unique_id=1753553642]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 text = "Delete"

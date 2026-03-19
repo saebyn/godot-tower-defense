@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://cjfkm8s4qbh3k"]
+[gd_scene format=3 uid="uid://cjfkm8s4qbh3k"]
 
 [ext_resource type="Script" uid="uid://fydiopstjytc" path="res://Stages/UI/sound_board/sound_board.gd" id="1_script"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
 
-[node name="SoundBoard" type="Control"]
+[node name="SoundBoard" type="Control" unique_id=994674790]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,7 +13,7 @@ grow_vertical = 2
 theme = ExtResource("2_theme")
 script = ExtResource("1_script")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=2143059640]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,7 +22,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.172, 0.29, 0.306, 1)
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=356858888]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -30,11 +30,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Panel" type="Panel" parent="CenterContainer"]
+[node name="Panel" type="Panel" parent="CenterContainer" unique_id=320143317]
 custom_minimum_size = Vector2(1135.715, 600.07)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/Panel" unique_id=988636752]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -46,43 +46,43 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/Panel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/Panel/MarginContainer" unique_id=976824131]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="TitleContainer" type="HBoxContainer" parent="CenterContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="TitleContainer" type="HBoxContainer" parent="CenterContainer/Panel/MarginContainer/VBoxContainer" unique_id=41765963]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="CenterContainer/Panel/MarginContainer/VBoxContainer/TitleContainer"]
+[node name="TitleLabel" type="Label" parent="CenterContainer/Panel/MarginContainer/VBoxContainer/TitleContainer" unique_id=702160875]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Sound Board"
 horizontal_alignment = 1
 
-[node name="EditModeButton" type="Button" parent="CenterContainer/Panel/MarginContainer/VBoxContainer/TitleContainer"]
+[node name="EditModeButton" type="Button" parent="CenterContainer/Panel/MarginContainer/VBoxContainer/TitleContainer" unique_id=205382322]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 toggle_mode = true
 text = "Edit Mode"
 
-[node name="SaveButton" type="Button" parent="CenterContainer/Panel/MarginContainer/VBoxContainer/TitleContainer"]
+[node name="SaveButton" type="Button" parent="CenterContainer/Panel/MarginContainer/VBoxContainer/TitleContainer" unique_id=2120657773]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 disabled = true
 text = "Save Changes"
 
-[node name="HSeparator" type="HSeparator" parent="CenterContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/Panel/MarginContainer/VBoxContainer" unique_id=659091970]
 layout_mode = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="CenterContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="CenterContainer/Panel/MarginContainer/VBoxContainer" unique_id=2016438531]
 custom_minimum_size = Vector2(0, 450)
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="SoundGridContainer" type="GridContainer" parent="CenterContainer/Panel/MarginContainer/VBoxContainer/ScrollContainer"]
+[node name="SoundGridContainer" type="GridContainer" parent="CenterContainer/Panel/MarginContainer/VBoxContainer/ScrollContainer" unique_id=79776251]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -91,16 +91,16 @@ theme_override_constants/h_separation = 15
 theme_override_constants/v_separation = 10
 columns = 3
 
-[node name="HSeparator2" type="HSeparator" parent="CenterContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="HSeparator2" type="HSeparator" parent="CenterContainer/Panel/MarginContainer/VBoxContainer" unique_id=341227445]
 layout_mode = 2
 
-[node name="CloseButton" type="Button" parent="CenterContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="CloseButton" type="Button" parent="CenterContainer/Panel/MarginContainer/VBoxContainer" unique_id=484821596]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "Exit"
 
-[node name="AudioPlayer" type="AudioStreamPlayer" parent="."]
+[node name="AudioPlayer" type="AudioStreamPlayer" parent="." unique_id=857002513]
 unique_name_in_owner = true
 
 [connection signal="toggled" from="CenterContainer/Panel/MarginContainer/VBoxContainer/TitleContainer/EditModeButton" to="." method="_on_edit_mode_toggled"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://b7rnv4gqf8q7o"]
+[gd_scene format=3 uid="uid://b7rnv4gqf8q7o"]
 
 [ext_resource type="Script" uid="uid://bq7n5gj2m4h8x" path="res://Stages/UI/tech_tree/tech_tree.gd" id="1_techtree"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
@@ -9,7 +9,7 @@ action = &"toggle_in_game_menu"
 [sub_resource type="Shortcut" id="Shortcut_k51dw"]
 events = [SubResource("InputEventAction_h3ppm")]
 
-[node name="TechTree" type="Control"]
+[node name="TechTree" type="Control" unique_id=1838648534]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,7 +19,7 @@ grow_vertical = 2
 theme = ExtResource("2_theme")
 script = ExtResource("1_techtree")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=998900440]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -27,7 +27,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="Panel" unique_id=1489206860]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -39,40 +39,40 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer" unique_id=349902140]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer" unique_id=1581925779]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="TitleLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer" unique_id=548784912]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 32
 text = "Tech Tree"
 
-[node name="CloseButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="CloseButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1136619604]
 layout_mode = 2
 shortcut = SubResource("Shortcut_k51dw")
 text = "Close"
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/MarginContainer/VBoxContainer" unique_id=733118303]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 2
 vertical_scroll_mode = 2
 
-[node name="TechGrid" type="GridContainer" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer"]
+[node name="TechGrid" type="GridContainer" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer" unique_id=1419086305]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 3
 
-[node name="DetailPanel" type="Panel" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="DetailPanel" type="Panel" parent="Panel/MarginContainer/VBoxContainer" unique_id=705633827]
 custom_minimum_size = Vector2(0, 250)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel/MarginContainer/VBoxContainer/DetailPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="Panel/MarginContainer/VBoxContainer/DetailPanel" unique_id=725363027]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -84,34 +84,34 @@ theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 15
 theme_override_constants/margin_bottom = 15
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/DetailPanel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/DetailPanel/MarginContainer" unique_id=2001103250]
 layout_mode = 2
 
-[node name="NameLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/DetailPanel/MarginContainer/VBoxContainer"]
+[node name="NameLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/DetailPanel/MarginContainer/VBoxContainer" unique_id=1112439828]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Tech Name"
 
-[node name="DescriptionLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/DetailPanel/MarginContainer/VBoxContainer"]
+[node name="DescriptionLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/DetailPanel/MarginContainer/VBoxContainer" unique_id=509854613]
 layout_mode = 2
 text = "Tech description goes here"
 autowrap_mode = 3
 
-[node name="RequirementsLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/DetailPanel/MarginContainer/VBoxContainer"]
+[node name="RequirementsLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/DetailPanel/MarginContainer/VBoxContainer" unique_id=1243822239]
 layout_mode = 2
 text = "Requirements:"
 autowrap_mode = 3
 
-[node name="UnlocksLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/DetailPanel/MarginContainer/VBoxContainer"]
+[node name="UnlocksLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/DetailPanel/MarginContainer/VBoxContainer" unique_id=868662108]
 layout_mode = 2
 text = "Unlocks:"
 autowrap_mode = 3
 
-[node name="UnlockButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/DetailPanel/MarginContainer/VBoxContainer"]
+[node name="UnlockButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/DetailPanel/MarginContainer/VBoxContainer" unique_id=2059033494]
 layout_mode = 2
 text = "Unlock"
 
-[node name="ConfirmationDialog" type="ConfirmationDialog" parent="."]
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="." unique_id=1058676931]
 title = "Confirm Exclusive Choice"
 initial_position = 2
 size = Vector2i(400, 200)

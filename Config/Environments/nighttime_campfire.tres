@@ -1,4 +1,4 @@
-[gd_resource type="Environment" load_steps=3 format=3 uid="uid://lgwnmcqtuha3"]
+[gd_resource type="Environment" format=3 uid="uid://lgwnmcqtuha3"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_utkvf"]
 sky_horizon_color = Color(0.8767794, 0.38497245, 0.33722708, 1)

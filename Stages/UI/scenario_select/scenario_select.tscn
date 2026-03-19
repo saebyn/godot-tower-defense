@@ -1,6 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://dpr1nw7t5q7l6"]
+[gd_scene format=3 uid="uid://dpr1nw7t5q7l6"]
 
-[ext_resource type="Script" path="res://Stages/UI/scenario_select/scenario_select.gd" id="1_select_script"]
+[ext_resource type="Script" uid="uid://cf1khn1dgj3pd" path="res://Stages/UI/scenario_select/scenario_select.gd" id="1_select_script"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_title"]
@@ -9,7 +9,7 @@ font_color = Color(0.239, 0.761, 0.757, 1)
 outline_size = 2
 outline_color = Color(0.239, 0.184, 0.251, 0.8)
 
-[node name="LevelSelect" type="Control"]
+[node name="LevelSelect" type="Control" unique_id=484792740]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,7 +19,7 @@ grow_vertical = 2
 theme = ExtResource("2_theme")
 script = ExtResource("1_select_script")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=414070187]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -28,7 +28,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.235, 0.259, 0.231, 1)
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1154565410]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -40,29 +40,29 @@ theme_override_constants/margin_top = 30
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 30
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=552042209]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="TopBar" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="TopBar" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1922345897]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar"]
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar" unique_id=418678386]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "LEVEL SELECTION"
 label_settings = SubResource("LabelSettings_title")
 
-[node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar"]
+[node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar" unique_id=203716393]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 text = "BACK"
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer" unique_id=936583505]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ScenarioContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+[node name="ScenarioContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer" unique_id=2035243567]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 15

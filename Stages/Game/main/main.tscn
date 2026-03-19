@@ -85,7 +85,7 @@ bus = &"Sound Effects"
 stream = SubResource("AudioStreamPlaylist_hjeu7")
 bus = &"Music"
 
-[node name="JoinQueueCommand" type="Node" parent="." unique_id=111271248 node_paths=PackedStringArray("eventsub")]
+[node name="JoinQueueCommand" type="Node" parent="." unique_id=111271248]
 script = ExtResource("10_hjeu7")
 aliases = Array[String](["join", "jq"])
 args_max = 0
@@ -93,7 +93,6 @@ command = "joinqueue"
 description = "Join the queue to have a survivor named after you."
 permission_level = 31
 user_cooldown = 10.0
-eventsub = NodePath("")
 metadata/_custom_type_script = "uid://bmluckfvgm1c2"
 
 [connection signal="cooldown_ended" from="Attack" to="." method="_on_attack_cooldown_ended"]
