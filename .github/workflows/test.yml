@@ -10,7 +10,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: barichello/godot-ci:4.6.1
+      image: ghcr.io/saebyn/zom-nom-defense/godot-ci:latest
 
     steps:
       - uses: actions/checkout@v4
@@ -18,23 +18,14 @@ jobs:
           lfs: true
           submodules: "recursive"
 
-      - name: Install Blender
-        run: |
-          apt-get update
-          apt-get install -y blender
-
-      - name: Setup Godot
-        run: |
-          mkdir -v -p /github/home/.config/godot
-          # Configure Blender path in editor settings with proper Godot format
-          printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\nfilesystem/import/blender/blender_path = "/usr/bin/blender"\n' > /github/home/.config/godot/editor_settings-4.tres
-
       - name: Cache Godot import files
         id: cache
         uses: actions/cache@v4
         with:
           path: .godot/
-          key: godot-import-${{ hashFiles('.godot/imported/*') }}
+          key: godot-import-v1-${{ hashFiles('**/*.tscn', '**/*.tres', '**/*.blend', '**/*.gd', 'project.godot') }}
+          restore-keys: |
+            godot-import-v1-
 
       - name: Import project files
         if: steps.cache.outputs.cache-hit != 'true'
