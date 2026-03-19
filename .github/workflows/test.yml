@@ -9,6 +9,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
     container:
       image: ghcr.io/saebyn/zom-nom-defense/godot-ci:latest
 
@@ -40,21 +44,27 @@ jobs:
           godot --headless --import --path . --quit
 
       - name: Run Tests
-        run: |
-          ./run_tests.sh
-          EXIT_CODE=$?
-          echo "Test exit code: $EXIT_CODE"
-          if [ $EXIT_CODE -ne 0 ]; then
-            echo "Tests failed with exit code $EXIT_CODE"
-            exit $EXIT_CODE
-          fi
-          echo "All tests passed"
+        id: run_tests
+        continue-on-error: true
+        run: ./run_tests.sh
+
+      - name: Annotate PR with test results
+        if: always()
+        uses: mikepenz/action-junit-report@v5
+        with:
+          report_paths: test-results.xml
+          fail_on_failure: true
+          check_name: Unit Tests
+          include_passed: true
+
+      - name: Fail if tests failed without report
+        if: always() && steps.run_tests.outcome == 'failure' && hashFiles('test-results.xml') == ''
+        run: exit 1
 
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: |
-            .godot/
+          path: test-results.xml
           retention-days: 7
