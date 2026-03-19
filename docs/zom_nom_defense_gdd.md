@@ -48,7 +48,7 @@ PC (Steam), with optional Twitch integration for live playthroughs and audience 
 
 **Save System**:
 - **Multiple save slots** (minimum 3, like Factorio) allow parallel playthroughs.
-- Each save slot maintains independent progression: tech tree choices, in-game achievements, level completion, currency.
+- Each save slot maintains independent progression: tech tree choices, in-game achievements, scenario completion, currency.
 - Global data (Steam achievements, settings) persists across all saves.
 - Players can explore different tech tree paths in different save slots.
 
@@ -66,15 +66,15 @@ PC (Steam), with optional Twitch integration for live playthroughs and audience 
 
 ---
 
-## Level Structure
+## Scenario Structure
 
-- Levels are linear but varied in terrain, survivor setup, and zombie wave composition.
+- Scenarios are linear but varied in terrain, survivor setup, and zombie wave composition.
 
-### Sample Levels
+### Sample Scenarios
 
-- **Level 1:** Defend a person on top of a car.
-- **Level 2:** Protect two survivors next to a campfire.
-- **Level 3+:** Scenarios become more ridiculous (e.g., a hammock between two poles, an inflatable pool).
+- **Scenario 1:** Defend a person on top of a car.
+- **Scenario 2:** Protect two survivors next to a campfire.
+- **Scenario 3+:** Scenarios become more ridiculous (e.g., a hammock between two poles, an inflatable pool).
 
 ---
 

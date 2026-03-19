@@ -147,7 +147,7 @@ func test_game_over_stats_stored():
   CurrencyManager.current_scrap = 100
   ScenarioManager.set_current_scenario_id("scenario_1")
   
-  # Simulate what happens in on_target_died when game over
+  # Simulate what happens in on_survivor_died when game over
   var elapsed_time = 95.3  # Survived for 1 minute 35 seconds
   
   # Mock reclaim data

@@ -67,7 +67,7 @@ These ASCII diagrams show the visual layout of the new Achievement UI components
 │                    │
 │  [START GAME]      │
 │                    │
-│  [LEVEL SELECT]    │
+│  [SCENARIO SELECT]    │
 │                    │
 │  [TECH TREE]       │
 │                    │

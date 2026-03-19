@@ -33,8 +33,8 @@ const NAME_LABEL_LIGHTEN_WEIGHT: float = 0.55
     _update_display()
 
 @export_group("Visual Settings")
-## When false the health bar sprite is hidden entirely (health is still tracked).
-@export var show_health_bar: bool = true
+## When false the unit frame sprite is hidden entirely (health is still tracked).
+@export var show_unit_frame: bool = true
 ## Override the health bar fill color. Requires use_custom_bar_color = true.
 @export var bar_color: Color = Color(0.0, 0.0, 0.0, 0.0)
 ## When true, bar_color is used instead of automatic type-based color detection.
@@ -139,11 +139,11 @@ func _update_display():
   if not is_node_ready():
     return
   
-  # Survivors (targets group) always show their unit frame so the name and HP
+  # Survivors always show their unit frame so the name and HP
   # are permanently readable; other entities only show on hover or recent damage.
   var parent = get_parent()
-  var is_survivor: bool = parent != null and parent.is_in_group("targets")
-  var unit_frame_visible: bool = show_health_bar and (is_survivor or _hovered or _damage_reveal_timer > 0.0)
+  var is_survivor: bool = parent != null and parent.is_in_group("survivors")
+  var unit_frame_visible: bool = show_unit_frame and (is_survivor or _hovered or _damage_reveal_timer > 0.0)
   sprite.visible = (not disabled) and unit_frame_visible
 
   # Set up health display UI
@@ -154,7 +154,7 @@ func _update_display():
   # Set entity name / type label
   name_label.text = _get_entity_display_name()
 
-  _update_health_bar_visuals()
+  _update_unit_frame_visuals()
 
 ## Refresh the unit-frame display without changing hover state.
 ## Call this after updating data on the parent node (e.g. assigning survivor_name)
@@ -183,7 +183,7 @@ func _get_effective_bar_color() -> Color:
     return COLOR_DEFAULT
 
   # Survivors use the orange accent color
-  if parent.is_in_group("targets"):
+  if parent.is_in_group("survivors"):
     return COLOR_SURVIVOR
 
   # Use enemy_type string to identify zombie sub-types
@@ -208,7 +208,7 @@ func _get_entity_display_name() -> String:
     return ""
 
   # Survivors: use the assigned survivor name
-  if parent.is_in_group("targets") and "survivor_name" in parent:
+  if parent.is_in_group("survivors") and "survivor_name" in parent:
     var sname: String = str(parent.survivor_name)
     if not sname.is_empty():
       return sname
@@ -226,7 +226,7 @@ func _get_entity_display_name() -> String:
   return ""
 
 ## Update health bar fill color and sprite transparency based on current HP ratio.
-func _update_health_bar_visuals():
+func _update_unit_frame_visuals():
   if not is_node_ready():
     return
 

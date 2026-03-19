@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://b1yehhqyw2nfo"]
 
-[ext_resource type="Script" uid="uid://ef5o7bdag8pq" path="res://Entities/Targets/Templates/base_target/target.gd" id="1_e1yvt"]
+[ext_resource type="Script" uid="uid://ef5o7bdag8pq" path="res://Entities/Survivors/Templates/base_survivor/survivor.gd" id="1_e1yvt"]
 [ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="2_5ebp1"]
 [ext_resource type="Script" uid="uid://1es12v0p8gvh" path="res://Common/Effects/shake_effect/shake_effect.gd" id="3_n2scg"]
 [ext_resource type="Script" uid="uid://b81o4afla2kvg" path="res://Common/Components/panic_behavior/panic_behavior.gd" id="4_jt1q2"]
@@ -972,7 +972,7 @@ _data = {
 radius = 0.88671875
 height = 3.724055
 
-[node name="Target" type="Node3D" unique_id=1795138384 groups=["targets"]]
+[node name="Target" type="Node3D" unique_id=1795138384 groups=["survivors"]]
 transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0, 0, 0)
 script = ExtResource("1_e1yvt")
 

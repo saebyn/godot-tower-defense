@@ -66,7 +66,7 @@ if has_meta("damage_numbers_component"):
 Add `Component_DamageNumbers` as a child of any entity that needs damage feedback:
 
 1. **For enemies**: Add as a child node, it will auto-register in metadata
-2. **For targets**: Add as a child node
+2. **For survivors**: Add as a child node
 3. **For obstacles**: Add as a child node  
 4. **For scrap boxes**: Add as a child node
 

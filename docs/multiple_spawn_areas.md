@@ -12,7 +12,7 @@ Level Layout:
 ┌────────────────────────────────────────┐
 │                                        │
 │                                        │
-│         [Target]                       │
+│      [Survivor]                       │
 │                                        │
 │                                        │
 │                    🟥                  │
@@ -23,7 +23,7 @@ Level Layout:
 └────────────────────────────────────────┘
 
 Enemy Flow:
-All enemies → Single spawn point → Target
+All enemies → Single spawn point → Survivor
 ```
 
 ### After (Multiple Spawn Areas)
@@ -34,7 +34,7 @@ Level Layout:
 │  🟥 North                              │
 │  Spawn                                 │
 │                                        │
-│         [Target]         🟥 East       │
+│      [Survivor]         🟥 East       │
 │                          Spawn         │
 │                                        │
 │                                        │
@@ -44,15 +44,15 @@ Level Layout:
 
 Enemy Flow (Varied):
 North Spawn → ↘
-              → Target ← East Spawn
+              → Survivor ← East Spawn
 South Spawn → ↗
 
 Random Distribution:
-- Enemy 1: North Spawn → Target
-- Enemy 2: South Spawn → Target  
-- Enemy 3: East Spawn → Target
-- Enemy 4: North Spawn → Target
-- Enemy 5: South Spawn → Target
+- Enemy 1: North Spawn → Survivor
+- Enemy 2: South Spawn → Survivor  
+- Enemy 3: East Spawn → Survivor
+- Enemy 4: North Spawn → Survivor
+- Enemy 5: South Spawn → Survivor
 - ...continues randomly...
 ```
 

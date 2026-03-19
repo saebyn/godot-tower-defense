@@ -28,18 +28,18 @@ var spawn_position: Vector3
 var current_panic_destination: Vector3
 var panic_timer: float = 0.0
 var animation_player: AnimationPlayer
-var target: Node3D # Reference to the parent target node
+var survivor: Node3D # Reference to the parent survivor node
 
 func _ready() -> void:
-  # Get reference to parent target
-  target = get_parent() as Node3D
-  if not target:
+  # Get reference to parent survivor
+  survivor = get_parent() as Node3D
+  if not survivor:
     MyLogger.error("PanicBehavior", "Parent must be a Node3D! PanicBehavior disabled.")
     set_process(false) # Disable processing if parent is invalid
     return
   
   # Store the initial position as the center point for panic movement
-  spawn_position = target.position
+  spawn_position = survivor.position
   current_panic_destination = spawn_position
   
   # Get animation player reference
@@ -48,7 +48,7 @@ func _ready() -> void:
     if not animation_player:
       MyLogger.warn("PanicBehavior", "AnimationPlayer not found at path: %s" % animation_player_path)
   
-  MyLogger.debug("PanicBehavior", "PanicBehavior initialized successfully for target: %s" % target.name)
+  MyLogger.debug("PanicBehavior", "PanicBehavior initialized successfully for survivor: %s" % survivor.name)
 
 func _process(delta: float) -> void:
   # Check for nearby enemies
@@ -68,12 +68,12 @@ func _process(delta: float) -> void:
       _play_yelp_sound()
 
 func _play_yelp_sound() -> void:
-  if target and "audio_player" in target and target.audio_player:
-    var pitch_override = target.voice_pitch if target.voice_pitch != null else null
-    AudioManager.play_sound(target.audio_player, Resource_SoundEffect.SoundEffect.SURVIVOR_YELP, pitch_override)
+  if survivor and "audio_player" in survivor and survivor.audio_player:
+    var pitch_override = survivor.voice_pitch if survivor.voice_pitch != null else null
+    AudioManager.play_sound(survivor.audio_player, Resource_SoundEffect.SoundEffect.SURVIVOR_YELP, pitch_override)
 
 func _check_for_nearby_enemies() -> bool:
-  if not target:
+  if not survivor:
     return false
   
   # Note: For large numbers of enemies, consider using Area3D with collision layers
@@ -89,7 +89,7 @@ func _check_for_nearby_enemies() -> bool:
     if not enemy is Node3D:
       continue
     
-    var distance = target.position.distance_to(enemy.position)
+    var distance = survivor.position.distance_to(enemy.position)
     if distance <= panic_detection_radius:
       return true
   
@@ -109,7 +109,7 @@ func _stop_panic() -> void:
     animation_player.play("Idle")
 
 func _update_panic_movement(delta: float) -> void:
-  if not target:
+  if not survivor:
     return
   
   panic_timer += delta
@@ -120,17 +120,17 @@ func _update_panic_movement(delta: float) -> void:
     panic_timer = 0.0
   
   # Move towards the panic destination
-  var move := current_panic_destination - target.position
+  var move := current_panic_destination - survivor.position
   move.y = 0 # Keep movement on the horizontal plane
   var direction = move.normalized()
 
   if move.length() > minimum_move_threshold:
     var move_amount = min(panic_move_speed * delta, move.length())
-    target.position += direction * move_amount
+    survivor.position += direction * move_amount
     
     # Face the direction of movement
-    var target_look_position = target.position + direction
-    target.look_at(target_look_position, Vector3.UP, true)
+    var survivor_look_position = survivor.position + direction
+    survivor.look_at(survivor_look_position, Vector3.UP, true)
     
     # Play run animation
     if animation_player and animation_player.has_animation("Run"):

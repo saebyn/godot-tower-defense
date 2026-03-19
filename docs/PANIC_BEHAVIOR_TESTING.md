@@ -14,7 +14,7 @@ A new component (`Common/Components/panic_behavior/panic_behavior.gd`) that:
 - Automatically stops panicking when enemies move away
 
 ### Integration
-The panic behavior is automatically added to all survivors via `target.gd`, requiring no manual scene modification.
+The panic behavior is automatically added to all survivors via `survivor.gd`, requiring no manual scene modification.
 
 ## How to Test
 

@@ -46,7 +46,7 @@ func _ready() -> void:
   GameManager.game_state_changed.connect(_on_game_state_changed)
 
   # Count the number of survivors at start
-  survivor_count = get_tree().get_nodes_in_group("targets").size()
+  survivor_count = get_tree().get_nodes_in_group("survivors").size()
   MyLogger.info("Scenario", "Scenario started with %d survivors" % survivor_count)
 
 func _process(delta: float) -> void:
@@ -134,9 +134,9 @@ func _on_all_waves_completed() -> void:
   GameManager.set_game_state(GameManager.GameState.VICTORY)
 
 
-func on_target_died(_target: Node3D, _damage_source: String) -> void:
+func on_survivor_died(_survivor: Node3D, _damage_source: String) -> void:
   if survivor_count <= 0:
-    MyLogger.warn("Scenario", "All survivors already dead, ignoring target death.")
+    MyLogger.warn("Scenario", "All survivors already dead, ignoring survivor death.")
     return
 
   survivor_count -= 1

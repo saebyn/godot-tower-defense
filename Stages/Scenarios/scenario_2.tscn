@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://du3d1fs80prdm" path="res://Common/Systems/spawner/enemy_spawner.gd" id="3_c6qy0"]
 [ext_resource type="Script" uid="uid://b7jdk6preu1s4" path="res://Common/Systems/spawner/wave.gd" id="4_c6qy0"]
 [ext_resource type="Texture2D" uid="uid://cj1d4nm3dx27e" path="res://Assets/Textures/fire/0001.png" id="4_o6b7a"]
-[ext_resource type="PackedScene" uid="uid://b1yehhqyw2nfo" path="res://Entities/Targets/Templates/base_target/target.tscn" id="5_o7r5u"]
+[ext_resource type="PackedScene" uid="uid://b1yehhqyw2nfo" path="res://Entities/Survivors/Templates/base_survivor/survivor.tscn" id="5_o7r5u"]
 [ext_resource type="Texture2D" uid="uid://bplxfpvgvkkhh" path="res://Assets/Textures/fire/0011.png" id="5_td2w0"]
 [ext_resource type="Texture2D" uid="uid://bpote5rhxj28j" path="res://Assets/Textures/fire/0021.png" id="6_nswya"]
 [ext_resource type="Texture2D" uid="uid://cb0cxfhiawiuc" path="res://Assets/Textures/fire/0031.png" id="7_eu0mb"]

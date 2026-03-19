@@ -198,7 +198,7 @@ func test_timer_stops_on_game_over():
   
   # Act - Trigger game over
   scenario_instance.survivor_count = 1
-  scenario_instance.on_target_died(null, "test")
+  scenario_instance.on_survivor_died(null, "test")
   
   # Assert
   assert_false(scenario_instance.is_timing, "Timer should stop on game over")

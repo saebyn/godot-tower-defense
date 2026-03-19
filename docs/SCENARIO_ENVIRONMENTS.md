@@ -179,7 +179,7 @@ Scenario2 (Stage_Scenario)
 │   ├── light_color = Color(0.7, 0.8, 1.0)
 │   ├── light_energy = 0.2
 │   └── rotation_degrees = Vector3(-120, -45, 0)
-└── Targets (Survivors around campfire)
+└── Survivors (around campfire)
 ```
 
 This creates the complete nighttime campfire atmosphere!

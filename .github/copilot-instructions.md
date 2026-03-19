@@ -81,7 +81,7 @@ This is a **3D tower defense game** built with **Godot 4**. The project uses a f
 ├── Entities/             # Game entities organized by type
 │   ├── Enemies/          # Enemy templates and configurations
 │   ├── Obstacles/        # Obstacle templates and configurations
-│   └── Targets/          # Target templates and configurations
+│   └── Survivors/         # Survivor templates and configurations
 ├── external/             # External dependencies (git submodules)
 │   ├── .gdignore         # Prevents Godot from importing externals
 │   └── Gut/              # GUT testing framework (submodule)

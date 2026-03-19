@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cviggt4knmypm"]
 
 [ext_resource type="PackedScene" uid="uid://deoia86ae444c" path="res://Assets/Models/Landscape1.blend" id="1_x2unt"]
-[ext_resource type="PackedScene" uid="uid://b1yehhqyw2nfo" path="res://Entities/Targets/Templates/base_target/target.tscn" id="2_fx4lu"]
+[ext_resource type="PackedScene" uid="uid://b1yehhqyw2nfo" path="res://Entities/Survivors/Templates/base_survivor/survivor.tscn" id="2_fx4lu"]
 [ext_resource type="Script" uid="uid://nv24k764rct" path="res://Stages/Scenarios/scenario.gd" id="2_hesga"]
 [ext_resource type="Material" uid="uid://e2ebugibvdmg" path="res://Assets/Textures/survivorMaleB.material" id="3_hesga"]
 [ext_resource type="Script" uid="uid://du3d1fs80prdm" path="res://Common/Systems/spawner/enemy_spawner.gd" id="4_n5kqp"]

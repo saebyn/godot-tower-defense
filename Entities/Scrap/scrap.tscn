@@ -12,7 +12,7 @@ script = ExtResource("1_enoak")
 [node name="Health" parent="." unique_id=1689318852 node_paths=PackedStringArray("audio_player") instance=ExtResource("2_d4qur")]
 hitpoints = 3
 max_damage_per_hit = 1.0
-show_health_bar = false
+show_unit_frame = false
 hit_sound = 6
 death_sound = 18
 audio_player = NodePath("../AudioStreamPlayer3D")
