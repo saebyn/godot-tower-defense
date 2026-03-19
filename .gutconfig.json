@@ -10,7 +10,7 @@
   "compact_mode": false,
   "hide_orphans": false,
   "ignore_pause": true,
-  "junit_xml_file": "",
+  "junit_xml_file": "res://test-results.xml",
   "junit_xml_timestamp": false,
   "prefix": "test_",
   "suffix": ".gd",
