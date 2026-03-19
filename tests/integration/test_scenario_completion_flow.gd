@@ -117,36 +117,36 @@ func test_scenario_id_persists_across_state_changes():
   GameManager.set_game_state(GameManager.GameState.VICTORY)
   
   # Assert
-  assert_eq(ScenarioManager.get_current_scenario_id(), scenario_id, "Level ID should persist across state changes")
+  assert_eq(ScenarioManager.get_current_scenario_id(), scenario_id, "Scenario ID should persist across state changes")
 
-func test_sequential_level_unlocking():
-  # Test that levels unlock sequentially as previous levels are completed
-  # Initially only level 1 should be unlocked
-  assert_true(ScenarioManager.is_scenario_unlocked("scenario_1"), "Level 1 should be unlocked")
-  assert_false(ScenarioManager.is_scenario_unlocked("scenario_2"), "Level 2 should be locked")
+func test_sequential_scenario_unlocking():
+  # Test that scenarios unlock sequentially as previous scenarios are completed
+  # Initially only scenario 1 should be unlocked
+  assert_true(ScenarioManager.is_scenario_unlocked("scenario_1"), "Scenario 1 should be unlocked")
+  assert_false(ScenarioManager.is_scenario_unlocked("scenario_2"), "Scenario 2 should be locked")
   assert_false(ScenarioManager.is_scenario_unlocked("scenario_3"), "Scenario 3 should be locked")
   
-  # Complete level 1
+  # Complete scenario 1
   ScenarioManager.set_current_scenario_id("scenario_1")
   ScenarioManager.mark_scenario_complete("scenario_1")
   
-  # Now level 2 should be unlocked
+  # Now scenario 2 should be unlocked
   assert_true(ScenarioManager.is_scenario_unlocked("scenario_2"), "Scenario 2 should be unlocked after completing scenario 1")
   assert_false(ScenarioManager.is_scenario_unlocked("scenario_3"), "Scenario 3 should still be locked")
   
-  # Complete level 2
+  # Complete scenario 2
   ScenarioManager.set_current_scenario_id("scenario_2")
   ScenarioManager.mark_scenario_complete("scenario_2")
   
-  # Now level 3 should be unlocked
+  # Now scenario 3 should be unlocked
   assert_true(ScenarioManager.is_scenario_unlocked("scenario_3"), "Scenario 3 should be unlocked after completing scenario 2")
 
-func test_game_manager_returns_empty_string_when_no_level_set():
-  # Arrange - no level ID set
+func test_game_manager_returns_empty_string_when_no_scenario_set():
+  # Arrange - no scenario ID set
   # Assert
-  assert_eq(ScenarioManager.get_current_scenario_id(), "", "Should return empty string when no level is set")
+  assert_eq(ScenarioManager.get_current_scenario_id(), "", "Should return empty string when no scenario is set")
 
-func test_level_completion_signal_is_emitted():
+func test_scenario_completion_signal_is_emitted():
   # Arrange
   var scenario_id := "scenario_1"
   watch_signals(ScenarioManager)
@@ -162,7 +162,7 @@ func test_scenario_unlocked_signal_is_emitted():
   # Arrange
   watch_signals(ScenarioManager)
   
-  # Act - Complete level 1 which should unlock level 2
+  # Act - Complete scenario 1 which should unlock scenario 2
   ScenarioManager.mark_scenario_complete("scenario_1")
   
   # Assert

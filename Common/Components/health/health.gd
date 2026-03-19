@@ -34,7 +34,7 @@ const NAME_LABEL_LIGHTEN_WEIGHT: float = 0.55
 
 @export_group("Visual Settings")
 ## When false the unit frame sprite is hidden entirely (health is still tracked).
-@export var show_unit_frame: bool = true
+@export var unit_frame_enabled: bool = true
 ## Override the health bar fill color. Requires use_custom_bar_color = true.
 @export var bar_color: Color = Color(0.0, 0.0, 0.0, 0.0)
 ## When true, bar_color is used instead of automatic type-based color detection.
@@ -143,7 +143,7 @@ func _update_display():
   # are permanently readable; other entities only show on hover or recent damage.
   var parent = get_parent()
   var is_survivor: bool = parent != null and parent.is_in_group("survivors")
-  var unit_frame_visible: bool = show_unit_frame and (is_survivor or _hovered or _damage_reveal_timer > 0.0)
+  var unit_frame_visible: bool = unit_frame_enabled and (is_survivor or _hovered or _damage_reveal_timer > 0.0)
   sprite.visible = (not disabled) and unit_frame_visible
 
   # Set up health display UI
