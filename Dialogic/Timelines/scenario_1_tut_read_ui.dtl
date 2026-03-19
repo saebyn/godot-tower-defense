@@ -1,3 +1,4 @@
+do GameManager.pause_game()
 Survivor: "Good! Let me point out a few things on the screen."
 Survivor: "Top-left is your [b]Scrap[/b] counter — that's your currency for building. Defeat zombies to earn more!"
 Survivor: "Your [b]XP and Level[/b] are shown there too. Level up to unlock stronger gear."
