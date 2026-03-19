@@ -34,6 +34,9 @@ var music_pause: bool = false
 var twitch_enabled: bool = false
 var twitch_welcome_message: String = ""
 
+# Gameplay settings
+var tutorial_enabled: bool = true
+
 # Available resolutions
 const RESOLUTIONS: Array[Vector2i] = [
   Vector2i(1280, 720),
@@ -75,6 +78,9 @@ func load_settings() -> void:
   
   # Load keybind settings
   _load_keybinds(config)
+
+  # Load gameplay settings
+  tutorial_enabled = config.get_value("gameplay", "tutorial_enabled", tutorial_enabled)
   
   MyLogger.info("SettingsManager", "Settings loaded from file")
 
@@ -99,6 +105,9 @@ func save_settings() -> void:
   
   # Save keybind settings
   _save_keybinds(config)
+  
+  # Save gameplay settings
+  config.set_value("gameplay", "tutorial_enabled", tutorial_enabled)
   
   var err = config.save(SETTINGS_FILE)
   if err != OK:

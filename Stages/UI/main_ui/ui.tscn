@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://duje032qpuq2"]
+[gd_scene format=3 uid="uid://duje032qpuq2"]
 
 [ext_resource type="Script" uid="uid://3yfu45cvudar" path="res://Stages/UI/main_ui/ui.gd" id="1_27fn8"]
 [ext_resource type="Theme" uid="uid://b8k2vgj8hxk5r" path="res://Config/ztd_ui_theme.tres" id="2_theme"]
@@ -21,7 +21,7 @@
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_b3t5h"]
 size = Vector2(16, 16)
 
-[node name="UI" type="Control"]
+[node name="UI" type="Control" unique_id=6500553]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -31,20 +31,20 @@ grow_vertical = 2
 theme = ExtResource("2_theme")
 script = ExtResource("1_27fn8")
 
-[node name="GameOverMenu" parent="." instance=ExtResource("3_h1vkl")]
+[node name="GameOverMenu" parent="." unique_id=183152181 instance=ExtResource("3_h1vkl")]
 layout_mode = 1
 
-[node name="VictoryMenu" parent="." instance=ExtResource("4_vg0vb")]
+[node name="VictoryMenu" parent="." unique_id=2022544017 instance=ExtResource("4_vg0vb")]
 layout_mode = 1
 
-[node name="CurrencyDisplay" parent="." instance=ExtResource("4_currency")]
+[node name="CurrencyDisplay" parent="." unique_id=2118341752 instance=ExtResource("4_currency")]
 layout_mode = 1
 offset_left = 10.0
 offset_top = 10.0
 offset_right = 362.0
 offset_bottom = 53.0
 
-[node name="SpeedControls" parent="." instance=ExtResource("8_speed_controls")]
+[node name="SpeedControls" parent="." unique_id=1546417313 instance=ExtResource("8_speed_controls")]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -55,7 +55,7 @@ offset_right = -10.0
 offset_bottom = 40.0
 grow_horizontal = 0
 
-[node name="Hotbar" parent="." instance=ExtResource("7_hotbar")]
+[node name="Hotbar" parent="." unique_id=763417073 instance=ExtResource("7_hotbar")]
 process_mode = 3
 layout_mode = 1
 anchors_preset = 2
@@ -66,7 +66,7 @@ offset_top = -74.0
 offset_right = 440.0
 grow_vertical = 0
 
-[node name="UtilityButtons" type="HBoxContainer" parent="."]
+[node name="UtilityButtons" type="HBoxContainer" parent="." unique_id=653886840]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -82,39 +82,39 @@ grow_vertical = 0
 mouse_filter = 2
 alignment = 2
 
-[node name="TechTreeButton" type="Button" parent="UtilityButtons"]
+[node name="TechTreeButton" type="Button" parent="UtilityButtons" unique_id=111070689]
 custom_minimum_size = Vector2(120, 54)
 layout_mode = 2
 text = "Tech Tree"
 
-[node name="SpawnIndicator" parent="." instance=ExtResource("5_spawn_indicator")]
+[node name="SpawnIndicator" parent="." unique_id=1011612368 instance=ExtResource("5_spawn_indicator")]
 layout_mode = 1
 
-[node name="OffscreenIndicator" parent="." instance=ExtResource("9_offscreen_indicator")]
+[node name="OffscreenIndicator" parent="." unique_id=1662983560 instance=ExtResource("9_offscreen_indicator")]
 layout_mode = 1
 indicator_texture = SubResource("PlaceholderTexture2D_b3t5h")
 
-[node name="Minimap" parent="." instance=ExtResource("10_minimap")]
+[node name="Minimap" parent="." unique_id=783446803 instance=ExtResource("10_minimap")]
 visible = false
 layout_mode = 1
 anchors_preset = 0
 
-[node name="PauseMenu" parent="." instance=ExtResource("6_pause_menu")]
+[node name="PauseMenu" parent="." unique_id=391853 instance=ExtResource("6_pause_menu")]
 layout_mode = 1
 
-[node name="StatsDisplay" parent="." instance=ExtResource("11_stats_display")]
+[node name="StatsDisplay" parent="." unique_id=397815851 instance=ExtResource("11_stats_display")]
 layout_mode = 1
 
-[node name="FpsOverlay" parent="." instance=ExtResource("12_fps_overlay")]
+[node name="FpsOverlay" parent="." unique_id=1920147229 instance=ExtResource("12_fps_overlay")]
 layout_mode = 1
 
-[node name="SoundEffectDisplay" parent="." instance=ExtResource("13_sound_effect_display")]
+[node name="SoundEffectDisplay" parent="." unique_id=317575353 instance=ExtResource("13_sound_effect_display")]
 layout_mode = 1
 
-[node name="AchievementNotificationManager" type="CanvasLayer" parent="."]
+[node name="AchievementNotificationManager" type="CanvasLayer" parent="." unique_id=22995399]
 script = ExtResource("12_achievement_notification")
 
-[node name="DebugControl" type="Control" parent="."]
+[node name="DebugControl" type="Control" parent="." unique_id=9774053]
 visible = false
 layout_mode = 1
 anchor_right = 0.135
@@ -125,13 +125,13 @@ offset_right = 507.47998
 offset_bottom = 369.16
 script = ExtResource("15_y1b7e")
 
-[node name="FreeScrap" type="Button" parent="DebugControl"]
+[node name="FreeScrap" type="Button" parent="DebugControl" unique_id=848303988]
 layout_mode = 0
 offset_right = 16.0
 offset_bottom = 12.0
 text = "Free Scrap"
 
-[node name="TechTree" parent="." instance=ExtResource("3_r1fny")]
+[node name="TechTree" parent="." unique_id=2005854423 instance=ExtResource("3_r1fny")]
 visible = false
 layout_mode = 1
 

@@ -38,10 +38,66 @@ DamageNumbersManager="*res://Utilities/Systems/damage_numbers_manager.gd"
 SceneReferences="*res://Utilities/Systems/scene_references.gd"
 SurvivorNameManager="*res://Utilities/Systems/survivor_name_manager.gd"
 Twitch="*res://Config/Twitch/twitch_service.tscn"
+Dialogic="*uid://ds2q0uclmolvu"
+
+[dialogic]
+
+directories/dch_directory={
+"survivor": "res://Dialogic/Characters/survivor.dch"
+}
+directories/dtl_directory={
+"scenario_1_intro": "res://Dialogic/Timelines/scenario_1_intro.dtl",
+"scenario_1_tut_attack": "res://Dialogic/Timelines/scenario_1_tut_attack.dtl",
+"scenario_1_tut_obstacle": "res://Dialogic/Timelines/scenario_1_tut_obstacle.dtl",
+"scenario_1_tut_read_ui": "res://Dialogic/Timelines/scenario_1_tut_read_ui.dtl",
+"scenario_1_tut_tech_tree": "res://Dialogic/Timelines/scenario_1_tut_tech_tree.dtl",
+"scenario_1_tut_welcome": "res://Dialogic/Timelines/scenario_1_tut_welcome.dtl"
+}
+layout/style_directory={
+"": "res://Dialogic/Style.tres",
+"Style": "res://Dialogic/Style.tres"
+}
+extensions_folder="res://addons/dialogic_additions"
+text/letter_speed=0.01
+text/initial_text_reveal_skippable=true
+text/text_reveal_skip_delay=0.1
+text/advance_delay=0.1
+text/autoadvance_per_character_delay=0.1
+text/autoadvance_ignored_characters_enabled=true
+choices/autofocus_first=true
+choices/delay=0.2
+choices/reveal_delay=0
+choices/reveal_by_input=false
+animations/join_default_length=0.5
+animations/join_default_wait=true
+animations/leave_default_length=0.5
+animations/leave_default_wait=true
+animations/cross_fade_default_length=0.5
+save/autosave_delay=60.0
+save/encryption_on_exports_only=true
+text/autopauses={}
+audio/channel_defaults={
+"": {
+"audio_bus": "",
+"fade_length": 0.0,
+"loop": false,
+"volume": 0.0
+},
+"music": {
+"audio_bus": "",
+"fade_length": 0.0,
+"loop": true,
+"volume": 0.0
+}
+}
+layout/style_list=["res://Dialogic/Style.tres"]
+layout/default_style="res://Dialogic/Style.tres"
+variables={}
+glossary/default_case_sensitive=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/tech_tree_editor/plugin.cfg", "res://addons/twitcher/plugin.cfg")
+enabled=PackedStringArray("res://addons/dialogic/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/tech_tree_editor/plugin.cfg", "res://addons/twitcher/plugin.cfg")
 
 [global_group]
 
@@ -263,6 +319,13 @@ camera_zoom_to_survivors={
 camera_zoom_out_max={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":79,"key_label":0,"unicode":111,"location":0,"echo":false,"script":null)
+]
+}
+dialogic_default_action={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194309,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+, Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":32,"location":0,"echo":false,"script":null)
 ]
 }
 

@@ -1,0 +1,5 @@
+do GameManager.pause_game()
+Survivor: "One more thing — press [b]Y[/b] to open the [b]Tech Tree[/b]."
+Survivor: "Unlock powerful upgrades as you earn XP. Achievements will unlock automatically as you play."
+Survivor: "Alright, that's everything. Now get out there and defend!"
+do GameManager.resume_game()

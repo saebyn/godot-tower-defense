@@ -1,11 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://cmjoofmc48ms1"]
+[gd_scene format=3 uid="uid://cmjoofmc48ms1"]
 
 [ext_resource type="Script" uid="uid://5xsymyaqa53b" path="res://Stages/UI/victory/victory_menu.gd" id="1_whlnv"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_6dlx3"]
 size = Vector2(16, 16)
 
-[node name="VictoryMenu" type="Control"]
+[node name="VictoryMenu" type="Control" unique_id=60729555]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,7 +14,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_whlnv")
 
-[node name="Panel" type="PanelContainer" parent="."]
+[node name="Panel" type="PanelContainer" parent="." unique_id=1944787358]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -28,86 +28,86 @@ offset_bottom = 250.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="Panel" unique_id=1465602014]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer" unique_id=409307665]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="TitleLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=266304279]
 layout_mode = 2
 text = "🎉 SCENARIO COMPLETE! 🎉"
 horizontal_alignment = 1
 
-[node name="HSeparator1" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="HSeparator1" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer" unique_id=952657682]
 layout_mode = 2
 
-[node name="CompletionTimeLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="CompletionTimeLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=842283798]
 layout_mode = 2
 text = "Completion Time: --:--"
 horizontal_alignment = 1
 
-[node name="BestTimeLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="BestTimeLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=993242854]
 layout_mode = 2
 text = "Best Time: --:--"
 horizontal_alignment = 1
 
-[node name="HSeparator2" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="HSeparator2" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer" unique_id=1236625954]
 layout_mode = 2
 
-[node name="ObstaclesReclaimedLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="ObstaclesReclaimedLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=928903725]
 layout_mode = 2
 text = "Obstacles Reclaimed: 0"
 horizontal_alignment = 1
 
-[node name="ScrapReclaimedLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="ScrapReclaimedLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=1757214388]
 layout_mode = 2
 text = "Scrap Reclaimed: +0"
 horizontal_alignment = 1
 
-[node name="HSeparator3" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="HSeparator3" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer" unique_id=1946512338]
 layout_mode = 2
 
-[node name="RemainingScrapLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="RemainingScrapLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=91051514]
 layout_mode = 2
 text = "Remaining Scrap: 0"
 horizontal_alignment = 1
 
-[node name="ConvertedToXPLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="ConvertedToXPLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=2126626091]
 layout_mode = 2
 text = "Converted to XP: +0 ✨"
 horizontal_alignment = 1
 
-[node name="BonusXPLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="BonusXPLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=55668210]
 layout_mode = 2
 text = "Completion Bonus: +0 XP ⭐"
 horizontal_alignment = 1
 
-[node name="HSeparator4" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="HSeparator4" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer" unique_id=1536736542]
 layout_mode = 2
 
-[node name="TotalXPLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="TotalXPLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=2118349101]
 layout_mode = 2
 text = "Total XP Earned: 0"
 horizontal_alignment = 1
 
-[node name="HSeparator5" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="HSeparator5" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer" unique_id=1926182766]
 layout_mode = 2
 
-[node name="CurrentLevelLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="CurrentLevelLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=1749224322]
 layout_mode = 2
 text = "Current Level: 1 (0 / 100 XP)"
 horizontal_alignment = 1
 
-[node name="HSeparator6" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="HSeparator6" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer" unique_id=2126028266]
 layout_mode = 2
 
-[node name="Button" type="Button" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="Button" type="Button" parent="Panel/MarginContainer/VBoxContainer" unique_id=1316767945]
 layout_mode = 2
 text = "Continue"
 icon = SubResource("PlaceholderTexture2D_6dlx3")

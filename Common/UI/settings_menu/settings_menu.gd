@@ -126,7 +126,7 @@ func _setup_keybind_buttons() -> void:
 
   for action in actions:
     # Skip UI actions and built-in actions
-    if action.begins_with("ui_") or action.begins_with("spatial_editor"):
+    if action.begins_with("ui_") or action.begins_with("spatial_editor") or action == "dialogic_default_action":
       continue
 
     # Create keybind button for this action
@@ -175,6 +175,10 @@ func _on_apply_pressed() -> void:
 
   # Apply Twitch settings
   for binding in _get_bindings_by_group("twitch"):
+    (binding as SettingBinding).apply_value()
+
+  # Apply Gameplay settings
+  for binding in _get_bindings_by_group("gameplay"):
     (binding as SettingBinding).apply_value()
 
   if video_settings_changed:

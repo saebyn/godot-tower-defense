@@ -365,6 +365,45 @@ live_preview = true
 revert_on_cancel = false
 metadata/_custom_type_script = "uid://c1g3vqaakxkv2"
 
+[node name="Gameplay" type="MarginContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer" unique_id=901234561]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+metadata/_tab_index = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Gameplay" unique_id=901234562]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="TutorialEnabledContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Gameplay/VBoxContainer" unique_id=901234563]
+layout_mode = 2
+
+[node name="TutorialEnabledLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Gameplay/VBoxContainer/TutorialEnabledContainer" unique_id=901234564]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Enable Tutorial"
+vertical_alignment = 1
+
+[node name="TutorialEnabledCheck" type="CheckButton" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Gameplay/VBoxContainer/TutorialEnabledContainer" unique_id=901234565]
+layout_mode = 2
+
+[node name="TutorialEnabledBinding" type="Node" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Gameplay/VBoxContainer/TutorialEnabledContainer" unique_id=901234566]
+script = ExtResource("3_settingbinding")
+setting_key = &"tutorial_enabled"
+control_path = NodePath("../TutorialEnabledCheck")
+control_property = &"button_pressed"
+apply_group = "gameplay"
+metadata/_custom_type_script = "uid://c1g3vqaakxkv2"
+
+[node name="TutorialHintLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Gameplay/VBoxContainer" unique_id=901234567]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+text = "Takes effect at the start of the next scenario."
+autowrap_mode = 2
+
 [node name="ButtonContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer" unique_id=775830852]
 layout_mode = 2
 alignment = 1

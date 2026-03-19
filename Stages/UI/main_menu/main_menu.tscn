@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dcw0hfnkb8jpt"]
+[gd_scene format=3 uid="uid://dcw0hfnkb8jpt"]
 
 [ext_resource type="Texture2D" uid="uid://dtci5njcdxhnv" path="res://Assets/Icons/icon.svg" id="1_icon"]
 [ext_resource type="Script" uid="uid://bor5bken0xt0" path="res://Stages/UI/main_menu/main_menu.gd" id="1_j5t8x"]
@@ -16,7 +16,7 @@ shuffle = true
 stream_count = 1
 stream_0 = ExtResource("3_l55nh")
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=987356057]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,7 +26,7 @@ grow_vertical = 2
 theme = ExtResource("2_theme")
 script = ExtResource("1_j5t8x")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=625548915]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,7 +35,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.172, 0.29, 0.306, 1)
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1957995560]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -43,11 +43,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MenuPanel" type="Panel" parent="CenterContainer"]
+[node name="MenuPanel" type="Panel" parent="CenterContainer" unique_id=1146886774]
 custom_minimum_size = Vector2(400, 621.995)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MenuPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MenuPanel" unique_id=1820663719]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.05
@@ -57,11 +57,11 @@ anchor_bottom = 0.9
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="LogoContainer" type="VBoxContainer" parent="CenterContainer/MenuPanel/VBoxContainer"]
+[node name="LogoContainer" type="VBoxContainer" parent="CenterContainer/MenuPanel/VBoxContainer" unique_id=927620154]
 layout_mode = 2
 alignment = 1
 
-[node name="IconTexture" type="TextureRect" parent="CenterContainer/MenuPanel/VBoxContainer/LogoContainer"]
+[node name="IconTexture" type="TextureRect" parent="CenterContainer/MenuPanel/VBoxContainer/LogoContainer" unique_id=1912845318]
 custom_minimum_size = Vector2(96, 96)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -69,62 +69,62 @@ texture = ExtResource("1_icon")
 expand_mode = 3
 stretch_mode = 5
 
-[node name="TitleLabel" type="Label" parent="CenterContainer/MenuPanel/VBoxContainer/LogoContainer"]
+[node name="TitleLabel" type="Label" parent="CenterContainer/MenuPanel/VBoxContainer/LogoContainer" unique_id=1809949847]
 layout_mode = 2
 text = "Zom Nom Defense"
 label_settings = SubResource("LabelSettings_title")
 horizontal_alignment = 1
 
-[node name="Spacer1" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
+[node name="Spacer1" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer" unique_id=816307549]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 
-[node name="StartButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]
+[node name="StartButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer" unique_id=1907254994]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "START GAME"
 
-[node name="Spacer2" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
+[node name="Spacer2" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer" unique_id=1448794575]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="LoadGameButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]
+[node name="LoadGameButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer" unique_id=15422445]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "LOAD GAME"
 
-[node name="Spacer2a" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
+[node name="Spacer2a" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer" unique_id=1952004768]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="AchievementsButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]
+[node name="AchievementsButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer" unique_id=906556496]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "ACHIEVEMENTS"
 
-[node name="Spacer2d" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
+[node name="Spacer2d" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer" unique_id=569112002]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="SettingsButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]
+[node name="SettingsButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer" unique_id=2015263243]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "SETTINGS"
 
-[node name="Spacer3" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
+[node name="Spacer3" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer" unique_id=1236868452]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="ExitButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer"]
+[node name="ExitButton" type="Button" parent="CenterContainer/MenuPanel/VBoxContainer" unique_id=1540509327]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "EXIT"
 
-[node name="Spacer4" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer"]
+[node name="Spacer4" type="Control" parent="CenterContainer/MenuPanel/VBoxContainer" unique_id=2111669518]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="BgMusicAudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="BgMusicAudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=509515886]
 stream = SubResource("AudioStreamPlaylist_ptjlr")
 bus = &"Music"
 

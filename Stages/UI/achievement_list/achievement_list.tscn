@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://cxhxq4ib7v1ra"]
+[gd_scene format=3 uid="uid://cxhxq4ib7v1ra"]
 
-[ext_resource type="Script" path="res://Stages/UI/achievement_list/achievement_list.gd" id="1_achievement_list"]
+[ext_resource type="Script" uid="uid://b7ihffo1lmuix" path="res://Stages/UI/achievement_list/achievement_list.gd" id="1_achievement_list"]
 
-[node name="AchievementList" type="Control"]
+[node name="AchievementList" type="Control" unique_id=1876295119]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_achievement_list")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=585083698]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -25,7 +25,7 @@ offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="Panel" unique_id=1490424799]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -37,33 +37,33 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer" unique_id=501224221]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Header" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="Header" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer" unique_id=1035111360]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/Header"]
+[node name="TitleLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/Header" unique_id=877868268]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 24
 text = "Achievements"
 
-[node name="CloseButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/Header"]
+[node name="CloseButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/Header" unique_id=960943368]
 layout_mode = 2
 text = "Close"
 
-[node name="StatsLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="StatsLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=719779007]
 layout_mode = 2
 text = "Achievements Unlocked: 0 / 0 (0%)"
 horizontal_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/MarginContainer/VBoxContainer" unique_id=1223330774]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="AchievementContainer" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer"]
+[node name="AchievementContainer" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer" unique_id=2032191282]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
