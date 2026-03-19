@@ -27,17 +27,17 @@ jobs:
           restore-keys: |
             godot-import-v1-
 
-      - name: Import project files
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          echo "Running initial project import (this may take 15+ minutes)..."
-          godot --headless --import --path . --quit
-
       - name: Pre-configure Godot Editor Settings
         run: |
           # Pre-configure Godot editor settings for Blender path
           mkdir -p /github/home/.config/godot
           printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\nfilesystem/import/blender/blender_path = "/usr/bin/blender"\n' > /github/home/.config/godot/editor_settings-4.tres
+
+      - name: Import project files
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          echo "Running initial project import (this may take 15+ minutes)..."
+          godot --headless --import --path . --quit
 
       - name: Run Tests
         run: |
