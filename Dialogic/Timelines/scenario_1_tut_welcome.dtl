@@ -1,7 +1,5 @@
 Survivor: "Hey! You look new around here. Want me to walk you through the basics real quick?"
 - Yes, show me the ropes!
 	[signal arg="tutorial_accepted"]
-<<
 - No thanks, I've got this.
 	[signal arg="tutorial_skipped"]
-<<

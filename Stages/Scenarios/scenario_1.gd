@@ -40,17 +40,17 @@ func _ready() -> void:
 
 
 func _start_intro_dialog() -> void:
-  if not is_instance_valid(Dialogic):
+  if Dialogic == null:
     MyLogger.warn("Scenario1", "Dialogic autoload not found — skipping dialog")
     return
   # Cache scene references now that the tree is fully ready
   _main_scene = get_tree().current_scene
   _obstacle_placement = _main_scene.get_node_or_null("ObstaclePlacement") if _main_scene else null
   _tut_state = TutState.INTRO
-  Dialogic.timeline_ended.connect(_on_dialogic_timeline_ended)
   Dialogic.signal_event.connect(_on_dialogic_signal)
-  get_tree().paused = true
-  Dialogic.start(TIMELINE_INTRO)
+  Dialogic.process_mode = Node.PROCESS_MODE_ALWAYS
+  Dialogic.timeline_ended.connect(_on_dialogic_timeline_ended, CONNECT_ONE_SHOT)
+  _dialogic_start(TIMELINE_INTRO)
 
 
 ## Advance tutorial state when a Dialogic timeline finishes
@@ -59,44 +59,45 @@ func _on_dialogic_timeline_ended() -> void:
     TutState.INTRO:
       if SettingsManager.tutorial_enabled:
         _tut_state = TutState.WELCOME
-        Dialogic.start(TIMELINE_TUT_WELCOME)
+        Dialogic.timeline_ended.connect(_on_dialogic_timeline_ended, CONNECT_ONE_SHOT)
+        _dialogic_start(TIMELINE_TUT_WELCOME)
       else:
         _end_dialog()
 
     TutState.WELCOME:
       if _tutorial_accepted:
         _tut_state = TutState.TUT_ATTACK
-        Dialogic.start(TIMELINE_TUT_ATTACK)
+        Dialogic.timeline_ended.connect(_on_dialogic_timeline_ended, CONNECT_ONE_SHOT)
+        _dialogic_start(TIMELINE_TUT_ATTACK)
       else:
         _end_dialog()
 
     TutState.TUT_ATTACK:
       # Attack instructions delivered — unpause and wait for the player to attack
       _tut_state = TutState.AWAITING_ATTACK
-      get_tree().paused = false
       if _main_scene and _main_scene.has_signal("enemy_attacked"):
         _main_scene.enemy_attacked.connect(_on_enemy_attacked_for_tutorial, CONNECT_ONE_SHOT)
       else:
         MyLogger.warn("Scenario1", "enemy_attacked signal not found, skipping attack step")
         _tut_state = TutState.TUT_OBSTACLE
-        get_tree().paused = true
-        Dialogic.start(TIMELINE_TUT_OBSTACLE)
+        Dialogic.timeline_ended.connect(_on_dialogic_timeline_ended, CONNECT_ONE_SHOT)
+        _dialogic_start(TIMELINE_TUT_OBSTACLE)
 
     TutState.TUT_OBSTACLE:
       # Obstacle instructions delivered — unpause and wait for placement
       _tut_state = TutState.AWAITING_OBSTACLE
-      get_tree().paused = false
       if _obstacle_placement and _obstacle_placement.has_signal("obstacle_placed"):
         _obstacle_placement.obstacle_placed.connect(_on_obstacle_placed_for_tutorial, CONNECT_ONE_SHOT)
       else:
         MyLogger.warn("Scenario1", "obstacle_placed signal not found, skipping obstacle step")
         _tut_state = TutState.TUT_READ_UI
-        get_tree().paused = true
-        Dialogic.start(TIMELINE_TUT_READ_UI)
+        Dialogic.timeline_ended.connect(_on_dialogic_timeline_ended, CONNECT_ONE_SHOT)
+        _dialogic_start(TIMELINE_TUT_READ_UI)
 
     TutState.TUT_READ_UI:
       _tut_state = TutState.TUT_TECH_TREE
-      Dialogic.start(TIMELINE_TUT_TECH_TREE)
+      Dialogic.timeline_ended.connect(_on_dialogic_timeline_ended, CONNECT_ONE_SHOT)
+      _dialogic_start(TIMELINE_TUT_TECH_TREE)
 
     TutState.TUT_TECH_TREE:
       _tut_state = TutState.DONE
@@ -117,8 +118,8 @@ func _on_enemy_attacked_for_tutorial() -> void:
   if _tut_state != TutState.AWAITING_ATTACK:
     return
   _tut_state = TutState.TUT_OBSTACLE
-  get_tree().paused = true
-  Dialogic.start(TIMELINE_TUT_OBSTACLE)
+  Dialogic.timeline_ended.connect(_on_dialogic_timeline_ended, CONNECT_ONE_SHOT)
+  _dialogic_start(TIMELINE_TUT_OBSTACLE)
 
 
 ## Called when the player places an obstacle during the obstacle tutorial step
@@ -126,19 +127,23 @@ func _on_obstacle_placed_for_tutorial() -> void:
   if _tut_state != TutState.AWAITING_OBSTACLE:
     return
   _tut_state = TutState.TUT_READ_UI
-  get_tree().paused = true
-  Dialogic.start(TIMELINE_TUT_READ_UI)
+  Dialogic.timeline_ended.connect(_on_dialogic_timeline_ended, CONNECT_ONE_SHOT)
+  _dialogic_start(TIMELINE_TUT_READ_UI)
 
 
-## Disconnect Dialogic signals and unpause the game
+## Wrapper around Dialogic.start() that ensures the layout runs while the game tree is paused.
+func _dialogic_start(timeline: Variant) -> void:
+  var layout: Node = Dialogic.start(timeline)
+  if layout:
+    layout.process_mode = Node.PROCESS_MODE_ALWAYS
+
+
+## Disconnect Dialogic signals and restore Dialogic process mode
 func _end_dialog() -> void:
-  if is_instance_valid(Dialogic):
-    if Dialogic.timeline_ended.is_connected(_on_dialogic_timeline_ended):
-      Dialogic.timeline_ended.disconnect(_on_dialogic_timeline_ended)
-    if Dialogic.signal_event.is_connected(_on_dialogic_signal):
-      Dialogic.signal_event.disconnect(_on_dialogic_signal)
+  if Dialogic.signal_event.is_connected(_on_dialogic_signal):
+    Dialogic.signal_event.disconnect(_on_dialogic_signal)
+  Dialogic.process_mode = Node.PROCESS_MODE_INHERIT
   _tut_state = TutState.INACTIVE
-  get_tree().paused = false
   MyLogger.info("Scenario1", "Dialog sequence finished, game running")
 
 

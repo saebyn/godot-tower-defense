@@ -223,8 +223,9 @@ func _handle_enemy_click(click_position: Vector2):
     var collider = enemy_raycast.get_collider()
     MyLogger.debug("Player", "Clicked on: %s" % collider.name)
     # If the collider is an enemy, perform an attack
-    attack.perform_attack(collider)
-    enemy_attacked.emit()
+    var result = attack.perform_attack(collider)
+    if result == Component_Attack.AttackResult.SUCCESS:
+      enemy_attacked.emit()
   
   # Disable the enemy raycast after use
   enemy_raycast.enabled = false

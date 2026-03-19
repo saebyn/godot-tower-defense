@@ -13,11 +13,6 @@ signal closed()
 # Keybinds tab controls
 @onready var keybinds_container: VBoxContainer = $Panel/MarginContainer/VBoxContainer/TabContainer/Keybinds/ScrollContainer/KeybindsContainer
 
-# Gameplay tab controls (added dynamically in _ready)
-var tutorial_enabled_check: CheckButton = null
-var temp_tutorial_enabled: bool
-var previous_tutorial_enabled: bool
-
 # Bottom buttons
 @onready var apply_button: Button = $Panel/MarginContainer/VBoxContainer/ButtonContainer/ApplyButton
 @onready var cancel_button: Button = $Panel/MarginContainer/VBoxContainer/ButtonContainer/CancelButton
@@ -169,10 +164,6 @@ func _has_video_changes() -> bool:
   return false
 
 
-func _on_tutorial_enabled_toggled(pressed: bool) -> void:
-  temp_tutorial_enabled = pressed
-  SettingsManager.tutorial_enabled = temp_tutorial_enabled
-
 func _on_apply_pressed() -> void:
   # Check if video settings changed before applying anything
   var video_settings_changed := _has_video_changes()
@@ -184,6 +175,10 @@ func _on_apply_pressed() -> void:
 
   # Apply Twitch settings
   for binding in _get_bindings_by_group("twitch"):
+    (binding as SettingBinding).apply_value()
+
+  # Apply Gameplay settings
+  for binding in _get_bindings_by_group("gameplay"):
     (binding as SettingBinding).apply_value()
 
   if video_settings_changed:

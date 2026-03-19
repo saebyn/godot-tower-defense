@@ -23,7 +23,7 @@ signal value_changed(new_value: Variant)
 @export var control_property: StringName = "value"
 
 ## Logical group used to batch apply/revert operations in the menu script
-@export_enum("video", "audio", "twitch", "debug", "none") var apply_group: String = "none"
+@export_enum("video", "audio", "twitch", "debug", "gameplay", "none") var apply_group: String = "none"
 
 ## When true, each user change is immediately forwarded to SettingsManager (e.g. audio sliders)
 @export var live_preview: bool = false
