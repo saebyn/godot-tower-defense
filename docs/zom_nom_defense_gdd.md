@@ -1,5 +1,7 @@
 # Zom Nom Defense: Click. Aim. Survive. - Game Design Document
 
+> **Domain terminology:** See [`docs/UBIQUITOUS_LANGUAGE.md`](UBIQUITOUS_LANGUAGE.md) for canonical names used in code and documentation.
+
 ## Overview
 
 **Zom Nom Defense** is a lo-fi, chaotic, click-powered tower defense game where the player must defend helpless survivors from waves of zombies using scrap-built defenses. Starting with just their mouse, the player clicks zombies to earn "Scrap," which is then spent to build automated turrets, obstacles, and support structures. Progression is tied to both experience (XP) and specific achievements.
@@ -117,10 +119,10 @@ See `docs/visual_style_guide.md` for comprehensive visual specifications.
 - Multiple enemy types with different behaviors (Fast Scouts, Tanks, Sprinters, Armored, Swarms, Bosses).
 - Scrap economy balancing.
 - Upgradeable towers (3-5 tiers per tower type with visual progression).
-- **Challenge levels** with unique win conditions:
+- **Challenge scenarios** with unique win conditions:
   - "Click Only" - No obstacles allowed
   - "No Turrets" - Walls and support only
-  - "Speed Run" - Complete level in time limit
+  - "Speed Run" - Complete scenario in time limit
   - "Limited Budget" - Fixed scrap amount
   - "Horde Mode" - Survive maximum waves
 - **Endless mode** with increasing difficulty and leaderboards.
