@@ -88,7 +88,7 @@ size = Vector3(113.034, 11.1602, 1)
 [node name="Level" unique_id=220321630 instance=ExtResource("1_x2unt")]
 script = ExtResource("2_hesga")
 
-[node name="Target" parent="." index="0" unique_id=1496810992 instance=ExtResource("2_fx4lu")]
+[node name="Survivor" parent="." index="0" unique_id=1496810992 instance=ExtResource("2_fx4lu")]
 transform = Transform3D(0.97459, 0, -0.223999, 0, 1, 0, 0.223999, 0, 0.97459, 16.1092, 2.80732, -17.0537)
 skin_material = ExtResource("3_hesga")
 
