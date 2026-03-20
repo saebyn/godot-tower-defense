@@ -1,5 +1,7 @@
 # Zom Nom Defense - Architecture Documentation
 
+> **Domain terminology:** See [`docs/UBIQUITOUS_LANGUAGE.md`](UBIQUITOUS_LANGUAGE.md) for canonical names used in code and documentation.
+
 This document provides comprehensive architecture diagrams for the Zom Nom Defense project using Mermaid diagrams.
 
 ## Table of Contents

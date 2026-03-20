@@ -116,28 +116,9 @@ This project uses git submodules for external dependencies to keep the repositor
 - **Enemy Template**: `Entities/Enemies/Templates/base_enemy/enemy.tscn`
 - **UI Scene**: `Stages/UI/main_ui/ui.tscn`
 
-## Game Testing and Controls
+## Domain Language
 
-### Manual Testing Scenarios
-
-1. **Basic Game Launch**:
-   ```bash
-   ./godot --path . "res://Stages/Game/main/main.tscn"
-   ```
-
-2. **Game Controls**:
-   - **Mouse**: Camera movement and targeting
-   - **Left Click**: Place obstacles/towers
-   - **WASD**: Alternative camera controls (if implemented)
-   - **ESC**: Pause/menu (if implemented)
-
-3. **Testing Checklist**:
-   - [ ] Game loads without errors
-   - [ ] 3D models render correctly
-   - [ ] Enemy spawning works
-   - [ ] Obstacle placement functions
-   - [ ] Health system responds correctly
-   - [ ] UI elements display properly
+All code identifiers, comments, documentation, and UI text must use the canonical terms defined in [`docs/UBIQUITOUS_LANGUAGE.md`](../docs/UBIQUITOUS_LANGUAGE.md). Consult that document before introducing or reusing any domain term. Key examples: use **Survivor** (not "target"), **Scenario** (not "level"), **Building** (not "obstacle" generically), **Player Level** (not bare "level") for the progression rank.
 
 ## Development Guidelines
 
