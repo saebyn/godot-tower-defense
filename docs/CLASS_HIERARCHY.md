@@ -454,14 +454,11 @@ Displays floating damage numbers and scrap gain feedback above entities. Creates
 
 | Export | Default | Description |
 |---|---|---|
-| `max_pool_size` | `10` | Max Label3D instances in pool |
 | `fade_duration` | `1.5` | Fade-out duration in seconds |
 | `float_distance` | `2.0` | Upward travel distance |
 | `vertical_offset` | `2.0` | Height above entity origin |
 | `show_damage_numbers` | `true` | Toggle damage number display |
 | `show_scrap_gain` | `true` | Toggle scrap gain display |
-| `font_size` | `32` | Base font size |
-| `fixed_size_pixels` | `48.0` | Fixed screen-space size (zoom-independent) |
 
 ### Key Methods
 
