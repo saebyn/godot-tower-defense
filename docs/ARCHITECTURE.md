@@ -633,3 +633,63 @@ This architecture provides:
 - **Data-Driven**: Game content editable by non-programmers
 - **Testable**: Clear boundaries enable unit testing
 - **Maintainable**: Changes localized to single systems/components
+
+---
+
+## Camera & Ground Boundaries
+
+Each scenario defines its playable boundary (`scenario.gd` exports):
+
+| Export | Default | Meaning |
+|---|---|---|
+| `boundary_min_x` | `-50` | West edge |
+| `boundary_max_x` | `50` | East edge |
+| `boundary_min_z` | `-50` | North edge |
+| `boundary_max_z` | `50` | South edge |
+
+`camera.gd` clamps its **orbit centre** (the ground-level point the camera looks at) to these bounds after every movement or rotation, then adjusts the camera position to maintain the same offset. This prevents the camera from revealing void areas without causing jarring jumps.
+
+Boundary walls (`world_boundary_markers.gd`) fade in as the camera orbit centre approaches within 50 units of a boundary edge.
+
+### Node Hierarchy
+
+```
+Main (Node3D)
+├── GroundWithBoundaries (Node3D) [world_boundary_markers.gd]
+│   ├── FlatGround (MeshInstance3D)
+│   │   └── FlatGroundBody (StaticBody3D)
+│   │       └── CollisionShape3D (BoxShape3D)
+│   └── Boundaries (Node3D)
+│       ├── NorthBoundary (MeshInstance3D)
+│       ├── SouthBoundary (MeshInstance3D)
+│       ├── EastBoundary (MeshInstance3D)
+│       └── WestBoundary (MeshInstance3D)
+├── Camera3D [camera.gd]
+├── NavigationRegion3D
+└── [Scenario loaded at runtime]
+```
+
+When a scenario loads, `main.gd` calls `_configure_boundaries_from_scenario()` to push the scenario's boundary values to `camera.gd`.
+
+---
+
+## Multiple Spawn Areas
+
+`System_EnemySpawner` supports an array of `spawn_areas` (any `MeshInstance3D`). Each enemy spawn randomly selects one area and picks a random position within its AABB.
+
+### Scene Setup
+
+```
+EnemySpawner
+├── NorthSpawnArea (MeshInstance3D)
+├── SouthSpawnArea (MeshInstance3D)
+└── EastSpawnArea  (MeshInstance3D)
+```
+
+Assign the mesh nodes to the `spawn_areas` array in the Inspector, or programmatically:
+
+```gdscript
+spawner.spawn_areas = [$NorthSpawnArea, $SouthSpawnArea, $EastSpawnArea]
+```
+
+A single-element array reproduces the original single-spawn-point behaviour. Leaving the array empty falls back to the spawner node's own position.

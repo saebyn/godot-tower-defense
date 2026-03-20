@@ -354,3 +354,49 @@ Five visual states the tech tree UI must represent for each node:
 | Turret buffing | ⭐⭐ | ⭐⭐⭐⭐⭐ |
 | Flexibility | ⭐⭐ | ⭐⭐⭐⭐ |
 | Best against | Linear attacks | Multi-path attacks |
+
+---
+
+## 14) Building–Tech Tree Integration
+
+### Data Model
+
+**`Resource_ObstacleType` (`Config/Obstacles/obstacle_type_resource.gd`)**
+- `required_tech_ids: Array[String]` — all listed tech IDs must be unlocked for this building to be available. Empty array = always available.
+
+**`ObstacleRegistry` (`Utilities/Systems/obstacle_registry.gd`)**
+- Connects to `TechTreeManager.tech_unlocked` and `tech_locked` signals on `_ready()`.
+- `_is_obstacle_unlocked(obstacle_type)` — checks all `required_tech_ids` against unlocked set.
+- `is_obstacle_available(obstacle_id) -> bool` — public availability check.
+- Emits `obstacle_types_updated(added, removed)` when availability changes.
+
+### Authoring a Building with a Tech Requirement
+
+```gdscript
+# In advanced_turret.tres
+required_tech_ids = Array[String](["tur_boom_barrel", "eco_scrap_smelter"])
+# ALL listed tech IDs must be unlocked
+```
+
+### Checking Availability in Code
+
+```gdscript
+if ObstacleRegistry.is_obstacle_available("advanced_turret"):
+    pass  # player may place it
+
+# React to changes
+ObstacleRegistry.obstacle_types_updated.connect(_on_obstacles_updated)
+func _on_obstacles_updated(added: Array, removed: Array) -> void:
+    pass  # refresh hotbar, etc.
+```
+
+### Signal Flow
+
+```
+TechTreeManager.unlock_tech(id)
+  → emits tech_unlocked
+    → ObstacleRegistry._on_tech_unlocked()
+      → _update_available_obstacles()
+        → emits obstacle_types_updated(added, removed)
+          → UI / Hotbar refreshes
+```

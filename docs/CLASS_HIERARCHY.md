@@ -441,3 +441,51 @@ This naming and organizational system provides:
 - ✅ **Best Practices**: Components and entities clearly separated
 
 When in doubt, refer to this document and follow the established patterns. Consistency is key to maintainability!
+
+---
+
+## Component_DamageNumbers Reference
+
+`Common/Components/damage_numbers/damage_numbers.gd`
+
+Displays floating damage numbers and scrap gain feedback above entities. Creates `Label3D` nodes dynamically — no scene file required. Registers itself in the parent's metadata as `"damage_numbers_component"` for discovery.
+
+### Configuration Exports
+
+| Export | Default | Description |
+|---|---|---|
+| `max_pool_size` | `10` | Max Label3D instances in pool |
+| `fade_duration` | `1.5` | Fade-out duration in seconds |
+| `float_distance` | `2.0` | Upward travel distance |
+| `vertical_offset` | `2.0` | Height above entity origin |
+| `show_damage_numbers` | `true` | Toggle damage number display |
+| `show_scrap_gain` | `true` | Toggle scrap gain display |
+| `font_size` | `32` | Base font size |
+| `fixed_size_pixels` | `48.0` | Fixed screen-space size (zoom-independent) |
+
+### Key Methods
+
+- `show_damage(amount, damage_source)` — display a colour-coded damage number
+- `show_scrap(amount)` — display a gold "+N" scrap gain number
+
+### Color Mapping
+
+| Type | Color | Trigger |
+|---|---|---|
+| Normal | White | default |
+| Fire | Orange | `"fire"`, `"flame"` |
+| Ice | Cyan | `"ice"`, `"frost"`, `"cold"` |
+| Poison | Purple | `"poison"`, `"toxic"` |
+| Critical | Red | `"critical"`, `"crit"` |
+| Scrap gain | Gold | `show_scrap()` |
+
+### Integration Pattern
+
+```gdscript
+# Discovery via parent metadata (used by Component_Health and enemy.gd)
+if parent.has_meta("damage_numbers_component"):
+    var dn = parent.get_meta("damage_numbers_component")
+    dn.show_damage(amount, damage_source)
+```
+
+Add `Component_DamageNumbers` as a child of any `Node3D` entity (enemies, survivors, buildings, scrap boxes) to enable feedback. The component auto-registers on `_ready()`.

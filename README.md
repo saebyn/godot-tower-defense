@@ -82,10 +82,14 @@ See [tests/README.md](tests/README.md) for more details.
 
 In-depth docs live in the [`docs/`](docs/) directory, including:
 
-- **[Architecture](docs/ARCHITECTURE.md)** - System architecture diagrams
 - **[Game Design Document](docs/zom_nom_defense_gdd.md)** - Full game vision
-- **[Tech Tree Design](docs/tech_tree_exclusive_branches.md)** - Mutually exclusive branch system
-- **[Visual Style Guide](docs/visual_style_guide.md)** - UI color palette and theme
+- **[Ubiquitous Language](docs/UBIQUITOUS_LANGUAGE.md)** - Canonical domain terminology for code and docs
+- **[Architecture](docs/ARCHITECTURE.md)** - System architecture, camera boundaries, spawn areas
+- **[Class Hierarchy](docs/CLASS_HIERARCHY.md)** - Naming conventions and complete class reference
+- **[Tech Tree Design](docs/tech_tree_design.md)** - Node catalog, exclusive branches, balance notes
+- **[Visual Style Guide](docs/visual_style_guide.md)** - Art direction, color palette, and UI theme
+- **[Logging](docs/LOGGING.md)** - `MyLogger` API reference
+- **[Adding Settings](docs/adding_settings.md)** - How-to guide for new settings
 
 ---
 
