@@ -649,26 +649,7 @@ Each scenario defines its playable boundary (`scenario.gd` exports):
 
 `camera.gd` clamps its **orbit centre** (the ground-level point the camera looks at) to these bounds after every movement or rotation, then adjusts the camera position to maintain the same offset. This prevents the camera from revealing void areas without causing jarring jumps.
 
-Boundary walls (`world_boundary_markers.gd`) fade in as the camera orbit centre approaches within 50 units of a boundary edge.
-
-### Node Hierarchy
-
-```
-Main (Node3D)
-├── GroundWithBoundaries (Node3D) [world_boundary_markers.gd]
-│   ├── FlatGround (MeshInstance3D)
-│   │   └── FlatGroundBody (StaticBody3D)
-│   │       └── CollisionShape3D (BoxShape3D)
-│   └── Boundaries (Node3D)
-│       ├── NorthBoundary (MeshInstance3D)
-│       ├── SouthBoundary (MeshInstance3D)
-│       ├── EastBoundary (MeshInstance3D)
-│       └── WestBoundary (MeshInstance3D)
-├── Camera3D [camera.gd]
-├── NavigationRegion3D
-└── [Scenario loaded at runtime]
-```
-
+This orbit-centre clamping is currently the only enforcement of the playable area: the camera can never pan the view outside the configured scenario boundaries, even if the ground mesh or other geometry extends further.
 When a scenario loads, `main.gd` calls `_configure_boundaries_from_scenario()` to push the scenario's boundary values to `camera.gd`.
 
 ---
