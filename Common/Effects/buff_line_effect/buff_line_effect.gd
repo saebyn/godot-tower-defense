@@ -106,6 +106,8 @@ func _get_buffed_obstacles() -> Array:
       continue
     if not is_instance_valid(obstacle):
       continue
+    if not obstacle is Entity_PlaceableBuilding:
+      continue
     
     var distance = buff_obstacle.global_position.distance_to(obstacle.global_position)
     if distance <= buff_obstacle.effect_range:

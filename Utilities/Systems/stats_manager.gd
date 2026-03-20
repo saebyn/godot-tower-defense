@@ -34,7 +34,7 @@ var max_waves_completed: int = 0
 
 # Signals for real-time updates
 signal enemy_defeated(enemy_type: String, by_hand: bool)
-signal building_placed(obstacle_type: String)
+signal building_placed(building_type: String)
 signal max_scrap_held_updated(new_max: int)
 signal stats_updated()
 signal stats_loaded()
@@ -101,18 +101,18 @@ func track_click_performed() -> void:
   stats_updated.emit()
 
 ## Track a building placement
-func track_building_placed(obstacle_type: String) -> void:
+func track_building_placed(building_type: String) -> void:
   buildings_placed_total += 1
   
   # Track by type
-  if obstacle_type in buildings_placed_by_type:
-    buildings_placed_by_type[obstacle_type] += 1
+  if building_type in buildings_placed_by_type:
+    buildings_placed_by_type[building_type] += 1
   else:
-    buildings_placed_by_type[obstacle_type] = 1
+    buildings_placed_by_type[building_type] = 1
   
-  MyLogger.debug("Stats", "Building placed: %s. Total: %d" % [obstacle_type, buildings_placed_total])
+  MyLogger.debug("Stats", "Building placed: %s. Total: %d" % [building_type, buildings_placed_total])
   
-  building_placed.emit(obstacle_type)
+  building_placed.emit(building_type)
   stats_updated.emit()
 
 ## Scrap earned callback
