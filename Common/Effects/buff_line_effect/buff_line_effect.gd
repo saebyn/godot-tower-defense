@@ -99,7 +99,7 @@ func _draw_buff_lines():
 
 func _get_buffed_obstacles() -> Array:
   var results = []
-  var obstacles = get_tree().get_nodes_in_group(Entity_PlaceableObstacle.OBSTACLE_GROUP)
+  var obstacles = get_tree().get_nodes_in_group(Entity_PlaceableBuilding.BUILDING_GROUP)
   
   for obstacle in obstacles:
     if obstacle == buff_obstacle:

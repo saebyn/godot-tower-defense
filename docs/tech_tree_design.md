@@ -361,10 +361,10 @@ Five visual states the tech tree UI must represent for each node:
 
 ### Data Model
 
-**`Resource_ObstacleType` (`Config/Obstacles/obstacle_type_resource.gd`)**
+**`Resource_BuildingType` (`Config/Obstacles/obstacle_type_resource.gd`)**
 - `required_tech_ids: Array[String]` — all listed tech IDs must be unlocked for this building to be available. Empty array = always available.
 
-**`ObstacleRegistry` (`Utilities/Systems/obstacle_registry.gd`)**
+**`BuildingRegistry` (`Utilities/Systems/building_registry.gd`)**
 - Connects to `TechTreeManager.tech_unlocked` and `tech_locked` signals on `_ready()`.
 - `_is_obstacle_unlocked(obstacle_type)` — checks all `required_tech_ids` against unlocked set.
 - `is_obstacle_available(obstacle_id) -> bool` — public availability check.
@@ -381,11 +381,11 @@ required_tech_ids = Array[String](["tur_boom_barrel", "eco_scrap_smelter"])
 ### Checking Availability in Code
 
 ```gdscript
-if ObstacleRegistry.is_obstacle_available("advanced_turret"):
+if BuildingRegistry.is_obstacle_available("advanced_turret"):
     pass  # player may place it
 
 # React to changes
-ObstacleRegistry.obstacle_types_updated.connect(_on_obstacles_updated)
+BuildingRegistry.obstacle_types_updated.connect(_on_obstacles_updated)
 func _on_obstacles_updated(added: Array, removed: Array) -> void:
     pass  # refresh hotbar, etc.
 ```
@@ -395,7 +395,7 @@ func _on_obstacles_updated(added: Array, removed: Array) -> void:
 ```
 TechTreeManager.unlock_tech(id)
   → emits tech_unlocked
-    → ObstacleRegistry._on_tech_unlocked()
+    → BuildingRegistry._on_tech_unlocked()
       → _update_available_obstacles()
         → emits obstacle_types_updated(added, removed)
           → UI / Hotbar refreshes

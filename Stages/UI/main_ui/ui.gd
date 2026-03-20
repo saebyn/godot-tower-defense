@@ -1,7 +1,7 @@
 extends Control
 class_name MainUI
 
-signal obstacle_spawn_requested(obstacle: Resource_ObstacleType)
+signal obstacle_spawn_requested(obstacle: Resource_BuildingType)
 
 @onready var spawn_indicator: Control = $SpawnIndicator
 @onready var hotbar: Control = $Hotbar
@@ -23,7 +23,7 @@ func _process(_delta: float) -> void:
     _toggle_sound_effect_display()
 
 
-func request_obstacle_spawn(obstacle: Resource_ObstacleType) -> void:
+func request_obstacle_spawn(obstacle: Resource_BuildingType) -> void:
   MyLogger.info("UI", "Requesting obstacle spawn: %s" % obstacle.name)
   obstacle_spawn_requested.emit(obstacle)
 

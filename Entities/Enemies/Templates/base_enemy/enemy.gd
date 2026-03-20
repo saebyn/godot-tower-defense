@@ -5,7 +5,7 @@ extends CharacterBody3D
 @export var target_desired_distance: float = 4.0
 @export var target_attack_range: float = 2.0
 @export var survivor_group: String = "survivors"
-@export var obstacle_group: String = "obstacles"
+@export var obstacle_group: String = "buildings"
 @export var obstacle_attack_range: float = 6.0
 @export var scrap_reward: int = 10 ## Scrap awarded when enemy dies (can be 0)
 @export var xp_reward: int = 10 ## XP awarded when enemy dies (always given)

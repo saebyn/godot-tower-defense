@@ -133,7 +133,7 @@ func _draw_enemies() -> void:
 
 func _draw_obstacles_and_survivors() -> void:
   # Find obstacles and survivors in the scene
-  var obstacles = get_tree().get_nodes_in_group("obstacles")
+  var obstacles = get_tree().get_nodes_in_group("buildings")
   var survivors = get_tree().get_nodes_in_group("survivors")
   
   # Draw obstacles

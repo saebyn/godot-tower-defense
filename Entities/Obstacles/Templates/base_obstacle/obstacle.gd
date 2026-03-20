@@ -1,24 +1,24 @@
-## Obstacle.gd
-## Base class for placeable obstacles in the game world
+## Building.gd
+## Base class for placeable buildings in the game world
 ## Handles placement preview, health management, and removal/refund logic
 ##
 ## When instantiated, this entity will:
-##  - Enter placement mode, showing a preview of the obstacle
+##  - Enter placement mode, showing a preview of the building
 ##  - Disable collisions and health component during placement
 ##  - Upon placement, re-enable collisions and health component
 ##  - Create a NavigationObstacle3D to affect navigation mesh
 ##  - Handle removal logic, refunding currency based on remaining health
 
 extends StaticBody3D
-class_name Entity_PlaceableObstacle
+class_name Entity_PlaceableBuilding
 
-## Group name for all placeable obstacles
+## Group name for all placeable buildings
 ## This group is automatically applied by the base scene,
-## but is defined here for use in other scripts to find obstacles.
-const OBSTACLE_GROUP: String = "obstacles"
+## but is defined here for use in other scripts to find buildings.
+const BUILDING_GROUP: String = "buildings"
 
-## Group to indicate the obstacle should affect navigation
-## We add obstacles to this group upon placement for navigation mesh updates.
+## Group to indicate the building should affect navigation
+## We add buildings to this group upon placement for navigation mesh updates.
 @export var navigation_obstacle_group: String = "navigation_mesh_source_group"
 
 @export var mesh_instances: Array[MeshInstance3D] = []:
@@ -28,7 +28,7 @@ const OBSTACLE_GROUP: String = "obstacles"
 
 var is_preview: bool = false
 var health: Component_Health
-var obstacle_type: Resource_ObstacleType
+var obstacle_type: Resource_BuildingType
 var navigation_obstacle: NavigationObstacle3D
 var placement_preview_node: Node3D
 @onready var audio_player: AudioStreamPlayer3D = $AudioStreamPlayer3D
@@ -50,16 +50,16 @@ func _ready():
 ## Create a visual preview of the obstacle for placement mode
 func _enter_placement_mode() -> void:
   if not mesh_instances or mesh_instances.is_empty():
-    MyLogger.error("Obstacle", "Could not find MeshInstance3D in obstacle scene")
+    MyLogger.error("Building", "Could not find MeshInstance3D in building scene")
     return
   
-  # Create our own mesh instances based on the temporary obstacle's meshes
+  # Create our own mesh instances based on the temporary building's meshes
   placement_preview_node = Node3D.new()
   add_child(placement_preview_node)
   
   for mesh_instance in mesh_instances:
     if not mesh_instance or not mesh_instance.mesh:
-      MyLogger.warn("Obstacle", "Skipping invalid MeshInstance3D in placement preview")
+      MyLogger.warn("Building", "Skipping invalid MeshInstance3D in placement preview")
       continue
     mesh_instance.hide()
     var preview_mesh = MeshInstance3D.new()
@@ -92,29 +92,29 @@ func _exit_placement_mode() -> void:
     health.disabled = false
 
 func _on_died(damage_source: String = "unknown") -> void:
-  MyLogger.info("Obstacle", "Obstacle destroyed by: %s" % damage_source)
+  MyLogger.info("Building", "Building destroyed by: %s" % damage_source)
   queue_free()
 
 func _on_health_damaged(amount: int, hitpoints: int, _source: String) -> void:
-  MyLogger.debug("Obstacle.Combat", "Obstacle took %d damage. Remaining HP: %d" % [amount, hitpoints])
+  MyLogger.debug("Building.Combat", "Building took %d damage. Remaining HP: %d" % [amount, hitpoints])
 
 
-## Remove this obstacle and return currency based on remaining health
+## Remove this building and return currency based on remaining health
 func remove() -> int:
-  MyLogger.info("Obstacle", "Attempting to remove obstacle. obstacle_type: %s" % ("null" if not obstacle_type else obstacle_type.name))
+  MyLogger.info("Building", "Attempting to remove building. obstacle_type: %s" % ("null" if not obstacle_type else obstacle_type.name))
   
   # If obstacle_type is null, try to find it by matching the scene
-  if not obstacle_type and ObstacleRegistry:
-    MyLogger.info("Obstacle", "obstacle_type is null, attempting to find it in registry...")
+  if not obstacle_type and BuildingRegistry:
+    MyLogger.info("Building", "obstacle_type is null, attempting to find it in registry...")
     var scene_path = scene_file_path
-    for obstacle_resource in ObstacleRegistry.available_obstacle_types:
+    for obstacle_resource in BuildingRegistry.available_obstacle_types:
       if obstacle_resource.scene and obstacle_resource.scene.resource_path == scene_path:
         obstacle_type = obstacle_resource
-        MyLogger.info("Obstacle", "Found matching obstacle_type: %s" % obstacle_type.name)
+        MyLogger.info("Building", "Found matching obstacle_type: %s" % obstacle_type.name)
         break
   
   if not obstacle_type:
-    MyLogger.warn("Obstacle", "Cannot remove obstacle: No obstacle type data")
+    MyLogger.warn("Building", "Cannot remove building: No building type data")
     return 0
   
   # Calculate refund based on remaining health percentage
@@ -125,7 +125,7 @@ func remove() -> int:
   # Refund is based on remaining health (damaged obstacles give less refund)
   var refund_amount = int(obstacle_type.cost * health_percentage)
   
-  MyLogger.info("Obstacle", "Removing obstacle. Health: %d%%, Refund: %d/%d" % [
+  MyLogger.info("Building", "Removing building. Health: %d%%, Refund: %d/%d" % [
     health_percentage * 100, refund_amount, obstacle_type.cost
   ])
   
@@ -160,7 +160,7 @@ func get_aabb() -> AABB:
 ## @param material The Material to apply as an override to all preview mesh surfaces.
 func set_preview_material(material: Material) -> void:
   if not placement_preview_node:
-    MyLogger.warn("Obstacle", "set_preview_material() called but not in placement mode.")
+    MyLogger.warn("Building", "set_preview_material() called but not in placement mode.")
     return
 
   for mesh_instance in placement_preview_node.get_children():
@@ -186,16 +186,16 @@ func set_preview_material(material: Material) -> void:
 ##
 ## @param navigation_region The NavigationRegion3D to which the navigation obstacle will be added.
 func place(navigation_region: NavigationRegion3D) -> void:
-  MyLogger.info("Obstacle", "place() called. obstacle_type: %s" % ("null" if not obstacle_type else obstacle_type.name))
+  MyLogger.info("Building", "place() called. obstacle_type: %s" % ("null" if not obstacle_type else obstacle_type.name))
   if not is_inside_tree():
-    MyLogger.error("Obstacle", "PlaceableObstacle must be added to the scene tree before placing.")
+    MyLogger.error("Building", "PlaceableBuilding must be added to the scene tree before placing.")
     return
 
   # Reparent to the right place in the scene tree
   var parent_node = get_parent()
   var grandparent_node = parent_node.get_parent() if parent_node else null
   if not grandparent_node:
-    MyLogger.error("Obstacle", "Failed to reparent obstacle: parent or grandparent node missing. Scene tree structure may be invalid.")
+    MyLogger.error("Building", "Failed to reparent building: parent or grandparent node missing. Scene tree structure may be invalid.")
     return
 
   is_preview = false

@@ -1,5 +1,5 @@
 class_name Entity_BasicTurret
-extends Entity_ShootingObstacle
+extends Entity_ShootingBuilding
 
 ## A turret obstacle that rotates to track and attack enemies.
 ## The turret smoothly rotates its top mesh towards the nearest enemy target

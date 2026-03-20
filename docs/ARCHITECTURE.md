@@ -27,7 +27,7 @@ graph TB
         CurrencyManager[CurrencyManager<br/>Scrap, XP, levels]
         GameManager[GameManager<br/>Game state & speed control]
         StatsManager[StatsManager<br/>Enemy defeats, placements]
-        ObstacleRegistry[ObstacleRegistry<br/>Available obstacles]
+        BuildingRegistry[BuildingRegistry<br/>Available buildings]
         TechTreeManager[TechTreeManager<br/>Tech unlocks & branches]
         AchievementManager[AchievementManager<br/>Achievement tracking]
         ScenarioManager[ScenarioManager<br/>Scenario progression]
@@ -59,7 +59,7 @@ graph TB
     
     EnemySpawner --> Enemies
     ObstaclePlacement --> Obstacles
-    ObstaclePlacement --> ObstacleRegistry
+    ObstaclePlacement --> BuildingRegistry
     
     Enemies --> CurrencyManager
     Enemies --> StatsManager
@@ -71,7 +71,7 @@ graph TB
     UI --> StatsManager
     UI --> GameManager
     UI --> TechTreeManager
-    UI --> ObstacleRegistry
+    UI --> BuildingRegistry
     
     SaveManager -.Coordinates.-> CurrencyManager
     SaveManager -.Coordinates.-> StatsManager
@@ -94,7 +94,7 @@ graph TB
     style CurrencyManager fill:#e1ffe1
     style StatsManager fill:#e1ffe1
     style GameManager fill:#fff5e1
-    style ObstacleRegistry fill:#f5e1ff
+    style BuildingRegistry fill:#f5e1ff
     style TechTreeManager fill:#f5e1ff
     style AchievementManager fill:#e1ffe1
     style ScenarioManager fill:#f5e1ff
@@ -107,7 +107,7 @@ graph TB
 - 🩷 **Pink** - Persistence/Save systems (SaveManager)
 - 🟢 **Green** - Economy/Progression systems (CurrencyManager, StatsManager, AchievementManager)
 - 🟡 **Yellow** - Game State Management (GameManager)
-- 🟣 **Purple** - Content Management systems (ObstacleRegistry, TechTreeManager, ScenarioManager)
+- 🟣 **Purple** - Content Management systems (BuildingRegistry, TechTreeManager, ScenarioManager)
 - 🟠 **Orange** - Audio/Settings systems (AudioManager, SettingsManager)
 
 ---
@@ -448,7 +448,7 @@ graph TB
         CM[CurrencyManager]
         SM[StatsManager]
         TTM[TechTreeManager]
-        OR[ObstacleRegistry]
+        OR[BuildingRegistry]
         AM[AudioManager]
         SetM[SettingsManager]
     end
@@ -494,14 +494,14 @@ graph TB
 sequenceDiagram
     participant Player
     participant Hotbar
-    participant ObstacleRegistry
+    participant BuildingRegistry
     participant Main
     participant ObstaclePlacement
     participant CurrencyManager
     
     Player->>Hotbar: Press "1" key
-    Hotbar->>ObstacleRegistry: Get obstacle type
-    ObstacleRegistry-->>Hotbar: Return ObstacleTypeResource
+    Hotbar->>BuildingRegistry: Get building type
+    BuildingRegistry-->>Hotbar: Return BuildingTypeResource
     Hotbar->>Main: obstacle_spawn_requested signal
     Main->>ObstaclePlacement: Forward spawn request
     ObstaclePlacement->>Player: Show preview (ghost)

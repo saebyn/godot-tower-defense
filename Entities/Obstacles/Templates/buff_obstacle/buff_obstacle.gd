@@ -33,7 +33,7 @@ func place(navigation_region: NavigationRegion3D) -> void:
     buff_timer.start()
 
 func _apply_buffs():
-  var obstacles := get_tree().get_nodes_in_group(Entity_PlaceableObstacle.OBSTACLE_GROUP)
+  var obstacles := get_tree().get_nodes_in_group(Entity_PlaceableBuilding.BUILDING_GROUP)
   for obstacle in obstacles:
     if obstacle == self:
       continue
@@ -43,6 +43,6 @@ func _apply_buffs():
     if distance <= effect_range:
       _apply_buff_to_obstacle(obstacle)
 
-func _apply_buff_to_obstacle(obstacle: Entity_PlaceableObstacle) -> void:
+func _apply_buff_to_obstacle(obstacle: Entity_PlaceableBuilding) -> void:
   if obstacle.has_method("receive_buff"):
     obstacle.receive_buff(buff_type, buff_amount, self.get_instance_id(), buff_interval)

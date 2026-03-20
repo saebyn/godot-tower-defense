@@ -30,7 +30,7 @@ CurrencyManager="*res://Utilities/Systems/currency_manager.gd"
 GameManager="*res://Utilities/Systems/game_manager.gd"
 AchievementManager="*res://Utilities/Systems/achievement_manager.gd"
 TechTreeManager="*res://Utilities/Systems/tech_tree_manager.gd"
-ObstacleRegistry="*res://Utilities/Systems/obstacle_registry.gd"
+BuildingRegistry="*res://Utilities/Systems/building_registry.gd"
 StatsManager="*res://Utilities/Systems/stats_manager.gd"
 SettingsManager="*res://Utilities/Systems/settings_manager.gd"
 ScenarioManager="*res://Utilities/Systems/scenario_manager.gd"
@@ -104,7 +104,7 @@ enabled=PackedStringArray("res://addons/dialogic/plugin.cfg", "res://addons/gut/
 survivors=""
 navigation_mesh_source_group=""
 scrap=""
-obstacles=""
+buildings=""
 
 [gui]
 

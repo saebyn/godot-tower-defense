@@ -249,10 +249,10 @@ func _handle_obstacle_remove_click(click_position: Vector2):
     var collider = obstacle_raycast.get_collider()
     MyLogger.info("Player", "Right-clicked on: %s (type: %s)" % [collider.name, collider.get_class()])
     
-    # Check if the collider is a Entity_PlaceableObstacle
-    if collider is Entity_PlaceableObstacle:
-      var obstacle = collider as Entity_PlaceableObstacle
-      MyLogger.info("Player", "Confirmed Entity_PlaceableObstacle, calling remove()")
+    # Check if the collider is a Entity_PlaceableBuilding
+    if collider is Entity_PlaceableBuilding:
+      var obstacle = collider as Entity_PlaceableBuilding
+      MyLogger.info("Player", "Confirmed Entity_PlaceableBuilding, calling remove()")
       
       # Check if we're removing the currently hovered obstacle
       # Currently only Entity_RangedObstacle types can be hovered (see _handle_ranged_obstacle_hover)
@@ -291,7 +291,7 @@ func _handle_obstacle_remove_click(click_position: Vector2):
   obstacle_raycast.enabled = false
 
 
-func _on_obstacle_spawn_requested(obstacle: Resource_ObstacleType) -> void:
+func _on_obstacle_spawn_requested(obstacle: Resource_BuildingType) -> void:
   # Forward the signal to the obstacle placement system
   obstacle_placement._on_obstacle_spawn_requested(obstacle)
 

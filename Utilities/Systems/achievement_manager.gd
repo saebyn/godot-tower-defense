@@ -208,7 +208,7 @@ func _get_stat_value(condition_type: Resource_Achievement.ConditionType, target:
     Resource_Achievement.ConditionType.SCRAP_EARNED:
       return float(StatsManager.get_total_scrap_earned())
     Resource_Achievement.ConditionType.OBSTACLES_PLACED:
-      return float(StatsManager.get_obstacles_placed_total())
+      return float(StatsManager.get_buildings_placed_total())
     Resource_Achievement.ConditionType.PLAYER_LEVEL_REACHED:
       return float(CurrencyManager.get_level())
     Resource_Achievement.ConditionType.WAVE_COMPLETED:

@@ -207,7 +207,7 @@ func _reclaim_all_obstacles() -> Dictionary:
   MyLogger.info("Scenario", "Reclaiming %d obstacles..." % obstacles.size())
   
   for node in obstacles:
-    if node is Entity_PlaceableObstacle:
+    if node is Entity_PlaceableBuilding:
       var refund = node.remove()
       total_refund += refund
       obstacle_count += 1

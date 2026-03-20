@@ -8,7 +8,7 @@ Includes configuration capabilities to change which obstacles are in which slots
 extends Control
 class_name UI_Hotbar
 
-signal obstacle_selected(obstacle: Resource_ObstacleType)
+signal obstacle_selected(obstacle: Resource_BuildingType)
 
 @export var max_slots: int = 6 # Maximum number of hotbar slots
 @export var spacing: int = 8 # Spacing between slots
@@ -58,9 +58,9 @@ func _create_slots() -> void:
     slot_buttons.append(slot_button)
 
 func _connect_signals() -> void:
-  # Connect to ObstacleRegistry for dynamic updates
-  if ObstacleRegistry:
-    ObstacleRegistry.obstacle_types_updated.connect(_on_obstacle_types_updated)
+  # Connect to BuildingRegistry for dynamic updates
+  if BuildingRegistry:
+    BuildingRegistry.obstacle_types_updated.connect(_on_obstacle_types_updated)
 
 func _populate_default_hotbar() -> void:
   """Populate hotbar with default obstacles from registry"""
@@ -69,8 +69,8 @@ func _populate_default_hotbar() -> void:
   # Initialize the slot_obstacle_ids array
   slot_obstacle_ids.clear()
   
-  if ObstacleRegistry:
-    var available = ObstacleRegistry.available_obstacle_types
+  if BuildingRegistry:
+    var available = BuildingRegistry.available_obstacle_types
     for i in range(max_slots):
       if i < available.size():
         slot_obstacle_ids.append(available[i].id)
@@ -86,12 +86,12 @@ func _populate_default_hotbar() -> void:
   for i in range(max_slots):
     _update_slot_visual(i)
 
-func _get_obstacle_by_id(obstacle_id: String) -> Resource_ObstacleType:
+func _get_obstacle_by_id(obstacle_id: String) -> Resource_BuildingType:
   """Get obstacle resource by ID from the registry"""
-  if obstacle_id.is_empty() or not ObstacleRegistry:
+  if obstacle_id.is_empty() or not BuildingRegistry:
     return null
   
-  for obstacle in ObstacleRegistry.available_obstacle_types:
+  for obstacle in BuildingRegistry.available_obstacle_types:
     if obstacle.id == obstacle_id:
       return obstacle
   
@@ -133,10 +133,10 @@ func _on_slot_gui_input(event: InputEvent, slot_index: int) -> void:
 
 func _show_obstacle_selection_menu(slot_index: int) -> void:
   """Show popup menu with available obstacles for slot assignment"""
-  if not ObstacleRegistry or not obstacle_selection_menu:
+  if not BuildingRegistry or not obstacle_selection_menu:
     return
   
-  var available = ObstacleRegistry.available_obstacle_types
+  var available = BuildingRegistry.available_obstacle_types
   if available.is_empty():
     return
   
@@ -189,7 +189,7 @@ func _on_obstacle_menu_item_selected(id: int) -> void:
     MyLogger.info("Hotbar", "Cleared slot %d" % (current_configuring_slot + 1))
   else:
     # Obstacle selected
-    var available = ObstacleRegistry.available_obstacle_types
+    var available = BuildingRegistry.available_obstacle_types
     if id <= available.size():
       var selected_obstacle = available[id - 1] # -1 to account for "Clear Slot" at index 0
       set_slot_obstacle(current_configuring_slot, selected_obstacle)
@@ -198,7 +198,7 @@ func _on_obstacle_menu_item_selected(id: int) -> void:
   # Reset the configuring slot
   current_configuring_slot = -1
 
-func set_slot_obstacle(slot_index: int, obstacle: Resource_ObstacleType) -> void:
+func set_slot_obstacle(slot_index: int, obstacle: Resource_BuildingType) -> void:
   """Set an obstacle for a specific slot"""
   if slot_index < 0 or slot_index >= max_slots:
     MyLogger.warn("Hotbar", "Invalid slot index: %d" % slot_index)
@@ -237,7 +237,7 @@ func _input(event: InputEvent) -> void:
     if slot_index >= 0:
       _on_slot_pressed(slot_index)
 
-func _on_obstacle_types_updated(added_types: Array[Resource_ObstacleType], removed_types: Array[Resource_ObstacleType]) -> void:
+func _on_obstacle_types_updated(added_types: Array[Resource_BuildingType], removed_types: Array[Resource_BuildingType]) -> void:
   MyLogger.info("Hotbar", "Obstacle types updated. Added: %d, Removed: %d" % [added_types.size(), removed_types.size()])
 
   # Update the hotbar configuration if any of the added or removed types are currently in the hotbar
@@ -268,7 +268,7 @@ func _on_obstacle_types_updated(added_types: Array[Resource_ObstacleType], remov
   for i in range(max_slots):
     _update_slot_visual(i)
 
-func get_slot_obstacle(slot_index: int) -> Resource_ObstacleType:
+func get_slot_obstacle(slot_index: int) -> Resource_BuildingType:
   """Get the obstacle for a specific slot"""
   if slot_index < 0 or slot_index >= slot_obstacle_ids.size():
     return null

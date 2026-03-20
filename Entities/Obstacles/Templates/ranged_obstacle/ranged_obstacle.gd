@@ -1,4 +1,4 @@
-extends Entity_PlaceableObstacle
+extends Entity_PlaceableBuilding
 class_name Entity_RangedObstacle
 
 const RANGED_OBSTACLES_GROUP: String = "ranged_obstacles"

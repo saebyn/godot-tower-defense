@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="2_d4qur"]
 [ext_resource type="Script" uid="uid://d2guk20uq6gui" path="res://Common/Components/damage_numbers/damage_numbers.gd" id="3_enoak"]
 
-[node name="Scrap" type="StaticBody3D" unique_id=1327461097 groups=["obstacles", "scrap"]]
+[node name="Scrap" type="StaticBody3D" unique_id=1327461097 groups=["buildings", "scrap"]]
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("1_enoak")

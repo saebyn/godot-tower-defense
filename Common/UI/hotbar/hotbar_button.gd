@@ -6,7 +6,7 @@ extends Button
 
 
 ## Load the obstacle data into the button
-func load(slot_index: int, obstacle: Resource_ObstacleType) -> void:
+func load(slot_index: int, obstacle: Resource_BuildingType) -> void:
   if obstacle:
     # Set button icon and tooltip
     self.icon = obstacle.icon if obstacle.icon else null

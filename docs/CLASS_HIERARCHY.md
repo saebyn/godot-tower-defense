@@ -38,8 +38,8 @@ class_name <Prefix>_<DescriptiveName>
 |--------|----------|---------|----------|
 | `Component_` | Components | Reusable behavior modules | `Component_Health`, `Component_Attack` |
 | `UI_` | User Interface | UI controls and displays | `UI_Hotbar`, `UI_Minimap` |
-| `Resource_` | Resources | Data-only resource files | `Resource_EnemyType`, `Resource_ObstacleType` |
-| `Entity_` | Game Entities | In-game objects with physics | `Entity_PlaceableObstacle`, `Entity_Scrap` |
+| `Resource_` | Resources | Data-only resource files | `Resource_EnemyType`, `Resource_BuildingType` |
+| `Entity_` | Game Entities | In-game objects with physics | `Entity_PlaceableBuilding`, `Entity_Scrap` |
 | `System_` | Game Systems | High-level game logic | `System_EnemySpawner`, `System_Wave` |
 | `Effect_` | Visual/Audio Effects | Effect controllers | `Effect_Shake` |
 | `Utility_` | Utilities | Helper classes and tools | `Utility_ObstaclePlacement` |
@@ -153,7 +153,7 @@ Resource classes are pure data containers extending Godot's `Resource` class. Th
 | Class Name | Location | Purpose |
 |------------|----------|---------|
 | `Resource_EnemyType` | `Config/Enemies/` | Enemy configuration data |
-| `Resource_ObstacleType` | `Config/Obstacles/` | Obstacle/tower configuration |
+| `Resource_BuildingType` | `Config/Obstacles/` | Building/tower configuration |
 | `Resource_Achievement` | `Config/Achievements/` | Achievement definitions |
 | `Resource_TechNode` | `Config/TechTree/` | Tech tree node data |
 
@@ -184,8 +184,8 @@ Entities are game objects with physics bodies and scene hierarchies. They repres
 
 | Class Name | Base Type | Location | Purpose |
 |------------|-----------|----------|---------|
-| `Entity_PlaceableObstacle` | `StaticBody3D` | `Entities/Obstacles/Templates/` | Base obstacle/tower class |
-| `Entity_ShootingObstacle` | `Entity_PlaceableObstacle` | `Entities/Obstacles/Templates/` | Shooting tower variant |
+| `Entity_PlaceableBuilding` | `StaticBody3D` | `Entities/Obstacles/Templates/` | Base building/tower class |
+| `Entity_ShootingBuilding` | `Entity_PlaceableBuilding` | `Entities/Obstacles/Templates/` | Shooting tower variant |
 | `Entity_Scrap` | `Node3D` | `Entities/Scrap/` | Collectible scrap item |
 
 **Why Entities Should Be Scenes:**
@@ -297,7 +297,7 @@ func _ready():
 **File structure:**
 ```
 Entities/Obstacles/Templates/base_obstacle/
-├── obstacle.gd        ✅ (class_name Entity_PlaceableObstacle)
+├── obstacle.gd        ✅ (class_name Entity_PlaceableBuilding)
 ├── obstacle.tscn      ✅ (scene file)
 ├── obstacle.gd.uid
 └── obstacle.tscn.uid
@@ -347,12 +347,12 @@ Entities/Obstacles/Templates/base_obstacle/
 | `UI_TechTree` | UI | `Control` | ✅ | `Stages/UI/tech_tree/` |
 | `UI_TechNodeCard` | UI | `PanelContainer` | ✅ | `Stages/UI/tech_tree/` |
 | `UI_MainMenu` | UI | `Control` | ✅ | `Stages/UI/main_menu/` |
-| `Entity_PlaceableObstacle` | Entity | `StaticBody3D` | ✅ | `Entities/Obstacles/Templates/base_obstacle/` |
-| `Entity_ShootingObstacle` | Entity | `Entity_PlaceableObstacle` | ✅ | `Entities/Obstacles/Templates/shooting_obstacle/` |
+| `Entity_PlaceableBuilding` | Entity | `StaticBody3D` | ✅ | `Entities/Obstacles/Templates/base_obstacle/` |
+| `Entity_ShootingBuilding` | Entity | `Entity_PlaceableBuilding` | ✅ | `Entities/Obstacles/Templates/shooting_obstacle/` |
 | `Entity_Scrap` | Entity | `Node3D` | ✅ | `Entities/Scrap/` |
 | `Resource_EnemyType` | Resource | `Resource` | ❌ | `Config/Enemies/` |
 | `Resource_Achievement` | Resource | `Resource` | ❌ | `Config/Achievements/` |
-| `Resource_ObstacleType` | Resource | `Resource` | ❌ | `Config/Obstacles/` |
+| `Resource_BuildingType` | Resource | `Resource` | ❌ | `Config/Obstacles/` |
 | `Resource_TechNode` | Resource | `Resource` | ❌ | `Config/TechTree/` |
 | `Utility_ObstaclePreview` | Utility | `Node3D` | ❌ | `Utilities/Placement/` |
 | `Utility_PlacementResult` | Utility | *N/A* | ❌ | `Utilities/Placement/obstacle_placement/` |

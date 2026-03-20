@@ -6,7 +6,7 @@ extends Node
 ## 
 ## Usage:
 ##   StatsManager.track_enemy_defeated("basic_enemy", false)
-##   StatsManager.track_obstacle_placed("turret")
+##   StatsManager.track_building_placed("turret")
 ##   StatsManager.get_enemies_defeated_by_type("basic_enemy")
 ##   StatsManager.track_click_performed()
 ##   StatsManager.get_clicks_performed()
@@ -19,9 +19,9 @@ var enemies_defeated_by_hand: int = 0
 # Player action tracking
 var clicks_performed: int = 0
 
-# Obstacle placement tracking
-var obstacles_placed_total: int = 0
-var obstacles_placed_by_type: Dictionary = {} # String -> int
+# Building placement tracking
+var buildings_placed_total: int = 0
+var buildings_placed_by_type: Dictionary = {} # String -> int
 
 # Resource tracking (scrap and XP)
 var total_scrap_earned: int = 0
@@ -34,7 +34,7 @@ var max_waves_completed: int = 0
 
 # Signals for real-time updates
 signal enemy_defeated(enemy_type: String, by_hand: bool)
-signal obstacle_placed(obstacle_type: String)
+signal building_placed(obstacle_type: String)
 signal max_scrap_held_updated(new_max: int)
 signal stats_updated()
 signal stats_loaded()
@@ -100,19 +100,19 @@ func track_click_performed() -> void:
     MyLogger.debug("Stats", "Click performed. Total clicks: %d" % clicks_performed)
   stats_updated.emit()
 
-## Track an obstacle placement
-func track_obstacle_placed(obstacle_type: String) -> void:
-  obstacles_placed_total += 1
+## Track a building placement
+func track_building_placed(obstacle_type: String) -> void:
+  buildings_placed_total += 1
   
   # Track by type
-  if obstacle_type in obstacles_placed_by_type:
-    obstacles_placed_by_type[obstacle_type] += 1
+  if obstacle_type in buildings_placed_by_type:
+    buildings_placed_by_type[obstacle_type] += 1
   else:
-    obstacles_placed_by_type[obstacle_type] = 1
+    buildings_placed_by_type[obstacle_type] = 1
   
-  MyLogger.debug("Stats", "Obstacle placed: %s. Total: %d" % [obstacle_type, obstacles_placed_total])
+  MyLogger.debug("Stats", "Building placed: %s. Total: %d" % [obstacle_type, buildings_placed_total])
   
-  obstacle_placed.emit(obstacle_type)
+  building_placed.emit(obstacle_type)
   stats_updated.emit()
 
 ## Scrap earned callback
@@ -155,11 +155,11 @@ func get_enemies_defeated_by_hand() -> int:
 func get_clicks_performed() -> int:
   return clicks_performed
 
-func get_obstacles_placed_total() -> int:
-  return obstacles_placed_total
+func get_buildings_placed_total() -> int:
+  return buildings_placed_total
 
-func get_obstacles_placed_by_type(obstacle_type: String) -> int:
-  return obstacles_placed_by_type.get(obstacle_type, 0)
+func get_buildings_placed_by_type(obstacle_type: String) -> int:
+  return buildings_placed_by_type.get(obstacle_type, 0)
 
 func get_total_scrap_earned() -> int:
   return total_scrap_earned
@@ -173,8 +173,8 @@ func get_total_xp_earned() -> int:
 func get_all_enemy_types() -> Array[String]:
   return enemies_defeated_by_type.keys()
 
-func get_all_obstacle_types() -> Array[String]:
-  return obstacles_placed_by_type.keys()
+func get_all_building_types() -> Array[String]:
+  return buildings_placed_by_type.keys()
 
 func get_max_waves_completed() -> int:
   return max_waves_completed
@@ -186,8 +186,8 @@ func get_stats_summary() -> Dictionary:
     "enemies_defeated_by_type": enemies_defeated_by_type.duplicate(),
     "enemies_defeated_by_hand": enemies_defeated_by_hand,
     "clicks_performed": clicks_performed,
-    "obstacles_placed_total": obstacles_placed_total,
-    "obstacles_placed_by_type": obstacles_placed_by_type.duplicate(),
+    "buildings_placed_total": buildings_placed_total,
+    "buildings_placed_by_type": buildings_placed_by_type.duplicate(),
     "total_scrap_earned": total_scrap_earned,
     "max_scrap_held": max_scrap_held,
     "total_xp_earned": total_xp_earned,
@@ -200,8 +200,8 @@ func reset_stats() -> void:
   enemies_defeated_by_type.clear()
   enemies_defeated_by_hand = 0
   clicks_performed = 0
-  obstacles_placed_total = 0
-  obstacles_placed_by_type.clear()
+  buildings_placed_total = 0
+  buildings_placed_by_type.clear()
   total_scrap_earned = 0
   max_scrap_held = CurrencyManager.get_scrap() if CurrencyManager else 0
   total_xp_earned = 0
@@ -223,8 +223,8 @@ func get_save_data() -> Dictionary:
     "enemies_defeated_by_type": enemies_defeated_by_type,
     "enemies_defeated_by_hand": enemies_defeated_by_hand,
     "clicks_performed": clicks_performed,
-    "obstacles_placed_total": obstacles_placed_total,
-    "obstacles_placed_by_type": obstacles_placed_by_type,
+    "buildings_placed_total": buildings_placed_total,
+    "buildings_placed_by_type": buildings_placed_by_type,
     "total_scrap_earned": total_scrap_earned,
     "max_scrap_held": max_scrap_held,
     "total_xp_earned": total_xp_earned,
@@ -237,14 +237,14 @@ func load_data(data: Dictionary) -> void:
   enemies_defeated_by_type = data.get("enemies_defeated_by_type", {})
   enemies_defeated_by_hand = data.get("enemies_defeated_by_hand", 0)
   clicks_performed = data.get("clicks_performed", 0)
-  obstacles_placed_total = data.get("obstacles_placed_total", 0)
-  obstacles_placed_by_type = data.get("obstacles_placed_by_type", {})
+  buildings_placed_total = data.get("buildings_placed_total", data.get("obstacles_placed_total", 0))
+  buildings_placed_by_type = data.get("buildings_placed_by_type", data.get("obstacles_placed_by_type", {}))
   total_scrap_earned = data.get("total_scrap_earned", data.get("total_currency_earned", 0))
   max_scrap_held = data.get("max_scrap_held", data.get("max_currency_held", 0))
   total_xp_earned = data.get("total_xp_earned", 0)
   max_waves_completed = data.get("max_waves_completed", 0)
   
-  MyLogger.info("StatsManager", "Stats loaded - Enemies defeated: %d, Obstacles placed: %d, Scrap earned: %d, XP earned: %d" % [enemies_defeated_total, obstacles_placed_total, total_scrap_earned, total_xp_earned])
+  MyLogger.info("StatsManager", "Stats loaded - Enemies defeated: %d, Buildings placed: %d, Scrap earned: %d, XP earned: %d" % [enemies_defeated_total, buildings_placed_total, total_scrap_earned, total_xp_earned])
   stats_loaded.emit()
 
 ## Reset to default state (for new game)

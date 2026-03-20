@@ -13,7 +13,7 @@ var stats_container: VBoxContainer
 var buffs_label: Label
 
 # Data
-var current_obstacle: Entity_PlaceableObstacle = null
+var current_obstacle: Entity_PlaceableBuilding = null
 
 # Positioning
 const OFFSET_FROM_MOUSE = Vector2(20, 20)
@@ -70,7 +70,7 @@ func _setup_ui() -> void:
 	content_container.add_child(buffs_label)
 
 ## Show tooltip for the given obstacle at mouse position
-func show_tooltip(obstacle: Entity_PlaceableObstacle, mouse_pos: Vector2) -> void:
+func show_tooltip(obstacle: Entity_PlaceableBuilding, mouse_pos: Vector2) -> void:
 	current_obstacle = obstacle
 	update_tooltip_content()
 	visible = true

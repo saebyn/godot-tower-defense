@@ -1,4 +1,4 @@
-class_name Entity_ShootingObstacle
+class_name Entity_ShootingBuilding
 extends Entity_RangedObstacle
 
 @export var enemy_group: String = "enemies"

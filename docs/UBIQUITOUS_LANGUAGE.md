@@ -14,12 +14,11 @@ When in doubt, consult this document before introducing or reusing a term.
 |---|---|---|---|
 | **Survivor** | `Entity_Survivor`, group `"survivors"`, `survivor_group`, `on_survivor_died()` | "Survivor" | "target"[^e1], "victim", "civilian" |
 | **Enemy** | `Resource_EnemyType`, `System_EnemySpawner`, `enemy_type` | "Zombie" | "zom" in code, "mob", "creature" |
-| **Building** | `Entity_PlaceableObstacle`[^e2], `Entity_ShootingObstacle`[^e2] | "Building" | "obstacle" when referring to the concept generically[^e2], "tower", "defense", "structure" in code/API |
-| **Turret** | `Entity_ShootingObstacle`[^e2] | "Turret" | "tower", "gun tower", "shooter" |
+| **Building** | `Entity_PlaceableBuilding`, `Entity_ShootingBuilding` | "Building" | "obstacle" when referring to the concept generically, "tower", "defense", "structure" in code/API |
+| **Turret** | `Entity_ShootingBuilding` | "Turret" | "tower", "gun tower", "shooter" |
 | **Scrap Pickup** | `Entity_Scrap` | "Scrap" | "loot", "drop", "pickup" |
 
 [^e1]: "target" was the original name for Survivor before the rename tracked in issue #317. The code identifier `current_target` in `enemy.gd` is intentionally kept — it refers to the attack target (any entity), not a Survivor specifically.
-[^e2]: `Entity_PlaceableObstacle`, `Entity_ShootingObstacle`, and related identifiers (`Resource_ObstacleType`, `obstacle_registry.gd`, `obstacles_placed_total`, `track_obstacle_placed()`) are **pending rename** to `Building`-based names. See [Pending Code Renames](#pending-code-renames).
 
 ---
 
@@ -62,14 +61,12 @@ When in doubt, consult this document before introducing or reusing a term.
 | **Scenario Manager** | `ScenarioManager` | Scenario progression and runtime session | "LevelManager" |
 | **Tech Tree Manager** | `TechTreeManager` | Tech node unlocks and exclusivity | — |
 | **Achievement Manager** | `AchievementManager` | Achievement tracking | — |
-| **Building Registry** | `ObstacleRegistry`[^s1] | Catalogue of available buildings | "ObstacleManager" |
+| **Building Registry** | `BuildingRegistry` | Catalogue of available buildings | "ObstacleManager" |
 | **Audio Manager** | `AudioManager` | SFX and music playback | — |
 | **Settings Manager** | `SettingsManager` | User preferences | — |
 | **Save Manager** | `SaveManager` | Multi-slot save/load | — |
 | **Survivor Name Manager** | `SurvivorNameManager` | Persistent survivor name profiles | "TargetNameManager" |
 | **Logger** | `MyLogger` | Centralised logging with scope filtering | — |
-
-[^s1]: `ObstacleRegistry` is a **pending rename** to `BuildingRegistry`. See [Pending Code Renames](#pending-code-renames).
 
 ---
 
@@ -120,14 +117,8 @@ When in doubt, consult this document before introducing or reusing a term.
 
 ## Pending Code Renames
 
-These identifiers use the old terminology and are scheduled for renaming (tracked in [issue #317](https://github.com/saebyn/zom-nom-defense/issues/317)). Use the canonical term in new code; do not introduce further uses of the old names.
+These identifiers use the old terminology and are scheduled for renaming. Use the canonical term in new code; do not introduce further uses of the old names.
 
 | Current Identifier | Canonical Replacement | Scope | Priority |
 |---|---|---|---|
-| `Entity_PlaceableObstacle` | `Entity_PlaceableBuilding` | Class name / file | Medium |
-| `Entity_ShootingObstacle` | `Entity_ShootingBuilding` | Class name / file | Medium |
-| `Resource_ObstacleType` | `Resource_BuildingType` | Class name / file | Medium |
-| `obstacle_registry.gd` / `ObstacleRegistry` | `building_registry.gd` / `BuildingRegistry` | File / singleton name | Medium |
-| `obstacles_placed_total` | `buildings_placed_total` | `StatsManager` variable | Low |
-| `track_obstacle_placed()` | `track_building_placed()` | `StatsManager` method | Low |
 | `bar_color` / `use_custom_bar_color` | `fill_color` / `use_custom_fill_color` | `Component_Health` exports | Low |

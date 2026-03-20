@@ -86,10 +86,10 @@ func _on_dialogic_timeline_ended() -> void:
     TutState.TUT_OBSTACLE:
       # Obstacle instructions delivered — unpause and wait for placement
       _tut_state = TutState.AWAITING_OBSTACLE
-      if _obstacle_placement and _obstacle_placement.has_signal("obstacle_placed"):
-        _obstacle_placement.obstacle_placed.connect(_on_obstacle_placed_for_tutorial, CONNECT_ONE_SHOT)
+      if _obstacle_placement and _obstacle_placement.has_signal("building_placed"):
+        _obstacle_placement.building_placed.connect(_on_obstacle_placed_for_tutorial, CONNECT_ONE_SHOT)
       else:
-        MyLogger.warn("Scenario1", "obstacle_placed signal not found, skipping obstacle step")
+        MyLogger.warn("Scenario1", "building_placed signal not found, skipping obstacle step")
         _tut_state = TutState.TUT_READ_UI
         Dialogic.timeline_ended.connect(_on_dialogic_timeline_ended, CONNECT_ONE_SHOT)
         _dialogic_start(TIMELINE_TUT_READ_UI)
