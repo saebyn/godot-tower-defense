@@ -320,3 +320,37 @@ When the player clicks an exclusive node:
 * `ach_kill_500` – Defeat 500 zombies total. (Required for Experimental Weapons)
 * `ach_survive_10` – Survive 10 waves in a single level. (Required for Fortification Mastery)
 * `ach_place_50` – Place 50 defenses total across all playthroughs. (Required for Synergy Hub)
+
+---
+
+## 12) Exclusive Branch UI States
+
+Five visual states the tech tree UI must represent for each node:
+
+1. **Unlocked** – ✅ Green checkmark, full colour
+2. **Available** – 💡 Yellow glow, clickable
+3. **Locked (prerequisites not met)** – 🔒 Grey, shows requirements tooltip
+4. **Permanently Locked (excluded by a prior choice)** – ❌ Red X, strikethrough, tooltip: "Locked due to: {CHOSEN_TECH}"
+5. **Exclusive Choice (about to lock another branch)** – ⚠️ Yellow warning border, confirmation dialog required
+
+---
+
+## 13) Balance Reference – Exclusive Pairs
+
+### Rapid Fire vs Heavy Damage
+
+| Attribute | Rapid Fire | Heavy Damage |
+|---|---|---|
+| DPS vs swarms | ⭐⭐⭐⭐⭐ | ⭐⭐ |
+| DPS vs single target | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| Scrap efficiency | ⭐⭐⭐ | ⭐⭐⭐⭐ |
+| Best against | Swarms | Tanks / Bosses |
+
+### Fortress vs Mobile Defense
+
+| Attribute | Fortress | Mobile Defense |
+|---|---|---|
+| Enemy delay | ⭐⭐⭐⭐⭐ | ⭐⭐ |
+| Turret buffing | ⭐⭐ | ⭐⭐⭐⭐⭐ |
+| Flexibility | ⭐⭐ | ⭐⭐⭐⭐ |
+| Best against | Linear attacks | Multi-path attacks |
