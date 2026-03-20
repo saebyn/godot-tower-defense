@@ -327,9 +327,9 @@ When the player clicks an exclusive node:
 
 Five visual states the tech tree UI must represent for each node:
 
-1. **Unlocked** – ✅ Green checkmark, full colour
+1. **Unlocked** – ✅ Green checkmark, full color
 2. **Available** – 💡 Yellow glow, clickable
-3. **Locked (prerequisites not met)** – 🔒 Grey, shows requirements tooltip
+3. **Locked (prerequisites not met)** – 🔒 Gray, shows requirements tooltip
 4. **Permanently Locked (excluded by a prior choice)** – ❌ Red X, strikethrough, tooltip: "Locked due to: {CHOSEN_TECH}"
 5. **Exclusive Choice (about to lock another branch)** – ⚠️ Yellow warning border, confirmation dialog required
 
