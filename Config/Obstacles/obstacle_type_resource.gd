@@ -2,7 +2,7 @@ extends Resource
 class_name Resource_BuildingType
 
 enum BuildingCategory {
-    BASIC
+  BASIC
 }
 
 @export_category("Basic Properties")
@@ -22,4 +22,4 @@ enum BuildingCategory {
 @export var required_tech_ids: Array[String] = [] ## Technology IDs that must be unlocked to use this building. If empty, building is available from the start.
 
 func is_valid() -> bool:
-    return not id.is_empty() and scene != null
+  return not id.is_empty() and scene != null

@@ -97,6 +97,6 @@ metadata/_custom_type_script = "uid://bmluckfvgm1c2"
 
 [connection signal="cooldown_ended" from="Attack" to="." method="_on_attack_cooldown_ended"]
 [connection signal="cooldown_started" from="Attack" to="." method="_on_attack_cooldown_started"]
-[connection signal="obstacle_spawn_requested" from="UI" to="." method="_on_obstacle_spawn_requested"]
+[connection signal="building_spawn_requested" from="UI" to="." method="_on_building_spawn_requested"]
 [connection signal="rebake_navigation_mesh" from="ObstaclePlacement" to="." method="rebake_navigation_mesh"]
 [connection signal="command_received" from="JoinQueueCommand" to="." method="_on_joinqueue_command_received"]

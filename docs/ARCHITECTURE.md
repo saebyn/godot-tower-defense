@@ -502,7 +502,7 @@ sequenceDiagram
     Player->>Hotbar: Press "1" key
     Hotbar->>BuildingRegistry: Get building type
     BuildingRegistry-->>Hotbar: Return BuildingTypeResource
-    Hotbar->>Main: obstacle_spawn_requested signal
+    Hotbar->>Main: building_spawn_requested signal
     Main->>ObstaclePlacement: Forward spawn request
     ObstaclePlacement->>Player: Show preview (ghost)
     Player->>ObstaclePlacement: Left click to place

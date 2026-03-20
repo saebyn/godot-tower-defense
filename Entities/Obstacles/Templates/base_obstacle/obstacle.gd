@@ -28,7 +28,7 @@ const BUILDING_GROUP: String = "buildings"
 
 var is_preview: bool = false
 var health: Component_Health
-var obstacle_type: Resource_BuildingType
+var building_type: Resource_BuildingType
 var navigation_obstacle: NavigationObstacle3D
 var placement_preview_node: Node3D
 @onready var audio_player: AudioStreamPlayer3D = $AudioStreamPlayer3D
@@ -47,7 +47,7 @@ func _ready():
 
   _enter_placement_mode()
 
-## Create a visual preview of the obstacle for placement mode
+## Create a visual preview of the building for placement mode
 func _enter_placement_mode() -> void:
   if not mesh_instances or mesh_instances.is_empty():
     MyLogger.error("Building", "Could not find MeshInstance3D in building scene")
@@ -101,19 +101,19 @@ func _on_health_damaged(amount: int, hitpoints: int, _source: String) -> void:
 
 ## Remove this building and return currency based on remaining health
 func remove() -> int:
-  MyLogger.info("Building", "Attempting to remove building. obstacle_type: %s" % ("null" if not obstacle_type else obstacle_type.name))
+  MyLogger.info("Building", "Attempting to remove building. building_type: %s" % ("null" if not building_type else building_type.name))
   
-  # If obstacle_type is null, try to find it by matching the scene
-  if not obstacle_type and BuildingRegistry:
-    MyLogger.info("Building", "obstacle_type is null, attempting to find it in registry...")
+  # If building_type is null, try to find it by matching the scene
+  if not building_type and BuildingRegistry:
+    MyLogger.info("Building", "building_type is null, attempting to find it in registry...")
     var scene_path = scene_file_path
     for obstacle_resource in BuildingRegistry.available_obstacle_types:
       if obstacle_resource.scene and obstacle_resource.scene.resource_path == scene_path:
-        obstacle_type = obstacle_resource
-        MyLogger.info("Building", "Found matching obstacle_type: %s" % obstacle_type.name)
+        building_type = obstacle_resource
+        MyLogger.info("Building", "Found matching building_type: %s" % building_type.name)
         break
   
-  if not obstacle_type:
+  if not building_type:
     MyLogger.warn("Building", "Cannot remove building: No building type data")
     return 0
   
@@ -123,10 +123,10 @@ func remove() -> int:
     health_percentage = float(health.hitpoints) / float(health.max_hitpoints)
   
   # Refund is based on remaining health (damaged obstacles give less refund)
-  var refund_amount = int(obstacle_type.cost * health_percentage)
+  var refund_amount = int(building_type.cost * health_percentage)
   
   MyLogger.info("Building", "Removing building. Health: %d%%, Refund: %d/%d" % [
-    health_percentage * 100, refund_amount, obstacle_type.cost
+    health_percentage * 100, refund_amount, building_type.cost
   ])
   
   # Clean up navigation obstacle
@@ -186,7 +186,7 @@ func set_preview_material(material: Material) -> void:
 ##
 ## @param navigation_region The NavigationRegion3D to which the navigation obstacle will be added.
 func place(navigation_region: NavigationRegion3D) -> void:
-  MyLogger.info("Building", "place() called. obstacle_type: %s" % ("null" if not obstacle_type else obstacle_type.name))
+  MyLogger.info("Building", "place() called. building_type: %s" % ("null" if not building_type else building_type.name))
   if not is_inside_tree():
     MyLogger.error("Building", "PlaceableBuilding must be added to the scene tree before placing.")
     return
@@ -310,7 +310,7 @@ func _get_buffs_of_type(buff_type: Entity_BuffObstacle.BuffType) -> Array[float]
 ## Subclasses should override this to add their specific stats
 func get_tooltip_info() -> Dictionary:
   var info = {
-    "name": obstacle_type.name if obstacle_type else "Unknown",
+    "name": building_type.name if building_type else "Unknown",
     "base_stats": {},
     "current_stats": {},
     "active_buffs": []
@@ -332,8 +332,8 @@ func get_active_buff_sources() -> Array[Dictionary]:
     var source_node = instance_from_id(source_id)
     if source_node and is_instance_valid(source_node):
       var source_name = "Support"
-      if source_node.has_method("get") and source_node.obstacle_type:
-        source_name = source_node.obstacle_type.name
+      if source_node.has_method("get") and source_node.building_type:
+        source_name = source_node.building_type.name
       sources.append({
         "name": source_name,
         "type": buff.buff_type,

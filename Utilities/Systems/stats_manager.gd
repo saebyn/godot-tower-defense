@@ -158,8 +158,8 @@ func get_clicks_performed() -> int:
 func get_buildings_placed_total() -> int:
   return buildings_placed_total
 
-func get_buildings_placed_by_type(obstacle_type: String) -> int:
-  return buildings_placed_by_type.get(obstacle_type, 0)
+func get_buildings_placed_by_type(building_type: String) -> int:
+  return buildings_placed_by_type.get(building_type, 0)
 
 func get_total_scrap_earned() -> int:
   return total_scrap_earned

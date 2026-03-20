@@ -4,4 +4,4 @@ extends Button
 @onready var ui: Node = $"../.."
 
 func _on_pressed() -> void:
-  ui.request_obstacle_spawn(spawnable)
+  ui.request_building_spawn(spawnable)
