@@ -166,41 +166,9 @@ CurrencyManager.earn_scrap(10)
 GameManager.set_game_state(GameManager.GameState.IN_GAME_MENU)
 ```
 
-### GameManager Features
-The GameManager is currently in its initial implementation phase with basic game state management:
+### GameManager Details
 
-**Current Features**:
-- Game state enumeration (MAIN_MENU, PLAYING, IN_GAME_MENU, GAME_OVER, VICTORY)
-- State transition management with logging
-- Pause/resume game functionality
-- State change signal emission for UI and system coordination
-
-**Planned Expansions**:
-- Wave/spawning coordination (centralize logic currently in main.gd)
-- Scene management and level transitions
-- Global game event coordination
-- Cross-system communication hub
-
-**Usage Examples**:
-```gdscript
-# Check current game state
-if GameManager.current_state == GameManager.GameState.PLAYING:
-  # Game logic here
-  pass
-
-# Listen for state changes
-func _ready():
-  GameManager.game_state_changed.connect(_on_game_state_changed)
-
-func _on_game_state_changed(new_state: GameManager.GameState):
-  match new_state:
-    GameManager.GameState.IN_GAME_MENU:
-      # Handle pause
-      pass
-    GameManager.GameState.PLAYING:
-      # Handle resume
-      pass
-```
+The `GameManager` singleton manages game states and transitions. It defines an enum for game states and emits signals on state changes. See the `game_manager.gd` autoload script for implementation details.
 
 ### Script Class Registration
 - Scripts use proper class_name declarations
