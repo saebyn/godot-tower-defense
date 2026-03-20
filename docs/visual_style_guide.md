@@ -409,7 +409,7 @@ If creating new content after initial release:
 
 ## Color Palette
 
-Extracted from the game logo and used throughout the UI theme. Theme files: `Config/ztd_ui_theme.tres`, `Config/ztd_hud_theme.tres`, `Config/ztd_color_palette.tres`.
+Extracted from the game logo and used throughout the UI theme. Implemented in the UI theme resources: `Config/ztd_ui_theme.tres` and `Config/ztd_hud_theme.tres`. The broader `Config/ztd_color_palette.tres` may define additional colors for environments and other uses beyond this UI set.
 
 ### Primary Colors
 
