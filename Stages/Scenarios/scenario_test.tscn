@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://veme7gd0dvne" path="res://Config/Enemies/enemy_type_resource.gd" id="22_tjpxm"]
 [ext_resource type="Resource" uid="uid://conw8uteeyyuk" path="res://Config/Enemies/basic_zombie.tres" id="23_bofla"]
 [ext_resource type="Resource" uid="uid://b07wewlgyi6ur" path="res://Config/Enemies/boss_zombie.tres" id="24_yl2xx"]
-[ext_resource type="PackedScene" uid="uid://b1yehhqyw2nfo" path="res://Entities/Targets/Templates/base_target/target.tscn" id="25_jmqwo"]
+[ext_resource type="PackedScene" uid="uid://b1yehhqyw2nfo" path="res://Entities/Survivors/Templates/base_survivor/survivor.tscn" id="25_jmqwo"]
 [ext_resource type="Material" uid="uid://b80m8n51hna4r" path="res://Assets/Textures/survivorFemaleA.material" id="26_3p75d"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_o7r5u"]

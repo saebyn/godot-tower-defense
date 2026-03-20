@@ -17,9 +17,9 @@ func _ready():
   profile_id = SurvivorNameManager.assign_next_profile()
   survivor_name = SurvivorNameManager.get_profile_name(profile_id)
   if survivor_name.is_empty():
-    MyLogger.warn("Target", "Could not get name for profile id '%s'" % profile_id)
+    MyLogger.warn("Survivor", "Could not get name for profile id '%s'" % profile_id)
   else:
-    MyLogger.info("Target", "Survivor '%s' (profile %s) created" % [survivor_name, profile_id])
+    MyLogger.info("Survivor", "Survivor '%s' (profile %s) created" % [survivor_name, profile_id])
 
   # Find Health component via metadata
   if has_meta("health_component"):
@@ -46,14 +46,14 @@ func _ready():
 
 
 func _on_died(damage_source: String = "unknown") -> void:
-  MyLogger.info("Target", "Survivor '%s' (profile %s) has died. Source: %s" % [survivor_name, profile_id, damage_source])
+  MyLogger.info("Survivor", "Survivor '%s' (profile %s) has died. Source: %s" % [survivor_name, profile_id, damage_source])
   # Mark the profile as dead (releases name for future reuse)
   SurvivorNameManager.mark_profile_dead(profile_id)
   var parent := get_parent()
-  if parent and parent.has_method("on_target_died"):
-    parent.on_target_died(self, damage_source)
-  queue_free() # Remove the target from the scene when it dies.
+  if parent and parent.has_method("on_survivor_died"):
+    parent.on_survivor_died(self, damage_source)
+  queue_free() # Remove the survivor from the scene when it dies.
 
 
 func _on_health_damaged(amount: int, hitpoints: int, damage_source: String = "unknown") -> void:
-  MyLogger.debug("Target.Combat", "Survivor '%s' took %d damage from %s. Remaining HP: %d" % [survivor_name, amount, damage_source, hitpoints])
+  MyLogger.debug("Survivor.Combat", "Survivor '%s' took %d damage from %s. Remaining HP: %d" % [survivor_name, amount, damage_source, hitpoints])

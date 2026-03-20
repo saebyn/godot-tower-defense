@@ -9,7 +9,7 @@ font_color = Color(0.239, 0.761, 0.757, 1)
 outline_size = 2
 outline_color = Color(0.239, 0.184, 0.251, 0.8)
 
-[node name="LevelSelect" type="Control" unique_id=484792740]
+[node name="ScenarioSelect" type="Control" unique_id=484792740]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -50,7 +50,7 @@ layout_mode = 2
 [node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar" unique_id=418678386]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "LEVEL SELECTION"
+text = "SCENARIO SELECTION"
 label_settings = SubResource("LabelSettings_title")
 
 [node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar" unique_id=203716393]

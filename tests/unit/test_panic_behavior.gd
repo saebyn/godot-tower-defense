@@ -4,26 +4,26 @@ extends GutTest
 ## Tests panic detection, movement, and animation control
 
 var panic_behavior: Component_PanicBehavior
-var target_node: Node3D
+var survivor_node: Node3D
 var enemy_node: Node3D
 
 func before_each():
-  # Create a target node (survivor)
-  target_node = Node3D.new()
-  target_node.position = Vector3.ZERO
-  add_child_autofree(target_node)
+  # Create a survivor node
+  survivor_node = Node3D.new()
+  survivor_node.position = Vector3.ZERO
+  add_child_autofree(survivor_node)
   
   # Wait for node to be in tree before setting global transforms
   await get_tree().process_frame
   
   # Create and attach panic behavior
   panic_behavior = Component_PanicBehavior.new()
-  target_node.add_child(panic_behavior)
+  survivor_node.add_child(panic_behavior)
   
   # Create an enemy node for testing - start FAR AWAY to avoid triggering panic
   # The panic detection radius is 10.0, so we place the enemy at 100 units away
   enemy_node = Node3D.new()
-  enemy_node.position = Vector3(100, 0, 0)  # Start far away from target
+  enemy_node.position = Vector3(100, 0, 0)  # Start far away from survivor
   enemy_node.add_to_group("enemies")
   add_child_autofree(enemy_node)
   
@@ -37,8 +37,8 @@ func after_each():
 func test_panic_behavior_initializes():
   # Assert
   assert_not_null(panic_behavior, "PanicBehavior should be created")
-  assert_not_null(panic_behavior.target, "PanicBehavior should have target reference")
-  assert_eq(panic_behavior.target, target_node, "Target should be the parent node")
+  assert_not_null(panic_behavior.survivor, "PanicBehavior should have survivor reference")
+  assert_eq(panic_behavior.survivor, survivor_node, "Survivor should be the parent node")
   assert_false(panic_behavior.is_panicking, "Should not be panicking initially")
 
 func test_panic_detection_radius():
@@ -80,7 +80,7 @@ func test_panic_stops_when_enemy_leaves():
 
 func test_panic_movement_stays_within_radius():
   # Arrange
-  var spawn_pos = target_node.global_position
+  var spawn_pos = survivor_node.global_position
   enemy_node.global_position = Vector3(5, 0, 0)
   panic_behavior._process(0.016) # Start panic
   
@@ -89,7 +89,7 @@ func test_panic_movement_stays_within_radius():
     panic_behavior._process(0.1)
   
   # Assert - survivor should stay within panic_move_radius of spawn
-  var distance_from_spawn = target_node.global_position.distance_to(spawn_pos)
+  var distance_from_spawn = survivor_node.global_position.distance_to(spawn_pos)
   assert_lte(distance_from_spawn, panic_behavior.panic_move_radius + 0.5,
     "Survivor should stay within panic radius (got: %.2f)" % distance_from_spawn)
 
@@ -128,7 +128,7 @@ func test_multiple_enemies_trigger_panic():
   assert_true(panic_behavior._check_for_nearby_enemies(), "Should detect one nearby enemy")
 
 func test_play_yelp_sound_handles_missing_audio_player():
-  # This test verifies that panic behavior can handle targets without audio_player
+  # This test verifies that panic behavior can handle survivors without audio_player
   # by calling _play_yelp_sound which should gracefully handle missing audio_player
   enemy_node.global_position = Vector3(5, 0, 0)
   

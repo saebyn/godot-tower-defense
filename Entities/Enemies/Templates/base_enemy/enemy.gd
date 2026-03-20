@@ -4,7 +4,7 @@ extends CharacterBody3D
 @export var path_desired_distance: float = 0.5
 @export var target_desired_distance: float = 4.0
 @export var target_attack_range: float = 2.0
-@export var target_group: String = "targets"
+@export var survivor_group: String = "survivors"
 @export var obstacle_group: String = "obstacles"
 @export var obstacle_attack_range: float = 6.0
 @export var scrap_reward: int = 10 ## Scrap awarded when enemy dies (can be 0)
@@ -86,7 +86,7 @@ func load_resource(resource: Resource_EnemyType) -> void:
   , Object.CONNECT_ONE_SHOT)
 
 func _choose_target():
-  var targets := get_tree().get_nodes_in_group(target_group)
+  var targets := get_tree().get_nodes_in_group(survivor_group)
   if targets.size() == 0:
     current_target = null
     attack.cancel()
@@ -188,8 +188,8 @@ func _attack_target():
     if not current_target:
       return
   
-  if not current_target.is_in_group(target_group):
-    MyLogger.warn("Enemy", "Current target is not in the target group.")
+  if not current_target.is_in_group(survivor_group):
+    MyLogger.warn("Enemy", "Current target is not in the survivor group.")
     _choose_target()
     if not current_target:
       return

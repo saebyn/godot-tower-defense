@@ -128,7 +128,7 @@ UI classes handle player interaction, information display, and menu systems.
 |------------|-----------|---------|
 | `UI_MainMenu` | `Control` | Main menu screen |
 | `UI_PauseMenu` | `Control` | In-game pause menu |
-| `UI_ScenarioSelect` | `Control` | Level selection screen |
+| `UI_ScenarioSelect` | `Control` | Scenario selection screen |
 | `UI_TechTree` | `Control` | Tech tree UI display |
 | `UI_TechNodeCard` | `PanelContainer` | Individual tech node in tree |
 | `UI_AchievementList` | `Control` | Achievement list screen |

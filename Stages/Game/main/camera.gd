@@ -269,19 +269,19 @@ func _apply_boundary_constraints():
     orbit_center = constrained_center
 
 
-## Zoom to survivors: center camera on the average position of all targets with appropriate zoom
+## Zoom to survivors: center camera on the average position of all survivors with appropriate zoom
 func zoom_to_survivors() -> void:
-  var targets = get_tree().get_nodes_in_group("targets")
-  if targets.is_empty():
+  var survivors = get_tree().get_nodes_in_group("survivors")
+  if survivors.is_empty():
     MyLogger.warn("Camera", "No survivors found to zoom to")
     return
   
-  # Calculate center position of all Node3D targets
+  # Calculate center position of all Node3D survivors
   var center := Vector3.ZERO
   var count := 0
-  for target in targets:
-    if target is Node3D:
-      center += target.global_position
+  for survivor in survivors:
+    if survivor is Node3D:
+      center += survivor.global_position
       count += 1
   
   if count == 0:

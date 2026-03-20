@@ -234,7 +234,7 @@ func test_standard_enemy_type_yields_standard_color():
 func test_survivor_group_yields_survivor_color():
   var parent = Node3D.new()
   add_child_autofree(parent)
-  parent.add_to_group("targets")
+  parent.add_to_group("survivors")
   var health_scene = load("res://Common/Components/health/health.tscn")
   var health: Component_Health = health_scene.instantiate()
   parent.add_child(health)
@@ -259,7 +259,7 @@ func test_explicit_bar_color_overrides_auto():
 # Name label tests
 # ────────────────────────────────────────────────────────────────
 
-## Helper: create a Node3D in the "targets" group with a survivor_name property.
+## Helper: create a Node3D in the "survivors" group with a survivor_name property.
 func _make_survivor_parent(survivor_name_value: String) -> Node3D:
   var script = GDScript.new()
   script.source_code = "extends Node3D\nvar survivor_name: String = \"\""
@@ -268,7 +268,7 @@ func _make_survivor_parent(survivor_name_value: String) -> Node3D:
   var parent = Node3D.new()
   parent.set_script(script)
   parent.survivor_name = survivor_name_value
-  parent.add_to_group("targets")
+  parent.add_to_group("survivors")
   return parent
 
 func test_get_entity_display_name_empty_when_no_type():
@@ -333,7 +333,7 @@ func test_name_label_populated_after_late_name_assignment():
   assert_eq(err, OK, "inline script failed to compile")
   var parent = Node3D.new()
   parent.set_script(script)
-  parent.add_to_group("targets")
+  parent.add_to_group("survivors")
   # survivor_name is empty here (mimics target._ready() not yet having run)
   var health := _make_health(parent)
   await wait_process_frames(1) # Let health._ready() run with survivor_name == ""
@@ -363,7 +363,7 @@ func test_name_label_font_color_override_applied():
   var health := _make_health(parent)
   await get_tree().process_frame
 
-  # _update_display → _update_health_bar_visuals applies the color override
+  # _update_display → _update_unit_frame_visuals applies the color override
   health._update_display()
 
   assert_true(health.name_label.has_theme_color_override("font_color"),

@@ -101,7 +101,7 @@ enabled=PackedStringArray("res://addons/dialogic/plugin.cfg", "res://addons/gut/
 
 [global_group]
 
-targets=""
+survivors=""
 navigation_mesh_source_group=""
 scrap=""
 obstacles=""

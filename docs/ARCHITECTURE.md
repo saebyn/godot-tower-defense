@@ -28,7 +28,7 @@ graph TB
         ObstacleRegistry[ObstacleRegistry<br/>Available obstacles]
         TechTreeManager[TechTreeManager<br/>Tech unlocks & branches]
         AchievementManager[AchievementManager<br/>Achievement tracking]
-        ScenarioManager[ScenarioManager<br/>Level progression]
+        ScenarioManager[ScenarioManager<br/>Scenario progression]
         AudioManager[AudioManager<br/>Sound & music]
         SettingsManager[SettingsManager<br/>Video, audio, input]
     end
@@ -44,7 +44,7 @@ graph TB
     subgraph "Entities"
         Enemies[Enemies<br/>CharacterBody3D]
         Obstacles[Obstacles<br/>StaticBody3D]
-        Targets[Targets<br/>Defendable objects]
+        Survivors[Survivors<br/>Defendable objects]
     end
     
     Main --> Player
@@ -61,7 +61,7 @@ graph TB
     
     Enemies --> CurrencyManager
     Enemies --> StatsManager
-    Enemies --> Targets
+    Enemies --> Survivors
     
     Obstacles --> Enemies
     
@@ -145,11 +145,11 @@ graph TB
         Obstacle --> ObstacleTimer
     end
     
-    subgraph "Entity: Target"
-        Target[StaticBody3D<br/>target.gd]
-        TargetHealth[Health]
+    subgraph "Entity: Survivor"
+        Survivor[Node3D<br/>survivor.gd]
+        SurvivorHealth[Health]
         
-        Target --> TargetHealth
+        Survivor --> SurvivorHealth
     end
     
     subgraph "Component Discovery"
@@ -160,11 +160,11 @@ graph TB
     EnemyAttack -.registered via.-> Metadata
     ObstacleHealth -.registered via.-> Metadata
     ObstacleAttack -.registered via.-> Metadata
-    TargetHealth -.registered via.-> Metadata
+    SurvivorHealth -.registered via.-> Metadata
     
     Enemy -.queries.-> Metadata
     Obstacle -.queries.-> Metadata
-    Target -.queries.-> Metadata
+    Survivor -.queries.-> Metadata
     
     style Health fill:#ffcccc
     style Attack fill:#ccffcc
@@ -246,7 +246,7 @@ graph TB
 - **Atomic Writes**: Write to temp file, then rename (prevents corruption)
 - **Automatic Backups**: Keep `.bak` files for recovery
 - **Per-Slot Reset**: `reset_data()` called on new game
-- **Auto-Save**: Every 5 minutes + level completion
+- **Auto-Save**: Every 5 minutes + scenario completion
 - **Corruption Recovery**: Falls back to backup if primary corrupted
 
 ---
@@ -259,20 +259,20 @@ The GameManager controls high-level game state transitions and coordination.
 stateDiagram-v2
     [*] --> MAIN_MENU: Game Launch
     
-    MAIN_MENU --> PLAYING: Start Game<br/>(load level)
+    MAIN_MENU --> PLAYING: Start Game<br/>(load scenario)
     
     PLAYING --> IN_GAME_MENU: Press ESC<br/>(pause game)
     IN_GAME_MENU --> PLAYING: Resume<br/>(unpause)
     IN_GAME_MENU --> MAIN_MENU: Quit to Menu
     
-    PLAYING --> GAME_OVER: All Targets Destroyed
+    PLAYING --> GAME_OVER: All Survivors Lost
     PLAYING --> VICTORY: All Waves Complete
     
     GAME_OVER --> MAIN_MENU: Return to Menu
-    GAME_OVER --> PLAYING: Retry Level
+    GAME_OVER --> PLAYING: Retry Scenario
     
     VICTORY --> MAIN_MENU: Return to Menu
-    VICTORY --> PLAYING: Next Level
+    VICTORY --> PLAYING: Next Scenario
     
     state PLAYING {
         [*] --> WaveSpawning
@@ -430,7 +430,7 @@ graph TB
         
         PauseMenu[Pause Menu<br/>Resume, Settings<br/>Tech Tree, Quit]
         
-        LevelSelect[Level Select<br/>Available levels<br/>Best scores]
+        ScenarioSelect[Scenario Select<br/>Available scenarios<br/>Best scores]
         
         TechTree[Tech Tree UI<br/>Unlock tree<br/>Exclusive branches]
         
@@ -467,7 +467,7 @@ graph TB
     MainMenu --> GM
     MainMenu --> TechTree
     MainMenu --> Settings
-    MainMenu --> LevelSelect
+    MainMenu --> ScenarioSelect
     
     PauseMenu --> GM
     PauseMenu --> TechTree
@@ -533,7 +533,7 @@ graph TB
     end
     
     subgraph "Target Selection"
-        PrimaryTarget[Primary Target<br/>Defendable object<br/>target_group]
+        PrimaryTarget[Primary Target<br/>Survivor to defend<br/>survivor_group]
         
         FallbackTarget[Fallback Target<br/>Blocking obstacle<br/>When path blocked]
     end
@@ -576,7 +576,7 @@ graph TB
 
 **Enemy Pathfinding Logic:**
 
-1. **Target Selection**: Choose primary target from `targets` group
+1. **Target Selection**: Choose primary target from `survivors` group
 2. **Path Validation**: Check if path is reachable via `is_target_reachable()`
 3. **Fallback**: If blocked, find obstacle closest to target
 4. **Attack Priority**:

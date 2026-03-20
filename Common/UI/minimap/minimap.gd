@@ -9,7 +9,7 @@
 ## - Top-down view of the entire game area
 ## - Real-time enemy position tracking
 ## - Camera viewport visualization
-## - Obstacle and target display
+## - Obstacle and survivor display
 ## - Configurable size and position
 ## - Click-to-move camera functionality
 ## 
@@ -25,7 +25,7 @@ class_name UI_Minimap
 @export var background_color: Color = Color(0.1, 0.1, 0.1, 0.8) ## Background color
 @export var enemy_color: Color = Color.RED ## Color for enemy dots
 @export var obstacle_color: Color = Color.GRAY ## Color for obstacle markers
-@export var target_color: Color = Color.GREEN ## Color for target markers
+@export var survivor_color: Color = Color.GREEN ## Color for survivor markers
 @export var camera_view_color: Color = Color(1, 1, 1, 0.3) ## Color for camera view area
 @export var enemy_dot_size: float = 3.0 ## Size of enemy dots on minimap
 @export var update_interval: float = 0.2 ## How often to update minimap
@@ -88,8 +88,8 @@ func _update_minimap() -> void:
   # Draw enemies
   _draw_enemies()
   
-  # Draw obstacles and targets (if we can find them)
-  _draw_obstacles_and_targets()
+  # Draw obstacles and survivors (if we can find them)
+  _draw_obstacles_and_survivors()
 
 func _clear_minimap_canvas() -> void:
   # Remove all child nodes from canvas (they'll be recreated)
@@ -131,10 +131,10 @@ func _draw_enemies() -> void:
     enemy_dot.modulate = enemy_color
     minimap_canvas.add_child(enemy_dot)
 
-func _draw_obstacles_and_targets() -> void:
-  # Find obstacles and targets in the scene
+func _draw_obstacles_and_survivors() -> void:
+  # Find obstacles and survivors in the scene
   var obstacles = get_tree().get_nodes_in_group("obstacles")
-  var targets = get_tree().get_nodes_in_group("targets")
+  var survivors = get_tree().get_nodes_in_group("survivors")
   
   # Draw obstacles
   for obstacle in obstacles:
@@ -148,17 +148,17 @@ func _draw_obstacles_and_targets() -> void:
       obstacle_marker.modulate = obstacle_color
       minimap_canvas.add_child(obstacle_marker)
   
-  # Draw targets
-  for target in targets:
-    if target is Node3D:
-      var target_pos = target.global_position
-      var minimap_pos = _world_to_minimap(target_pos)
+  # Draw survivors
+  for survivor in survivors:
+    if survivor is Node3D:
+      var survivor_pos = survivor.global_position
+      var minimap_pos = _world_to_minimap(survivor_pos)
       
-      var target_marker = Panel.new()
-      target_marker.set_size(Vector2(6, 6))
-      target_marker.position = minimap_pos - Vector2(3, 3)
-      target_marker.modulate = target_color
-      minimap_canvas.add_child(target_marker)
+      var survivor_marker = Panel.new()
+      survivor_marker.set_size(Vector2(6, 6))
+      survivor_marker.position = minimap_pos - Vector2(3, 3)
+      survivor_marker.modulate = survivor_color
+      minimap_canvas.add_child(survivor_marker)
 
 func _world_to_minimap(world_pos: Vector3) -> Vector2:
   # Convert 3D world position to 2D minimap coordinates
