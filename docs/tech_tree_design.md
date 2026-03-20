@@ -10,7 +10,7 @@ The tree begins with **three starter nodes** (one per main branch) that are imme
 
 **Unlock Model:** Nodes require **Player Level (XP)** and/or **Achievements** (e.g., *Place 3 defenses*, *Survive 3 waves*). Some nodes are **mutually exclusive** with alternatives. **Tech tree unlocking is free** - no scrap cost.
 
-**Starting State:** Players begin with **zero techs unlocked** in each save slot. The three starter nodes (`tur_scrap_shooter`, `ob_crates`, `eco_scrap_recycler`) have level 1 requirements with no prerequisites, making them **immediately available to unlock** at the start of a new game. This provides an introduction to the tech tree mechanic - players must actively unlock these starter techs before they can place those obstacles during gameplay. Tech unlocks are **persistent per save slot** and carry forward across all levels within that save.
+**Starting State:** Players begin with **zero techs unlocked** in each save slot. The three starter nodes (`tur_scrap_shooter`, `ob_crates`, `eco_scrap_recycler`) have level 1 requirements with no prerequisites, making them **immediately available to unlock** at the start of a new game. This provides an introduction to the tech tree mechanic - players must actively unlock these starter techs before they can place those obstacles during gameplay. Tech unlocks are **persistent per save slot** and carry forward across all scenarios within that save.
 
 **Scrap Economy:** Scrap is earned and spent **during gameplay** to place instances of unlocked obstacles/turrets. The tech tree itself never costs scrap to interact with.
 
@@ -309,16 +309,16 @@ When the player clicks an exclusive node:
 ## 11) Appendix – Achievements Reference
 
 **Basic Achievements (used for early tech unlocks):**
-* `ach_place_3` – Place 3 defenses in a single level.
+* `ach_place_3` – Place 3 defenses in a single scenario.
 * `ach_survive_3` – Survive 3 waves.
 * `ach_kill_100` – Defeat 100 zombies.
 * `ach_click_100` – Click 100 times total.
 * `ach_click_kills_25` – Defeat 25 zombies via clicks.
-* `ach_lose_5_defenses` – Lose 5 placed defenses in one level.
+* `ach_lose_5_defenses` – Lose 5 placed defenses in one scenario.
 
 **Advanced Achievements (used for late-game tech unlocks):**
 * `ach_kill_500` – Defeat 500 zombies total. (Required for Experimental Weapons)
-* `ach_survive_10` – Survive 10 waves in a single level. (Required for Fortification Mastery)
+* `ach_survive_10` – Survive 10 waves in a single scenario. (Required for Fortification Mastery)
 * `ach_place_50` – Place 50 defenses total across all playthroughs. (Required for Synergy Hub)
 
 ---

@@ -43,7 +43,7 @@ class_name <Prefix>_<DescriptiveName>
 | `System_` | Game Systems | High-level game logic | `System_EnemySpawner`, `System_Wave` |
 | `Effect_` | Visual/Audio Effects | Effect controllers | `Effect_Shake` |
 | `Utility_` | Utilities | Helper classes and tools | `Utility_ObstaclePlacement` |
-| `Stage_` | Stages/Levels | Level and scenario classes | `Stage_Scenario` |
+| `Stage_` | Stages/Scenarios | Scenario classes | `Stage_Scenario` |
 
 ---
 
@@ -109,7 +109,7 @@ UI classes handle player interaction, information display, and menu systems.
 **Common UI** (`Common/UI/`):
 | Class Name | Base Type | Purpose |
 |------------|-----------|---------|
-| `UI_Hotbar` | `Control` | Obstacle selection bar (1-9 keys) |
+| `UI_Hotbar` | `Control` | Building selection bar (1-9 keys) |
 | `UI_CurrencyDisplay` | `Control` | Shows scrap, XP, and level |
 | `UI_StatsDisplay` | `Control` | Enemy defeats and placements |
 | `UI_SpeedControls` | `Control` | Game speed control (1x/2x/3x) |
@@ -253,7 +253,7 @@ Stage classes represent levels and scenarios.
 
 | Class Name | Base Type | Purpose |
 |------------|-----------|---------|
-| `Stage_Scenario` | `Node3D` | Level/scenario controller |
+| `Stage_Scenario` | `Node3D` | Scenario controller |
 
 ---
 
