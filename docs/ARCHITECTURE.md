@@ -633,3 +633,44 @@ This architecture provides:
 - **Data-Driven**: Game content editable by non-programmers
 - **Testable**: Clear boundaries enable unit testing
 - **Maintainable**: Changes localized to single systems/components
+
+---
+
+## Camera & Ground Boundaries
+
+Each scenario defines its playable boundary (`scenario.gd` exports):
+
+| Export | Default | Meaning |
+|---|---|---|
+| `boundary_min_x` | `-50` | West edge |
+| `boundary_max_x` | `50` | East edge |
+| `boundary_min_z` | `-50` | North edge |
+| `boundary_max_z` | `50` | South edge |
+
+`camera.gd` clamps its **orbit centre** (the ground-level point the camera looks at) to these bounds after every movement or rotation, then adjusts the camera position to maintain the same offset. This prevents the camera from revealing void areas without causing jarring jumps.
+
+This orbit-centre clamping is currently the only enforcement of the playable area: the camera can never pan the view outside the configured scenario boundaries, even if the ground mesh or other geometry extends further.
+When a scenario loads, `main.gd` calls `_configure_boundaries_from_scenario()` to push the scenario's boundary values to `camera.gd`.
+
+---
+
+## Multiple Spawn Areas
+
+`System_EnemySpawner` supports an array of `spawn_areas` (any `MeshInstance3D`). Each enemy spawn randomly selects one area and picks a random position within its AABB.
+
+### Scene Setup
+
+```
+EnemySpawner
+├── NorthSpawnArea (MeshInstance3D)
+├── SouthSpawnArea (MeshInstance3D)
+└── EastSpawnArea  (MeshInstance3D)
+```
+
+Assign the mesh nodes to the `spawn_areas` array in the Inspector, or programmatically:
+
+```gdscript
+spawner.spawn_areas = [$NorthSpawnArea, $SouthSpawnArea, $EastSpawnArea]
+```
+
+A single-element array reproduces the original single-spawn-point behaviour. Leaving the array empty falls back to the spawner node's own position.

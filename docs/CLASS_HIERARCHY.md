@@ -43,7 +43,7 @@ class_name <Prefix>_<DescriptiveName>
 | `System_` | Game Systems | High-level game logic | `System_EnemySpawner`, `System_Wave` |
 | `Effect_` | Visual/Audio Effects | Effect controllers | `Effect_Shake` |
 | `Utility_` | Utilities | Helper classes and tools | `Utility_ObstaclePlacement` |
-| `Stage_` | Stages/Levels | Level and scenario classes | `Stage_Scenario` |
+| `Stage_` | Stages/Scenarios | Scenario classes | `Stage_Scenario` |
 
 ---
 
@@ -109,7 +109,7 @@ UI classes handle player interaction, information display, and menu systems.
 **Common UI** (`Common/UI/`):
 | Class Name | Base Type | Purpose |
 |------------|-----------|---------|
-| `UI_Hotbar` | `Control` | Obstacle selection bar (1-9 keys) |
+| `UI_Hotbar` | `Control` | Building selection bar (1-9 keys) |
 | `UI_CurrencyDisplay` | `Control` | Shows scrap, XP, and level |
 | `UI_StatsDisplay` | `Control` | Enemy defeats and placements |
 | `UI_SpeedControls` | `Control` | Game speed control (1x/2x/3x) |
@@ -253,7 +253,7 @@ Stage classes represent levels and scenarios.
 
 | Class Name | Base Type | Purpose |
 |------------|-----------|---------|
-| `Stage_Scenario` | `Node3D` | Level/scenario controller |
+| `Stage_Scenario` | `Node3D` | Scenario controller |
 
 ---
 
@@ -441,3 +441,48 @@ This naming and organizational system provides:
 - ✅ **Best Practices**: Components and entities clearly separated
 
 When in doubt, refer to this document and follow the established patterns. Consistency is key to maintainability!
+
+---
+
+## Component_DamageNumbers Reference
+
+`Common/Components/damage_numbers/damage_numbers.gd`
+
+Displays floating damage numbers and scrap gain feedback above entities. Creates `Label3D` nodes dynamically — no scene file required. Registers itself in the parent's metadata as `"damage_numbers_component"` for discovery.
+
+### Configuration Exports
+
+| Export | Default | Description |
+|---|---|---|
+| `fade_duration` | `1.5` | Fade-out duration in seconds |
+| `float_distance` | `2.0` | Upward travel distance |
+| `vertical_offset` | `2.0` | Height above entity origin |
+| `show_damage_numbers` | `true` | Toggle damage number display |
+| `show_scrap_gain` | `true` | Toggle scrap gain display |
+
+### Key Methods
+
+- `show_damage(amount, damage_source)` — display a colour-coded damage number
+- `show_scrap(amount)` — display a gold "+N" scrap gain number
+
+### Color Mapping
+
+| Type | Color | Trigger |
+|---|---|---|
+| Normal | White | default |
+| Fire | Orange | `"fire"`, `"flame"` |
+| Ice | Cyan | `"ice"`, `"frost"`, `"cold"` |
+| Poison | Purple | `"poison"`, `"toxic"` |
+| Critical | Red | `"critical"`, `"crit"` |
+| Scrap gain | Gold | `show_scrap()` |
+
+### Integration Pattern
+
+```gdscript
+# Discovery via parent metadata (used by Component_Health and enemy.gd)
+if parent.has_meta("damage_numbers_component"):
+    var dn = parent.get_meta("damage_numbers_component")
+    dn.show_damage(amount, damage_source)
+```
+
+Add `Component_DamageNumbers` as a child of any `Node3D` entity (enemies, survivors, buildings, scrap boxes) to enable feedback. The component auto-registers on `_ready()`.

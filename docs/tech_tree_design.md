@@ -10,7 +10,7 @@ The tree begins with **three starter nodes** (one per main branch) that are imme
 
 **Unlock Model:** Nodes require **Player Level (XP)** and/or **Achievements** (e.g., *Place 3 defenses*, *Survive 3 waves*). Some nodes are **mutually exclusive** with alternatives. **Tech tree unlocking is free** - no scrap cost.
 
-**Starting State:** Players begin with **zero techs unlocked** in each save slot. The three starter nodes (`tur_scrap_shooter`, `ob_crates`, `eco_scrap_recycler`) have level 1 requirements with no prerequisites, making them **immediately available to unlock** at the start of a new game. This provides an introduction to the tech tree mechanic - players must actively unlock these starter techs before they can place those obstacles during gameplay. Tech unlocks are **persistent per save slot** and carry forward across all levels within that save.
+**Starting State:** Players begin with **zero techs unlocked** in each save slot. The three starter nodes (`tur_scrap_shooter`, `ob_crates`, `eco_scrap_recycler`) have level 1 requirements with no prerequisites, making them **immediately available to unlock** at the start of a new game. This provides an introduction to the tech tree mechanic - players must actively unlock these starter techs before they can place those obstacles during gameplay. Tech unlocks are **persistent per save slot** and carry forward across all scenarios within that save.
 
 **Scrap Economy:** Scrap is earned and spent **during gameplay** to place instances of unlocked obstacles/turrets. The tech tree itself never costs scrap to interact with.
 
@@ -309,14 +309,94 @@ When the player clicks an exclusive node:
 ## 11) Appendix – Achievements Reference
 
 **Basic Achievements (used for early tech unlocks):**
-* `ach_place_3` – Place 3 defenses in a single level.
+* `ach_place_3` – Place 3 defenses in a single scenario.
 * `ach_survive_3` – Survive 3 waves.
 * `ach_kill_100` – Defeat 100 zombies.
 * `ach_click_100` – Click 100 times total.
 * `ach_click_kills_25` – Defeat 25 zombies via clicks.
-* `ach_lose_5_defenses` – Lose 5 placed defenses in one level.
+* `ach_lose_5_defenses` – Lose 5 placed defenses in one scenario.
 
 **Advanced Achievements (used for late-game tech unlocks):**
 * `ach_kill_500` – Defeat 500 zombies total. (Required for Experimental Weapons)
-* `ach_survive_10` – Survive 10 waves in a single level. (Required for Fortification Mastery)
+* `ach_survive_10` – Survive 10 waves in a single scenario. (Required for Fortification Mastery)
 * `ach_place_50` – Place 50 defenses total across all playthroughs. (Required for Synergy Hub)
+
+---
+
+## 12) Exclusive Branch UI States
+
+Five visual states the tech tree UI must represent for each node:
+
+1. **Unlocked** – ✅ Green checkmark, full color
+2. **Available** – 💡 Yellow glow, clickable
+3. **Locked (prerequisites not met)** – 🔒 Gray, shows requirements tooltip
+4. **Permanently Locked (excluded by a prior choice)** – ❌ Red X, strikethrough, tooltip: "Locked due to: {CHOSEN_TECH}"
+5. **Exclusive Choice (about to lock another branch)** – ⚠️ Yellow warning border, confirmation dialog required
+
+---
+
+## 13) Balance Reference – Exclusive Pairs
+
+### Rapid Fire vs Heavy Damage
+
+| Attribute | Rapid Fire | Heavy Damage |
+|---|---|---|
+| DPS vs swarms | ⭐⭐⭐⭐⭐ | ⭐⭐ |
+| DPS vs single target | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| Scrap efficiency | ⭐⭐⭐ | ⭐⭐⭐⭐ |
+| Best against | Swarms | Tanks / Bosses |
+
+### Fortress vs Mobile Defense
+
+| Attribute | Fortress | Mobile Defense |
+|---|---|---|
+| Enemy delay | ⭐⭐⭐⭐⭐ | ⭐⭐ |
+| Turret buffing | ⭐⭐ | ⭐⭐⭐⭐⭐ |
+| Flexibility | ⭐⭐ | ⭐⭐⭐⭐ |
+| Best against | Linear attacks | Multi-path attacks |
+
+---
+
+## 14) Building–Tech Tree Integration
+
+### Data Model
+
+**`Resource_ObstacleType` (`Config/Obstacles/obstacle_type_resource.gd`)**
+- `required_tech_ids: Array[String]` — all listed tech IDs must be unlocked for this building to be available. Empty array = always available.
+
+**`ObstacleRegistry` (`Utilities/Systems/obstacle_registry.gd`)**
+- Connects to `TechTreeManager.tech_unlocked` and `tech_locked` signals on `_ready()`.
+- `_is_obstacle_unlocked(obstacle_type)` — checks all `required_tech_ids` against unlocked set.
+- `is_obstacle_available(obstacle_id) -> bool` — public availability check.
+- Emits `obstacle_types_updated(added, removed)` when availability changes.
+
+### Authoring a Building with a Tech Requirement
+
+```gdscript
+# In advanced_turret.tres
+required_tech_ids = Array[String](["tur_boom_barrel", "eco_scrap_smelter"])
+# ALL listed tech IDs must be unlocked
+```
+
+### Checking Availability in Code
+
+```gdscript
+if ObstacleRegistry.is_obstacle_available("advanced_turret"):
+    pass  # player may place it
+
+# React to changes
+ObstacleRegistry.obstacle_types_updated.connect(_on_obstacles_updated)
+func _on_obstacles_updated(added: Array, removed: Array) -> void:
+    pass  # refresh hotbar, etc.
+```
+
+### Signal Flow
+
+```
+TechTreeManager.unlock_tech(id)
+  → emits tech_unlocked
+    → ObstacleRegistry._on_tech_unlocked()
+      → _update_available_obstacles()
+        → emits obstacle_types_updated(added, removed)
+          → UI / Hotbar refreshes
+```

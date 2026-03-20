@@ -404,3 +404,36 @@ If creating new content after initial release:
 
 **Related Documents**:
 - `docs/zom_nom_defense_gdd.md` - Overall game vision
+
+---
+
+## Color Palette
+
+Extracted from the game logo and used throughout the UI theme. Implemented in the UI theme resources: `Config/ztd_ui_theme.tres` and `Config/ztd_hud_theme.tres`. The broader `Config/ztd_color_palette.tres` may define additional colors for environments and other uses beyond this UI set.
+
+### Primary Colors
+
+| Name | Hex | Godot | Usage |
+|---|---|---|---|
+| **Orange** (Primary Accent) | `#F2A75A` | `Color(0.949, 0.655, 0.353, 1)` | Title text, button hover, panel borders, focus states |
+| **Cream/Beige** (Text) | `#EBD9BC` | `Color(0.922, 0.851, 0.737, 1)` | Primary text, button text, labels, hover borders |
+| **Dark Teal** (Background) | `#2C4A4E` | `Color(0.172, 0.29, 0.306, 1)` | Panel backgrounds, disabled button backgrounds |
+| **Zombie Green** (Buttons) | `#6B8C5E` | `Color(0.42, 0.549, 0.369, 1)` | Normal button background, interactive elements |
+| **Darker Green** (Pressed) | `#5A7A4D` | `Color(0.353, 0.478, 0.302, 1)` | Button pressed state background |
+| **Dark Navy** (Outlines) | `#1A1F2E` | `Color(0.102, 0.122, 0.18, 1)` | Button borders, text shadows, outlines |
+
+### Color Usage by UI Element
+
+**Buttons**
+- Normal: Zombie Green bg, Dark Navy border, Cream text
+- Hover: Orange bg, Cream border, Cream text
+- Pressed: Darker Green bg, Orange border, Orange text
+- Disabled: Dark Teal bg (50% opacity), Dark Navy border (50%), Cream text (50%)
+
+**Panels**: Dark Teal bg (90% opacity), Orange border
+
+**Text**: Cream/Beige primary · Dark Navy shadow (80%) · Orange for focus/accent
+
+### Design Notes
+
+Inspired by the game logo: bold orange lettering, zombie green undead elements, dark teal post-apocalyptic atmosphere, cream text for readability.
