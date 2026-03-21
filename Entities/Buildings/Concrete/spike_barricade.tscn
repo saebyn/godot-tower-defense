@@ -1,6 +1,6 @@
-[gd_scene load_steps=11 format=4 uid="uid://dv7qe6gwjunkd"]
+[gd_scene format=4 uid="uid://dv7qe6gwjunkd"]
 
-[ext_resource type="Script" uid="uid://xilsmnlbxoyk" path="res://Entities/Obstacles/Templates/base_obstacle/obstacle.gd" id="1_hj81n"]
+[ext_resource type="Script" uid="uid://xilsmnlbxoyk" path="res://Entities/Buildings/Templates/base_building/building.gd" id="1_hj81n"]
 [ext_resource type="Script" uid="uid://bdo7p56suq8gm" path="res://Common/Components/passive_damage/passive_damage.gd" id="2_vxr3d"]
 [ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="3_wobsg"]
 

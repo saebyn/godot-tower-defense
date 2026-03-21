@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="Resource_BuildingType" format=3 uid="uid://c4e42v06l7o3n"]
 
 [ext_resource type="Script" uid="uid://vy1lf2kd14dr" path="res://Config/Buildings/building_type_resource.gd" id="1_bhnkn"]
-[ext_resource type="PackedScene" uid="uid://bwp5kbgy8vea1" path="res://Entities/Obstacles/Concrete/range_amplifier.tscn" id="1_ejrsb"]
+[ext_resource type="PackedScene" uid="uid://bwp5kbgy8vea1" path="res://Entities/Buildings/Concrete/range_amplifier.tscn" id="1_ejrsb"]
 [ext_resource type="Texture2D" uid="uid://blou5xw6q8pki" path="res://Assets/Icons/radar_dish.png" id="1_gi3ak"]
 
 [resource]

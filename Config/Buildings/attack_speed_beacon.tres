@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://vy1lf2kd14dr" path="res://Config/Buildings/building_type_resource.gd" id="1_bhnkn"]
 [ext_resource type="Texture2D" uid="uid://6dypjsu80qtt" path="res://Assets/Icons/fire_tower.png" id="1_esfc7"]
-[ext_resource type="PackedScene" uid="uid://b47ma4awlxcq0" path="res://Entities/Obstacles/Concrete/attack_speed_beacon.tscn" id="1_hitac"]
+[ext_resource type="PackedScene" uid="uid://b47ma4awlxcq0" path="res://Entities/Buildings/Concrete/attack_speed_beacon.tscn" id="1_hitac"]
 
 [resource]
 script = ExtResource("1_bhnkn")

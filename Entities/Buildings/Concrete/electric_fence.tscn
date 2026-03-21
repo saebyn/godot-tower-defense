@@ -1,6 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://dd5321pothnh6"]
+[gd_scene format=3 uid="uid://dd5321pothnh6"]
 
-[ext_resource type="Script" uid="uid://xilsmnlbxoyk" path="res://Entities/Obstacles/Templates/base_obstacle/obstacle.gd" id="1_xhycr"]
+[ext_resource type="Script" uid="uid://xilsmnlbxoyk" path="res://Entities/Buildings/Templates/base_building/building.gd" id="1_xhycr"]
 [ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="2_svflr"]
 [ext_resource type="PackedScene" uid="uid://dhtdi4gopvqer" path="res://Assets/Models/ElectricFence.blend" id="2_xhycr"]
 [ext_resource type="Script" uid="uid://c4a2vg4id0rom" path="res://Common/Components/dot_effect/dot_effect.gd" id="3_oxi2c"]

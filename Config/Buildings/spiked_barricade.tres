@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Resource_BuildingType" format=3 uid="uid://koil3d13qg5j"]
 
-[ext_resource type="PackedScene" uid="uid://dv7qe6gwjunkd" path="res://Entities/Obstacles/Concrete/spike_barricade.tscn" id="1_p7byu"]
+[ext_resource type="PackedScene" uid="uid://dv7qe6gwjunkd" path="res://Entities/Buildings/Concrete/spike_barricade.tscn" id="1_p7byu"]
 [ext_resource type="Script" uid="uid://vy1lf2kd14dr" path="res://Config/Buildings/building_type_resource.gd" id="1_ui2jr"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_thibr"]

@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Resource_BuildingType" format=3 uid="uid://b7syc01mdvv3u"]
 
-[ext_resource type="PackedScene" uid="uid://dd5321pothnh6" path="res://Entities/Obstacles/Concrete/electric_fence.tscn" id="1_5kwf0"]
+[ext_resource type="PackedScene" uid="uid://dd5321pothnh6" path="res://Entities/Buildings/Concrete/electric_fence.tscn" id="1_5kwf0"]
 [ext_resource type="Script" uid="uid://vy1lf2kd14dr" path="res://Config/Buildings/building_type_resource.gd" id="1_jonh0"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_jonh0"]

@@ -1,7 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://dhxe3f6ho8qma"]
-
-[ext_resource type="PackedScene" uid="uid://cj8x0adt0k2cd" path="res://Entities/Obstacles/Templates/ranged_obstacle/ranged_obstacle.tscn" id="1_anll1"]
-[ext_resource type="Script" uid="uid://d3pwau0rnoxtb" path="res://Entities/Obstacles/Templates/shooting_obstacle/shooting_obstacle.gd" id="2_shooting"]
-
-[node name="ShootingObstacle" instance=ExtResource("1_anll1")]
-script = ExtResource("2_shooting")
