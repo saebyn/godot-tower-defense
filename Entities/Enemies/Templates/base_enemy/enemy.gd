@@ -154,7 +154,7 @@ func _actor_setup():
 
 
 func _check_and_set_fallback_target() -> void:
-  """Check if the enemy can reach the target. If not, find an building to attack."""
+  """Check if the enemy can reach the target. If not, find a building to attack."""
   if not current_target:
     return
   

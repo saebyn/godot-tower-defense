@@ -199,7 +199,7 @@ func _on_building_menu_item_selected(id: int) -> void:
   current_configuring_slot = -1
 
 func set_slot_building(slot_index: int, building: Resource_BuildingType) -> void:
-  """Set an building for a specific slot"""
+  """Set a building for a specific slot"""
   if slot_index < 0 or slot_index >= max_slots:
     MyLogger.warn("Hotbar", "Invalid slot index: %d" % slot_index)
     return

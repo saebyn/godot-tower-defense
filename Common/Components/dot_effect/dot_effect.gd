@@ -5,7 +5,7 @@ class_name Component_DotEffect
 ## Applies damage over time to enemies within the area.
 ## Useful for electric fences, poison clouds, fire zones, acid pools, etc.
 ##
-## Usage: Add as child node to an building, configure DoT settings,
+## Usage: Add as child node to a building, configure DoT settings,
 ## and add a CollisionShape3D child to define the effect area.
 
 signal dot_applied(target: Node, damage: int)
