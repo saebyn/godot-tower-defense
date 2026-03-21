@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Resource_BuildingType" format=3 uid="uid://dw6tfvlsi8cup"]
 
-[ext_resource type="Script" uid="uid://vy1lf2kd14dr" path="res://Config/Buildings/obstacle_type_resource.gd" id="1_cwuf0"]
+[ext_resource type="Script" uid="uid://vy1lf2kd14dr" path="res://Config/Buildings/building_type_resource.gd" id="1_cwuf0"]
 [ext_resource type="Texture2D" uid="uid://bgkj5scgyuo2e" path="res://Assets/Icons/new_placeholder_texture_2d.tres" id="1_vdyj0"]
 [ext_resource type="PackedScene" uid="uid://c8ln6ujnt0mho" path="res://Entities/Obstacles/Concrete/crates.tscn" id="2_vdyj0"]
 
