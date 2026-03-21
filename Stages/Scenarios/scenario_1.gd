@@ -10,7 +10,7 @@ extends Stage_Scenario
 const TIMELINE_INTRO := "res://Dialogic/Timelines/scenario_1_intro.dtl"
 const TIMELINE_TUT_WELCOME := "res://Dialogic/Timelines/scenario_1_tut_welcome.dtl"
 const TIMELINE_TUT_ATTACK := "res://Dialogic/Timelines/scenario_1_tut_attack.dtl"
-const TIMELINE_TUT_OBSTACLE := "res://Dialogic/Timelines/scenario_1_tut_building.dtl"
+const TIMELINE_TUT_BUILDING := "res://Dialogic/Timelines/scenario_1_tut_building.dtl"
 const TIMELINE_TUT_READ_UI := "res://Dialogic/Timelines/scenario_1_tut_read_ui.dtl"
 const TIMELINE_TUT_TECH_TREE := "res://Dialogic/Timelines/scenario_1_tut_tech_tree.dtl"
 
@@ -20,8 +20,8 @@ enum TutState {
   WELCOME,
   TUT_ATTACK,
   AWAITING_ATTACK,
-  TUT_OBSTACLE,
-  AWAITING_OBSTACLE,
+  TUT_BUILDING,
+  AWAITING_BUILDING,
   TUT_READ_UI,
   TUT_TECH_TREE,
   DONE,
@@ -30,12 +30,12 @@ enum TutState {
 var _tut_state: TutState = TutState.INACTIVE
 var _tutorial_accepted: bool = false
 var _main_scene: Node = null
-var _obstacle_placement: Node = null
+var _building_placement: Node = null
 
 
 func _ready() -> void:
   super._ready()
-  # Defer so the full scene tree (including Main and ObstaclePlacement) is ready
+  # Defer so the full scene tree (including Main and BuildingPlacement) is ready
   call_deferred("_start_intro_dialog")
 
 
@@ -45,7 +45,7 @@ func _start_intro_dialog() -> void:
     return
   # Cache scene references now that the tree is fully ready
   _main_scene = get_tree().current_scene
-  _obstacle_placement = _main_scene.get_node_or_null("ObstaclePlacement") if _main_scene else null
+  _building_placement = _main_scene.get_node_or_null("BuildingPlacement") if _main_scene else null
   _tut_state = TutState.INTRO
   Dialogic.signal_event.connect(_on_dialogic_signal)
   Dialogic.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -79,15 +79,15 @@ func _on_dialogic_timeline_ended() -> void:
         _main_scene.enemy_attacked.connect(_on_enemy_attacked_for_tutorial, CONNECT_ONE_SHOT)
       else:
         MyLogger.warn("Scenario1", "enemy_attacked signal not found, skipping attack step")
-        _tut_state = TutState.TUT_OBSTACLE
+        _tut_state = TutState.TUT_BUILDING
         Dialogic.timeline_ended.connect(_on_dialogic_timeline_ended, CONNECT_ONE_SHOT)
-        _dialogic_start(TIMELINE_TUT_OBSTACLE)
+        _dialogic_start(TIMELINE_TUT_BUILDING)
 
-    TutState.TUT_OBSTACLE:
-      # Obstacle instructions delivered — unpause and wait for placement
-      _tut_state = TutState.AWAITING_OBSTACLE
-      if _obstacle_placement and _obstacle_placement.has_signal("building_placed"):
-        _obstacle_placement.building_placed.connect(_on_obstacle_placed_for_tutorial, CONNECT_ONE_SHOT)
+    TutState.TUT_BUILDING:
+      # Building instructions delivered — unpause and wait for placement
+      _tut_state = TutState.AWAITING_BUILDING
+      if _building_placement and _building_placement.has_signal("building_placed"):
+        _building_placement.building_placed.connect(_on_building_placed_for_tutorial, CONNECT_ONE_SHOT)
       else:
         MyLogger.warn("Scenario1", "building_placed signal not found, skipping building placement step")
         _tut_state = TutState.TUT_READ_UI
@@ -117,14 +117,14 @@ func _on_dialogic_signal(arg: Variant) -> void:
 func _on_enemy_attacked_for_tutorial() -> void:
   if _tut_state != TutState.AWAITING_ATTACK:
     return
-  _tut_state = TutState.TUT_OBSTACLE
+  _tut_state = TutState.TUT_BUILDING
   Dialogic.timeline_ended.connect(_on_dialogic_timeline_ended, CONNECT_ONE_SHOT)
-  _dialogic_start(TIMELINE_TUT_OBSTACLE)
+  _dialogic_start(TIMELINE_TUT_BUILDING)
 
 
-## Called when the player places an obstacle during the obstacle tutorial step
-func _on_obstacle_placed_for_tutorial() -> void:
-  if _tut_state != TutState.AWAITING_OBSTACLE:
+## Called when the player places an building during the building tutorial step
+func _on_building_placed_for_tutorial() -> void:
+  if _tut_state != TutState.AWAITING_BUILDING:
     return
   _tut_state = TutState.TUT_READ_UI
   Dialogic.timeline_ended.connect(_on_dialogic_timeline_ended, CONNECT_ONE_SHOT)
