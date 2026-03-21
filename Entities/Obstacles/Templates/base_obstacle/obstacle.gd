@@ -122,7 +122,7 @@ func remove() -> int:
   if health:
     health_percentage = float(health.hitpoints) / float(health.max_hitpoints)
   
-  # Refund is based on remaining health (damaged obstacles give less refund)
+  # Refund is based on remaining health (damaged buildings give less refund)
   var refund_amount = int(building_type.cost * health_percentage)
   
   MyLogger.info("Building", "Removing building. Health: %d%%, Refund: %d/%d" % [

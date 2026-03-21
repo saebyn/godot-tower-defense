@@ -1,14 +1,14 @@
 """
 Hotbar.gd
 
-A dynamic hotbar component that displays available obstacle types and allows quick access.
-Supports both mouse clicks and keyboard shortcuts for obstacle selection.
-Includes configuration capabilities to change which obstacles are in which slots.
+A dynamic hotbar component that displays available building types and allows quick access.
+Supports both mouse clicks and keyboard shortcuts for building selection.
+Includes configuration capabilities to change which buildings are in which slots.
 """
 extends Control
 class_name UI_Hotbar
 
-signal obstacle_selected(obstacle: Resource_BuildingType)
+signal building_selected(building: Resource_BuildingType)
 
 @export var max_slots: int = 6 # Maximum number of hotbar slots
 @export var spacing: int = 8 # Spacing between slots
@@ -119,7 +119,7 @@ func _on_slot_pressed(slot_index: int) -> void:
   
   if obstacle:
     MyLogger.info("Hotbar", "Selected obstacle: %s from slot %d" % [obstacle.name, slot_index + 1])
-    obstacle_selected.emit(obstacle)
+    building_selected.emit(obstacle)
 
 func _on_slot_gui_input(event: InputEvent, slot_index: int) -> void:
   """Handle GUI input for advanced slot interactions"""
