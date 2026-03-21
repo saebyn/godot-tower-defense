@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://duje032qpuq2" path="res://Stages/UI/main_ui/ui.tscn" id="3_272bh"]
 [ext_resource type="PackedScene" uid="uid://cydfu3yskn3kd" path="res://Common/UI/building_tooltip/building_tooltip.tscn" id="4_tooltip"]
 [ext_resource type="Script" uid="uid://c474c2uw4525n" path="res://Stages/Game/main/camera.gd" id="5_hjeu7"]
-[ext_resource type="PackedScene" uid="uid://bpf2dmre1y8t0" path="res://Utilities/Placement/obstacle_placement/obstacle_placement.tscn" id="7_kek77"]
+[ext_resource type="PackedScene" uid="uid://bpf2dmre1y8t0" path="res://Utilities/Placement/building_placement/building_placement.tscn" id="7_kek77"]
 [ext_resource type="Script" uid="uid://030vpwx2g048" path="res://Stages/Game/main/audio_listener.gd" id="8_audio_listener"]
 [ext_resource type="AudioStream" uid="uid://besdcxihxcckh" path="res://Assets/Audio/Music/battleThemeA.mp3" id="9_i0vvu"]
 [ext_resource type="Script" uid="uid://bmluckfvgm1c2" path="res://addons/twitcher/chat/twitch_command.gd" id="10_hjeu7"]
