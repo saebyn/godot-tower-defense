@@ -1,7 +1,7 @@
 extends Control
 
 @onready var survival_time_label = $Panel/MarginContainer/VBoxContainer/SurvivalTimeLabel
-@onready var buildings_reclaimed_label = $Panel/MarginContainer/VBoxContainer/ObstaclesReclaimedLabel
+@onready var buildings_reclaimed_label = $Panel/MarginContainer/VBoxContainer/BuildingsReclaimedLabel
 @onready var scrap_reclaimed_label = $Panel/MarginContainer/VBoxContainer/ScrapReclaimedLabel
 @onready var remaining_scrap_label = $Panel/MarginContainer/VBoxContainer/RemainingScrapLabel
 @onready var converted_to_xp_label = $Panel/MarginContainer/VBoxContainer/ConvertedToXPLabel
