@@ -14,7 +14,7 @@ shader_parameter/albedo_color = Color(0.697, 0.521, 0, 1)
 shader_parameter/transparency = 0.1670000079325
 shader_parameter/dither_scale = 1.00000004424012
 
-[node name="RangedObstacle" instance=ExtResource("1_shooting")]
+[node name="RangedBuilding" instance=ExtResource("1_shooting")]
 script = ExtResource("2_shooting")
 effect_range = 15.0
 
