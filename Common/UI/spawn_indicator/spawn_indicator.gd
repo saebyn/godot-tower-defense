@@ -93,7 +93,7 @@ func _simple_fade_animation() -> void:
   # Fade out
   tween.tween_property(self , "modulate:a", 0.0, 0.3)
 
-### Show a notification that an building was removed
+### Show a notification that a building was removed
 func show_building_removed(refund_amount: int) -> void:
   if label:
     label.text = "🗑️ Building Removed!\n💰 Refund: %d scrap" % refund_amount
