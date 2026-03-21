@@ -185,18 +185,18 @@ func _has_sufficient_clearance(target_position: Vector3) -> bool:
 
   return space_state.intersect_shape(query).size() == 0
 
-func _on_building_spawn_requested(obstacle_type: Resource_BuildingType) -> void:
-  MyLogger.info("Placement", "Spawn obstacle button pressed for: %s" % obstacle_type.name)
+func _on_building_spawn_requested(building_type: Resource_BuildingType) -> void:
+  MyLogger.info("Placement", "Spawn building button pressed for: %s" % building_type.name)
 
   if busy:
-    MyLogger.info("Placement", "Already placing an obstacle, cancelling previous placement")
+    MyLogger.info("Placement", "Already placing a building, cancelling previous placement")
     _cancel_obstacle_placement()
 
-  _place_obstacle_type = obstacle_type
-  _preview = obstacle_type.scene.instantiate()
-  _preview.building_type = obstacle_type
+  _place_obstacle_type = building_type
+  _preview = building_type.scene.instantiate()
+  _preview.building_type = building_type
   _preview.is_preview = true
-  MyLogger.info("Placement", "Created preview for obstacle: %s" % obstacle_type.name)
+  MyLogger.info("Placement", "Created preview for building: %s" % building_type.name)
   raycast.enabled = true
   add_child(_preview)
   placement_mode_entered.emit()

@@ -1,7 +1,7 @@
 extends Control
 class_name MainUI
 
-signal building_spawn_requested(obstacle: Resource_BuildingType)
+signal building_spawn_requested(building: Resource_BuildingType)
 
 @onready var spawn_indicator: Control = $SpawnIndicator
 @onready var hotbar: Control = $Hotbar
@@ -23,9 +23,9 @@ func _process(_delta: float) -> void:
     _toggle_sound_effect_display()
 
 
-func request_building_spawn(obstacle: Resource_BuildingType) -> void:
-  MyLogger.info("UI", "Requesting building spawn: %s" % obstacle.name)
-  building_spawn_requested.emit(obstacle)
+func request_building_spawn(building: Resource_BuildingType) -> void:
+  MyLogger.info("UI", "Requesting building spawn: %s" % building.name)
+  building_spawn_requested.emit(building)
 
 ## Called when an enemy spawns to show the spawn indicator (legacy)
 func _on_enemy_spawned(enemy: Node3D) -> void:

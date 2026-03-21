@@ -332,7 +332,7 @@ func get_active_buff_sources() -> Array[Dictionary]:
     var source_node = instance_from_id(source_id)
     if source_node and is_instance_valid(source_node):
       var source_name = "Support"
-      if source_node.has_method("get") and source_node.building_type:
+      if source_node is Entity_PlaceableBuilding and source_node.building_type:
         source_name = source_node.building_type.name
       sources.append({
         "name": source_name,

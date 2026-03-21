@@ -5,7 +5,7 @@ extends CharacterBody3D
 @export var target_desired_distance: float = 4.0
 @export var target_attack_range: float = 2.0
 @export var survivor_group: String = "survivors"
-@export var obstacle_group: String = "buildings"
+@export var building_group: String = "buildings"
 @export var obstacle_attack_range: float = 6.0
 @export var scrap_reward: int = 10 ## Scrap awarded when enemy dies (can be 0)
 @export var xp_reward: int = 10 ## XP awarded when enemy dies (always given)
@@ -101,7 +101,7 @@ func _choose_target():
 
 
 func _find_nearest_obstacle_in_range() -> Node3D:
-  var obstacles := get_tree().get_nodes_in_group(obstacle_group)
+  var obstacles := get_tree().get_nodes_in_group(building_group)
   var nearest_obstacle: Node3D = null
   var nearest_distance: float = obstacle_attack_range + 1.0 # Start beyond max range
   
@@ -123,7 +123,7 @@ func _find_obstacle_closest_to_target() -> Node3D:
   if not current_target:
     return null
   
-  var obstacles := get_tree().get_nodes_in_group(obstacle_group)
+  var obstacles := get_tree().get_nodes_in_group(building_group)
   if obstacles.is_empty():
     return null
   
