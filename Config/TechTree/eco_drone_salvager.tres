@@ -11,4 +11,4 @@ branch_name = "Economy"
 level_requirement = 3
 prerequisite_tech_ids = Array[String](["eco_scrap_recycler"])
 mutually_exclusive_with = Array[String](["eco_industrial_recycler"])
-unlocked_obstacle_ids = Array[String](["drone_salvager"])
+unlocked_building_ids = Array[String](["drone_salvager"])

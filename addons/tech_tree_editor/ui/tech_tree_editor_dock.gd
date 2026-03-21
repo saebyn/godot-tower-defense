@@ -786,8 +786,8 @@ func _generate_markdown() -> String:
       if tech.requires_branch_completion.size() > 0:
         md += "- **Requires Branch Completion:** %s\n" % ", ".join(tech.requires_branch_completion)
       
-      if tech.unlocked_obstacle_ids.size() > 0:
-        md += "- **Unlocks:** %s\n" % ", ".join(tech.unlocked_obstacle_ids)
+      if tech.unlocked_building_ids.size() > 0:
+        md += "- **Unlocks:** %s\n" % ", ".join(tech.unlocked_building_ids)
       
       md += "\n"
     
@@ -834,7 +834,7 @@ func _show_inspector(tech_id: String) -> void:
   _add_array_field("Prerequisites", "prerequisite_tech_ids", tech.prerequisite_tech_ids, "_on_array_changed")
   _add_array_field("Achievements", "achievement_ids", tech.achievement_ids, "_on_array_changed")
   _add_array_field("Mutually Exclusive", "mutually_exclusive_with", tech.mutually_exclusive_with, "_on_array_changed")
-  _add_array_field("Unlocked Obstacles", "unlocked_obstacle_ids", tech.unlocked_obstacle_ids, "_on_array_changed")
+  _add_array_field("Unlocked Buildings", "unlocked_building_ids", tech.unlocked_building_ids, "_on_array_changed")
   _add_array_field("Branch Completion", "requires_branch_completion", tech.requires_branch_completion, "_on_array_changed")
 
   # Add save button
@@ -859,7 +859,7 @@ func _add_text_field(label_text: String, value: String, callback: String) -> voi
   line_edit.set_meta("field_name", label_text)
   # Connect to text_submitted instead of text_changed for better performance
   if has_method(callback):
-    line_edit.text_submitted.connect(Callable(self, callback))
+    line_edit.text_submitted.connect(Callable(self , callback))
   hbox.add_child(line_edit)
   
   inspector_container.add_child(hbox)
@@ -915,7 +915,7 @@ func _add_dropdown_field(label_text: String, value: String, options: Array, call
       option_button.selected = i
   
   if has_method(callback):
-    option_button.item_selected.connect(Callable(self, callback))
+    option_button.item_selected.connect(Callable(self , callback))
   hbox.add_child(option_button)
   
   inspector_container.add_child(hbox)
@@ -935,7 +935,7 @@ func _add_number_field(label_text: String, value: int, min_val: int, max_val: in
   spin_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
   spin_box.set_meta("field_name", label_text)
   if has_method(callback):
-    spin_box.value_changed.connect(Callable(self, callback))
+    spin_box.value_changed.connect(Callable(self , callback))
   hbox.add_child(spin_box)
   
   inspector_container.add_child(hbox)

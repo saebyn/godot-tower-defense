@@ -2,7 +2,7 @@ extends Control
 class_name UI_StatsDisplay
 
 ## UI component to display game statistics
-## Shows enemy defeats, obstacle placements, and currency metrics
+## Shows enemy defeats, building placements, and currency metrics
 
 @onready var stats_label: RichTextLabel = $StatsLabel
 
@@ -55,14 +55,14 @@ func _update_display():
   
   text += "\n"
   
-  # Obstacle placement stats
-  text += "[b]Obstacles Placed[/b]\n"
-  text += "Total: %d\n" % stats.obstacles_placed_total
+  # Building placement stats
+  text += "[b]Buildings Placed[/b]\n"
+  text += "Total: %d\n" % stats.buildings_placed_total
   
-  if stats.obstacles_placed_by_type.size() > 0:
+  if stats.buildings_placed_by_type.size() > 0:
     text += "By Type:\n"
-    for obstacle_type in stats.obstacles_placed_by_type:
-      text += "  %s: %d\n" % [obstacle_type, stats.obstacles_placed_by_type[obstacle_type]]
+    for building_type in stats.buildings_placed_by_type:
+      text += "  %s: %d\n" % [building_type, stats.buildings_placed_by_type[building_type]]
   
   text += "\n"
   

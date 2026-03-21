@@ -6,9 +6,9 @@
 
 [resource]
 script = ExtResource("1_tower")
-id = "tower_master"
-name = "Tower Master"
-description = "Place 10 obstacles"
+id = "building_10"
+name = "Building Master"
+description = "Place 10 buildings."
 use_multiple_conditions = false
 unlock_condition_type = 4
 threshold = 10

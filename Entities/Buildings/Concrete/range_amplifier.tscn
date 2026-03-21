@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://bwp5kbgy8vea1"]
+
+[ext_resource type="PackedScene" uid="uid://bjlvdmndqn0hw" path="res://Entities/Buildings/Templates/buff_building/buff_building.tscn" id="1_y00lx"]
+[ext_resource type="Script" uid="uid://dxpmn7q530akc" path="res://Common/Effects/buff_line_effect/buff_line_effect.gd" id="1_buff_line"]
+[ext_resource type="PackedScene" uid="uid://cvdmwhn48jptf" path="res://Assets/Models/radar_dish.blend" id="2_quwf2"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_10y5i"]
+size = Vector3(2.8215656, 2.7244377, 2.8412762)
+
+[node name="RangeAmplifier" node_paths=PackedStringArray("mesh_instances") instance=ExtResource("1_y00lx")]
+buff_type = 2
+buff_amount = 0.3
+buff_interval = 1.0
+mesh_instances = [NodePath("radar_dish/Cube"), NodePath("radar_dish/Sphere")]
+
+[node name="radar_dish" parent="." index="4" instance=ExtResource("2_quwf2")]
+transform = Transform3D(1.4071425, 0, -1.4071425, 0, 1.99, 0, 1.4071425, 0, 1.4071425, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="5"]
+transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, -0.017856471, 1.3902645, -0.00058894604)
+shape = SubResource("BoxShape3D_10y5i")
+
+[node name="BuffLineEffect" type="Node3D" parent="." index="6"]
+script = ExtResource("1_buff_line")
+
+[editable path="radar_dish"]

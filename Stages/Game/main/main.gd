@@ -7,7 +7,7 @@ signal enemy_attacked ## Emitted when the player clicks to attack an enemy
 @export var attack_waiting_cursor_image: Texture2D
 
 @export_group("UI")
-@export var obstacle_tooltip_scene: PackedScene
+@export var building_tooltip_scene: PackedScene
 
 @export_group("Navigation")
 @export var navigation_rebake_interval: float = 5.0 # Seconds between rebakes
@@ -19,21 +19,21 @@ var attack: Component_Attack
 @onready var ui: MainUI = $UI
 @onready var background_music_player: AudioStreamPlayer = $BgMusicAudioStreamPlayer
 
-@onready var obstacle_placement: Utility_ObstaclePlacement = $ObstaclePlacement
+@onready var building_placement: Utility_BuildingPlacement = $BuildingPlacement
 
 @onready var twitch_eventsub: TwitchEventsub = $TwitchEventsub
 @onready var joinqueue_command: TwitchCommand = $JoinQueueCommand
 
-var obstacle_raycast: RayCast3D
+var building_raycast: RayCast3D
 var current_scenario: Stage_Scenario = null
-## Currently hovered ranged obstacle for range preview
-var _hovered_ranged_obstacle: Entity_RangedObstacle = null
-## Any entity (enemy, obstacle, target) currently under the cursor — used for unit-frame hover
+## Currently hovered ranged building for range preview
+var _hovered_ranged_building: Entity_RangedBuilding = null
+## Any entity (enemy, building, target) currently under the cursor — used for unit-frame hover
 var _hovered_entity: Node3D = null
-## Raycast for detecting ranged obstacles on hover
+## Raycast for detecting ranged buildings on hover
 var _hover_raycast: RayCast3D
-## Obstacle tooltip for displaying stats on hover
-var _obstacle_tooltip = null # UI_ObstacleTooltip
+## Building tooltip for displaying stats on hover
+var _building_tooltip = null # UI_BuildingTooltip
 ## Last mouse position to avoid redundant hover checks
 var _last_hover_check_position: Vector2 = Vector2(-1, -1)
 ## Minimum distance mouse must move before triggering hover check (in pixels)
@@ -44,31 +44,31 @@ func _ready() -> void:
   if has_meta("attack_component"):
     attack = get_meta("attack_component")
   
-  # Create obstacle detection raycast
-  obstacle_raycast = RayCast3D.new()
-  obstacle_raycast.enabled = false
-  obstacle_raycast.collision_mask = 2 # Only detect obstacles (layer 2)
-  add_child(obstacle_raycast)
+  # Create building detection raycast
+  building_raycast = RayCast3D.new()
+  building_raycast.enabled = false
+  building_raycast.collision_mask = 2 # Only detect buildings (layer 2)
+  add_child(building_raycast)
   
   # Create hover detection raycast
   _hover_raycast = RayCast3D.new()
   _hover_raycast.enabled = false
-  _hover_raycast.collision_mask = 1 | 2 | 4 # Targets/survivors (layer 1) + obstacles (layer 2) + enemies (layer 4)
+  _hover_raycast.collision_mask = 1 | 2 | 4 # Targets/survivors (layer 1) + buildings (layer 2) + enemies (layer 4)
   add_child(_hover_raycast)
   
   # Set player attack damage source
   if attack:
     attack.damage_source = "player"
   
-  # Create obstacle tooltip if scene is assigned
-  if obstacle_tooltip_scene and ui:
-    _obstacle_tooltip = obstacle_tooltip_scene.instantiate()
-    ui.add_child(_obstacle_tooltip)
-    _obstacle_tooltip.visible = false
+  # Create building tooltip if scene is assigned
+  if building_tooltip_scene and ui:
+    _building_tooltip = building_tooltip_scene.instantiate()
+    ui.add_child(_building_tooltip)
+    _building_tooltip.visible = false
   
-  # Connect to obstacle placement signals for showing all shooting obstacle ranges
-  obstacle_placement.placement_mode_entered.connect(_on_placement_mode_entered)
-  obstacle_placement.placement_mode_exited.connect(_on_placement_mode_exited)
+  # Connect to building placement signals for showing all shooting building ranges
+  building_placement.placement_mode_entered.connect(_on_placement_mode_entered)
+  building_placement.placement_mode_exited.connect(_on_placement_mode_exited)
 
   # Load the appropriate scenario dynamically
   _load_scenario()
@@ -194,12 +194,12 @@ func _start_navigation_rebake_timer() -> void:
   timer.timeout.connect(rebake_navigation_mesh)
 
 func _input(event: InputEvent) -> void:
-  if event is InputEventMouseButton and not obstacle_placement.busy and event.pressed:
+  if event is InputEventMouseButton and not building_placement.busy and event.pressed:
     if event.button_index == MOUSE_BUTTON_LEFT:
       _handle_enemy_click(event.position)
     elif event.button_index == MOUSE_BUTTON_RIGHT:
-      _handle_obstacle_remove_click(event.position)
-  elif event is InputEventMouseMotion and not obstacle_placement.busy:
+      _handle_building_remove_click(event.position)
+  elif event is InputEventMouseMotion and not building_placement.busy:
     _handle_hover(event.position)
 
 
@@ -231,69 +231,69 @@ func _handle_enemy_click(click_position: Vector2):
   enemy_raycast.enabled = false
 
 
-func _handle_obstacle_remove_click(click_position: Vector2):
+func _handle_building_remove_click(click_position: Vector2):
   # Create a raycast from the camera to detect what was clicked
   var ray_origin = camera.project_ray_origin(click_position)
   var ray_direction = camera.project_ray_normal(click_position)
   
-  # Use the dedicated obstacle raycast (layer 2 for obstacles)
-  obstacle_raycast.enabled = true
-  obstacle_raycast.collision_mask = 2 # Only detect obstacles
-  obstacle_raycast.position = ray_origin
-  obstacle_raycast.target_position = ray_direction * raycast_length
+  # Use the dedicated building raycast (layer 2 for buildings)
+  building_raycast.enabled = true
+  building_raycast.collision_mask = 2 # Only detect buildings
+  building_raycast.position = ray_origin
+  building_raycast.target_position = ray_direction * raycast_length
   
   # Force the raycast to update
-  obstacle_raycast.force_raycast_update()
+  building_raycast.force_raycast_update()
   
-  if obstacle_raycast.is_colliding():
-    var collider = obstacle_raycast.get_collider()
+  if building_raycast.is_colliding():
+    var collider = building_raycast.get_collider()
     MyLogger.info("Player", "Right-clicked on: %s (type: %s)" % [collider.name, collider.get_class()])
     
-    # Check if the collider is a Entity_PlaceableObstacle
-    if collider is Entity_PlaceableObstacle:
-      var obstacle = collider as Entity_PlaceableObstacle
-      MyLogger.info("Player", "Confirmed Entity_PlaceableObstacle, calling remove()")
+    # Check if the collider is a Entity_PlaceableBuilding
+    if collider is Entity_PlaceableBuilding:
+      var building = collider as Entity_PlaceableBuilding
+      MyLogger.info("Player", "Confirmed Entity_PlaceableBuilding, calling remove()")
       
-      # Check if we're removing the currently hovered obstacle
-      # Currently only Entity_RangedObstacle types can be hovered (see _handle_ranged_obstacle_hover)
-      if _hovered_ranged_obstacle == obstacle:
+      # Check if we're removing the currently hovered building
+      # Currently only Entity_RangedBuilding types can be hovered (see _handle_ranged_building_hover)
+      if _hovered_ranged_building == building:
         # Clear hover state to prevent dangling tooltip/range indicator
-        _hovered_ranged_obstacle.on_mouse_exit()
-        _hovered_ranged_obstacle = null
-        MyLogger.debug("Player", "Cleared hover state for removed obstacle")
+        _hovered_ranged_building.on_mouse_exit()
+        _hovered_ranged_building = null
+        MyLogger.debug("Player", "Cleared hover state for removed building")
       
-      if _hovered_entity == obstacle:
+      if _hovered_entity == building:
         _hide_entity_unit_frame(_hovered_entity)
         _hovered_entity = null
       
-      # Also check if the tooltip is showing this obstacle and hide it
+      # Also check if the tooltip is showing this building and hide it
       # This is a defensive check that handles both current and future cases
-      # where non-ranged obstacles might show tooltips
-      if _obstacle_tooltip and _obstacle_tooltip.visible and _obstacle_tooltip.current_obstacle == obstacle:
-        _obstacle_tooltip.hide_tooltip()
-        MyLogger.debug("Player", "Hid tooltip for removed obstacle")
+      # where non-ranged buildings might show tooltips
+      if _building_tooltip and _building_tooltip.visible and _building_tooltip.current_building == building:
+        _building_tooltip.hide_tooltip()
+        MyLogger.debug("Player", "Hid tooltip for removed building")
       
-      var refund = obstacle.remove()
-      MyLogger.info("Player", "Removed obstacle and recovered %d scrap" % refund)
+      var refund = building.remove()
+      MyLogger.info("Player", "Removed building and recovered %d scrap" % refund)
       
       # Show UI feedback
-      if ui and ui.has_method("show_obstacle_removed"):
-        ui.show_obstacle_removed(refund)
+      if ui and ui.has_method("show_building_removed"):
+        ui.show_building_removed(refund)
       
       # Rebake navigation mesh after removal
       rebake_navigation_mesh()
     else:
-      MyLogger.info("Player", "Clicked object is not a removable obstacle")
+      MyLogger.info("Player", "Clicked object is not a removable building")
   else:
     MyLogger.info("Player", "Right-click raycast did not hit anything")
   
-  # Disable the obstacle raycast after use
-  obstacle_raycast.enabled = false
+  # Disable the building raycast after use
+  building_raycast.enabled = false
 
 
-func _on_obstacle_spawn_requested(obstacle: Resource_ObstacleType) -> void:
-  # Forward the signal to the obstacle placement system
-  obstacle_placement._on_obstacle_spawn_requested(obstacle)
+func _on_building_spawn_requested(building: Resource_BuildingType) -> void:
+  # Forward the signal to the building placement system
+  building_placement._on_building_spawn_requested(building)
 
 func _on_attack_cooldown_started():
   if attack_waiting_cursor_image:
@@ -303,20 +303,20 @@ func _on_attack_cooldown_ended():
   Input.set_custom_mouse_cursor(null)
 
 
-## Shows range indicators on all shooting obstacles when placement mode is entered.
+## Shows range indicators on all shooting buildings when placement mode is entered.
 func _on_placement_mode_entered() -> void:
-  var shooting_obstacles = get_tree().get_nodes_in_group(Entity_RangedObstacle.RANGED_OBSTACLES_GROUP)
-  for obstacle in shooting_obstacles:
-    if obstacle is Entity_RangedObstacle:
-      obstacle.show_range_indicator()
+  var shooting_buildings = get_tree().get_nodes_in_group(Entity_RangedBuilding.RANGED_BUILDINGS_GROUP)
+  for building in shooting_buildings:
+    if building is Entity_RangedBuilding:
+      building.show_range_indicator()
 
 
-## Hides range indicators on all shooting obstacles when placement mode is exited.
+## Hides range indicators on all shooting buildings when placement mode is exited.
 func _on_placement_mode_exited() -> void:
-  var shooting_obstacles = get_tree().get_nodes_in_group(Entity_RangedObstacle.RANGED_OBSTACLES_GROUP)
-  for obstacle in shooting_obstacles:
-    if obstacle is Entity_RangedObstacle:
-      obstacle.hide_range_indicator(true) # Force hide even if hovered
+  var shooting_buildings = get_tree().get_nodes_in_group(Entity_RangedBuilding.RANGED_BUILDINGS_GROUP)
+  for building in shooting_buildings:
+    if building is Entity_RangedBuilding:
+      building.hide_range_indicator(true) # Force hide even if hovered
 
 
 ## Walks up the parent chain from node to find a node with "health_component" metadata.
@@ -347,7 +347,7 @@ func _hide_entity_unit_frame(entity: Node3D) -> void:
   if health:
     health.hide_unit_frame()
 
-## Unified hover handler: drives ranged-obstacle range indicators, tooltips,
+## Unified hover handler: drives ranged-building range indicators, tooltips,
 ## and unit-frame visibility for any entity with a health component.
 func _handle_hover(mouse_position: Vector2) -> void:
   # Skip if mouse hasn't moved enough to warrant a new raycast
@@ -363,29 +363,29 @@ func _handle_hover(mouse_position: Vector2) -> void:
   _hover_raycast.target_position = ray_direction * raycast_length
   _hover_raycast.force_raycast_update()
 
-  var new_hovered_obstacle: Entity_RangedObstacle = null
+  var new_hovered_building: Entity_RangedBuilding = null
   var new_hovered_entity: Node3D = null
 
   if _hover_raycast.is_colliding():
     var collider = _hover_raycast.get_collider()
     if collider is Node3D:
       new_hovered_entity = collider as Node3D
-    if collider is Entity_RangedObstacle:
-      new_hovered_obstacle = collider as Entity_RangedObstacle
+    if collider is Entity_RangedBuilding:
+      new_hovered_building = collider as Entity_RangedBuilding
 
   _hover_raycast.enabled = false
 
-  # ── Ranged-obstacle range indicator + tooltip ──────────────────────────────
-  if new_hovered_obstacle != _hovered_ranged_obstacle:
-    if _hovered_ranged_obstacle and is_instance_valid(_hovered_ranged_obstacle):
-      _hovered_ranged_obstacle.on_mouse_exit()
-      if _obstacle_tooltip:
-        _obstacle_tooltip.hide_tooltip()
-    _hovered_ranged_obstacle = new_hovered_obstacle
-    if _hovered_ranged_obstacle:
-      _hovered_ranged_obstacle.on_mouse_enter()
-      if _obstacle_tooltip:
-        _obstacle_tooltip.show_tooltip(_hovered_ranged_obstacle, mouse_position)
+  # ── Ranged-building range indicator + tooltip ──────────────────────────────
+  if new_hovered_building != _hovered_ranged_building:
+    if _hovered_ranged_building and is_instance_valid(_hovered_ranged_building):
+      _hovered_ranged_building.on_mouse_exit()
+      if _building_tooltip:
+        _building_tooltip.hide_tooltip()
+    _hovered_ranged_building = new_hovered_building
+    if _hovered_ranged_building:
+      _hovered_ranged_building.on_mouse_enter()
+      if _building_tooltip:
+        _building_tooltip.show_tooltip(_hovered_ranged_building, mouse_position)
 
   # ── Unit-frame hover for any entity with a health component ────────────────
   # Clear stale reference if the previously hovered entity was freed (e.g. scrap collected)

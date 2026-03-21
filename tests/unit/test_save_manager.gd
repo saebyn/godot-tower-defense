@@ -97,7 +97,7 @@ func test_create_new_game():
   var slot_path = SaveManager.SAVE_SLOT_PATH % TEST_SLOT
   assert_true(FileAccess.file_exists(slot_path), "Save file should exist")
 
-## Test: Create new game emits load_completed so downstream listeners (ObstacleRegistry, etc.) refresh
+## Test: Create new game emits load_completed so downstream listeners (BuildingRegistry, etc.) refresh
 func test_create_new_game_emits_load_completed():
   watch_signals(SaveManager)
   

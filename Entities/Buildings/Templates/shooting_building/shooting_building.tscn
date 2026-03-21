@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://dhxe3f6ho8qma"]
+
+[ext_resource type="PackedScene" uid="uid://cj8x0adt0k2cd" path="res://Entities/Buildings/Templates/ranged_building/ranged_building.tscn" id="1_anll1"]
+[ext_resource type="Script" uid="uid://d3pwau0rnoxtb" path="res://Entities/Buildings/Templates/shooting_building/shooting_building.gd" id="2_shooting"]
+
+[node name="ShootingBuilding" instance=ExtResource("1_anll1")]
+script = ExtResource("2_shooting")

@@ -85,13 +85,13 @@ func test_stats_manager_save_load():
   # Track some stats
   StatsManager.track_enemy_defeated("basic_zombie", false)
   StatsManager.track_enemy_defeated("basic_zombie", false)
-  StatsManager.track_obstacle_placed("turret")
+  StatsManager.track_building_placed("turret")
   StatsManager.track_click_performed()
   StatsManager.track_click_performed()
   StatsManager.track_click_performed()
   
   var expected_enemies = StatsManager.get_enemies_defeated_total()
-  var expected_obstacles = StatsManager.get_obstacles_placed_total()
+  var expected_buildings = StatsManager.get_buildings_placed_total()
   var expected_clicks = StatsManager.get_clicks_performed()
   
   # Save
@@ -106,7 +106,7 @@ func test_stats_manager_save_load():
   SaveManager.load_save_slot(TEST_SLOT_1)
   
   assert_eq(StatsManager.get_enemies_defeated_total(), expected_enemies, "Enemy count should be restored")
-  assert_eq(StatsManager.get_obstacles_placed_total(), expected_obstacles, "Obstacle count should be restored")
+  assert_eq(StatsManager.get_buildings_placed_total(), expected_buildings, "Building count should be restored")
   assert_eq(StatsManager.get_clicks_performed(), expected_clicks, "clicks_performed should be restored after load")
 
 ## Test: clicks_performed resets on new game

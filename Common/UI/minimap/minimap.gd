@@ -3,13 +3,13 @@
 ## TODO currently broken because of camera orientation
 ## 
 ## A minimap UI component that shows an overhead view of the game area.
-## Displays enemy positions, obstacles, and the player's camera view area.
+## Displays enemy positions, buildings, and the player's camera view area.
 ## 
 ## Features:
 ## - Top-down view of the entire game area
 ## - Real-time enemy position tracking
 ## - Camera viewport visualization
-## - Obstacle and survivor display
+## - Building and survivor display
 ## - Configurable size and position
 ## - Click-to-move camera functionality
 ## 
@@ -24,7 +24,7 @@ class_name UI_Minimap
 @export var minimap_position: Vector2 = Vector2(10, 10) ## Position from top-left corner
 @export var background_color: Color = Color(0.1, 0.1, 0.1, 0.8) ## Background color
 @export var enemy_color: Color = Color.RED ## Color for enemy dots
-@export var obstacle_color: Color = Color.GRAY ## Color for obstacle markers
+@export var building_color: Color = Color.GRAY ## Color for building markers
 @export var survivor_color: Color = Color.GREEN ## Color for survivor markers
 @export var camera_view_color: Color = Color(1, 1, 1, 0.3) ## Color for camera view area
 @export var enemy_dot_size: float = 3.0 ## Size of enemy dots on minimap
@@ -88,8 +88,8 @@ func _update_minimap() -> void:
   # Draw enemies
   _draw_enemies()
   
-  # Draw obstacles and survivors (if we can find them)
-  _draw_obstacles_and_survivors()
+  # Draw buildings and survivors (if we can find them)
+  _draw_buildings_and_survivors()
 
 func _clear_minimap_canvas() -> void:
   # Remove all child nodes from canvas (they'll be recreated)
@@ -131,22 +131,22 @@ func _draw_enemies() -> void:
     enemy_dot.modulate = enemy_color
     minimap_canvas.add_child(enemy_dot)
 
-func _draw_obstacles_and_survivors() -> void:
-  # Find obstacles and survivors in the scene
-  var obstacles = get_tree().get_nodes_in_group("obstacles")
+func _draw_buildings_and_survivors() -> void:
+  # Find buildings and survivors in the scene
+  var buildings = get_tree().get_nodes_in_group("buildings")
   var survivors = get_tree().get_nodes_in_group("survivors")
   
-  # Draw obstacles
-  for obstacle in obstacles:
-    if obstacle is Node3D:
-      var obstacle_pos = obstacle.global_position
-      var minimap_pos = _world_to_minimap(obstacle_pos)
+  # Draw buildings
+  for building in buildings:
+    if building is Node3D:
+      var building_pos = building.global_position
+      var minimap_pos = _world_to_minimap(building_pos)
       
-      var obstacle_marker = Panel.new()
-      obstacle_marker.set_size(Vector2(4, 4))
-      obstacle_marker.position = minimap_pos - Vector2(2, 2)
-      obstacle_marker.modulate = obstacle_color
-      minimap_canvas.add_child(obstacle_marker)
+      var building_marker = Panel.new()
+      building_marker.set_size(Vector2(4, 4))
+      building_marker.position = minimap_pos - Vector2(2, 2)
+      building_marker.modulate = building_color
+      minimap_canvas.add_child(building_marker)
   
   # Draw survivors
   for survivor in survivors:

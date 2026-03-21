@@ -138,7 +138,7 @@ See `docs/visual_style_guide.md` for comprehensive visual specifications.
 - Feature-based folder structure using template + config patterns.
 - Resource-based configuration (.tres files) for data-driven design.
 - Component-based architecture (Health, Attack, Buff components).
-- Autoload singletons: CurrencyManager, StatsManager, AchievementManager, TechTreeManager, ObstacleRegistry, GameManager, MyLogger, AudioManager.
+- Autoload singletons: CurrencyManager, StatsManager, AchievementManager, TechTreeManager, BuildingRegistry, GameManager, MyLogger, AudioManager.
 - Multiple save slot system with per-slot and global data separation.
 - Current implementation: ~25-30% complete (solid technical foundation, missing progression systems and content variety).
 - GitHub repo: [https://github.com/saebyn/zom-nom-defense](https://github.com/saebyn/zom-nom-defense)

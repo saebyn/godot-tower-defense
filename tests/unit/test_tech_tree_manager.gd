@@ -152,29 +152,29 @@ func test_is_branch_completed_returns_false_initially():
   # Assert
   assert_false(completed, "Branch should not be completed initially")
 
-func test_get_unlocked_obstacle_ids_returns_obstacles():
+func test_get_unlocked_building_ids_returns_buildings():
   # Arrange
   CurrencyManager.current_level = 1
   TechTreeManager.unlock_tech("tur_scrap_shooter")
   
   # Act
-  var obstacle_ids = TechTreeManager.get_unlocked_obstacle_ids()
+  var building_ids = TechTreeManager.get_unlocked_building_ids()
   
   # Assert
-  assert_has(obstacle_ids, "turret", "Should include obstacle from unlocked tech")
+  assert_has(building_ids, "turret", "Should include building from unlocked tech")
 
-func test_get_unlocked_obstacle_ids_accumulates_from_multiple_techs():
+func test_get_unlocked_building_ids_accumulates_from_multiple_techs():
   # Arrange
   CurrencyManager.current_level = 1
   TechTreeManager.unlock_tech("tur_scrap_shooter")
   TechTreeManager.unlock_tech("ob_crates")
   
   # Act
-  var obstacle_ids = TechTreeManager.get_unlocked_obstacle_ids()
+  var building_ids = TechTreeManager.get_unlocked_building_ids()
   
   # Assert
-  assert_has(obstacle_ids, "turret", "Should include turret from first tech")
-  assert_has(obstacle_ids, "wall", "Should include wall from second tech")
+  assert_has(building_ids, "turret", "Should include turret from first tech")
+  assert_has(building_ids, "wall", "Should include wall from second tech")
 
 func test_reset_tech_tree_clears_unlocked_techs():
   # Arrange

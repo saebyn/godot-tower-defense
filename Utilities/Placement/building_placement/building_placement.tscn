@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://bpf2dmre1y8t0"]
+
+[ext_resource type="Script" uid="uid://mx50xvayo6d8" path="res://Utilities/Placement/building_placement/building_placement.gd" id="1_6wyqd"]
+
+[node name="BuildingPlacement" type="Node3D" unique_id=1705459850]
+script = ExtResource("1_6wyqd")
+
+[node name="RayCast3D" type="RayCast3D" parent="." unique_id=1800606212]
+enabled = false
+collision_mask = 16

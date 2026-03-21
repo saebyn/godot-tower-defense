@@ -30,7 +30,7 @@ The `AchievementResource` is a custom Godot Resource type that defines individua
 - **hidden**: Whether the achievement is hidden until unlocked (bool)
 
 #### Rewards
-- **reward**: Reward identifier that could unlock tech tree items, obstacles, etc. (String)
+- **reward**: Reward identifier that could unlock tech tree items, buildings, etc. (String)
 
 ### Condition Types
 
@@ -41,7 +41,7 @@ The `ConditionType` enum supports the following tracking types:
 3. **CLICKS_PERFORMED**: Track total raw clicks performed by the player
 4. **HAND_KILLS**: Track total enemies defeated by hand (player clicks)
 5. **SCRAP_EARNED**: Track total scrap earned over all time
-6. **OBSTACLES_PLACED**: Track total obstacles placed
+6. **BUILDINGS_PLACED**: Track total buildings placed
 7. **WAVE_COMPLETED**: Track waves completed in a single game
 8. **GAME_SCENARIO_REACHED**: Track highest game scenario reached
 9. **PLAYER_LEVEL_REACHED**: Track player XP level reached
@@ -53,7 +53,7 @@ The `ConditionType` enum supports the following tracking types:
   - For multiple conditions: validates each condition in the array
 - **get_condition_description()**: Returns a human-readable description of the unlock condition(s)
   - For single conditions: returns simple description like "Defeat 10 enemies"
-  - For multiple conditions: joins conditions with AND/OR, e.g., "Defeat 50 enemies AND Place 10 obstacles"
+  - For multiple conditions: joins conditions with AND/OR, e.g., "Defeat 50 enemies AND Place 10 buildings"
 
 ### Nested Class: AchievementCondition
 
@@ -128,13 +128,13 @@ var cond1 = AchievementResource.AchievementCondition.new()
 cond1.condition_type = AchievementResource.ConditionType.ENEMIES_DEFEATED_TOTAL
 cond1.threshold = 50
 
-# Add second condition: place 10 obstacles
+# Add second condition: place 10 buildings
 var cond2 = AchievementResource.AchievementCondition.new()
-cond2.condition_type = AchievementResource.ConditionType.OBSTACLES_PLACED
+cond2.condition_type = AchievementResource.ConditionType.BUILDINGS_PLACED
 cond2.threshold = 10
 
 achievement.conditions = [cond1, cond2]
-# Result: "Defeat 50 enemies AND Place 10 obstacles"
+# Result: "Defeat 50 enemies AND Place 10 buildings"
 ```
 
 ### Example: Multiple Conditions with OR Logic
@@ -179,9 +179,9 @@ cond1.condition_type = AchievementResource.ConditionType.ENEMIES_DEFEATED_BY_TYP
 cond1.threshold = 100
 cond1.condition_target = "Basic_zombie"
 
-# Condition 2: Place obstacles
+# Condition 2: Place buildings
 var cond2 = AchievementResource.AchievementCondition.new()
-cond2.condition_type = AchievementResource.ConditionType.OBSTACLES_PLACED
+cond2.condition_type = AchievementResource.ConditionType.BUILDINGS_PLACED
 cond2.threshold = 25
 
 # Condition 3: Earn scrap
@@ -190,7 +190,7 @@ cond3.condition_type = AchievementResource.ConditionType.SCRAP_EARNED
 cond3.threshold = 500
 
 achievement.conditions = [cond1, cond2, cond3]
-# Result: "Defeat 100 Basic_zombie enemies AND Place 25 obstacles AND Earn 500 scrap"
+# Result: "Defeat 100 Basic_zombie enemies AND Place 25 buildings AND Earn 500 scrap"
 ```
 
 ## Integrating with StatsManager and CurrencyManager
@@ -201,7 +201,7 @@ The achievement system is integrated with the existing singleton systems:
 - `enemies_defeated_total` and `enemies_defeated_by_type`
 - `enemies_defeated_by_hand` (for HAND_KILLS)
 - `clicks_performed` (for CLICKS_PERFORMED — raw player clicks)
-- `obstacles_placed_total` and `obstacles_placed_by_type`
+- `buildings_placed_total` and `buildings_placed_by_type`
 - `total_scrap_earned`
 - `total_xp_earned`
 
@@ -267,17 +267,9 @@ Achievement states are automatically saved to `user://achievements.save` when un
 AchievementManager.save_achievements_now()
 ```
 
-## Next Steps
-
-To enhance the achievement system, the following components could be added:
-
-1. **Achievement UI**: Display unlocked/locked achievements to the player
-2. **Achievement Notification**: Toast notifications when achievements unlock
-3. **Reward System**: Process achievement rewards (unlock tech tree items, obstacles, etc.)
-
 ## Technical Notes
 
 - The `AchievementResource` uses Godot's `@export` annotations for easy editing in the inspector
 - Validation ensures achievements have all required fields before use
-- The resource follows the same patterns as `EnemyTypeResource` and `ObstacleTypeResource`
+- The resource follows the same patterns as `EnemyTypeResource` and `BuildingTypeResource`
 - The script is registered as a global class with `class_name AchievementResource`

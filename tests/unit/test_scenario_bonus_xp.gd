@@ -53,7 +53,7 @@ func test_bonus_xp_is_tracked_in_scenario_stats():
   ScenarioManager.last_scenario_stats = {
     "scenario_id": scenario_id,
     "completion_time": 120.0,
-    "obstacles_reclaimed": 5,
+    "buildings_reclaimed": 5,
     "scrap_reclaimed": 50,
     "scrap_converted": conversion_data.scrap_converted,
     "xp_gained_from_conversion": conversion_data.xp_gained,
@@ -62,7 +62,7 @@ func test_bonus_xp_is_tracked_in_scenario_stats():
   }
   
   # Assert
-  assert_eq(ScenarioManager.last_scenario_stats.get("bonus_xp_earned", 0), bonus_xp, 
+  assert_eq(ScenarioManager.last_scenario_stats.get("bonus_xp_earned", 0), bonus_xp,
     "Bonus XP should be recorded in scenario stats")
 
 func test_zero_bonus_xp_is_handled_correctly():
@@ -83,14 +83,14 @@ func test_zero_bonus_xp_is_handled_correctly():
   
   # Assert
   assert_eq(CurrencyManager.current_xp, initial_xp, "XP should not change when bonus is 0")
-  assert_eq(ScenarioManager.last_scenario_stats.get("bonus_xp_earned", 0), 0, 
+  assert_eq(ScenarioManager.last_scenario_stats.get("bonus_xp_earned", 0), 0,
     "Zero bonus XP should be recorded in stats")
 
 func test_bonus_xp_can_trigger_level_up():
   # Arrange
   CurrencyManager.current_level = 1
-  CurrencyManager.current_xp = 50  # 50 XP away from level 2
-  var bonus_xp = 100  # More than enough to level up
+  CurrencyManager.current_xp = 50 # 50 XP away from level 2
+  var bonus_xp = 100 # More than enough to level up
   
   # Act
   CurrencyManager.earn_xp(bonus_xp)
@@ -119,7 +119,7 @@ func test_bonus_xp_combined_with_conversion_xp_in_stats():
   
   # Assert - Total is 70 XP, which doesn't trigger level up (need 100)
   var total_xp = conversion_xp + bonus_xp
-  assert_eq(CurrencyManager.current_xp, total_xp, 
+  assert_eq(CurrencyManager.current_xp, total_xp,
     "Total XP should be sum of conversion and bonus XP")
   assert_eq(ScenarioManager.last_scenario_stats.get("xp_gained_from_conversion", 0), conversion_xp,
     "Conversion XP should be tracked separately")
@@ -135,5 +135,5 @@ func test_negative_bonus_xp_is_not_awarded():
   CurrencyManager.earn_xp(bonus_xp)
   
   # Assert
-  assert_eq(CurrencyManager.current_xp, initial_xp, 
+  assert_eq(CurrencyManager.current_xp, initial_xp,
     "Negative bonus XP should not be awarded")

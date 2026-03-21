@@ -87,16 +87,16 @@ func _simple_fade_animation() -> void:
   tween.set_trans(Tween.TRANS_QUART)
   
   # Fade in
-  tween.tween_property(self, "modulate:a", 1.0, 0.3)
+  tween.tween_property(self , "modulate:a", 1.0, 0.3)
   # Hold
   tween.tween_interval(notification_duration - 0.6)
   # Fade out
-  tween.tween_property(self, "modulate:a", 0.0, 0.3)
+  tween.tween_property(self , "modulate:a", 0.0, 0.3)
 
-### Show a notification that an obstacle was removed
-func show_obstacle_removed(refund_amount: int) -> void:
+### Show a notification that a building was removed
+func show_building_removed(refund_amount: int) -> void:
   if label:
-    label.text = "🗑️ Obstacle Removed!\n💰 Refund: %d scrap" % refund_amount
+    label.text = "🗑️ Building Removed!\n💰 Refund: %d scrap" % refund_amount
   
   # Play fade in/out animation
   if animation_player and animation_player.has_animation("spawn_notification"):

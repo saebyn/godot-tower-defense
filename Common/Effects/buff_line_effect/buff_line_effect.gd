@@ -1,5 +1,5 @@
 ## BuffLineEffect.gd
-## Visual component that draws lines from buff obstacles to buffed targets
+## Visual component that draws lines from buff buildings to buffed targets
 ## Shows active buff connections with color-coded, pulsing lines
 
 class_name Component_BuffLineEffect
@@ -17,7 +17,7 @@ extends Node3D
 ## Vertical offset from buff tower's position (start of line)
 @export var line_offset_start: float = 0.1
 
-## Vertical offset at target obstacle's position (end of line)
+## Vertical offset at target building's position (end of line)
 @export var line_offset_end: float = 0.1
 
 ## Update interval in seconds (0 = every frame, 0.1 = 10fps for performance)
@@ -31,13 +31,13 @@ extends Node3D
 
 var mesh_instance: MeshInstance3D
 var material: StandardMaterial3D
-var buff_obstacle: Entity_BuffObstacle
+var buff_building: Entity_BuffBuilding
 var time_since_update: float = 0.0
 
 func _ready():
-  buff_obstacle = get_parent() as Entity_BuffObstacle
-  if not buff_obstacle:
-    MyLogger.error("BuffLineEffect", "Parent must be Entity_BuffObstacle")
+  buff_building = get_parent() as Entity_BuffBuilding
+  if not buff_building:
+    MyLogger.error("BuffLineEffect", "Parent must be Entity_BuffBuilding")
     queue_free()
     return
   
@@ -74,50 +74,52 @@ func _draw_buff_lines():
   var im: ImmediateMesh = mesh_instance.mesh
   im.clear_surfaces()
   
-  # Get currently buffed obstacles
-  var buffed_obstacles = _get_buffed_obstacles()
+  # Get currently buffed buildings
+  var buffed_buildings = _get_buffed_buildings()
   
-  if buffed_obstacles.is_empty():
+  if buffed_buildings.is_empty():
     return
   
   # Limit displayed lines to reduce visual clutter
-  var obstacles_to_draw = buffed_obstacles
-  if buffed_obstacles.size() > max_lines_displayed:
+  var buildings_to_draw = buffed_buildings
+  if buffed_buildings.size() > max_lines_displayed:
     # Sort by distance, show closest ones
-    buffed_obstacles.sort_custom(func(a, b):
-      return buff_obstacle.global_position.distance_squared_to(a.global_position) < \
-           buff_obstacle.global_position.distance_squared_to(b.global_position)
+    buffed_buildings.sort_custom(func(a, b):
+      return buff_building.global_position.distance_squared_to(a.global_position) < \
+           buff_building.global_position.distance_squared_to(b.global_position)
     )
-    obstacles_to_draw = buffed_obstacles.slice(0, max_lines_displayed)
+    buildings_to_draw = buffed_buildings.slice(0, max_lines_displayed)
   
   im.surface_begin(Mesh.PRIMITIVE_LINES, material)
   
-  for obstacle in obstacles_to_draw:
-    _draw_line_to_obstacle(im, obstacle)
+  for building in buildings_to_draw:
+    _draw_line_to_building(im, building)
   
   im.surface_end()
 
-func _get_buffed_obstacles() -> Array:
+func _get_buffed_buildings() -> Array:
   var results = []
-  var obstacles = get_tree().get_nodes_in_group(Entity_PlaceableObstacle.OBSTACLE_GROUP)
+  var buildings = get_tree().get_nodes_in_group(Entity_PlaceableBuilding.BUILDING_GROUP)
   
-  for obstacle in obstacles:
-    if obstacle == buff_obstacle:
+  for building in buildings:
+    if building == buff_building:
       continue
-    if not is_instance_valid(obstacle):
+    if not is_instance_valid(building):
+      continue
+    if building is not Entity_PlaceableBuilding:
       continue
     
-    var distance = buff_obstacle.global_position.distance_to(obstacle.global_position)
-    if distance <= buff_obstacle.effect_range:
-      # Verify obstacle actually has our buff
-      if obstacle.buffs.has(buff_obstacle.get_instance_id()):
-        results.append(obstacle)
+    var distance = buff_building.global_position.distance_to(building.global_position)
+    if distance <= buff_building.effect_range:
+      # Verify building actually has our buff
+      if building.buffs.has(buff_building.get_instance_id()):
+        results.append(building)
   
   return results
 
-func _draw_line_to_obstacle(im: ImmediateMesh, obstacle: Node3D):
-  var start_pos = buff_obstacle.global_position
-  var end_pos = obstacle.global_position
+func _draw_line_to_building(im: ImmediateMesh, building: Node3D):
+  var start_pos = buff_building.global_position
+  var end_pos = building.global_position
   
   # Project to ground plane (low Y value)
   start_pos.y = line_offset_start
@@ -153,12 +155,12 @@ func _get_buff_color() -> Color:
     return override_color
   
   # Otherwise use buff type color
-  match buff_obstacle.buff_type:
-    Entity_BuffObstacle.BuffType.ATTACK_SPEED:
+  match buff_building.buff_type:
+    Entity_BuffBuilding.BuffType.ATTACK_SPEED:
       return Color(0.949, 0.655, 0.353) # Orange
-    Entity_BuffObstacle.BuffType.DAMAGE:
+    Entity_BuffBuilding.BuffType.DAMAGE:
       return Color(0.42, 0.549, 0.369) # Zombie Green
-    Entity_BuffObstacle.BuffType.RANGE:
+    Entity_BuffBuilding.BuffType.RANGE:
       return Color(0.18, 0.8, 0.44) # Economy Green
     _:
       return Color.WHITE

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="Resource_BuildingType" format=3 uid="uid://b7syc01mdvv3u"]
+
+[ext_resource type="PackedScene" uid="uid://dd5321pothnh6" path="res://Entities/Buildings/Concrete/electric_fence.tscn" id="1_5kwf0"]
+[ext_resource type="Script" uid="uid://vy1lf2kd14dr" path="res://Config/Buildings/building_type_resource.gd" id="1_jonh0"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_jonh0"]
+size = Vector2(16, 16)
+
+[resource]
+script = ExtResource("1_jonh0")
+id = "electric_fence"
+name = "Electric Fence"
+description = "DoT fence that continuously damages enemies. Requires Zed Zapper tech."
+icon = SubResource("PlaceholderTexture2D_jonh0")
+is_offensive = true
+cost = 50
+scene = ExtResource("1_5kwf0")
+required_tech_ids = Array[String](["ob_electric_fence"])
+metadata/_custom_type_script = "uid://vy1lf2kd14dr"

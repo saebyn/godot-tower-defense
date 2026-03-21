@@ -1,17 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://beq4rqyqagfx"]
+[gd_scene format=3 uid="uid://beq4rqyqagfx"]
 
 [ext_resource type="Script" uid="uid://dwgqj2x8j6jsy" path="res://Common/UI/hotbar/hotbar.gd" id="1_hotbar"]
 [ext_resource type="PackedScene" uid="uid://b7pmvbm0x2nvt" path="res://Common/UI/hotbar/hotbar_button.tscn" id="2_8poen"]
 
-[node name="Hotbar" type="Control"]
+[node name="Hotbar" type="Control" unique_id=1273476777]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_hotbar")
 button_scene = ExtResource("2_8poen")
 
-[node name="SlotsContainer" type="HBoxContainer" parent="."]
+[node name="SlotsContainer" type="HBoxContainer" parent="." unique_id=1601335677]
 layout_mode = 1
 
-[node name="ObstacleSelectionMenu" type="PopupMenu" parent="."]
+[node name="BuildingSelectionMenu" type="PopupMenu" parent="." unique_id=329315378]
 
-[connection signal="id_pressed" from="ObstacleSelectionMenu" to="." method="_on_obstacle_menu_item_selected"]
+[connection signal="id_pressed" from="BuildingSelectionMenu" to="." method="_on_building_menu_item_selected"]

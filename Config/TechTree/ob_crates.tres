@@ -8,4 +8,4 @@ id = "ob_crates"
 display_name = "Stacked Crates"
 description = "A very weak wall to redirect enemies. Starter tech available immediately."
 branch_name = "Defensive"
-unlocked_obstacle_ids = Array[String](["wall"])
+unlocked_building_ids = Array[String](["wall"])

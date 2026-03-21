@@ -55,9 +55,9 @@ horizontal_alignment = 1
 [node name="HSeparator2" type="HSeparator" parent="Panel/MarginContainer/VBoxContainer" unique_id=1189442840]
 layout_mode = 2
 
-[node name="ObstaclesReclaimedLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=594907066]
+[node name="BuildingsReclaimedLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=594907066]
 layout_mode = 2
-text = "Obstacles Reclaimed: 0"
+text = "Buildings Reclaimed: 0"
 horizontal_alignment = 1
 
 [node name="ScrapReclaimedLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=939408053]

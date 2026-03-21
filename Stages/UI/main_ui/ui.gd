@@ -1,7 +1,7 @@
 extends Control
 class_name MainUI
 
-signal obstacle_spawn_requested(obstacle: Resource_ObstacleType)
+signal building_spawn_requested(building: Resource_BuildingType)
 
 @onready var spawn_indicator: Control = $SpawnIndicator
 @onready var hotbar: Control = $Hotbar
@@ -23,9 +23,9 @@ func _process(_delta: float) -> void:
     _toggle_sound_effect_display()
 
 
-func request_obstacle_spawn(obstacle: Resource_ObstacleType) -> void:
-  MyLogger.info("UI", "Requesting obstacle spawn: %s" % obstacle.name)
-  obstacle_spawn_requested.emit(obstacle)
+func request_building_spawn(building: Resource_BuildingType) -> void:
+  MyLogger.info("UI", "Requesting building spawn: %s" % building.name)
+  building_spawn_requested.emit(building)
 
 ## Called when an enemy spawns to show the spawn indicator (legacy)
 func _on_enemy_spawned(enemy: Node3D) -> void:
@@ -45,10 +45,10 @@ func _on_wave_completed(wave: System_Wave, wave_number: int) -> void:
   if spawn_indicator and spawn_indicator.has_method("show_wave_completed"):
     spawn_indicator.show_wave_completed(wave, wave_number)
 
-## Called when an obstacle is removed to show removal feedback
-func show_obstacle_removed(refund_amount: int) -> void:
-  if spawn_indicator and spawn_indicator.has_method("show_obstacle_removed"):
-    spawn_indicator.show_obstacle_removed(refund_amount)
+## Called when a building is removed to show removal feedback
+func show_building_removed(refund_amount: int) -> void:
+  if spawn_indicator and spawn_indicator.has_method("show_building_removed"):
+    spawn_indicator.show_building_removed(refund_amount)
 
 ## Called to show a problem message to the user (e.g. Twitch setup failed)
 func show_problem_message(message: String) -> void:

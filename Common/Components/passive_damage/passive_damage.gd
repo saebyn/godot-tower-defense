@@ -5,7 +5,7 @@ class_name Component_PassiveDamage
 ## Deals damage to enemies that enter/stay in contact with this area.
 ## Useful for spike traps, fire patches, barbed wire, etc.
 ##
-## Usage: Add as child node to an obstacle, configure damage settings,
+## Usage: Add as child node to a building, configure damage settings,
 ## and add a CollisionShape3D child to define the damage area.
 
 signal damage_dealt(target: Node, damage: int)
@@ -38,7 +38,7 @@ func _ready():
 
   # Register in parent metadata for discovery
   if get_parent():
-    get_parent().set_meta("passive_damage_component", self)
+    get_parent().set_meta("passive_damage_component", self )
   
   MyLogger.debug("PassiveDamage", "PassiveDamage component initialized")
 

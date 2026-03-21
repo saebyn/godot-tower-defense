@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://c8ln6ujnt0mho"]
+
+[ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://Entities/Buildings/Templates/base_building/building.tscn" id="1_da0gv"]
+[ext_resource type="PackedScene" uid="uid://cxqyaxh6n6kbh" path="res://Assets/Models/StackOfCrates.blend" id="2_0dadk"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5dfv8"]
+size = Vector3(6.50949, 3.95703, 2.34848)
+
+[node name="Crates" unique_id=1659741871 node_paths=PackedStringArray("mesh_instances") instance=ExtResource("1_da0gv")]
+mesh_instances = [NodePath("StackOfCrates/Cube")]
+
+[node name="StackOfCrates" parent="." index="0" unique_id=2015546954 instance=ExtResource("2_0dadk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.04165, 0, 0)
+
+[node name="Cube" parent="StackOfCrates" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0152402, 1.0123842, -0.281648)
+
+[node name="Health" parent="." index="1" unique_id=1834854437]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0152402, 0.4258511, 0)
+hitpoints = 10
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="2" unique_id=846593028]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15926981, 1.9883511, -0.129532)
+shape = SubResource("BoxShape3D_5dfv8")
+
+[node name="AudioStreamPlayer3D" parent="." index="3" unique_id=1513947477]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0135173, 1.5797635, 0)
+
+[editable path="StackOfCrates"]

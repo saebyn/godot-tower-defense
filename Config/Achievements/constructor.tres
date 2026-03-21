@@ -8,7 +8,7 @@
 script = ExtResource("1_constructor")
 id = "constructor"
 name = "Constructor"
-description = "Place your first obstacle"
+description = "Place your first building."
 use_multiple_conditions = false
 unlock_condition_type = 4
 threshold = 1

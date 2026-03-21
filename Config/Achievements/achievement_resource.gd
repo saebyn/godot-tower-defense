@@ -22,7 +22,7 @@ extends Resource
 ##   cond1.condition_type = ConditionType.ENEMIES_DEFEATED_TOTAL
 ##   cond1.threshold = 50
 ##   var cond2 = AchievementCondition.new()
-##   cond2.condition_type = ConditionType.OBSTACLES_PLACED
+##   cond2.condition_type = ConditionType.BUILDINGS_PLACED
 ##   cond2.threshold = 10
 ##   complex_achievement.conditions = [cond1, cond2]
 
@@ -31,7 +31,7 @@ enum ConditionType {
   ENEMIES_DEFEATED_BY_TYPE = 1, ## Track enemies defeated of a specific type
   CLICKS_PERFORMED = 2, ## Track total raw clicks performed by the player
   SCRAP_EARNED = 3, ## Track total scrap earned over all time
-  OBSTACLES_PLACED = 4, ## Track total obstacles placed
+  BUILDINGS_PLACED = 4, ## Track total buildings placed
   WAVE_COMPLETED = 5, ## Track waves completed in a single game
   GAME_SCENARIO_REACHED = 6, ## Track highest game scenario reached
   PLAYER_LEVEL_REACHED = 7, ## Track player XP level reached
@@ -73,8 +73,8 @@ class AchievementCondition extends Resource:
         desc = "Defeat %d enemies by hand" % threshold
       ConditionType.SCRAP_EARNED:
         desc = "Earn %d scrap" % threshold
-      ConditionType.OBSTACLES_PLACED:
-        desc = "Place %d obstacles" % threshold
+      ConditionType.BUILDINGS_PLACED:
+        desc = "Place %d buildings" % threshold
       ConditionType.WAVE_COMPLETED:
         desc = "Complete wave %d" % threshold
       ConditionType.GAME_SCENARIO_REACHED:
@@ -169,8 +169,8 @@ func get_condition_description() -> String:
         condition_desc = "Defeat %d enemies by hand" % threshold
       ConditionType.SCRAP_EARNED:
         condition_desc = "Earn %d scrap" % threshold
-      ConditionType.OBSTACLES_PLACED:
-        condition_desc = "Place %d obstacles" % threshold
+      ConditionType.BUILDINGS_PLACED:
+        condition_desc = "Place %d buildings" % threshold
       ConditionType.WAVE_COMPLETED:
         condition_desc = "Complete wave %d" % threshold
       ConditionType.GAME_SCENARIO_REACHED:

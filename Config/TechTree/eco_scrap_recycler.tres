@@ -9,4 +9,4 @@ display_name = "Scrap Recycler"
 description = "Generates Scrap over time. Starter tech available immediately."
 branch_name = "Economy"
 level_requirement = 2
-unlocked_obstacle_ids = Array[String](["scrap_recycler"])
+unlocked_building_ids = Array[String](["scrap_recycler"])

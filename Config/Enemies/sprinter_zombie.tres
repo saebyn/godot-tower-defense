@@ -17,5 +17,5 @@ attack_speed = 1.0
 scrap_reward = 15
 xp_reward = 50
 target_desired_distance = 4.0
-obstacle_attack_range = 6.0
+building_attack_range = 6.0
 metadata/_custom_type_script = "uid://veme7gd0dvne"

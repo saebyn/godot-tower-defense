@@ -54,7 +54,7 @@ For each field, test editing:
 - [ ] Prerequisites - comma-separated list
 - [ ] Achievements - comma-separated list
 - [ ] Mutually Exclusive - comma-separated list
-- [ ] Unlocked Obstacles - comma-separated list
+- [ ] Unlocked Buildings - comma-separated list
 - [ ] Branch Completion - comma-separated list
 - [ ] Save Changes button persists changes
 - [ ] Changes reflected in graph after save

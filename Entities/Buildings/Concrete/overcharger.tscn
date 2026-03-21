@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://giv7ooe62qw1"]
+
+[ext_resource type="PackedScene" uid="uid://bjlvdmndqn0hw" path="res://Entities/Buildings/Templates/buff_building/buff_building.tscn" id="1_a8xu0"]
+[ext_resource type="Script" uid="uid://dxpmn7q530akc" path="res://Common/Effects/buff_line_effect/buff_line_effect.gd" id="1_buff_line"]
+[ext_resource type="PackedScene" uid="uid://bib1ebyms1opq" path="res://Assets/Models/tower.blend" id="2_nhd11"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_10y5i"]
+size = Vector3(2.0137024, 3.1646423, 2.0134277)
+
+[node name="Overcharger" node_paths=PackedStringArray("mesh_instances") instance=ExtResource("1_a8xu0")]
+buff_type = 1
+buff_amount = 0.3999999999999999
+buff_interval = 1.0
+mesh_instances = [NodePath("tower/Cube_001")]
+
+[node name="tower" parent="." index="4" instance=ExtResource("2_nhd11")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0034637451, 1.6103668, -0.00061035156)
+shape = SubResource("BoxShape3D_10y5i")
+
+[node name="BuffLineEffect" type="Node3D" parent="." index="6"]
+script = ExtResource("1_buff_line")
+
+[editable path="tower"]

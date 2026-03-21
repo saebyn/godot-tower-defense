@@ -175,10 +175,10 @@ func _update_detail_panel() -> void:
   
   # Build unlocks text
   var unlocks_text = "Unlocks:\n"
-  if tech.unlocked_obstacle_ids.size() > 0:
-    unlocks_text += "• Obstacles: %s" % ", ".join(tech.unlocked_obstacle_ids)
+  if tech.unlocked_building_ids.size() > 0:
+    unlocks_text += "• Buildings: %s" % ", ".join(tech.unlocked_building_ids)
   else:
-    unlocks_text += "• No obstacles (upgrade/feature)"
+    unlocks_text += "• No buildings (upgrade/feature)"
   detail_unlocks.text = unlocks_text
   
   # Update unlock button
