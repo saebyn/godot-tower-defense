@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b47ma4awlxcq0"]
 
 [ext_resource type="Script" uid="uid://dxpmn7q530akc" path="res://Common/Effects/buff_line_effect/buff_line_effect.gd" id="1_buff_line"]
-[ext_resource type="PackedScene" uid="uid://bjlvdmndqn0hw" path="res://Entities/Buildings/Templates/buff_obstacle/buff_obstacle.tscn" id="1_lsym5"]
+[ext_resource type="PackedScene" uid="uid://bjlvdmndqn0hw" path="res://Entities/Buildings/Templates/buff_building/buff_building.tscn" id="1_lsym5"]
 [ext_resource type="PackedScene" uid="uid://c3ipc1a0uike" path="res://Assets/Models/fire_tower.blend" id="2_xjdhn"]
 [ext_resource type="Texture2D" uid="uid://cj1d4nm3dx27e" path="res://Assets/Textures/fire/0001.png" id="3_ae7w6"]
 [ext_resource type="Texture2D" uid="uid://bplxfpvgvkkhh" path="res://Assets/Textures/fire/0011.png" id="4_ea48x"]

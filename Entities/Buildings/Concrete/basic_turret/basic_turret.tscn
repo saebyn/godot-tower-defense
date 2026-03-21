@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bl5g2v8n3jkph"]
 
-[ext_resource type="PackedScene" uid="uid://dhxe3f6ho8qma" path="res://Entities/Buildings/Templates/shooting_obstacle/shooting_obstacle.tscn" id="1_turret"]
+[ext_resource type="PackedScene" uid="uid://dhxe3f6ho8qma" path="res://Entities/Buildings/Templates/shooting_building/shooting_building.tscn" id="1_turret"]
 [ext_resource type="Script" uid="uid://0yy8udbhaakj" path="res://Entities/Buildings/Concrete/basic_turret/basic_turret.gd" id="2_6y5ob"]
 [ext_resource type="PackedScene" uid="uid://doxso30lh6jyq" path="res://Assets/Models/new_turret.glb" id="3_cvjpm"]
 [ext_resource type="Texture2D" uid="uid://got2ohkr26cd" path="res://Assets/Textures/fire_particle.png" id="4_2a5gv"]
