@@ -201,7 +201,7 @@ The achievement system is integrated with the existing singleton systems:
 - `enemies_defeated_total` and `enemies_defeated_by_type`
 - `enemies_defeated_by_hand` (for HAND_KILLS)
 - `clicks_performed` (for CLICKS_PERFORMED — raw player clicks)
-- `BUILDINGS_PLACED_total` and `BUILDINGS_PLACED_by_type`
+- `buildings_placed_total` and `buildings_placed_by_type`
 - `total_scrap_earned`
 - `total_xp_earned`
 
