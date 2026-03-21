@@ -184,8 +184,8 @@ Entities are game objects with physics bodies and scene hierarchies. They repres
 
 | Class Name | Base Type | Location | Purpose |
 |------------|-----------|----------|---------|
-| `Entity_PlaceableBuilding` | `StaticBody3D` | `Entities/Buildings/Templates/` | Base building/tower class |
-| `Entity_ShootingBuilding` | `Entity_PlaceableBuilding` | `Entities/Buildings/Templates/` | Shooting tower variant |
+| `Entity_PlaceableBuilding` | `StaticBody3D` | `Entities/Obstacles/Templates/` | Base building/tower class |
+| `Entity_ShootingBuilding` | `Entity_PlaceableBuilding` | `Entities/Obstacles/Templates/` | Shooting tower variant |
 | `Entity_Scrap` | `Node3D` | `Entities/Scrap/` | Collectible scrap item |
 
 **Why Entities Should Be Scenes:**
@@ -296,7 +296,7 @@ func _ready():
 
 **File structure:**
 ```
-Entities/Buildings/Templates/base_building/
+Entities/Obstacles/Templates/base_building/
 ├── building.gd        ✅ (class_name Entity_PlaceableBuilding)
 ├── building.tscn      ✅ (scene file)
 ├── building.gd.uid
@@ -347,8 +347,8 @@ Entities/Buildings/Templates/base_building/
 | `UI_TechTree` | UI | `Control` | ✅ | `Stages/UI/tech_tree/` |
 | `UI_TechNodeCard` | UI | `PanelContainer` | ✅ | `Stages/UI/tech_tree/` |
 | `UI_MainMenu` | UI | `Control` | ✅ | `Stages/UI/main_menu/` |
-| `Entity_PlaceableBuilding` | Entity | `StaticBody3D` | ✅ | `Entities/Buildings/Templates/base_building/` |
-| `Entity_ShootingBuilding` | Entity | `Entity_PlaceableBuilding` | ✅ | `Entities/Buildings/Templates/shooting_building/` |
+| `Entity_PlaceableBuilding` | Entity | `StaticBody3D` | ✅ | `Entities/Obstacles/Templates/base_building/` |
+| `Entity_ShootingBuilding` | Entity | `Entity_PlaceableBuilding` | ✅ | `Entities/Obstacles/Templates/shooting_building/` |
 | `Entity_Scrap` | Entity | `Node3D` | ✅ | `Entities/Scrap/` |
 | `Resource_EnemyType` | Resource | `Resource` | ❌ | `Config/Enemies/` |
 | `Resource_Achievement` | Resource | `Resource` | ❌ | `Config/Achievements/` |
