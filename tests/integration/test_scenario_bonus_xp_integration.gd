@@ -38,7 +38,7 @@ func test_bonus_xp_is_included_in_scenario_stats():
   ScenarioManager.last_scenario_stats = {
     "scenario_id": scenario_id,
     "completion_time": 120.0,
-    "obstacles_reclaimed": 3,
+    "buildings_reclaimed": 3,
     "scrap_reclaimed": 30,
     "scrap_converted": 50,
     "xp_gained_from_conversion": conversion_xp,

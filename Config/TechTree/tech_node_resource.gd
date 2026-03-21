@@ -25,7 +25,7 @@ class_name Resource_TechNode
 @export var requires_branch_completion: Array[String] = [] ## Branch names that must be fully completed before this unlocks
 
 @export_category("Effects")
-@export var unlocked_obstacle_ids: Array[String] = [] ## Obstacle IDs that become available when this tech is unlocked
+@export var unlocked_building_ids: Array[String] = [] ## Building IDs that become available when this tech is unlocked
 
 ## Validates that the tech node has required fields
 func is_valid() -> bool:

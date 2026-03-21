@@ -42,7 +42,7 @@ class_name <Prefix>_<DescriptiveName>
 | `Entity_` | Game Entities | In-game objects with physics | `Entity_PlaceableBuilding`, `Entity_Scrap` |
 | `System_` | Game Systems | High-level game logic | `System_EnemySpawner`, `System_Wave` |
 | `Effect_` | Visual/Audio Effects | Effect controllers | `Effect_Shake` |
-| `Utility_` | Utilities | Helper classes and tools | `Utility_ObstaclePlacement` |
+| `Utility_` | Utilities | Helper classes and tools | `Utility_BuildingPlacement` |
 | `Stage_` | Stages/Scenarios | Scenario classes | `Stage_Scenario` |
 
 ---
@@ -140,7 +140,7 @@ UI classes handle player interaction, information display, and menu systems.
 
 **Location**: `Config/`
 
-Resource classes are pure data containers extending Godot's `Resource` class. They store configuration for enemies, obstacles, achievements, etc.
+Resource classes are pure data containers extending Godot's `Resource` class. They store configuration for enemies, buildings, achievements, etc.
 
 **Key Characteristics:**
 - Extend from `Resource`
@@ -153,7 +153,7 @@ Resource classes are pure data containers extending Godot's `Resource` class. Th
 | Class Name | Location | Purpose |
 |------------|----------|---------|
 | `Resource_EnemyType` | `Config/Enemies/` | Enemy configuration data |
-| `Resource_BuildingType` | `Config/Obstacles/` | Building/tower configuration |
+| `Resource_BuildingType` | `Config/Buildings/` | Building/tower configuration |
 | `Resource_Achievement` | `Config/Achievements/` | Achievement definitions |
 | `Resource_TechNode` | `Config/TechTree/` | Tech tree node data |
 
@@ -184,8 +184,8 @@ Entities are game objects with physics bodies and scene hierarchies. They repres
 
 | Class Name | Base Type | Location | Purpose |
 |------------|-----------|----------|---------|
-| `Entity_PlaceableBuilding` | `StaticBody3D` | `Entities/Obstacles/Templates/` | Base building/tower class |
-| `Entity_ShootingBuilding` | `Entity_PlaceableBuilding` | `Entities/Obstacles/Templates/` | Shooting tower variant |
+| `Entity_PlaceableBuilding` | `StaticBody3D` | `Entities/Buildings/Templates/` | Base building/tower class |
+| `Entity_ShootingBuilding` | `Entity_PlaceableBuilding` | `Entities/Buildings/Templates/` | Shooting tower variant |
 | `Entity_Scrap` | `Node3D` | `Entities/Scrap/` | Collectible scrap item |
 
 **Why Entities Should Be Scenes:**
@@ -237,8 +237,8 @@ Utility classes provide helper functionality and tools.
 
 | Class Name | Base Type | Purpose |
 |------------|-----------|---------|
-| `Utility_ObstaclePlacement` | `Node3D` | Handles obstacle placement logic |
-| `Utility_ObstaclePreview` | `Node3D` | Shows placement preview ghost |
+| `Utility_BuildingPlacement` | `Node3D` | Handles building placement logic |
+| `Utility_BuildingPreview` | `Node3D` | Shows placement preview ghost |
 | `Utility_PlacementResult` | *N/A* | Placement validation result data |
 
 ---
@@ -296,11 +296,11 @@ func _ready():
 
 **File structure:**
 ```
-Entities/Obstacles/Templates/base_obstacle/
-├── obstacle.gd        ✅ (class_name Entity_PlaceableBuilding)
-├── obstacle.tscn      ✅ (scene file)
-├── obstacle.gd.uid
-└── obstacle.tscn.uid
+Entities/Buildings/Templates/base_building/
+├── building.gd        ✅ (class_name Entity_PlaceableBuilding)
+├── building.tscn      ✅ (scene file)
+├── building.gd.uid
+└── building.tscn.uid
 ```
 
 **Why the distinction matters:**
@@ -347,16 +347,16 @@ Entities/Obstacles/Templates/base_obstacle/
 | `UI_TechTree` | UI | `Control` | ✅ | `Stages/UI/tech_tree/` |
 | `UI_TechNodeCard` | UI | `PanelContainer` | ✅ | `Stages/UI/tech_tree/` |
 | `UI_MainMenu` | UI | `Control` | ✅ | `Stages/UI/main_menu/` |
-| `Entity_PlaceableBuilding` | Entity | `StaticBody3D` | ✅ | `Entities/Obstacles/Templates/base_obstacle/` |
-| `Entity_ShootingBuilding` | Entity | `Entity_PlaceableBuilding` | ✅ | `Entities/Obstacles/Templates/shooting_obstacle/` |
+| `Entity_PlaceableBuilding` | Entity | `StaticBody3D` | ✅ | `Entities/Buildings/Templates/base_building/` |
+| `Entity_ShootingBuilding` | Entity | `Entity_PlaceableBuilding` | ✅ | `Entities/Buildings/Templates/shooting_building/` |
 | `Entity_Scrap` | Entity | `Node3D` | ✅ | `Entities/Scrap/` |
 | `Resource_EnemyType` | Resource | `Resource` | ❌ | `Config/Enemies/` |
 | `Resource_Achievement` | Resource | `Resource` | ❌ | `Config/Achievements/` |
-| `Resource_BuildingType` | Resource | `Resource` | ❌ | `Config/Obstacles/` |
+| `Resource_BuildingType` | Resource | `Resource` | ❌ | `Config/Buildings/` |
 | `Resource_TechNode` | Resource | `Resource` | ❌ | `Config/TechTree/` |
-| `Utility_ObstaclePreview` | Utility | `Node3D` | ❌ | `Utilities/Placement/` |
-| `Utility_PlacementResult` | Utility | *N/A* | ❌ | `Utilities/Placement/obstacle_placement/` |
-| `Utility_ObstaclePlacement` | Utility | `Node3D` | ✅ | `Utilities/Placement/obstacle_placement/` |
+| `Utility_BuildingPreview` | Utility | `Node3D` | ❌ | `Utilities/Placement/` |
+| `Utility_PlacementResult` | Utility | *N/A* | ❌ | `Utilities/Placement/building_placement/` |
+| `Utility_BuildingPlacement` | Utility | `Node3D` | ✅ | `Utilities/Placement/building_placement/` |
 | `Stage_Scenario` | Stage | `Node3D` | ✅ | `Stages/Scenarios/` |
 
 ---

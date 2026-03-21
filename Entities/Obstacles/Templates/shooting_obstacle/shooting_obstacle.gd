@@ -1,12 +1,12 @@
 class_name Entity_ShootingBuilding
-extends Entity_RangedObstacle
+extends Entity_RangedBuilding
 
 @export var enemy_group: String = "enemies"
 @export var detection_interval: float = 0.5
 
 ## The currently tracked target enemy, updated by detection timer
 var current_target: Node3D = null
-## Whether the obstacle is ready to attack (e.g., turret is aimed at target)
+## Whether the building is ready to attack (e.g., turret is aimed at target)
 var ready_to_attack: bool = true
 ## Whether the current target is within attack range (updated by detection logic)
 var can_attack_current_target: bool = false
@@ -22,9 +22,9 @@ func _ready():
   if has_meta("attack_component"):
     attack = get_meta("attack_component")
   
-  # Set damage source for obstacle attacks
+  # Set damage source for building attacks
   if attack:
-    attack.damage_source = "obstacle"
+    attack.damage_source = "building"
 
   # Set up detection timer (only when placed, not in preview mode)
   if not is_preview:
@@ -53,7 +53,7 @@ func _detect_and_attack_enemies():
   current_target = result[0]
   can_attack_current_target = result[1]
   if current_target and can_attack_current_target and ready_to_attack:
-    MyLogger.debug("ShootingObstacle", "Attacking enemy at distance: %f" % global_position.distance_to(current_target.global_position))
+    MyLogger.debug("ShootingBuilding", "Attacking enemy at distance: %f" % global_position.distance_to(current_target.global_position))
     attack.perform_attack(current_target)
 
 func find_nearest_enemy_in_range() -> Array:
@@ -76,19 +76,19 @@ func find_nearest_enemy_in_range() -> Array:
   return [nearest_enemy, can_attack]
 
 func _on_died(damage_source: String = "unknown") -> void:
-  MyLogger.info("ShootingObstacle", "Shooting obstacle destroyed by: %s" % damage_source)
+  MyLogger.info("ShootingBuilding", "Shooting building destroyed by: %s" % damage_source)
   # Stop detection timer before destruction
   if detection_timer:
     detection_timer.stop()
   queue_free()
 
 
-func _handle_buffs(buff_type: Entity_BuffObstacle.BuffType, amounts: Array[float]) -> void:
+func _handle_buffs(buff_type: Entity_BuffBuilding.BuffType, amounts: Array[float]) -> void:
   match buff_type:
-    Entity_BuffObstacle.BuffType.ATTACK_SPEED:
+    Entity_BuffBuilding.BuffType.ATTACK_SPEED:
       if attack:
         attack.attack_speed = _stack_buffs(buff_type, attack.attack_speed, amounts)
-    Entity_BuffObstacle.BuffType.DAMAGE:
+    Entity_BuffBuilding.BuffType.DAMAGE:
       if attack:
         attack.damage_amount = _stack_buffs(buff_type, attack.damage_amount, amounts)
     _:
@@ -100,12 +100,12 @@ func get_tooltip_info() -> Dictionary:
   
   if attack:
     # Attack speed
-    var base_speed = _original_values.get(Entity_BuffObstacle.BuffType.ATTACK_SPEED, attack.attack_speed)
+    var base_speed = _original_values.get(Entity_BuffBuilding.BuffType.ATTACK_SPEED, attack.attack_speed)
     info.base_stats["attack_speed"] = base_speed
     info.current_stats["attack_speed"] = attack.attack_speed
     
     # Damage
-    var base_damage = _original_values.get(Entity_BuffObstacle.BuffType.DAMAGE, attack.damage_amount)
+    var base_damage = _original_values.get(Entity_BuffBuilding.BuffType.DAMAGE, attack.damage_amount)
     info.base_stats["damage"] = base_damage
     info.current_stats["damage"] = attack.damage_amount
   

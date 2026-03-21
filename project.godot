@@ -333,7 +333,7 @@ dialogic_default_action={
 
 3d_physics/layer_3="attackable"
 3d_physics/layer_5="Ground"
-3d_physics/layer_6="obstacles"
+3d_physics/layer_6="Buildings"
 
 [logging]
 

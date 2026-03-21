@@ -1,7 +1,7 @@
 extends Control
 
 @onready var survival_time_label = $Panel/MarginContainer/VBoxContainer/SurvivalTimeLabel
-@onready var obstacles_reclaimed_label = $Panel/MarginContainer/VBoxContainer/ObstaclesReclaimedLabel
+@onready var buildings_reclaimed_label = $Panel/MarginContainer/VBoxContainer/ObstaclesReclaimedLabel
 @onready var scrap_reclaimed_label = $Panel/MarginContainer/VBoxContainer/ScrapReclaimedLabel
 @onready var remaining_scrap_label = $Panel/MarginContainer/VBoxContainer/RemainingScrapLabel
 @onready var converted_to_xp_label = $Panel/MarginContainer/VBoxContainer/ConvertedToXPLabel
@@ -35,9 +35,9 @@ func _update_stats() -> void:
   var elapsed_time = stats.get("elapsed_time", 0.0)
   survival_time_label.text = "Survival Time: %s" % _format_time(elapsed_time)
   
-  # Display obstacle reclaim stats
-  var obstacles_count = stats.get("obstacles_reclaimed", 0)
-  obstacles_reclaimed_label.text = "Obstacles Reclaimed: %d" % obstacles_count
+  # Display building reclaim stats
+  var buildings_count = stats.get("buildings_reclaimed", 0)
+  buildings_reclaimed_label.text = "Buildings Reclaimed: %d" % buildings_count
   
   var scrap_reclaimed = stats.get("scrap_reclaimed", 0)
   scrap_reclaimed_label.text = "Scrap Reclaimed: +%d" % scrap_reclaimed

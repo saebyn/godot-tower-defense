@@ -174,18 +174,18 @@ func is_branch_completed(branch_name: String) -> bool:
   
   return true
 
-## Get all unlocked obstacle IDs from the tech tree
-func get_unlocked_obstacle_ids() -> Array[String]:
-  var obstacle_ids: Array[String] = []
+## Get all unlocked building IDs from the tech tree
+func get_unlocked_building_ids() -> Array[String]:
+  var building_ids: Array[String] = []
   
   for tech_id in unlocked_tech_ids:
     var tech = tech_nodes.get(tech_id)
     if tech:
-      for obstacle_id in tech.unlocked_obstacle_ids:
-        if obstacle_id not in obstacle_ids:
-          obstacle_ids.append(obstacle_id)
+      for building_id in tech.unlocked_building_ids:
+        if building_id not in building_ids:
+          building_ids.append(building_id)
   
-  return obstacle_ids
+  return building_ids
 
 ## Reset tech tree state (for testing or new game)
 func reset_tech_tree() -> void:

@@ -114,7 +114,7 @@ Legend: **T#** = Tier; **[EXC]** = mutually exclusive pair; **⟂** = exclusivit
 
 ### Offensive
 
-| id                   | display_name   | description                         | level | prerequisites       | achievements   | mutually_exclusive_with | branch_name | unlocked_obstacle_ids | requires_branch_completion | notes |
+| id                   | display_name   | description                         | level | prerequisites       | achievements   | mutually_exclusive_with | branch_name | unlocked_building_ids | requires_branch_completion | notes |
 | -------------------- | -------------- | ----------------------------------- | ----: | ------------------- | -------------- | ----------------------- | ----------- | --------------------- | -------------------------- | ----- |
 | `tur_scrap_shooter`  | Scrap Shooter  | Basic bolt-firing turret.           |     1 | []                  | []             | []                      | Offensive   | [turret]              | []                         | **Starter tech** - Available immediately |
 | `tur_boom_barrel`    | Boom Barrel    | One-shot AoE explosive trap.        |     2 | [tur_scrap_shooter] | [ach_place_3]  | [tur_molotov_mortar]    | Offensive   | [boom_barrel]         | []                         | |
@@ -124,7 +124,7 @@ Legend: **T#** = Tier; **[EXC]** = mutually exclusive pair; **⟂** = exclusivit
 
 ### Defensive
 
-| id                    | display_name     | description                         | level | prerequisites        | achievements    | mutually_exclusive_with | branch_name | unlocked_obstacle_ids | requires_branch_completion | notes |
+| id                    | display_name     | description                         | level | prerequisites        | achievements    | mutually_exclusive_with | branch_name | unlocked_building_ids | requires_branch_completion | notes |
 | --------------------- | ---------------- | ----------------------------------- | ----: | -------------------- | --------------- | ----------------------- | ----------- | --------------------- | -------------------------- | ----- |
 | `ob_crates`           | Stacked Crates   | Simple wall; minor slow on contact. |     1 | []                   | []              | []                      | Defensive   | [wall]                | []                         | **Starter tech** - Available immediately |
 | `ob_oil_slick`        | Oil Slick        | Ground slow; flammable synergy.     |     2 | [ob_crates]          | []              | []                      | Defensive   | [oil_slick]           | []                         | |
@@ -134,7 +134,7 @@ Legend: **T#** = Tier; **[EXC]** = mutually exclusive pair; **⟂** = exclusivit
 
 ### Economy
 
-| id                        | display_name        | description                   | level | prerequisites        | achievements | mutually_exclusive_with   | branch_name | unlocked_obstacle_ids | requires_branch_completion | notes |
+| id                        | display_name        | description                   | level | prerequisites        | achievements | mutually_exclusive_with   | branch_name | unlocked_building_ids | requires_branch_completion | notes |
 | ------------------------- | ------------------- | ----------------------------- | ----: | -------------------- | ------------ | ------------------------- | ----------- | --------------------- | -------------------------- | ----- |
 | `eco_scrap_recycler`      | Scrap Recycler      | Generates Scrap over time.    |     1 | []                   | []           | []                        | Economy     | [scrap_recycler]      | []                         | **Starter tech** - Available immediately |
 | `eco_industrial_recycler` | Industrial Recycler | Higher income generator.      |     2 | [eco_scrap_recycler] | []           | [eco_drone_salvager]      | Economy     | [industrial_recycler] | []                         | |
@@ -143,7 +143,7 @@ Legend: **T#** = Tier; **[EXC]** = mutually exclusive pair; **⟂** = exclusivit
 
 ### Support
 
-| id                    | display_name      | description                  | level | prerequisites         | achievements          | mutually_exclusive_with | branch_name | unlocked_obstacle_ids | requires_branch_completion | notes |
+| id                    | display_name      | description                  | level | prerequisites         | achievements          | mutually_exclusive_with | branch_name | unlocked_building_ids | requires_branch_completion | notes |
 | --------------------- | ----------------- | ---------------------------- | ----: | --------------------- | --------------------- | ----------------------- | ----------- | --------------------- | -------------------------- | ----- |
 | `sup_overcharger`     | Overcharger       | Aura: +fire rate to turrets. |     2 | []                    | []                    | []                      | Support     | [overcharger]         | []                         | |
 | `sup_range_amp`       | Range Amplifier   | Aura: +range to turrets.     |     3 | [sup_overcharger]     | []                    | []                      | Support     | [range_amplifier]     | []                         | |
@@ -152,7 +152,7 @@ Legend: **T#** = Tier; **[EXC]** = mutually exclusive pair; **⟂** = exclusivit
 
 ### Click
 
-| id                    | display_name    | description                                                | level | prerequisites         | achievements         | mutually_exclusive_with | branch_name | unlocked_obstacle_ids | requires_branch_completion | notes |
+| id                    | display_name    | description                                                | level | prerequisites         | achievements         | mutually_exclusive_with | branch_name | unlocked_building_ids | requires_branch_completion | notes |
 | --------------------- | --------------- | ---------------------------------------------------------- | ----: | --------------------- | -------------------- | ----------------------- | ----------- | --------------------- | -------------------------- | ----- |
 | `clk_hydraulic_mouse` | Hydraulic Mouse | +25% click damage.                                         |     2 | []                    | []                   | []                      | Click       | []                    | []                         | |
 | `clk_shock_click`     | Shock Click     | Clicks splash in small AoE.                                |     3 | [clk_hydraulic_mouse] | [ach_click_kills_25] | [clk_double_tap]        | Click       | []                    | []                         | |
@@ -161,7 +161,7 @@ Legend: **T#** = Tier; **[EXC]** = mutually exclusive pair; **⟂** = exclusivit
 
 ### Advanced
 
-| id                          | display_name          | description                                                          | level | prerequisites | achievements   | mutually_exclusive_with | branch_name | unlocked_obstacle_ids            | requires_branch_completion | notes |
+| id                          | display_name          | description                                                          | level | prerequisites | achievements   | mutually_exclusive_with | branch_name | unlocked_building_ids            | requires_branch_completion | notes |
 | --------------------------- | --------------------- | -------------------------------------------------------------------- | ----: | ------------- | -------------- | ----------------------- | ----------- | -------------------------------- | -------------------------- | ----- |
 | `adv_experimental_weapons`  | Experimental Weapons  | Unlocks cutting-edge offensive tech after mastering basic weaponry.  |     5 | []            | [ach_kill_500] | []                      | Advanced    | [railgun_turret, emp_mine]       | [Offensive]                | |
 | `adv_fortification_mastery` | Fortification Mastery | Advanced defensive structures for veterans of defensive strategy.    |     5 | []            | [ach_survive_10] | []                    | Advanced    | [reinforced_wall, kill_zone]     | [Defensive]                | |
@@ -198,7 +198,7 @@ Each node defines:
 * **`prerequisites`** – Techs that must be unlocked first
 * **`achievements`** – Optional gating (e.g., `ach_place_3`, `ach_survive_3`, `ach_kill_100`, `ach_click_100`, `ach_click_kills_25`, `ach_lose_5_defenses`)
 * **`branch_name`** – Category/branch identifier (Offensive, Defensive, Economy, Support, Click, Advanced)
-* **`unlocked_obstacle_ids`** – Array of obstacle IDs that become available when this tech is unlocked
+* **`unlocked_building_ids`** – Array of obstacle IDs that become available when this tech is unlocked
 * **`requires_branch_completion`** – Array of branch names that must be fully completed before this tech unlocks
   - A branch is "fully completed" when all non-Advanced techs in that branch are unlocked
   - Example: `[Offensive]` means all Offensive nodes (excluding mutually exclusive alternatives) must be unlocked
@@ -236,7 +236,7 @@ When the player clicks an exclusive node:
   "achievements": ["ach_place_3"],
   "mutually_exclusive_with": ["tur_molotov_mortar"],
   "branch_name": "Offensive",
-  "unlocked_obstacle_ids": ["boom_barrel"],
+  "unlocked_building_ids": ["boom_barrel"],
   "requires_branch_completion": []
 }
 ```
@@ -251,7 +251,7 @@ When the player clicks an exclusive node:
   "achievements": ["ach_click_100"],
   "mutually_exclusive_with": ["clk_shock_click"],
   "branch_name": "Click",
-  "unlocked_obstacle_ids": [],
+  "unlocked_building_ids": [],
   "requires_branch_completion": []
 }
 ```
@@ -266,7 +266,7 @@ When the player clicks an exclusive node:
   "achievements": [],
   "mutually_exclusive_with": [],
   "branch_name": "Economy",
-  "unlocked_obstacle_ids": [],
+  "unlocked_building_ids": [],
   "requires_branch_completion": []
 }
 ```
@@ -283,7 +283,7 @@ When the player clicks an exclusive node:
   "achievements": ["ach_place_50"],
   "mutually_exclusive_with": [],
   "branch_name": "Advanced",
-  "unlocked_obstacle_ids": ["power_grid", "resource_amplifier"],
+  "unlocked_building_ids": ["power_grid", "resource_amplifier"],
   "requires_branch_completion": ["Support", "Economy"]
 }
 ```

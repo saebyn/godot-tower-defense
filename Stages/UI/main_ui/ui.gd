@@ -45,10 +45,10 @@ func _on_wave_completed(wave: System_Wave, wave_number: int) -> void:
   if spawn_indicator and spawn_indicator.has_method("show_wave_completed"):
     spawn_indicator.show_wave_completed(wave, wave_number)
 
-## Called when an obstacle is removed to show removal feedback
-func show_obstacle_removed(refund_amount: int) -> void:
-  if spawn_indicator and spawn_indicator.has_method("show_obstacle_removed"):
-    spawn_indicator.show_obstacle_removed(refund_amount)
+## Called when a building is removed to show removal feedback
+func show_building_removed(refund_amount: int) -> void:
+  if spawn_indicator and spawn_indicator.has_method("show_building_removed"):
+    spawn_indicator.show_building_removed(refund_amount)
 
 ## Called to show a problem message to the user (e.g. Twitch setup failed)
 func show_problem_message(message: String) -> void:

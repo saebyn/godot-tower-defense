@@ -191,7 +191,7 @@ The framework is already integrated throughout the codebase:
 - **Enemy Spawning**: `MyLogger.info("Spawner", "Starting wave %d")`
 - **Combat**: `MyLogger.debug("Enemy.Combat", "Enemy took %d damage")`
 - **Navigation**: `MyLogger.debug("Navigation", "Rebaking navigation mesh")`
-- **Placement**: `MyLogger.warn("Placement", "Cannot place obstacle")`
+- **Placement**: `MyLogger.warn("Placement", "Cannot place building")`
 
 ## Testing
 

@@ -1,5 +1,5 @@
-class_name Entity_BuffObstacle
-extends Entity_RangedObstacle
+class_name Entity_BuffBuilding
+extends Entity_RangedBuilding
 
 enum BuffType {
   ATTACK_SPEED, # aka cooldown reduction
@@ -33,16 +33,16 @@ func place(navigation_region: NavigationRegion3D) -> void:
     buff_timer.start()
 
 func _apply_buffs():
-  var obstacles := get_tree().get_nodes_in_group(Entity_PlaceableBuilding.BUILDING_GROUP)
-  for obstacle in obstacles:
-    if obstacle == self:
+  var buildings := get_tree().get_nodes_in_group(Entity_PlaceableBuilding.BUILDING_GROUP)
+  for building in buildings:
+    if building == self:
       continue
-    if not is_instance_valid(obstacle):
+    if not is_instance_valid(building):
       continue
-    var distance := global_position.distance_to(obstacle.global_position)
+    var distance := global_position.distance_to(building.global_position)
     if distance <= effect_range:
-      _apply_buff_to_obstacle(obstacle)
+      _apply_buff_to_building(building)
 
-func _apply_buff_to_obstacle(obstacle: Entity_PlaceableBuilding) -> void:
-  if obstacle.has_method("receive_buff"):
-    obstacle.receive_buff(buff_type, buff_amount, self.get_instance_id(), buff_interval)
+func _apply_buff_to_building(building: Entity_PlaceableBuilding) -> void:
+  if building.has_method("receive_buff"):
+    building.receive_buff(buff_type, buff_amount, self.get_instance_id(), buff_interval)

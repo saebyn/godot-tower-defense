@@ -1,8 +1,8 @@
 extends GutTest
 
-## Integration test for obstacle reclaim and scrap-to-XP conversion at scenario end
+## Integration test for building reclaim and scrap-to-XP conversion at scenario end
 ## Tests the complete flow of:
-## 1. Obstacles being reclaimed at scenario end
+## 1. Buildings being reclaimed at scenario end
 ## 2. Scrap being converted to XP
 ## 3. Scrap being reset to starting amount
 ## 4. Victory/game over stats being stored
@@ -83,7 +83,7 @@ func test_convert_scrap_to_xp_with_zero_scrap():
 
 func test_convert_with_insufficient_scrap_for_xp():
   # Arrange
-  CurrencyManager.current_scrap = 1  # Less than conversion rate
+  CurrencyManager.current_scrap = 1 # Less than conversion rate
   CurrencyManager.current_xp = 0
   var starting_scrap = CurrencyManager.starting_scrap
   
@@ -102,11 +102,11 @@ func test_scenario_stats_stored_for_victory():
   ScenarioManager.set_current_scenario_id("scenario_1")
   
   # Simulate what happens in _on_all_waves_completed
-  var completion_time = 120.5  # 2 minutes 0.5 seconds
+  var completion_time = 120.5 # 2 minutes 0.5 seconds
   
-  # Mock reclaim data (simulating _reclaim_all_obstacles)
+  # Mock reclaim data (simulating _reclaim_all_buildings)
   var reclaim_data = {
-    "obstacle_count": 3,
+    "building_count": 3,
     "total_refund": 150
   }
   
@@ -124,7 +124,7 @@ func test_scenario_stats_stored_for_victory():
   ScenarioManager.last_scenario_stats = {
     "scenario_id": "scenario_1",
     "completion_time": completion_time,
-    "obstacles_reclaimed": reclaim_data.obstacle_count,
+    "buildings_reclaimed": reclaim_data.building_count,
     "scrap_reclaimed": reclaim_data.total_refund,
     "scrap_converted": conversion_data.scrap_converted,
     "xp_gained_from_conversion": conversion_data.xp_gained,
@@ -136,7 +136,7 @@ func test_scenario_stats_stored_for_victory():
   assert_false(stats.is_empty(), "Stats should not be empty")
   assert_eq(stats.scenario_id, "scenario_1", "Scenario ID should match")
   assert_eq(stats.completion_time, 120.5, "Completion time should be stored")
-  assert_eq(stats.obstacles_reclaimed, 3, "Should track 3 obstacles reclaimed")
+  assert_eq(stats.buildings_reclaimed, 3, "Should track 3 buildings reclaimed")
   assert_eq(stats.scrap_reclaimed, 150, "Should track 150 scrap reclaimed")
   assert_eq(stats.scrap_converted, 300, "Should convert total 300 scrap (150 initial + 150 reclaimed)")
   assert_eq(stats.xp_gained_from_conversion, 150, "Should gain 150 XP (300 / 2.0)")
@@ -148,11 +148,11 @@ func test_game_over_stats_stored():
   ScenarioManager.set_current_scenario_id("scenario_1")
   
   # Simulate what happens in on_survivor_died when game over
-  var elapsed_time = 95.3  # Survived for 1 minute 35 seconds
+  var elapsed_time = 95.3 # Survived for 1 minute 35 seconds
   
   # Mock reclaim data
   var reclaim_data = {
-    "obstacle_count": 2,
+    "building_count": 2,
     "total_refund": 100
   }
   
@@ -166,7 +166,7 @@ func test_game_over_stats_stored():
   ScenarioManager.last_scenario_stats = {
     "scenario_id": "scenario_1",
     "elapsed_time": elapsed_time,
-    "obstacles_reclaimed": reclaim_data.obstacle_count,
+    "buildings_reclaimed": reclaim_data.building_count,
     "scrap_reclaimed": reclaim_data.total_refund,
     "scrap_converted": conversion_data.scrap_converted,
     "xp_gained_from_conversion": conversion_data.xp_gained,
@@ -176,7 +176,7 @@ func test_game_over_stats_stored():
   var stats = ScenarioManager.last_scenario_stats
   assert_false(stats.is_empty(), "Stats should not be empty")
   assert_eq(stats.elapsed_time, 95.3, "Elapsed time should be stored")
-  assert_eq(stats.obstacles_reclaimed, 2, "Should track 2 obstacles reclaimed")
+  assert_eq(stats.buildings_reclaimed, 2, "Should track 2 buildings reclaimed")
   assert_eq(stats.scrap_reclaimed, 100, "Should track 100 scrap reclaimed")
   assert_eq(stats.scrap_converted, 200, "Should convert total 200 scrap")
   assert_eq(stats.xp_gained_from_conversion, 100, "Should gain 100 XP")

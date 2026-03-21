@@ -34,7 +34,7 @@ stream_0 = ExtResource("9_i0vvu")
 process_mode = 1
 script = ExtResource("1_1bvp3")
 attack_waiting_cursor_image = ExtResource("2_wy7n0")
-obstacle_tooltip_scene = ExtResource("4_tooltip")
+building_tooltip_scene = ExtResource("4_tooltip")
 
 [node name="Attack" parent="." unique_id=532095815 node_paths=PackedStringArray("audio_player") instance=ExtResource("2_kek77")]
 damage_amount = 1
@@ -73,7 +73,7 @@ compositor = SubResource("Compositor_hjeu7")
 enabled = false
 collision_mask = 4
 
-[node name="ObstaclePlacement" parent="." unique_id=977494137 node_paths=PackedStringArray("audio_player", "navigation_region", "camera") instance=ExtResource("7_kek77")]
+[node name="BuildingPlacement" parent="." unique_id=977494137 node_paths=PackedStringArray("audio_player", "navigation_region", "camera") instance=ExtResource("7_kek77")]
 audio_player = NodePath("../AudioStreamPlayer")
 navigation_region = NodePath("../NavigationRegion3D")
 camera = NodePath("../Camera3D")
@@ -98,5 +98,5 @@ metadata/_custom_type_script = "uid://bmluckfvgm1c2"
 [connection signal="cooldown_ended" from="Attack" to="." method="_on_attack_cooldown_ended"]
 [connection signal="cooldown_started" from="Attack" to="." method="_on_attack_cooldown_started"]
 [connection signal="building_spawn_requested" from="UI" to="." method="_on_building_spawn_requested"]
-[connection signal="rebake_navigation_mesh" from="ObstaclePlacement" to="." method="rebake_navigation_mesh"]
+[connection signal="rebake_navigation_mesh" from="BuildingPlacement" to="." method="rebake_navigation_mesh"]
 [connection signal="command_received" from="JoinQueueCommand" to="." method="_on_joinqueue_command_received"]

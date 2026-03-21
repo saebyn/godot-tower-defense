@@ -53,7 +53,7 @@ func _ready():
   MyLogger.info("AchievementManager", "Achievement system initialized")
   
   # Register with SaveManager
-  SaveManager.register_system(self)
+  SaveManager.register_system(self )
   
   # Load all achievements from Config/Achievements/
   _load_achievements()
@@ -207,7 +207,7 @@ func _get_stat_value(condition_type: Resource_Achievement.ConditionType, target:
       return float(StatsManager.get_enemies_defeated_by_hand())
     Resource_Achievement.ConditionType.SCRAP_EARNED:
       return float(StatsManager.get_total_scrap_earned())
-    Resource_Achievement.ConditionType.OBSTACLES_PLACED:
+    Resource_Achievement.ConditionType.BUILDINGS_PLACED:
       return float(StatsManager.get_buildings_placed_total())
     Resource_Achievement.ConditionType.PLAYER_LEVEL_REACHED:
       return float(CurrencyManager.get_level())

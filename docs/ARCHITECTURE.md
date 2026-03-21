@@ -39,33 +39,33 @@ graph TB
         Main[Main Scene<br/>main.tscn]
         Player[Player Controller]
         EnemySpawner[Enemy Spawner<br/>Wave management]
-        ObstaclePlacement[Obstacle Placement]
+        BuildingPlacement[Building Placement]
         UI[UI Layer]
     end
     
     subgraph "Entities"
         Enemies[Enemies<br/>CharacterBody3D]
-        Obstacles[Obstacles<br/>StaticBody3D]
+        Buildings[Buildings<br/>StaticBody3D]
         Survivors[Survivors<br/>Defendable objects]
     end
     
     Main --> Player
     Main --> EnemySpawner
-    Main --> ObstaclePlacement
+    Main --> BuildingPlacement
     Main --> UI
     
     Player --> CurrencyManager
-    Player --> ObstaclePlacement
+    Player --> BuildingPlacement
     
     EnemySpawner --> Enemies
-    ObstaclePlacement --> Obstacles
-    ObstaclePlacement --> BuildingRegistry
+    BuildingPlacement --> Buildings
+    BuildingPlacement --> BuildingRegistry
     
     Enemies --> CurrencyManager
     Enemies --> StatsManager
     Enemies --> Survivors
     
-    Obstacles --> Enemies
+    Buildings --> Enemies
     
     UI --> CurrencyManager
     UI --> StatsManager
@@ -136,15 +136,15 @@ graph TB
         Enemy --> EnemyAnim
     end
     
-    subgraph "Entity: Shooting Obstacle"
-        Obstacle[StaticBody3D<br/>shooting_obstacle.gd]
-        ObstacleHealth[Health]
-        ObstacleAttack[Attack]
-        ObstacleTimer[Timer<br/>Shooting interval]
+    subgraph "Entity: Shooting Building"
+        Building[StaticBody3D<br/>shooting_building.gd]
+        BuildingHealth[Health]
+        BuildingAttack[Attack]
+        BuildingTimer[Timer<br/>Shooting interval]
         
-        Obstacle --> ObstacleHealth
-        Obstacle --> ObstacleAttack
-        Obstacle --> ObstacleTimer
+        Building --> BuildingHealth
+        Building --> BuildingAttack
+        Building --> BuildingTimer
     end
     
     subgraph "Entity: Survivor"
@@ -160,12 +160,12 @@ graph TB
     
     EnemyHealth -.registered via.-> Metadata
     EnemyAttack -.registered via.-> Metadata
-    ObstacleHealth -.registered via.-> Metadata
-    ObstacleAttack -.registered via.-> Metadata
+    BuildingHealth -.registered via.-> Metadata
+    BuildingAttack -.registered via.-> Metadata
     SurvivorHealth -.registered via.-> Metadata
     
     Enemy -.queries.-> Metadata
-    Obstacle -.queries.-> Metadata
+    Building -.queries.-> Metadata
     Survivor -.queries.-> Metadata
     
     style Health fill:#ffcccc
@@ -344,7 +344,7 @@ graph TB
     subgraph "Templates (Behavior)"
         BaseEnemy[base_enemy.tscn<br/>+ enemy.gd<br/>- Navigation AI<br/>- Attack logic<br/>- Component integration]
         
-        ShootingObstacle[shooting_obstacle.tscn<br/>+ shooting_obstacle.gd<br/>- Target detection<br/>- Shooting logic<br/>- Component integration]
+        ShootingBuilding[shooting_building.tscn<br/>+ shooting_building.gd<br/>- Target detection<br/>- Shooting logic<br/>- Component integration]
     end
     
     subgraph "Concrete Instances"
@@ -352,12 +352,12 @@ graph TB
         
         Scout[scout.tscn<br/>Inherits: base_enemy.tscn<br/>+ scout model]
         
-        Turret[turret.tscn<br/>Inherits: shooting_obstacle.tscn<br/>+ turret model]
+        Turret[turret.tscn<br/>Inherits: shooting_building.tscn<br/>+ turret model]
     end
     
     subgraph "Runtime Loading"
         Spawner[Enemy Spawner<br/>Loads config<br/>Applies to template]
-        Registry[Obstacle Registry<br/>Links configs to templates]
+        Registry[Building Registry<br/>Links configs to templates]
     end
     
     GruntConfig --> Grunt
@@ -366,16 +366,16 @@ graph TB
     
     BaseEnemy -.template.-> Grunt
     BaseEnemy -.template.-> Scout
-    ShootingObstacle -.template.-> Turret
+    ShootingBuilding -.template.-> Turret
     
     Spawner -- "load_resource(config)" --> BaseEnemy
-    Registry -- "register(config, scene)" --> ShootingObstacle
+    Registry -- "register(config, scene)" --> ShootingBuilding
     
     style GruntConfig fill:#ffe1e1
     style ScoutConfig fill:#ffe1e1
     style TurretConfig fill:#ffe1e1
     style BaseEnemy fill:#e1e1ff
-    style ShootingObstacle fill:#e1e1ff
+    style ShootingBuilding fill:#e1e1ff
 ```
 
 **File Structure:**
@@ -412,11 +412,11 @@ graph TB
     subgraph "Main UI (ui.tscn)"
         MainUI[UI Root<br/>Control Node]
         
-        Hotbar[Hotbar<br/>Obstacle selection<br/>1-9 keys]
+        Hotbar[Hotbar<br/>Building selection<br/>1-9 keys]
         
         CurrencyDisplay[Currency Display<br/>Scrap & XP<br/>Level progress]
         
-        StatsDisplay[Stats Display<br/>Enemies defeated<br/>Obstacles placed<br/>Toggle: T key]
+        StatsDisplay[Stats Display<br/>Enemies defeated<br/>Buildings placed<br/>Toggle: T key]
         
         SpeedControls[Speed Controls<br/>1x, 2x, 3x<br/>Shift+, / Shift-]
         
@@ -496,19 +496,19 @@ sequenceDiagram
     participant Hotbar
     participant BuildingRegistry
     participant Main
-    participant ObstaclePlacement
+    participant BuildingPlacement
     participant CurrencyManager
     
     Player->>Hotbar: Press "1" key
     Hotbar->>BuildingRegistry: Get building type
     BuildingRegistry-->>Hotbar: Return BuildingTypeResource
     Hotbar->>Main: building_spawn_requested signal
-    Main->>ObstaclePlacement: Forward spawn request
-    ObstaclePlacement->>Player: Show preview (ghost)
-    Player->>ObstaclePlacement: Left click to place
-    ObstaclePlacement->>CurrencyManager: Check cost & deduct
-    CurrencyManager-->>ObstaclePlacement: Confirm transaction
-    ObstaclePlacement->>Main: Spawn obstacle instance
+    Main->>BuildingPlacement: Forward spawn request
+    BuildingPlacement->>Player: Show preview (ghost)
+    Player->>BuildingPlacement: Left click to place
+    BuildingPlacement->>CurrencyManager: Check cost & deduct
+    CurrencyManager-->>BuildingPlacement: Confirm transaction
+    BuildingPlacement->>Main: Spawn building instance
     Main->>Main: Rebake navigation mesh
 ```
 
@@ -516,14 +516,14 @@ sequenceDiagram
 
 ## Navigation & Pathfinding
 
-The game uses Godot's NavigationServer3D for enemy pathfinding with obstacle avoidance.
+The game uses Godot's NavigationServer3D for enemy pathfinding with building avoidance.
 
 ```mermaid
 graph TB
     subgraph "Navigation System"
         NavRegion[NavigationRegion3D<br/>main.tscn<br/>Contains navigation mesh]
         
-        NavMesh[NavigationMesh<br/>Baked from geometry<br/>Updates on obstacle place/remove]
+        NavMesh[NavigationMesh<br/>Baked from geometry<br/>Updates on building place/remove]
         
         NavServer[NavigationServer3D<br/>Godot engine service<br/>Path calculation]
     end
@@ -537,14 +537,14 @@ graph TB
     subgraph "Target Selection"
         PrimaryTarget[Primary Target<br/>Survivor to defend<br/>survivor_group]
         
-        FallbackTarget[Fallback Target<br/>Blocking obstacle<br/>When path blocked]
+        FallbackTarget[Fallback Target<br/>Blocking building<br/>When path blocked]
     end
     
     subgraph "Pathfinding Flow"
         Check{Path<br/>Reachable?}
         AttackPrimary[Attack Primary Target]
-        FindBlocker[Find Closest Obstacle<br/>to Target]
-        AttackBlocker[Attack Blocking Obstacle]
+        FindBlocker[Find Closest Building<br/>to Target]
+        AttackBlocker[Attack Blocking Building]
     end
     
     NavRegion --> NavMesh
@@ -560,16 +560,16 @@ graph TB
     FindBlocker --> FallbackTarget
     FallbackTarget --> AttackBlocker
     
-    AttackBlocker -.Obstacle Destroyed.-> Check
+    AttackBlocker -.Building Destroyed.-> Check
     
-    subgraph "Obstacle Events"
-        PlaceObstacle[Obstacle Placed]
-        RemoveObstacle[Obstacle Removed]
+    subgraph "Building Events"
+        PlaceBuilding[Building Placed]
+        RemoveBuilding[Building Removed]
         Rebake[Rebake Navigation Mesh<br/>main.rebake_navigation_mesh]
     end
     
-    PlaceObstacle --> Rebake
-    RemoveObstacle --> Rebake
+    PlaceBuilding --> Rebake
+    RemoveBuilding --> Rebake
     Rebake --> NavMesh
     
     style NavServer fill:#e1f5ff
@@ -580,25 +580,25 @@ graph TB
 
 1. **Target Selection**: Choose primary target from `survivors` group
 2. **Path Validation**: Check if path is reachable via `is_target_reachable()`
-3. **Fallback**: If blocked, find obstacle closest to target
+3. **Fallback**: If blocked, find building closest to target
 4. **Attack Priority**:
    - Primary target if in range
-   - Fallback obstacle if set and in range
-   - Any nearby obstacle within `obstacle_attack_range`
-5. **Dynamic Updates**: When obstacle destroyed, recheck path to primary target
-6. **Navigation Mesh Rebaking**: After every obstacle placement/removal
+   - Fallback building if set and in range
+   - Any nearby building within `building_attack_range`
+5. **Dynamic Updates**: When building destroyed, recheck path to primary target
+6. **Navigation Mesh Rebaking**: After every building placement/removal
 
 **Key Code Reference:**
 ```gdscript
 # In enemy.gd
 func _check_and_set_fallback_target() -> void:
   if navigation_agent.is_target_reachable():
-    fallback_obstacle_target = null
+    fallback_building_target = null
   else:
-    var blocking_obstacle = _find_obstacle_closest_to_target()
-    if blocking_obstacle:
-      fallback_obstacle_target = blocking_obstacle
-      navigation_agent.set_target_position(blocking_obstacle.global_position)
+    var blocking_building = _find_building_closest_to_target()
+    if blocking_building:
+      fallback_building_target = blocking_building
+      navigation_agent.set_target_position(blocking_building.global_position)
 
 # In main.gd
 func rebake_navigation_mesh():
@@ -617,7 +617,7 @@ This architecture provides:
 ✅ **Robust Persistence**: Centralized save system with atomic writes and backups  
 ✅ **State Management**: Clear game state transitions and pause control  
 ✅ **Scalable UI**: Decoupled UI components connected via signals  
-✅ **Intelligent Pathfinding**: Dynamic navigation with obstacle avoidance
+✅ **Intelligent Pathfinding**: Dynamic navigation with building avoidance
 
 **Key Architectural Patterns:**
 - **Singleton Pattern**: Autoload systems (MyLogger, SaveManager, etc.)

@@ -6,7 +6,7 @@ extends CharacterBody3D
 @export var target_attack_range: float = 2.0
 @export var survivor_group: String = "survivors"
 @export var building_group: String = "buildings"
-@export var obstacle_attack_range: float = 6.0
+@export var building_attack_range: float = 6.0
 @export var scrap_reward: int = 10 ## Scrap awarded when enemy dies (can be 0)
 @export var xp_reward: int = 10 ## XP awarded when enemy dies (always given)
 @export var enemy_type: String = "base_enemy" ## Type identifier for stats tracking
@@ -19,7 +19,7 @@ var damage_numbers: Component_DamageNumbers
 @onready var mesh_instance: MeshInstance3D = $characterMedium
 
 var current_target: Node3D = null
-var fallback_obstacle_target: Node3D = null # Used when direct path to target is blocked
+var fallback_building_target: Node3D = null # Used when direct path to target is blocked
 
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
 
@@ -57,7 +57,7 @@ func load_resource(resource: Resource_EnemyType) -> void:
     movement_speed = resource.speed
     target_desired_distance = resource.target_desired_distance
     target_attack_range = resource.target_attack_range
-    obstacle_attack_range = resource.obstacle_attack_range
+    building_attack_range = resource.building_attack_range
     scrap_reward = resource.scrap_reward
     xp_reward = resource.xp_reward
     enemy_type = resource.enemy_type
@@ -100,46 +100,46 @@ func _choose_target():
     navigation_agent.set_target_position(current_target.global_position)
 
 
-func _find_nearest_obstacle_in_range() -> Node3D:
-  var obstacles := get_tree().get_nodes_in_group(building_group)
-  var nearest_obstacle: Node3D = null
-  var nearest_distance: float = obstacle_attack_range + 1.0 # Start beyond max range
+func _find_nearest_building_in_range() -> Node3D:
+  var buildings := get_tree().get_nodes_in_group(building_group)
+  var nearest_building: Node3D = null
+  var nearest_distance: float = building_attack_range + 1.0 # Start beyond max range
   
-  for obstacle in obstacles:
-    if not obstacle or not is_instance_valid(obstacle):
+  for building in buildings:
+    if not building or not is_instance_valid(building):
       continue
       
-    var distance := global_position.distance_to(obstacle.global_position)
-    if distance <= obstacle_attack_range and distance < nearest_distance:
+    var distance := global_position.distance_to(building.global_position)
+    if distance <= building_attack_range and distance < nearest_distance:
       nearest_distance = distance
-      nearest_obstacle = obstacle
+      nearest_building = building
   
-  return nearest_obstacle
+  return nearest_building
 
 
-func _find_obstacle_closest_to_target() -> Node3D:
-  """Find the obstacle that is closest to the current target.
+func _find_building_closest_to_target() -> Node3D:
+  """Find the building that is closest to the current target.
   This is used as a fallback when the zombie cannot path directly to the target."""
   if not current_target:
     return null
   
-  var obstacles := get_tree().get_nodes_in_group(building_group)
-  if obstacles.is_empty():
+  var buildings := get_tree().get_nodes_in_group(building_group)
+  if buildings.is_empty():
     return null
   
-  var closest_obstacle: Node3D = null
+  var closest_building: Node3D = null
   var closest_distance: float = INF
   
-  for obstacle in obstacles:
-    if not obstacle or not is_instance_valid(obstacle):
+  for building in buildings:
+    if not building or not is_instance_valid(building):
       continue
     
-    var distance_to_target: float = obstacle.global_position.distance_to(current_target.global_position)
+    var distance_to_target: float = building.global_position.distance_to(current_target.global_position)
     if distance_to_target < closest_distance:
       closest_distance = distance_to_target
-      closest_obstacle = obstacle
+      closest_building = building
   
-  return closest_obstacle
+  return closest_building
 
 
 func _actor_setup():
@@ -154,7 +154,7 @@ func _actor_setup():
 
 
 func _check_and_set_fallback_target() -> void:
-  """Check if the enemy can reach the target. If not, find an obstacle to attack."""
+  """Check if the enemy can reach the target. If not, find an building to attack."""
   if not current_target:
     return
   
@@ -164,23 +164,23 @@ func _check_and_set_fallback_target() -> void:
   # Check if the path is valid/reachable
   if navigation_agent.is_target_reachable():
     # Path is fine, clear any fallback
-    fallback_obstacle_target = null
+    fallback_building_target = null
     MyLogger.trace("Enemy.Navigation", "Path to target is reachable")
   else:
-    # Path is blocked, find obstacle to attack
-    MyLogger.info("Enemy.Navigation", "Cannot reach target, searching for blocking obstacle")
-    var blocking_obstacle = _find_obstacle_closest_to_target()
+    # Path is blocked, find building to attack
+    MyLogger.info("Enemy.Navigation", "Cannot reach target, searching for blocking building")
+    var blocking_building = _find_building_closest_to_target()
     
-    if blocking_obstacle:
-      fallback_obstacle_target = blocking_obstacle
-      navigation_agent.set_target_position(blocking_obstacle.global_position)
-      MyLogger.info("Enemy.Navigation", "Found blocking obstacle, switching to fallback target")
+    if blocking_building:
+      fallback_building_target = blocking_building
+      navigation_agent.set_target_position(blocking_building.global_position)
+      MyLogger.info("Enemy.Navigation", "Found blocking building, switching to fallback target")
     else:
-      MyLogger.warn("Enemy.Navigation", "No path to target and no obstacles found to attack!")
+      MyLogger.warn("Enemy.Navigation", "No path to target and no buildings found to attack!")
 
 
 func _attack_target():
-  MyLogger.debug("Enemy", "Attempting to attack target. Current target: %s, Fallback obstacle: %s" % [current_target, fallback_obstacle_target])
+  MyLogger.debug("Enemy", "Attempting to attack target. Current target: %s, Fallback building: %s" % [current_target, fallback_building_target])
 
   if not current_target:
     MyLogger.trace("Enemy", "No current target to attack.")
@@ -194,20 +194,20 @@ func _attack_target():
     if not current_target:
       return
 
-  # If we have a fallback obstacle target, prioritize it
-  if fallback_obstacle_target and is_instance_valid(fallback_obstacle_target):
-    MyLogger.debug("Enemy", "Fallback obstacle target is valid, checking distance to attack.")
-    var distance_to_fallback: float = global_position.distance_to(fallback_obstacle_target.global_position)
+  # If we have a fallback building target, prioritize it
+  if fallback_building_target and is_instance_valid(fallback_building_target):
+    MyLogger.debug("Enemy", "Fallback building target is valid, checking distance to attack.")
+    var distance_to_fallback: float = global_position.distance_to(fallback_building_target.global_position)
     
-    # Attack the fallback obstacle if in range
-    if distance_to_fallback <= obstacle_attack_range:
-      MyLogger.debug("Enemy", "Attacking fallback obstacle at distance: %f" % distance_to_fallback)
-      attack.perform_attack(fallback_obstacle_target)
+    # Attack the fallback building if in range
+    if distance_to_fallback <= building_attack_range:
+      MyLogger.debug("Enemy", "Attacking fallback building at distance: %f" % distance_to_fallback)
+      attack.perform_attack(fallback_building_target)
       return
   else:
-    MyLogger.debug("Enemy", "No valid fallback obstacle target currently set.")
+    MyLogger.debug("Enemy", "No valid fallback building target currently set.")
     # Fallback target was destroyed or is invalid, recheck path
-    MyLogger.info("Enemy.Navigation", "Fallback obstacle destroyed, rechecking path to target")
+    MyLogger.info("Enemy.Navigation", "Fallback building destroyed, rechecking path to target")
     navigation_agent.set_target_position(current_target.global_position)
     _check_and_set_fallback_target()
 
@@ -218,11 +218,11 @@ func _attack_target():
       attack.perform_attack(current_target)
       return
 
-  # If no targets in range, check for nearby obstacles to attack
-  var nearby_obstacle = _find_nearest_obstacle_in_range()
-  if nearby_obstacle:
-    MyLogger.trace("Enemy", "Attacking nearby obstacle at distance: %f" % global_position.distance_to(nearby_obstacle.global_position))
-    attack.perform_attack(nearby_obstacle)
+  # If no targets in range, check for nearby buildings to attack
+  var nearby_building = _find_nearest_building_in_range()
+  if nearby_building:
+    MyLogger.trace("Enemy", "Attacking nearby building at distance: %f" % global_position.distance_to(nearby_building.global_position))
+    attack.perform_attack(nearby_building)
     return
 
 
@@ -249,10 +249,10 @@ func _physics_process(_delta):
 
 func _update_navigation():
   if navigation_agent.is_navigation_finished():
-    # Check if we reached the fallback obstacle or if we need to recheck path
-    if fallback_obstacle_target and is_instance_valid(fallback_obstacle_target):
-      # We've reached the fallback obstacle, stay here and attack it
-      MyLogger.trace("Enemy.Navigation", "Reached fallback obstacle target.")
+    # Check if we reached the fallback building or if we need to recheck path
+    if fallback_building_target and is_instance_valid(fallback_building_target):
+      # We've reached the fallback building, stay here and attack it
+      MyLogger.trace("Enemy.Navigation", "Reached fallback building target.")
     else:
       # Check if we can now reach the main target
       if current_target:

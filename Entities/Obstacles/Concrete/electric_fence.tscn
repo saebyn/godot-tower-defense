@@ -12,7 +12,7 @@ size = Vector3(2.45456, 1.86517, 0.288818)
 [sub_resource type="BoxShape3D" id="BoxShape3D_bm5ut"]
 size = Vector3(3.11639, 2, 1.177)
 
-[node name="PlaceableObstacle" type="StaticBody3D" node_paths=PackedStringArray("mesh_instances")]
+[node name="PlaceableBuilding" type="StaticBody3D" node_paths=PackedStringArray("mesh_instances")]
 collision_layer = 34
 script = ExtResource("1_xhycr")
 mesh_instances = [NodePath("ElectricFence/Cube"), NodePath("ElectricFence/Cube_001")]

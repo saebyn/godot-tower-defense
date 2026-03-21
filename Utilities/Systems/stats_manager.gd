@@ -1,7 +1,7 @@
 extends Node
 
 ## Comprehensive stats tracking system for Tower Defense game
-## Tracks enemy defeats, obstacle placements, currency metrics, and player actions
+## Tracks enemy defeats, building placements, currency metrics, and player actions
 ## Features persistent storage via SaveManager
 ## 
 ## Usage:
@@ -44,7 +44,7 @@ func _ready():
   MyLogger.info("StatsManager", "Stats tracking system initialized")
   
   # Register with SaveManager
-  SaveManager.register_system(self)
+  SaveManager.register_system(self )
   
   # Connect to existing systems
   if CurrencyManager:
@@ -83,7 +83,7 @@ func track_enemy_defeated(enemy_type: String, defeated_by_hand: bool = false) ->
   else:
     enemies_defeated_by_type[enemy_type] = 1
   
-  # Track defeats by hand vs by obstacles
+  # Track defeats by hand vs by buildings
   if defeated_by_hand:
     enemies_defeated_by_hand += 1
   
@@ -237,8 +237,8 @@ func load_data(data: Dictionary) -> void:
   enemies_defeated_by_type = data.get("enemies_defeated_by_type", {})
   enemies_defeated_by_hand = data.get("enemies_defeated_by_hand", 0)
   clicks_performed = data.get("clicks_performed", 0)
-  buildings_placed_total = data.get("buildings_placed_total", data.get("obstacles_placed_total", 0))
-  buildings_placed_by_type = data.get("buildings_placed_by_type", data.get("obstacles_placed_by_type", {}))
+  buildings_placed_total = data.get("buildings_placed_total", data.get("BUILDINGS_PLACED_total", 0))
+  buildings_placed_by_type = data.get("buildings_placed_by_type", data.get("BUILDINGS_PLACED_by_type", {}))
   total_scrap_earned = data.get("total_scrap_earned", data.get("total_currency_earned", 0))
   max_scrap_held = data.get("max_scrap_held", data.get("max_currency_held", 0))
   total_xp_earned = data.get("total_xp_earned", 0)

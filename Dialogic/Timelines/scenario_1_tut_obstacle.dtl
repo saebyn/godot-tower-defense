@@ -1,4 +1,4 @@
 Survivor: "Nice work! Now let's slow them down with some obstacles."
-Survivor: "[b]Select an obstacle[/b] from the hotbar at the bottom of the screen."
+Survivor: "[b]Select a building[/b] from the hotbar at the bottom of the screen."
 Survivor: "Then [b]left-click on the ground[/b] to place it. Give it a try!"
 do GameManager.resume_game()

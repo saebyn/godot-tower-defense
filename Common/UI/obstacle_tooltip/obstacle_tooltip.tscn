@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://cydfu3yskn3kd"]
+[gd_scene format=3 uid="uid://cydfu3yskn3kd"]
 
-[ext_resource type="Script" path="res://Common/UI/obstacle_tooltip/obstacle_tooltip.gd" id="1_tooltip"]
+[ext_resource type="Script" uid="uid://ptdfgj0ev2kp" path="res://Common/UI/obstacle_tooltip/obstacle_tooltip.gd" id="1_tooltip"]
 
-[node name="ObstacleTooltip" type="Control"]
+[node name="BuildingTooltip" type="Control" unique_id=1719079895]
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 2

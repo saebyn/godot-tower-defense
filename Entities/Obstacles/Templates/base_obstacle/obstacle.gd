@@ -107,9 +107,9 @@ func remove() -> int:
   if not building_type and BuildingRegistry:
     MyLogger.info("Building", "building_type is null, attempting to find it in registry...")
     var scene_path = scene_file_path
-    for obstacle_resource in BuildingRegistry.available_obstacle_types:
-      if obstacle_resource.scene and obstacle_resource.scene.resource_path == scene_path:
-        building_type = obstacle_resource
+    for resource in BuildingRegistry.available_building_types:
+      if resource.scene and resource.scene.resource_path == scene_path:
+        building_type = resource
         MyLogger.info("Building", "Found matching building_type: %s" % building_type.name)
         break
   
@@ -170,19 +170,19 @@ func set_preview_material(material: Material) -> void:
         mesh_instance.set_surface_override_material(i, material)
 
 
-## Finalizes placement of the obstacle in the game world.
+## Finalizes placement of the building in the game world.
 ##
 ## This method performs several critical operations:
-## 1. **Reparents the obstacle**: Moves this node from its placement utility parent to the main scene (grandparent node).
-##    - **Requires**: The obstacle must have both a parent and grandparent node in the scene tree.
+## 1. **Reparents the building**: Moves this node from its placement utility parent to the main scene (grandparent node).
+##    - **Requires**: The building must have both a parent and grandparent node in the scene tree.
 ##    - **Errors**: If the scene tree structure is invalid, placement will fail and log an error.
 ## 2. **Exits placement mode**: Enables collisions and the health component, and hides the placement preview.
 ## 3. **Creates a NavigationObstacle3D**: Instantiates and configures a NavigationObstacle3D to affect the navigation mesh.
 ##    - The obstacle's shape is determined by the combined AABB of its mesh instances.
 ##    - The NavigationObstacle3D is added as a child of the provided `navigation_region`.
-## 4. **Adds to navigation group**: Adds this obstacle to the group specified by `navigation_obstacle_group` for navigation mesh updates.
+## 4. **Adds to navigation group**: Adds this building to the group specified by `navigation_obstacle_group` for navigation mesh updates.
 ##
-## Call this method after the obstacle has been positioned and is ready to be placed in the world.
+## Call this method after the building has been positioned and is ready to be placed in the world.
 ##
 ## @param navigation_region The NavigationRegion3D to which the navigation obstacle will be added.
 func place(navigation_region: NavigationRegion3D) -> void:
@@ -199,8 +199,8 @@ func place(navigation_region: NavigationRegion3D) -> void:
     return
 
   is_preview = false
-  parent_node.remove_child(self)
-  grandparent_node.add_child(self)
+  parent_node.remove_child(self )
+  grandparent_node.add_child(self )
 
   _exit_placement_mode()
 
@@ -228,18 +228,18 @@ func place(navigation_region: NavigationRegion3D) -> void:
   navigation_region.add_child(nav_obstacle)
   navigation_obstacle = nav_obstacle
 
-  # Ensure the obstacle is in the correct group for navigation
+  # Ensure the building is in the correct group for navigation
   add_to_group(navigation_obstacle_group)
 
 
-## Dictionary to track active buffs on this obstacle.
-## Key: source_id (int) of the buff obstacle applying the buff
+## Dictionary to track active buffs on this building.
+## Key: source_id (int) of the buff building applying the buff
 ## Value: Dictionary with keys "timeout_timer"
 var buffs: Dictionary = {}
 
-var _original_values: Dictionary[Entity_BuffObstacle.BuffType, float] = {}
+var _original_values: Dictionary[Entity_BuffBuilding.BuffType, float] = {}
 
-func _stack_buffs(buff_type: Entity_BuffObstacle.BuffType, current_value: float, amounts: Array[float]) -> float:
+func _stack_buffs(buff_type: Entity_BuffBuilding.BuffType, current_value: float, amounts: Array[float]) -> float:
   if not _original_values.has(buff_type):
     _original_values[buff_type] = current_value
 
@@ -248,24 +248,24 @@ func _stack_buffs(buff_type: Entity_BuffObstacle.BuffType, current_value: float,
     result *= (1.0 + buff)
   return result
 
-## Internal handler to apply the buff effects to this obstacle.
+## Internal handler to apply the buff effects to this building.
 ## For this base class, we do not implement any specific buff logic.
 ## Subclasses should override this method to handle specific buff types.
-func _handle_buffs(_buff_type: Entity_BuffObstacle.BuffType, _buff_amounts: Array[float]) -> void:
+func _handle_buffs(_buff_type: Entity_BuffBuilding.BuffType, _buff_amounts: Array[float]) -> void:
   pass
 
 
-## Receive a buff from a buff obstacle.
+## Receive a buff from a buff building.
 ##
-## This method is called by a buff obstacle to apply a buff to this obstacle.
+## This method is called by a buff building to apply a buff to this building.
 ## We should keep track of buffs applied so they can be removed after timeout, and
 ## so that they are not stacked multiple times from the same source.
 ##
 ## @param buff_type The type of buff being applied.
 ## @param buff_amount The amount of the buff.
-## @param source_id The instance ID of the buff obstacle applying the buff.
+## @param source_id The instance ID of the buff building applying the buff.
 ## @param timeout The duration the buff should last (in seconds).
-func receive_buff(buff_type: Entity_BuffObstacle.BuffType, buff_amount: float, source_id: int, timeout: float) -> void:
+func receive_buff(buff_type: Entity_BuffBuilding.BuffType, buff_amount: float, source_id: int, timeout: float) -> void:
   # If we already have a buff from this source, reset the timer
   # This assumes that the buff effects from `source_id` are always the same
   if buffs.has(source_id):
@@ -299,7 +299,7 @@ func receive_buff(buff_type: Entity_BuffObstacle.BuffType, buff_amount: float, s
   )
   add_child(timeout_timer)
   
-func _get_buffs_of_type(buff_type: Entity_BuffObstacle.BuffType) -> Array[float]:
+func _get_buffs_of_type(buff_type: Entity_BuffBuilding.BuffType) -> Array[float]:
   var result: Array[float] = []
   for buff in buffs.values():
     if buff.buff_type == buff_type:

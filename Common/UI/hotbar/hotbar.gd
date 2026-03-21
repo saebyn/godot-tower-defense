@@ -15,9 +15,9 @@ signal building_selected(building: Resource_BuildingType)
 @export var button_scene: PackedScene # Scene for individual hotbar buttons
 
 @onready var slots_container: HBoxContainer = $SlotsContainer
-@onready var obstacle_selection_menu: PopupMenu = $ObstacleSelectionMenu
+@onready var building_selection_menu: PopupMenu = $BuildingSelectionMenu
 
-var slot_obstacle_ids: Array[String] = [] ## Obstacle IDs for each slot
+var slot_building_ids: Array[String] = [] ## Building IDs for each slot
 var slot_buttons: Array[HotbarButton] = [] ## Button references for each slot
 var current_configuring_slot: int = -1 ## Track which slot was last right-clicked for configuration (-1 if none, may not be valid index or current if no menu open)
 
@@ -60,66 +60,66 @@ func _create_slots() -> void:
 func _connect_signals() -> void:
   # Connect to BuildingRegistry for dynamic updates
   if BuildingRegistry:
-    BuildingRegistry.obstacle_types_updated.connect(_on_obstacle_types_updated)
+    BuildingRegistry.building_types_updated.connect(_on_building_types_updated)
 
 func _populate_default_hotbar() -> void:
-  """Populate hotbar with default obstacles from registry"""
-  MyLogger.info("Hotbar", "Populating hotbar with default obstacles")
+  """Populate hotbar with default buildings from registry"""
+  MyLogger.info("Hotbar", "Populating hotbar with default buildings")
   
-  # Initialize the slot_obstacle_ids array
-  slot_obstacle_ids.clear()
+  # Initialize the slot_building_ids array
+  slot_building_ids.clear()
   
   if BuildingRegistry:
-    var available = BuildingRegistry.available_obstacle_types
+    var available = BuildingRegistry.available_building_types
     for i in range(max_slots):
       if i < available.size():
-        slot_obstacle_ids.append(available[i].id)
+        slot_building_ids.append(available[i].id)
         MyLogger.info("Hotbar", "Setting slot %d to %s" % [i, available[i].name])
       else:
-        slot_obstacle_ids.append("") # Empty slot
+        slot_building_ids.append("") # Empty slot
   else:
     # Fill with empty slots if registry not available
     for i in range(max_slots):
-      slot_obstacle_ids.append("")
+      slot_building_ids.append("")
   
   # Update all slot visuals
   for i in range(max_slots):
     _update_slot_visual(i)
 
-func _get_obstacle_by_id(obstacle_id: String) -> Resource_BuildingType:
-  """Get obstacle resource by ID from the registry"""
-  if obstacle_id.is_empty() or not BuildingRegistry:
+func _get_building_by_id(building_id: String) -> Resource_BuildingType:
+  """Get building resource by ID from the registry"""
+  if building_id.is_empty() or not BuildingRegistry:
     return null
   
-  for obstacle in BuildingRegistry.available_obstacle_types:
-    if obstacle.id == obstacle_id:
-      return obstacle
+  for building in BuildingRegistry.available_building_types:
+    if building.id == building_id:
+      return building
   
   return null
 
 func _update_slot_visual(slot_index: int) -> void:
   """Update the visual representation of a slot"""
-  if slot_index >= slot_buttons.size() or slot_index >= slot_obstacle_ids.size():
+  if slot_index >= slot_buttons.size() or slot_index >= slot_building_ids.size():
     return
   
   var button = slot_buttons[slot_index]
-  var obstacle_id = slot_obstacle_ids[slot_index]
-  var obstacle = _get_obstacle_by_id(obstacle_id)
+  var building_id = slot_building_ids[slot_index]
+  var building = _get_building_by_id(building_id)
 
-  button.load(slot_index, obstacle)
+  button.load(slot_index, building)
 
 func _on_slot_pressed(slot_index: int) -> void:
-  """Handle left click on slot - select obstacle for placement"""
+  """Handle left click on slot - select building for placement"""
   # Block world placement when the game is paused (speed = 0 or in-game menu)
   if GameManager.is_paused():
     return
   
-  var obstacle_id = slot_obstacle_ids[slot_index] if slot_index < slot_obstacle_ids.size() else ""
-  var obstacle = _get_obstacle_by_id(obstacle_id)
+  var building_id = slot_building_ids[slot_index] if slot_index < slot_building_ids.size() else ""
+  var building = _get_building_by_id(building_id)
   
-  if obstacle:
-    MyLogger.info("Hotbar", "Selected obstacle: %s from slot %d" % [obstacle.name, slot_index + 1])
-    building_selected.emit(obstacle)
+  if building:
+    MyLogger.info("Hotbar", "Selected building: %s from slot %d" % [building.name, slot_index + 1])
+    building_selected.emit(building)
 
 func _on_slot_gui_input(event: InputEvent, slot_index: int) -> void:
   """Handle GUI input for advanced slot interactions"""
@@ -129,14 +129,14 @@ func _on_slot_gui_input(event: InputEvent, slot_index: int) -> void:
   
   if event is InputEventMouseButton and event.pressed:
     if event.button_index == MOUSE_BUTTON_RIGHT:
-      _show_obstacle_selection_menu(slot_index)
+      _show_building_selection_menu(slot_index)
 
-func _show_obstacle_selection_menu(slot_index: int) -> void:
-  """Show popup menu with available obstacles for slot assignment"""
-  if not BuildingRegistry or not obstacle_selection_menu:
+func _show_building_selection_menu(slot_index: int) -> void:
+  """Show popup menu with available buildings for slot assignment"""
+  if not BuildingRegistry or not building_selection_menu:
     return
   
-  var available = BuildingRegistry.available_obstacle_types
+  var available = BuildingRegistry.available_building_types
   if available.is_empty():
     return
   
@@ -144,27 +144,27 @@ func _show_obstacle_selection_menu(slot_index: int) -> void:
   current_configuring_slot = slot_index
   
   # Clear existing menu items
-  obstacle_selection_menu.clear()
+  building_selection_menu.clear()
   
   # Add "Clear Slot" option for non-empty slots
-  var current_obstacle_id = slot_obstacle_ids[slot_index] if slot_index < slot_obstacle_ids.size() else ""
-  if not current_obstacle_id.is_empty():
-    obstacle_selection_menu.add_item("Clear Slot", 0)
-    obstacle_selection_menu.add_separator()
+  var current_building_id = slot_building_ids[slot_index] if slot_index < slot_building_ids.size() else ""
+  if not current_building_id.is_empty():
+    building_selection_menu.add_item("Clear Slot", 0)
+    building_selection_menu.add_separator()
   
-  # Add available obstacles to menu
+  # Add available buildings to menu
   for i in range(available.size()):
-    var obstacle = available[i]
-    var item_text = "%s ($%d)" % [obstacle.name, obstacle.cost]
-    obstacle_selection_menu.add_item(item_text, i + 1) # +1 to account for "Clear Slot" at index 0
+    var building = available[i]
+    var item_text = "%s ($%d)" % [building.name, building.cost]
+    building_selection_menu.add_item(item_text, i + 1) # +1 to account for "Clear Slot" at index 0
     
     # Set icon if available
-    if obstacle.icon:
-      obstacle_selection_menu.set_item_icon(obstacle_selection_menu.get_item_count() - 1, obstacle.icon)
+    if building.icon:
+      building_selection_menu.set_item_icon(building_selection_menu.get_item_count() - 1, building.icon)
     
     # Highlight current selection
-    if obstacle.id == current_obstacle_id:
-      obstacle_selection_menu.set_item_disabled(obstacle_selection_menu.get_item_count() - 1, false)
+    if building.id == current_building_id:
+      building_selection_menu.set_item_disabled(building_selection_menu.get_item_count() - 1, false)
       # Mark as current selection in some way - could add checkmark or different styling
   
   # Position menu near the clicked slot button
@@ -173,44 +173,44 @@ func _show_obstacle_selection_menu(slot_index: int) -> void:
   var menu_position = Vector2i(button_global_rect.position.x, button_global_rect.position.y + button_global_rect.size.y)
   
   # Show the popup menu
-  obstacle_selection_menu.popup_on_parent(Rect2i(menu_position, Vector2i(200, 0)))
+  building_selection_menu.popup_on_parent(Rect2i(menu_position, Vector2i(200, 0)))
   
-  MyLogger.info("Hotbar", "Showing obstacle selection menu for slot %d" % (slot_index + 1))
+  MyLogger.info("Hotbar", "Showing building selection menu for slot %d" % (slot_index + 1))
 
-func _on_obstacle_menu_item_selected(id: int) -> void:
-  """Handle selection from the obstacle popup menu"""
+func _on_building_menu_item_selected(id: int) -> void:
+  """Handle selection from the building popup menu"""
   if current_configuring_slot < 0:
     MyLogger.warn("Hotbar", "No slot is currently being configured")
     return
   
   if id == 0:
     # Clear slot option selected
-    set_slot_obstacle(current_configuring_slot, null)
+    set_slot_building(current_configuring_slot, null)
     MyLogger.info("Hotbar", "Cleared slot %d" % (current_configuring_slot + 1))
   else:
-    # Obstacle selected
-    var available = BuildingRegistry.available_obstacle_types
+    # Building selected
+    var available = BuildingRegistry.available_building_types
     if id <= available.size():
-      var selected_obstacle = available[id - 1] # -1 to account for "Clear Slot" at index 0
-      set_slot_obstacle(current_configuring_slot, selected_obstacle)
-      MyLogger.info("Hotbar", "Assigned %s to slot %d" % [selected_obstacle.name, current_configuring_slot + 1])
+      var selected_building = available[id - 1] # -1 to account for "Clear Slot" at index 0
+      set_slot_building(current_configuring_slot, selected_building)
+      MyLogger.info("Hotbar", "Assigned %s to slot %d" % [selected_building.name, current_configuring_slot + 1])
   
   # Reset the configuring slot
   current_configuring_slot = -1
 
-func set_slot_obstacle(slot_index: int, obstacle: Resource_BuildingType) -> void:
-  """Set an obstacle for a specific slot"""
+func set_slot_building(slot_index: int, building: Resource_BuildingType) -> void:
+  """Set an building for a specific slot"""
   if slot_index < 0 or slot_index >= max_slots:
     MyLogger.warn("Hotbar", "Invalid slot index: %d" % slot_index)
     return
   
   # Ensure array is large enough
-  while slot_obstacle_ids.size() <= slot_index:
-    slot_obstacle_ids.append("")
+  while slot_building_ids.size() <= slot_index:
+    slot_building_ids.append("")
   
-  # Set the obstacle ID
-  var obstacle_id = obstacle.id if obstacle else ""
-  slot_obstacle_ids[slot_index] = obstacle_id
+  # Set the building ID
+  var building_id = building.id if building else ""
+  slot_building_ids[slot_index] = building_id
   
   # Update visual
   _update_slot_visual(slot_index)
@@ -237,8 +237,8 @@ func _input(event: InputEvent) -> void:
     if slot_index >= 0:
       _on_slot_pressed(slot_index)
 
-func _on_obstacle_types_updated(added_types: Array[Resource_BuildingType], removed_types: Array[Resource_BuildingType]) -> void:
-  MyLogger.info("Hotbar", "Obstacle types updated. Added: %d, Removed: %d" % [added_types.size(), removed_types.size()])
+func _on_building_types_updated(added_types: Array[Resource_BuildingType], removed_types: Array[Resource_BuildingType]) -> void:
+  MyLogger.info("Hotbar", "Building types updated. Added: %d, Removed: %d" % [added_types.size(), removed_types.size()])
 
   # Update the hotbar configuration if any of the added or removed types are currently in the hotbar
   # First, if there are any new types added and there are empty slots, fill them with the new types.
@@ -249,9 +249,9 @@ func _on_obstacle_types_updated(added_types: Array[Resource_BuildingType], remov
   for added in added_types:
     for i in range(last_visited_slot_index, max_slots):
       last_visited_slot_index = i
-      if slot_obstacle_ids[i].is_empty():
-        slot_obstacle_ids[i] = added.id
-        MyLogger.info("Hotbar", "Added new obstacle %s to empty slot %d" % [added.name, i + 1])
+      if slot_building_ids[i].is_empty():
+        slot_building_ids[i] = added.id
+        MyLogger.info("Hotbar", "Added new building %s to empty slot %d" % [added.name, i + 1])
         break
     
     # If we've filled all slots, we can stop checking for added types
@@ -260,22 +260,22 @@ func _on_obstacle_types_updated(added_types: Array[Resource_BuildingType], remov
 
   for removed in removed_types:
     for i in range(max_slots):
-      if slot_obstacle_ids[i] == removed.id:
-        slot_obstacle_ids[i] = ""
-        MyLogger.info("Hotbar", "Removed obstacle %s from slot %d" % [removed.name, i + 1])
+      if slot_building_ids[i] == removed.id:
+        slot_building_ids[i] = ""
+        MyLogger.info("Hotbar", "Removed building %s from slot %d" % [removed.name, i + 1])
   
   # Update visuals for all slots to reflect changes
   for i in range(max_slots):
     _update_slot_visual(i)
 
-func get_slot_obstacle(slot_index: int) -> Resource_BuildingType:
-  """Get the obstacle for a specific slot"""
-  if slot_index < 0 or slot_index >= slot_obstacle_ids.size():
+func get_slot_building(slot_index: int) -> Resource_BuildingType:
+  """Get the building for a specific slot"""
+  if slot_index < 0 or slot_index >= slot_building_ids.size():
     return null
   
-  var obstacle_id = slot_obstacle_ids[slot_index]
-  return _get_obstacle_by_id(obstacle_id)
+  var building_id = slot_building_ids[slot_index]
+  return _get_building_by_id(building_id)
 
 func clear_slot(slot_index: int) -> void:
   """Clear a specific slot"""
-  set_slot_obstacle(slot_index, null)
+  set_slot_building(slot_index, null)
