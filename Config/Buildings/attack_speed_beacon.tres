@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Resource_BuildingType" load_steps=4 format=3 uid="uid://dsyg1846belbo"]
 
-[ext_resource type="Script" uid="uid://vy1lf2kd14dr" path="res://Config/Obstacles/obstacle_type_resource.gd" id="1_bhnkn"]
+[ext_resource type="Script" uid="uid://vy1lf2kd14dr" path="res://Config/Buildings/obstacle_type_resource.gd" id="1_bhnkn"]
 [ext_resource type="Texture2D" uid="uid://6dypjsu80qtt" path="res://Assets/Icons/fire_tower.png" id="1_esfc7"]
 [ext_resource type="PackedScene" uid="uid://b47ma4awlxcq0" path="res://Entities/Obstacles/Concrete/attack_speed_beacon.tscn" id="1_hitac"]
 
