@@ -6,7 +6,7 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_5dfv8"]
 size = Vector3(6.50949, 3.95703, 2.34848)
 
-[node name="Obstacle" unique_id=1659741871 node_paths=PackedStringArray("mesh_instances") instance=ExtResource("1_da0gv")]
+[node name="Crates" unique_id=1659741871 node_paths=PackedStringArray("mesh_instances") instance=ExtResource("1_da0gv")]
 mesh_instances = [NodePath("StackOfCrates/Cube")]
 
 [node name="StackOfCrates" parent="." index="0" unique_id=2015546954 instance=ExtResource("2_0dadk")]

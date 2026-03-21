@@ -361,7 +361,7 @@ Five visual states the tech tree UI must represent for each node:
 
 ### Data Model
 
-**`Resource_BuildingType` (`Config/Buildings/obstacle_type_resource.gd`)**
+**`Resource_BuildingType` (`Config/Buildings/building_type_resource.gd`)**
 - `required_tech_ids: Array[String]` — all listed tech IDs must be unlocked for this building to be available. Empty array = always available.
 
 **`BuildingRegistry` (`Utilities/Systems/building_registry.gd`)**

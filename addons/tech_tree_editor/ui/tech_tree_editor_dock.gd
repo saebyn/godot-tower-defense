@@ -834,7 +834,7 @@ func _show_inspector(tech_id: String) -> void:
   _add_array_field("Prerequisites", "prerequisite_tech_ids", tech.prerequisite_tech_ids, "_on_array_changed")
   _add_array_field("Achievements", "achievement_ids", tech.achievement_ids, "_on_array_changed")
   _add_array_field("Mutually Exclusive", "mutually_exclusive_with", tech.mutually_exclusive_with, "_on_array_changed")
-  _add_array_field("Unlocked Obstacles", "unlocked_building_ids", tech.unlocked_building_ids, "_on_array_changed")
+  _add_array_field("Unlocked Buildings", "unlocked_building_ids", tech.unlocked_building_ids, "_on_array_changed")
   _add_array_field("Branch Completion", "requires_branch_completion", tech.requires_branch_completion, "_on_array_changed")
 
   # Add save button
