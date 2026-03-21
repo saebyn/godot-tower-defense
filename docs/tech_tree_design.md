@@ -10,7 +10,7 @@ The tree begins with **three starter nodes** (one per main branch) that are imme
 
 **Unlock Model:** Nodes require **Player Level (XP)** and/or **Achievements** (e.g., *Place 3 defenses*, *Survive 3 waves*). Some nodes are **mutually exclusive** with alternatives. **Tech tree unlocking is free** - no scrap cost.
 
-**Starting State:** Players begin with **zero techs unlocked** in each save slot. The three starter nodes (`tur_scrap_shooter`, `ob_crates`, `eco_scrap_recycler`) have level 1 requirements with no prerequisites, making them **immediately available to unlock** at the start of a new game. This provides an introduction to the tech tree mechanic - players must actively unlock these starter techs before they can place those obstacles during gameplay. Tech unlocks are **persistent per save slot** and carry forward across all scenarios within that save.
+**Starting State:** Players begin with **zero techs unlocked** in each save slot. The three starter nodes (`tur_scrap_shooter`, `ob_crates`, `eco_scrap_recycler`) have level 1 requirements with no prerequisites, making them **immediately available to unlock** at the start of a new game. This provides an introduction to the tech tree mechanic - players must actively unlock these starter techs before they can place those buildings during gameplay. Tech unlocks are **persistent per save slot** and carry forward across all scenarios within that save.
 
 **Scrap Economy:** Scrap is earned and spent **during gameplay** to place instances of unlocked obstacles/turrets. The tech tree itself never costs scrap to interact with.
 
@@ -39,7 +39,7 @@ Design the complete tech tree with **mutually exclusive branches**, mapping game
 ### Tech Tree vs Gameplay Economy
 
 * **Tech Tree Unlocking**: Based on player level, achievements, and prerequisites. **No scrap cost** - unlocking is progression-based.
-* **Gameplay Placement**: Once unlocked in tech tree, obstacles/turrets become **available to place** during levels. Placing instances **costs scrap** (defined per obstacle type, not in tech tree).
+* **Gameplay Placement**: Once unlocked in tech tree, buildings become **available to place** during levels. Placing instances **costs scrap** (defined per building type, not in tech tree).
 
 ---
 
@@ -198,7 +198,7 @@ Each node defines:
 * **`prerequisites`** – Techs that must be unlocked first
 * **`achievements`** – Optional gating (e.g., `ach_place_3`, `ach_survive_3`, `ach_kill_100`, `ach_click_100`, `ach_click_kills_25`, `ach_lose_5_defenses`)
 * **`branch_name`** – Category/branch identifier (Offensive, Defensive, Economy, Support, Click, Advanced)
-* **`unlocked_building_ids`** – Array of obstacle IDs that become available when this tech is unlocked
+* **`unlocked_building_ids`** – Array of building IDs that become available when this tech is unlocked
 * **`requires_branch_completion`** – Array of branch names that must be fully completed before this tech unlocks
   - A branch is "fully completed" when all non-Advanced techs in that branch are unlocked
   - Example: `[Offensive]` means all Offensive nodes (excluding mutually exclusive alternatives) must be unlocked
@@ -209,7 +209,7 @@ Each node defines:
 
 > **Note on Cross-Branch Dependencies:** Some nodes have implicit synergies with other branches (e.g., Electric Fence works better with Zed Zapper, Oil Slick ignites with Molotov Mortar). These are design recommendations, not hard prerequisites in the data model. Implement as gameplay synergies rather than unlock gates.
 
-> **Note on Scrap Economy:** Tech tree unlocking is **free** and based purely on progression (level/achievements/prerequisites). Scrap is only spent **during gameplay** to place instances of unlocked obstacles/turrets. Placement costs are defined in `ObstacleTypeResource`, not in the tech tree data.
+> **Note on Scrap Economy:** Tech tree unlocking is **free** and based purely on progression (level/achievements/prerequisites). Scrap is only spent **during gameplay** to place instances of unlocked obstacles/turrets. Placement costs are defined in `BuildingTypeResource`, not in the tech tree data.
 
 ---
 
@@ -290,7 +290,7 @@ When the player clicks an exclusive node:
 
 > **Note:** The Synergy Hub requires completing BOTH the Support and Economy branches. This means all techs in those branches must be unlocked (excluding mutually exclusive alternatives that were not chosen).
 
-> **Reminder:** No `scrap_cost` field exists in tech tree nodes. Unlocking is free and progression-based. Scrap is spent during gameplay to place obstacles.
+> **Reminder:** No `scrap_cost` field exists in tech tree nodes. Unlocking is free and progression-based. Scrap is spent during gameplay to place buildings.
 
 ---
 
@@ -302,7 +302,7 @@ When the player clicks an exclusive node:
 * **Advanced tier nodes** require branch completion, creating natural progression gates for late-game content.
 * Branch completion logic must account for mutually exclusive choices (completing one path counts toward branch completion).
 * Advanced nodes have higher level requirements (5-6) to reflect their position as late-game unlocks.
-* Scrap economy balancing happens in `ObstacleTypeResource` placement costs, not tech tree.
+* Scrap economy balancing happens in `BuildingTypeResource` placement costs, not tech tree.
 
 ---
 
@@ -366,9 +366,9 @@ Five visual states the tech tree UI must represent for each node:
 
 **`BuildingRegistry` (`Utilities/Systems/building_registry.gd`)**
 - Connects to `TechTreeManager.tech_unlocked` and `tech_locked` signals on `_ready()`.
-- `_is_obstacle_unlocked(obstacle_type)` — checks all `required_tech_ids` against unlocked set.
-- `is_obstacle_available(obstacle_id) -> bool` — public availability check.
-- Emits `obstacle_types_updated(added, removed)` when availability changes.
+- `_is_building_unlocked(building_type)` — checks all `required_tech_ids` against unlocked set.
+- `is_building_available(building_id) -> bool` — public availability check.
+- Emits `building_types_updated(added, removed)` when availability changes.
 
 ### Authoring a Building with a Tech Requirement
 
@@ -381,12 +381,12 @@ required_tech_ids = Array[String](["tur_boom_barrel", "eco_scrap_smelter"])
 ### Checking Availability in Code
 
 ```gdscript
-if BuildingRegistry.is_obstacle_available("advanced_turret"):
+if BuildingRegistry.is_building_available("advanced_turret"):
     pass  # player may place it
 
 # React to changes
-BuildingRegistry.obstacle_types_updated.connect(_on_obstacles_updated)
-func _on_obstacles_updated(added: Array, removed: Array) -> void:
+BuildingRegistry.building_types_updated.connect(_on_buildings_updated)
+func _on_buildings_updated(added: Array, removed: Array) -> void:
     pass  # refresh hotbar, etc.
 ```
 
@@ -396,7 +396,7 @@ func _on_obstacles_updated(added: Array, removed: Array) -> void:
 TechTreeManager.unlock_tech(id)
   → emits tech_unlocked
     → BuildingRegistry._on_tech_unlocked()
-      → _update_available_obstacles()
-        → emits obstacle_types_updated(added, removed)
+      → _update_available_buildings()
+        → emits building_types_updated(added, removed)
           → UI / Hotbar refreshes
 ```
