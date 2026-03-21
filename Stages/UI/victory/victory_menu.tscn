@@ -62,7 +62,7 @@ layout_mode = 2
 
 [node name="BuildingsReclaimedLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=928903725]
 layout_mode = 2
-text = "Obstacles Reclaimed: 0"
+text = "Buildings Reclaimed: 0"
 horizontal_alignment = 1
 
 [node name="ScrapReclaimedLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=1757214388]
