@@ -10,7 +10,7 @@ extends Stage_Scenario
 const TIMELINE_INTRO := "res://Dialogic/Timelines/scenario_1_intro.dtl"
 const TIMELINE_TUT_WELCOME := "res://Dialogic/Timelines/scenario_1_tut_welcome.dtl"
 const TIMELINE_TUT_ATTACK := "res://Dialogic/Timelines/scenario_1_tut_attack.dtl"
-const TIMELINE_TUT_OBSTACLE := "res://Dialogic/Timelines/scenario_1_tut_obstacle.dtl"
+const TIMELINE_TUT_OBSTACLE := "res://Dialogic/Timelines/scenario_1_tut_building.dtl"
 const TIMELINE_TUT_READ_UI := "res://Dialogic/Timelines/scenario_1_tut_read_ui.dtl"
 const TIMELINE_TUT_TECH_TREE := "res://Dialogic/Timelines/scenario_1_tut_tech_tree.dtl"
 

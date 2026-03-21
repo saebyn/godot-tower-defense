@@ -48,7 +48,7 @@ directories/dch_directory={
 directories/dtl_directory={
 "scenario_1_intro": "res://Dialogic/Timelines/scenario_1_intro.dtl",
 "scenario_1_tut_attack": "res://Dialogic/Timelines/scenario_1_tut_attack.dtl",
-"scenario_1_tut_obstacle": "res://Dialogic/Timelines/scenario_1_tut_obstacle.dtl",
+"scenario_1_tut_building": "res://Dialogic/Timelines/scenario_1_tut_building.dtl",
 "scenario_1_tut_read_ui": "res://Dialogic/Timelines/scenario_1_tut_read_ui.dtl",
 "scenario_1_tut_tech_tree": "res://Dialogic/Timelines/scenario_1_tut_tech_tree.dtl",
 "scenario_1_tut_welcome": "res://Dialogic/Timelines/scenario_1_tut_welcome.dtl"
