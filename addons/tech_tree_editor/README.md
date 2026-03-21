@@ -26,7 +26,7 @@ Edit all properties of a selected tech node:
 - Prerequisites (comma-separated tech IDs)
 - Achievements (comma-separated achievement IDs)
 - Mutually Exclusive (comma-separated tech IDs)
-- Unlocked Obstacles (comma-separated obstacle IDs)
+- Unlocked Buildings (comma-separated building IDs)
 - Branch Completion Requirements (comma-separated branch names)
 
 ### Validation Engine
@@ -111,22 +111,7 @@ addons/tech_tree_editor/
 
 ## Data Model
 
-Tech nodes are stored as `.tres` resource files in `Config/TechTree/`. Each file contains a `TechNodeResource` with the following properties:
-
-```gdscript
-@export var id: String
-@export var display_name: String
-@export var description: String
-@export var icon: Texture2D
-@export var branch_name: String
-@export var level_requirement: int
-@export var scrap_cost: int
-@export var prerequisite_tech_ids: Array[String]
-@export var achievement_ids: Array[String]
-@export var mutually_exclusive_with: Array[String]
-@export var requires_branch_completion: Array[String]
-@export var unlocked_obstacle_ids: Array[String]
-```
+Tech nodes are stored as `.tres` resource files in `Config/TechTree/`. Each file contains a `TechNodeResource`.
 
 ## ID Naming Conventions
 
