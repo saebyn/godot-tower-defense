@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cydfu3yskn3kd"]
 
-[ext_resource type="Script" uid="uid://ptdfgj0ev2kp" path="res://Common/UI/obstacle_tooltip/obstacle_tooltip.gd" id="1_tooltip"]
+[ext_resource type="Script" uid="uid://ptdfgj0ev2kp" path="res://Common/UI/building_tooltip/building_tooltip.gd" id="1_tooltip"]
 
 [node name="BuildingTooltip" type="Control" unique_id=1719079895]
 layout_mode = 3
