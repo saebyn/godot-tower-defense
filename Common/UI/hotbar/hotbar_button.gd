@@ -19,7 +19,7 @@ func load(slot_index: int, building: Resource_BuildingType) -> void:
   else:
     # Empty slot
     self.icon = null
-    self.tooltip_text = "Empty slot %d\n\nRight click to choose an building" % (slot_index + 1)
+    self.tooltip_text = "Empty slot %d\n\nRight click to choose a building" % (slot_index + 1)
     self.disabled = true
     slot_label.text = "%d" % (slot_index + 1)
     cost_label.text = ""
