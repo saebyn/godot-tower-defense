@@ -11,6 +11,10 @@ extends CharacterBody3D
 @export var xp_reward: int = 10 ## XP awarded when enemy dies (always given)
 @export var enemy_type: String = "base_enemy" ## Type identifier for stats tracking
 
+@export_group("Animations")
+@export var idle_animation: String = "zombie_library/zombie_idle"
+@export var run_animation: String = "zombie_library/zombie_running"
+
 var attack: Component_Attack
 var health: Component_Health
 var damage_numbers: Component_DamageNumbers
@@ -231,9 +235,9 @@ func _process(_delta: float) -> void:
 
   # play animation based on movement speed
   if velocity.length() > 0.1:
-    animation_player.play("Run")
+    animation_player.play(run_animation)
   else:
-    animation_player.play("Idle")
+    animation_player.play(idle_animation)
 
 
 func _physics_process(_delta):

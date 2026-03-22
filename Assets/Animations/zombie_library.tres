@@ -1,0 +1,10 @@
+[gd_resource type="AnimationLibrary" format=3 uid="uid://gu27m4oglbg8"]
+
+[ext_resource type="Animation" uid="uid://dlaildu4oqsrp" path="res://Assets/Animations/zombie_idle.tres" id="1_lttlv"]
+[ext_resource type="Animation" uid="uid://cmwg3leppmtm5" path="res://Assets/Animations/zombie_running.tres" id="2_a4qyo"]
+
+[resource]
+_data = {
+&"zombie_idle": ExtResource("1_lttlv"),
+&"zombie_running": ExtResource("2_a4qyo")
+}
