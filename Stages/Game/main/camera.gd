@@ -51,10 +51,6 @@ func _ready():
   GameManager.game_state_changed.connect(_on_game_state_changed)
 
 
-func _exit_tree():
-  pass
-
-
 func _input(event: InputEvent) -> void:
   # Skip input processing if camera input is disabled (e.g., menus are open)
   if not input_enabled:

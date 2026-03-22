@@ -28,7 +28,7 @@ func _ready() -> void:
   # Create enemy detection raycast
   _enemy_raycast = RayCast3D.new()
   _enemy_raycast.enabled = false
-  _enemy_raycast.collision_mask = 4 # Only detect enemies (layer 4... actually layer 3: attackable)
+  _enemy_raycast.collision_mask = 4 # Only detect enemies (layer 3: attackable)
   add_child(_enemy_raycast)
 
   # Create building detection raycast

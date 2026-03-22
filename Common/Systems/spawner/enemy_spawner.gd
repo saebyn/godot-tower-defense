@@ -25,9 +25,6 @@ func _ready() -> void:
     # Defer node detection to ensure all children are ready
     _detect_node.call_deferred()
 
-func _exit_tree() -> void:
-    pass
-
 func _detect_node() -> void:
     spawn_areas = spawn_areas.filter(func(a): return a != null)
     if spawn_areas.is_empty():
