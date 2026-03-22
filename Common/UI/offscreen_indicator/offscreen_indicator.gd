@@ -57,8 +57,8 @@ func _initialize_indicator_pool() -> void:
   indicator_pool.clear()
 
 func _update_indicators() -> void:
-  var camera := SceneReferences.get_camera()
-  var enemy_spawner := SceneReferences.get_enemy_spawner()
+  var camera := get_tree().get_first_node_in_group("main_camera") as Camera3D
+  var enemy_spawner := get_tree().get_first_node_in_group("enemy_spawner") as System_EnemySpawner
   if not camera or not enemy_spawner:
     return
   

@@ -24,7 +24,7 @@ config/icon="res://Assets/Icons/icon.svg"
 [autoload]
 
 MyLogger="*res://Utilities/Systems/logger.gd"
-AudioManager="*res://Utilities/Systems/audio_manager.gd"
+AudioManager="*res://Utilities/Systems/audio_manager.tscn"
 SaveManager="*res://Utilities/Systems/save_manager.gd"
 CurrencyManager="*res://Utilities/Systems/currency_manager.gd"
 GameManager="*res://Utilities/Systems/game_manager.gd"
@@ -35,7 +35,6 @@ StatsManager="*res://Utilities/Systems/stats_manager.gd"
 SettingsManager="*res://Utilities/Systems/settings_manager.gd"
 ScenarioManager="*res://Utilities/Systems/scenario_manager.gd"
 DamageNumbersManager="*res://Utilities/Systems/damage_numbers_manager.gd"
-SceneReferences="*res://Utilities/Systems/scene_references.gd"
 SurvivorNameManager="*res://Utilities/Systems/survivor_name_manager.gd"
 Twitch="*res://Config/Twitch/twitch_service.tscn"
 Dialogic="*uid://ds2q0uclmolvu"
@@ -105,6 +104,8 @@ survivors=""
 navigation_mesh_source_group=""
 scrap=""
 buildings=""
+main_camera=""
+enemy_spawner=""
 
 [gui]
 

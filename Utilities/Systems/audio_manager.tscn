@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://8pl19ylp7wit"]
+
+[ext_resource type="Script" uid="uid://1usxseel8j6n" path="res://Utilities/Systems/audio_manager.gd" id="1_audio_mgr"]
+[ext_resource type="AudioStream" uid="uid://besdcxihxcckh" path="res://Assets/Audio/Music/battleThemeA.mp3" id="2_battle_theme"]
+
+[sub_resource type="AudioStreamPlaylist" id="AudioStreamPlaylist_bgmusic"]
+shuffle = true
+stream_count = 1
+stream_0 = ExtResource("2_battle_theme")
+
+[node name="AudioManager" type="Node"]
+script = ExtResource("1_audio_mgr")
+
+[node name="BgMusicAudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamPlaylist_bgmusic")
+bus = &"Music"

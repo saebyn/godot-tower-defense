@@ -11,6 +11,9 @@ var sfx_resource_extension: String = ".tres"
 # UI audio player for non-spatial sounds (buttons, menus, etc.)
 var ui_audio_player: AudioStreamPlayer
 
+# Background music player (child node configured in audio_manager.tscn)
+@onready var bg_music_player: AudioStreamPlayer = $BgMusicAudioStreamPlayer
+
 
 func _ready() -> void:
   # Create UI audio player
@@ -44,6 +47,10 @@ func _ready() -> void:
   
   # Process existing nodes in the tree (handles main menu and any pre-loaded scenes)
   _process_existing_buttons(get_tree().root)
+  
+  # Apply initial music pause state and connect to settings changes
+  _on_audio_settings_changed()
+  SettingsManager.audio_settings_changed.connect(_on_audio_settings_changed)
 
 
 ## Recursively process existing buttons in the scene tree
@@ -161,3 +168,24 @@ func get_effect_config(effect: Resource_SoundEffect.SoundEffect) -> Resource_Sou
 ## Get the category name as a string
 func get_category_name(category: Resource_SoundEffect.SoundCategory) -> String:
   return Resource_SoundEffect.SoundCategory.keys()[category]
+
+
+## Start playing background music. Safe to call if already playing.
+func play_background_music() -> void:
+  if bg_music_player and not bg_music_player.playing:
+    bg_music_player.play()
+    MyLogger.info("AudioManager", "Background music started")
+
+
+## Stop background music.
+func stop_background_music() -> void:
+  if bg_music_player and bg_music_player.playing:
+    bg_music_player.stop()
+    MyLogger.info("AudioManager", "Background music stopped")
+
+
+## Apply the music pause mode based on current settings.
+func _on_audio_settings_changed() -> void:
+  if bg_music_player:
+    bg_music_player.process_mode = Node.PROCESS_MODE_PAUSABLE if SettingsManager.music_pause else Node.PROCESS_MODE_ALWAYS
+    MyLogger.debug("AudioManager", "Applied music pause setting: %s" % SettingsManager.music_pause)

@@ -97,7 +97,7 @@ func _clear_minimap_canvas() -> void:
     child.queue_free()
 
 func _draw_camera_viewport() -> void:
-  var camera := SceneReferences.get_camera()
+  var camera := get_tree().get_first_node_in_group("main_camera") as Camera3D
   if not camera:
     return
   
@@ -113,7 +113,7 @@ func _draw_camera_viewport() -> void:
   minimap_canvas.add_child(camera_indicator)
 
 func _draw_enemies() -> void:
-  var enemy_spawner := SceneReferences.get_enemy_spawner()
+  var enemy_spawner := get_tree().get_first_node_in_group("enemy_spawner") as System_EnemySpawner
   if not enemy_spawner:
     return
   
@@ -183,7 +183,7 @@ func _minimap_to_world(minimap_pos: Vector2) -> Vector3:
 
 func _on_minimap_clicked(event: InputEvent) -> void:
   if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-    var camera := SceneReferences.get_camera()
+    var camera := get_tree().get_first_node_in_group("main_camera") as Camera3D
     if not camera:
       return
     
