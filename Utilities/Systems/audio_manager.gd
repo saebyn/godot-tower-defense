@@ -52,7 +52,7 @@ func _ready() -> void:
   _on_audio_settings_changed()
   SettingsManager.audio_settings_changed.connect(_on_audio_settings_changed)
 
-  bg_music_player.play()
+  play_background_music()
 
 
 ## Recursively process existing buttons in the scene tree
