@@ -8,8 +8,11 @@
 [ext_resource type="Script" uid="uid://c474c2uw4525n" path="res://Stages/Game/main/camera.gd" id="5_hjeu7"]
 [ext_resource type="PackedScene" uid="uid://bpf2dmre1y8t0" path="res://Utilities/Placement/building_placement/building_placement.tscn" id="7_kek77"]
 [ext_resource type="Script" uid="uid://030vpwx2g048" path="res://Stages/Game/main/audio_listener.gd" id="8_audio_listener"]
-[ext_resource type="AudioStream" uid="uid://besdcxihxcckh" path="res://Assets/Audio/Music/battleThemeA.mp3" id="9_i0vvu"]
 [ext_resource type="Script" uid="uid://bmluckfvgm1c2" path="res://addons/twitcher/chat/twitch_command.gd" id="10_hjeu7"]
+[ext_resource type="Script" uid="uid://0gr59pj8n785" path="res://Stages/Game/main/navigation_controller.gd" id="11_nav_ctrl"]
+[ext_resource type="Script" uid="uid://h0qo6ac65db2" path="res://Stages/Game/main/twitch_game_bridge.gd" id="12_twitch_bridge"]
+[ext_resource type="Script" uid="uid://n3ujk5q2bgj9" path="res://Stages/Game/main/hover_controller.gd" id="13_hover_ctrl"]
+[ext_resource type="Script" uid="uid://9r612768j6wn" path="res://Stages/Game/main/player_input_controller.gd" id="14_player_input"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_pcgyj"]
 geometry_parsed_geometry_type = 1
@@ -25,16 +28,9 @@ agent_max_slope = 59.58
 
 [sub_resource type="Compositor" id="Compositor_hjeu7"]
 
-[sub_resource type="AudioStreamPlaylist" id="AudioStreamPlaylist_hjeu7"]
-shuffle = true
-stream_count = 1
-stream_0 = ExtResource("9_i0vvu")
-
 [node name="Main" type="Node3D" unique_id=142569674]
 process_mode = 1
 script = ExtResource("1_1bvp3")
-attack_waiting_cursor_image = ExtResource("2_wy7n0")
-building_tooltip_scene = ExtResource("4_tooltip")
 
 [node name="Attack" parent="." unique_id=532095815 node_paths=PackedStringArray("audio_player") instance=ExtResource("2_kek77")]
 damage_amount = 1
@@ -69,10 +65,6 @@ navigation_mesh = SubResource("NavigationMesh_pcgyj")
 camera_attributes = SubResource("CameraAttributesPractical_i0vvu")
 compositor = SubResource("Compositor_hjeu7")
 
-[node name="EnemyRayCast3D" type="RayCast3D" parent="." unique_id=476753059]
-enabled = false
-collision_mask = 4
-
 [node name="BuildingPlacement" parent="." unique_id=977494137 node_paths=PackedStringArray("audio_player", "navigation_region", "camera") instance=ExtResource("7_kek77")]
 audio_player = NodePath("../AudioStreamPlayer")
 navigation_region = NodePath("../NavigationRegion3D")
@@ -80,10 +72,6 @@ camera = NodePath("../Camera3D")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=704157109]
 bus = &"Sound Effects"
-
-[node name="BgMusicAudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1459015999]
-stream = SubResource("AudioStreamPlaylist_hjeu7")
-bus = &"Music"
 
 [node name="JoinQueueCommand" type="Node" parent="." unique_id=111271248]
 script = ExtResource("10_hjeu7")
@@ -95,8 +83,32 @@ permission_level = 31
 user_cooldown = 10.0
 metadata/_custom_type_script = "uid://bmluckfvgm1c2"
 
-[connection signal="cooldown_ended" from="Attack" to="." method="_on_attack_cooldown_ended"]
-[connection signal="cooldown_started" from="Attack" to="." method="_on_attack_cooldown_started"]
+[node name="NavigationController" type="Node" parent="." unique_id=300000001 node_paths=PackedStringArray("navigation_region")]
+script = ExtResource("11_nav_ctrl")
+navigation_region = NodePath("../NavigationRegion3D")
+
+[node name="TwitchGameBridge" type="Node" parent="." unique_id=300000002]
+script = ExtResource("12_twitch_bridge")
+ui = NodePath("../UI")
+joinqueue_command = NodePath("../JoinQueueCommand")
+
+[node name="HoverController" type="Node" parent="." unique_id=300000003 node_paths=PackedStringArray("camera", "ui")]
+script = ExtResource("13_hover_ctrl")
+camera = NodePath("../Camera3D")
+ui = NodePath("../UI")
+building_tooltip_scene = ExtResource("4_tooltip")
+
+[node name="PlayerInputController" type="Node" parent="." unique_id=300000004 node_paths=PackedStringArray("camera", "attack", "building_placement", "hover_controller", "navigation_controller", "ui")]
+script = ExtResource("14_player_input")
+camera = NodePath("../Camera3D")
+attack = NodePath("../Attack")
+building_placement = NodePath("../BuildingPlacement")
+hover_controller = NodePath("../HoverController")
+navigation_controller = NodePath("../NavigationController")
+ui = NodePath("../UI")
+attack_waiting_cursor_image = ExtResource("2_wy7n0")
+
+[connection signal="cooldown_ended" from="Attack" to="PlayerInputController" method="_on_attack_cooldown_ended"]
+[connection signal="cooldown_started" from="Attack" to="PlayerInputController" method="_on_attack_cooldown_started"]
 [connection signal="building_spawn_requested" from="UI" to="." method="_on_building_spawn_requested"]
-[connection signal="rebake_navigation_mesh" from="BuildingPlacement" to="." method="rebake_navigation_mesh"]
-[connection signal="command_received" from="JoinQueueCommand" to="." method="_on_joinqueue_command_received"]
+[connection signal="rebake_navigation_mesh" from="BuildingPlacement" to="NavigationController" method="rebake_navigation_mesh"]

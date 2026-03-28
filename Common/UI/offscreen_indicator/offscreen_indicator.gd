@@ -33,6 +33,10 @@ var active_indicators: Array[Control] = []
 # Update timer
 var update_timer: Timer
 
+# Cached references (refreshed on scenario start or when null)
+var _camera: Camera3D = null
+var _enemy_spawner: System_EnemySpawner = null
+
 func _ready() -> void:
   MyLogger.info("OffscreenIndicator", "Initializing Offscreen Indicator")
   # Setup update timer
@@ -49,7 +53,9 @@ func _ready() -> void:
   _on_scenario_started("") # Initial setup in case scenario is already running
 
 func _on_scenario_started(_x: String) -> void:
-  # Reset indicators when a new scenario starts
+  # Refresh cached references and reset indicators when a new scenario starts
+  _camera = null
+  _enemy_spawner = null
   _clear_active_indicators()
 
 func _initialize_indicator_pool() -> void:
@@ -57,9 +63,11 @@ func _initialize_indicator_pool() -> void:
   indicator_pool.clear()
 
 func _update_indicators() -> void:
-  var camera := SceneReferences.get_camera()
-  var enemy_spawner := SceneReferences.get_enemy_spawner()
-  if not camera or not enemy_spawner:
+  if not _camera or not is_instance_valid(_camera):
+    _camera = get_tree().get_first_node_in_group("main_camera") as Camera3D
+  if not _enemy_spawner or not is_instance_valid(_enemy_spawner):
+    _enemy_spawner = get_tree().get_first_node_in_group("enemy_spawner") as System_EnemySpawner
+  if not _camera or not _enemy_spawner:
     return
   
   # Check if we're in a valid state (viewport exists)
@@ -71,7 +79,7 @@ func _update_indicators() -> void:
   _clear_active_indicators()
   
   # Get all enemies
-  var enemies = enemy_spawner.current_enemies
+  var enemies = _enemy_spawner.current_enemies
   if enemies.is_empty():
     return
   
@@ -80,7 +88,7 @@ func _update_indicators() -> void:
     if not enemy or not is_instance_valid(enemy):
       continue
       
-    var screen_pos = camera.unproject_position(enemy.global_position)
+    var screen_pos = _camera.unproject_position(enemy.global_position)
     var viewport_size = viewport.get_visible_rect().size
     
     # Check if enemy is offscreen

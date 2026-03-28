@@ -185,6 +185,21 @@ The `GameManager` singleton manages game states and transitions. It defines an e
    - Verify singleton scripts are properly accessible with their class names
    - Restart Godot if autoload changes don't take effect
 
+### ⚠️ CRITICAL: Scene/Resource UID Validation
+
+Godot 4 stores a `.uid` sidecar file alongside every script and resource. When
+Copilot generates or edits `.tscn` or `.tres` files, the `uid="uid://..."` value
+in each `[ext_resource]` header **must exactly match** the content of the
+corresponding `<path>.uid` file. Invented or guessed UIDs look valid in the
+editor but silently resolve to `null` at runtime, causing hard-to-debug errors.
+
+**After every change to a `.tscn` or `.tres` file, run:**
+```bash
+python3 Utilities/validate_uids.py .
+```
+Fix all `[UID MISMATCH]` errors before committing. `[MISSING RESOURCE]` errors
+inside `addons/twitcher/example/` are expected and can be ignored.
+
 ### Build and Test Commands
 
 1. **Asset Import Validation**:

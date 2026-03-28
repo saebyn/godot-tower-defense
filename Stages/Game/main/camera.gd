@@ -39,8 +39,10 @@ const CAMERA_VIEW_ALIGNMENT_OFFSET := PI / 2 ## 90 degrees in radians rotation t
 
 
 func _ready():
-  # Register with SceneReferences autoload
-  SceneReferences.register_camera(self )
+  # Warn if another camera is already registered (prevents silent multi-instance bugs)
+  if get_tree().get_nodes_in_group("main_camera").size() > 0:
+    MyLogger.warn("Camera", "Another node is already in the 'main_camera' group; only one should be active at a time.")
+  add_to_group("main_camera")
   
   # Initialize the orbit center to the current ground projection
   _update_orbit_center()
@@ -50,11 +52,6 @@ func _ready():
   
   # Connect to GameManager state changes to disable input during menus
   GameManager.game_state_changed.connect(_on_game_state_changed)
-
-
-func _exit_tree():
-  # Unregister from SceneReferences autoload
-  SceneReferences.unregister_camera()
 
 
 func _input(event: InputEvent) -> void:

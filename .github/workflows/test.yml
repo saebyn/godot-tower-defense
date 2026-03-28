@@ -37,6 +37,9 @@ jobs:
           mkdir -p /github/home/.config/godot
           printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\nfilesystem/import/blender/blender_path = "/usr/bin/blender"\n' > /github/home/.config/godot/editor_settings-4.tres
 
+      - name: Validate scene/resource UIDs
+        run: python3 Utilities/validate_uids.py .
+
       - name: Import project files
         if: steps.cache.outputs.cache-hit != 'true'
         run: |

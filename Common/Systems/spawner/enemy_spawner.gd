@@ -19,17 +19,14 @@ signal all_waves_completed()
 signal enemy_spawned(enemy: Node3D)
 
 func _ready() -> void:
-    # Register with SceneReferences autoload
-    SceneReferences.register_enemy_spawner(self )
-    
+    # Warn if another spawner is already registered (prevents silent multi-instance bugs)
+    if get_tree().get_nodes_in_group("enemy_spawner").size() > 0:
+        MyLogger.warn("Spawner", "Another node is already in the 'enemy_spawner' group; only one should be active at a time.")
+    add_to_group("enemy_spawner")
     # Monitor child nodes exiting tree to track enemies
     child_exiting_tree.connect(_on_child_exiting_tree)
     # Defer node detection to ensure all children are ready
     _detect_node.call_deferred()
-
-func _exit_tree() -> void:
-    # Unregister from SceneReferences autoload
-    SceneReferences.unregister_enemy_spawner()
 
 func _detect_node() -> void:
     spawn_areas = spawn_areas.filter(func(a): return a != null)

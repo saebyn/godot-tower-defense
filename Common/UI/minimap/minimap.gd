@@ -38,6 +38,10 @@ var update_timer: Timer
 # Game world bounds
 var world_bounds: AABB
 
+# Cached references (lazily refreshed when null/invalid)
+var _camera: Camera3D = null
+var _enemy_spawner: System_EnemySpawner = null
+
 func _ready() -> void:
   # Setup minimap UI
   _setup_minimap_ui()
@@ -97,12 +101,13 @@ func _clear_minimap_canvas() -> void:
     child.queue_free()
 
 func _draw_camera_viewport() -> void:
-  var camera := SceneReferences.get_camera()
-  if not camera:
+  if not _camera or not is_instance_valid(_camera):
+    _camera = get_tree().get_first_node_in_group("main_camera") as Camera3D
+  if not _camera:
     return
   
   # Get camera position and create a visual representation
-  var camera_pos = camera.global_position
+  var camera_pos = _camera.global_position
   var minimap_pos = _world_to_minimap(camera_pos)
   
   # Create a simple rectangle to represent camera view area
@@ -113,11 +118,12 @@ func _draw_camera_viewport() -> void:
   minimap_canvas.add_child(camera_indicator)
 
 func _draw_enemies() -> void:
-  var enemy_spawner := SceneReferences.get_enemy_spawner()
-  if not enemy_spawner:
+  if not _enemy_spawner or not is_instance_valid(_enemy_spawner):
+    _enemy_spawner = get_tree().get_first_node_in_group("enemy_spawner") as System_EnemySpawner
+  if not _enemy_spawner:
     return
   
-  for enemy in enemy_spawner.current_enemies:
+  for enemy in _enemy_spawner.current_enemies:
     if not enemy or not is_instance_valid(enemy):
       continue
     
@@ -183,8 +189,9 @@ func _minimap_to_world(minimap_pos: Vector2) -> Vector3:
 
 func _on_minimap_clicked(event: InputEvent) -> void:
   if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-    var camera := SceneReferences.get_camera()
-    if not camera:
+    if not _camera or not is_instance_valid(_camera):
+      _camera = get_tree().get_first_node_in_group("main_camera") as Camera3D
+    if not _camera:
       return
     
     # Get local click position
@@ -194,6 +201,6 @@ func _on_minimap_clicked(event: InputEvent) -> void:
     var world_pos = _minimap_to_world(local_click)
     
     # Move camera to clicked position
-    camera.global_position = Vector3(world_pos.x, camera.global_position.y, world_pos.z)
+    _camera.global_position = Vector3(world_pos.x, _camera.global_position.y, world_pos.z)
     
     MyLogger.info("Minimap", "Camera moved to: %s" % world_pos)
