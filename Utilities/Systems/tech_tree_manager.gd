@@ -69,6 +69,11 @@ func can_unlock_tech(tech_id: String) -> bool:
     MyLogger.debug("TechTreeManager", "Tech is permanently locked: %s" % tech_id)
     return false
   
+  # In debug mode, skip all progression requirements
+  if SettingsManager.debug_mode:
+    MyLogger.debug("TechTreeManager", "Debug mode: bypassing requirements for %s" % tech_id)
+    return true
+  
   var tech = tech_nodes[tech_id]
   
   # Check player level requirement
@@ -109,8 +114,8 @@ func unlock_tech(tech_id: String) -> bool:
   
   var tech = tech_nodes[tech_id]
   
-  # Deduct scrap cost if any
-  if tech.scrap_cost > 0:
+  # Deduct scrap cost if any (skipped in debug mode)
+  if tech.scrap_cost > 0 and not SettingsManager.debug_mode:
     if not CurrencyManager.spend_scrap(tech.scrap_cost):
       MyLogger.error("TechTreeManager", "Failed to spend scrap for tech: %s" % tech_id)
       return false

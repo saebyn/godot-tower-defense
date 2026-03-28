@@ -131,6 +131,13 @@ offset_right = 16.0
 offset_bottom = 12.0
 text = "Free Scrap"
 
+[node name="UnlockAllTech" type="Button" parent="DebugControl" unique_id=848303989]
+layout_mode = 0
+offset_top = 20.0
+offset_right = 16.0
+offset_bottom = 32.0
+text = "Unlock All Tech"
+
 [node name="TechTree" parent="." unique_id=2005854423 instance=ExtResource("3_r1fny")]
 visible = false
 layout_mode = 1
@@ -138,3 +145,4 @@ layout_mode = 1
 [connection signal="building_selected" from="Hotbar" to="." method="request_building_spawn"]
 [connection signal="pressed" from="UtilityButtons/TechTreeButton" to="." method="_toggle_tech_tree"]
 [connection signal="pressed" from="DebugControl/FreeScrap" to="DebugControl" method="_on_free_scrap_pressed"]
+[connection signal="pressed" from="DebugControl/UnlockAllTech" to="DebugControl" method="_on_unlock_all_tech_pressed"]
