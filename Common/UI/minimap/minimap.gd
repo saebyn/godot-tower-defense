@@ -38,7 +38,7 @@ var update_timer: Timer
 # Game world bounds
 var world_bounds: AABB
 
-# Cached references (refreshed on scenario start or when null)
+# Cached references (lazily refreshed when null/invalid)
 var _camera: Camera3D = null
 var _enemy_spawner: System_EnemySpawner = null
 
