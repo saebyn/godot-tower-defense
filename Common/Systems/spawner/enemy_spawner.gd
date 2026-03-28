@@ -19,6 +19,9 @@ signal all_waves_completed()
 signal enemy_spawned(enemy: Node3D)
 
 func _ready() -> void:
+    # Warn if another spawner is already registered (prevents silent multi-instance bugs)
+    if get_tree().get_nodes_in_group("enemy_spawner").size() > 0:
+        MyLogger.warn("Spawner", "Another node is already in the 'enemy_spawner' group; only one should be active at a time.")
     add_to_group("enemy_spawner")
     # Monitor child nodes exiting tree to track enemies
     child_exiting_tree.connect(_on_child_exiting_tree)

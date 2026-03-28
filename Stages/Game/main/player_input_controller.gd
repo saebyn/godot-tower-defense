@@ -25,6 +25,10 @@ var _building_raycast: RayCast3D
 
 
 func _ready() -> void:
+  # Ensure player attacks are attributed correctly
+  if attack:
+    attack.damage_source = "player"
+
   # Create enemy detection raycast
   _enemy_raycast = RayCast3D.new()
   _enemy_raycast.enabled = false

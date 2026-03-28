@@ -39,6 +39,9 @@ const CAMERA_VIEW_ALIGNMENT_OFFSET := PI / 2 ## 90 degrees in radians rotation t
 
 
 func _ready():
+  # Warn if another camera is already registered (prevents silent multi-instance bugs)
+  if get_tree().get_nodes_in_group("main_camera").size() > 0:
+    MyLogger.warn("Camera", "Another node is already in the 'main_camera' group; only one should be active at a time.")
   add_to_group("main_camera")
   
   # Initialize the orbit center to the current ground projection
