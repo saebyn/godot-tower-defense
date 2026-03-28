@@ -10,7 +10,7 @@ class_name Main_HoverController
 
 @export var camera: Camera3D
 @export var ui: Control
-@export var building_placement: Utility_BuildingPlacement
+
 @export var building_tooltip_scene: PackedScene
 @export var raycast_length: float = 1000.0
 

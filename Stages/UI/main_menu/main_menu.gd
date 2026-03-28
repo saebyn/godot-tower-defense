@@ -13,8 +13,6 @@ var settings_menu = null
 var tech_tree_ui = null
 var achievement_list_ui = null
 
-@onready var background_music_player: AudioStreamPlayer = $BgMusicAudioStreamPlayer
-
 func _ready():
   # Set the initial game state when the main menu loads
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
@@ -33,8 +31,6 @@ func _ready():
   
   # Create and add settings menu
   _setup_settings_menu()
-
-  background_music_player.play()
 
 func _setup_settings_menu():
   settings_menu = SettingsMenuScene.instantiate()

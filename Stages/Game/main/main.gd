@@ -13,9 +13,6 @@ var current_scenario: Stage_Scenario = null
 
 
 func _ready() -> void:
-  # Start background music for the game
-  AudioManager.play_background_music()
-
   # Connect to building placement signals for showing all shooting building ranges
   building_placement.placement_mode_entered.connect(_on_placement_mode_entered)
   building_placement.placement_mode_exited.connect(_on_placement_mode_exited)
@@ -49,7 +46,7 @@ func _load_scenario() -> void:
 
   # Apply the 45-degree rotation to align with isometric camera view
   # This matches the rotation applied in the editor to the hardcoded scenario
-  current_scenario.rotation.y = -PI / 4 # 45 degrees in radians
+  current_scenario.rotation.y = - PI / 4 # 45 degrees in radians
 
   # Configure the scenario with the UI reference
   current_scenario.ui = ui

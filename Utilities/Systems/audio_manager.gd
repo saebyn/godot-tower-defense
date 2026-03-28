@@ -52,6 +52,8 @@ func _ready() -> void:
   _on_audio_settings_changed()
   SettingsManager.audio_settings_changed.connect(_on_audio_settings_changed)
 
+  bg_music_player.play()
+
 
 ## Recursively process existing buttons in the scene tree
 func _process_existing_buttons(node: Node) -> void:
@@ -168,13 +170,6 @@ func get_effect_config(effect: Resource_SoundEffect.SoundEffect) -> Resource_Sou
 ## Get the category name as a string
 func get_category_name(category: Resource_SoundEffect.SoundCategory) -> String:
   return Resource_SoundEffect.SoundCategory.keys()[category]
-
-
-## Start playing background music. Safe to call if already playing.
-func play_background_music() -> void:
-  if bg_music_player and not bg_music_player.playing:
-    bg_music_player.play()
-    MyLogger.info("AudioManager", "Background music started")
 
 
 ## Stop background music.
