@@ -114,28 +114,25 @@ layout_mode = 1
 [node name="AchievementNotificationManager" type="CanvasLayer" parent="." unique_id=22995399]
 script = ExtResource("12_achievement_notification")
 
-[node name="DebugControl" type="Control" parent="." unique_id=9774053]
+[node name="DebugControl" type="VBoxContainer" parent="." unique_id=9774053]
 visible = false
 layout_mode = 1
-anchor_right = 0.135
-anchor_bottom = 0.205
-offset_left = 663.0
-offset_top = 502.0
-offset_right = 507.47998
-offset_bottom = 369.16
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+offset_left = -170.0
+offset_top = 60.0
+offset_right = -10.0
+offset_bottom = 100.0
+grow_horizontal = 0
 script = ExtResource("15_y1b7e")
 
 [node name="FreeScrap" type="Button" parent="DebugControl" unique_id=848303988]
-layout_mode = 0
-offset_right = 16.0
-offset_bottom = 12.0
+layout_mode = 2
 text = "Free Scrap"
 
 [node name="UnlockAllTech" type="Button" parent="DebugControl" unique_id=848303989]
-layout_mode = 0
-offset_top = 20.0
-offset_right = 16.0
-offset_bottom = 32.0
+layout_mode = 2
 text = "Unlock All Tech"
 
 [node name="TechTree" parent="." unique_id=2005854423 instance=ExtResource("3_r1fny")]
