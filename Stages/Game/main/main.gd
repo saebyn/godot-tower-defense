@@ -13,9 +13,6 @@ var current_scenario: Stage_Scenario = null
 
 
 func _ready() -> void:
-  # Start background music for the game
-  AudioManager.play_background_music()
-
   # Connect to building placement signals for showing all shooting building ranges
   building_placement.placement_mode_entered.connect(_on_placement_mode_entered)
   building_placement.placement_mode_exited.connect(_on_placement_mode_exited)
@@ -25,11 +22,6 @@ func _ready() -> void:
 
   # Load the appropriate scenario dynamically
   _load_scenario()
-
-
-func _exit_tree() -> void:
-  # Stop background music when leaving the game scene
-  AudioManager.stop_background_music()
 
 
 func _load_scenario() -> void:
