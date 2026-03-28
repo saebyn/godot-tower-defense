@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dkcr3l3x8ks7j"]
 
-[ext_resource type="Script" uid="uid://c7s0g2bclm82b" path="res://Common/Systems/spawner/wave.gd" id="1_00s5r"]
+[ext_resource type="Script" uid="uid://b7jdk6preu1s4" path="res://Common/Systems/spawner/wave.gd" id="1_00s5r"]
 
 [node name="Wave" type="Node3D"]
 script = ExtResource("1_00s5r")

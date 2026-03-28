@@ -9,10 +9,10 @@
 [ext_resource type="PackedScene" uid="uid://bpf2dmre1y8t0" path="res://Utilities/Placement/building_placement/building_placement.tscn" id="7_kek77"]
 [ext_resource type="Script" uid="uid://030vpwx2g048" path="res://Stages/Game/main/audio_listener.gd" id="8_audio_listener"]
 [ext_resource type="Script" uid="uid://bmluckfvgm1c2" path="res://addons/twitcher/chat/twitch_command.gd" id="10_hjeu7"]
-[ext_resource type="Script" uid="uid://0gr6apj8n785" path="res://Stages/Game/main/navigation_controller.gd" id="11_nav_ctrl"]
+[ext_resource type="Script" uid="uid://0gr59pj8n785" path="res://Stages/Game/main/navigation_controller.gd" id="11_nav_ctrl"]
 [ext_resource type="Script" uid="uid://h0qo6ac65db2" path="res://Stages/Game/main/twitch_game_bridge.gd" id="12_twitch_bridge"]
-[ext_resource type="Script" uid="uid://n3ujk5q2bgka" path="res://Stages/Game/main/hover_controller.gd" id="13_hover_ctrl"]
-[ext_resource type="Script" uid="uid://bar612768j6wn" path="res://Stages/Game/main/player_input_controller.gd" id="14_player_input"]
+[ext_resource type="Script" uid="uid://n3ujk5q2bgj9" path="res://Stages/Game/main/hover_controller.gd" id="13_hover_ctrl"]
+[ext_resource type="Script" uid="uid://9r612768j6wn" path="res://Stages/Game/main/player_input_controller.gd" id="14_player_input"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_pcgyj"]
 geometry_parsed_geometry_type = 1
