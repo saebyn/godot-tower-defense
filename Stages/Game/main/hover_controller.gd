@@ -32,7 +32,7 @@ func _ready() -> void:
   # Create hover detection raycast
   _hover_raycast = RayCast3D.new()
   _hover_raycast.enabled = false
-  _hover_raycast.collision_mask = 1 | 2 | 4 # Targets/survivors (layer 1) + buildings (layer 2) + enemies (layer 4)
+  _hover_raycast.collision_mask = 1 | 2 | 4 # Targets/survivors (layer 1) + buildings (layer 2) + enemies (layer 3)
   add_child(_hover_raycast)
 
   # Create building tooltip if scene is assigned
