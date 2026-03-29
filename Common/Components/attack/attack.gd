@@ -110,9 +110,11 @@ func _apply_aoe_splash(primary_target: Node, is_crit: bool) -> void:
       continue
     var falloff_mult := 1.0
     if attack_effect.aoe_falloff:
-      var normalized_dist := dist / attack_effect.aoe_radius
-      falloff_mult = attack_effect.aoe_falloff.sample(normalized_dist)
+      var normalized_dist := clamp(dist / attack_effect.aoe_radius, 0.0, 1.0)
+      falloff_mult = max(0.0, attack_effect.aoe_falloff.sample(normalized_dist))
     var splash_damage := base_splash_damage * falloff_mult
+    if splash_damage <= 0.0:
+      continue
     if enemy.has_meta("health_component"):
       var health = enemy.get_meta("health_component")
       if health is Component_Health:
