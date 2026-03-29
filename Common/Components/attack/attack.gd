@@ -110,7 +110,7 @@ func _apply_aoe_splash(primary_target: Node, is_crit: bool) -> void:
       continue
     var falloff_mult := 1.0
     if attack_effect.aoe_falloff:
-      var normalized_dist := clamp(dist / attack_effect.aoe_radius, 0.0, 1.0)
+      var normalized_dist: float = clamp(dist / attack_effect.aoe_radius, 0.0, 1.0)
       falloff_mult = max(0.0, attack_effect.aoe_falloff.sample(normalized_dist))
     var splash_damage := base_splash_damage * falloff_mult
     if splash_damage <= 0.0:
