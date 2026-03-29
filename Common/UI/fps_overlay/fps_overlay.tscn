@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://c5m8n7qaq1r2s"]
+[gd_scene format=3 uid="uid://c5m8n7qaq1r2s"]
 
 [ext_resource type="Script" uid="uid://7goiej14kydk" path="res://Common/UI/fps_overlay/fps_overlay.gd" id="1_fps_overlay"]
 
-[node name="FpsOverlay" type="Control"]
+[node name="FpsOverlay" type="Control" unique_id=2021782365]
 process_mode = 3
 visible = false
 layout_mode = 3
@@ -18,7 +18,7 @@ grow_vertical = 0
 mouse_filter = 2
 script = ExtResource("1_fps_overlay")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=1786897876]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -28,7 +28,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.7)
 
-[node name="FpsLabel" type="Label" parent="."]
+[node name="FpsLabel" type="Label" parent="." unique_id=1742816516]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

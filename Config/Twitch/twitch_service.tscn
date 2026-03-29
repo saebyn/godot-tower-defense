@@ -1,9 +1,24 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3 uid="uid://pxqmh66tdkfo"]
 
 [ext_resource type="PackedScene" uid="uid://djt5lvmwxbq4a" path="res://addons/twitcher/twitch_service.tscn" id="1_base"]
 [ext_resource type="Resource" uid="uid://clusboprlnr71" path="res://Config/Twitch/twitch_oauth_setting.tres" id="2_setting"]
 [ext_resource type="Resource" uid="uid://c2aqnlidafcbm" path="res://Config/Twitch/default_oauth_token.tres" id="3_token"]
 
-[node name="TwitchService" instance=ExtResource("1_base")]
+[node name="TwitchService" unique_id=1731180887 instance=ExtResource("1_base")]
+oauth_setting = ExtResource("2_setting")
+token = ExtResource("3_token")
+
+[node name="API" parent="." index="1"]
+token = ExtResource("3_token")
+oauth_setting = ExtResource("2_setting")
+
+[node name="Auth" parent="." index="2"]
+oauth_setting = ExtResource("2_setting")
+token = ExtResource("3_token")
+
+[node name="OAuth" parent="Auth" index="0"]
+oauth_setting = ExtResource("2_setting")
+
+[node name="TokenHandler" parent="Auth" index="1"]
 oauth_setting = ExtResource("2_setting")
 token = ExtResource("3_token")

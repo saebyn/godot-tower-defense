@@ -117,9 +117,9 @@ script = ExtResource("12_achievement_notification")
 [node name="DebugControl" type="VBoxContainer" parent="." unique_id=9774053]
 visible = false
 layout_mode = 1
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-anchor_bottom = 0.0
 offset_left = -170.0
 offset_top = 60.0
 offset_right = -10.0

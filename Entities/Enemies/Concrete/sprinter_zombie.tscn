@@ -1,11 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://ck56onavfxobh"]
+[gd_scene format=3 uid="uid://ck56onavfxobh"]
 
 [ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://Entities/Enemies/Templates/base_enemy/enemy.tscn" id="1_vwbei"]
 [ext_resource type="Script" uid="uid://bgi7t40lxwufo" path="res://Common/Components/sprint/sprint.gd" id="2_w1g2x"]
 
-[node name="sprinter_zombie" instance=ExtResource("1_vwbei")]
+[node name="sprinter_zombie" unique_id=1909895344 instance=ExtResource("1_vwbei")]
 
-[node name="Component_Sprint" type="Node" parent="." index="8"]
+[node name="Component_Sprint" type="Node" parent="." index="8" unique_id=171350598]
 script = ExtResource("2_w1g2x")
 sprint_speed_multiplier = 3.0
 sprint_chance = 0.5

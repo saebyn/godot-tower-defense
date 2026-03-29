@@ -1,15 +1,15 @@
-[gd_scene load_steps=2 format=3 uid="uid://bhnpr8mat2j5c"]
+[gd_scene format=3 uid="uid://bhnpr8mat2j5c"]
 
 [ext_resource type="Script" uid="uid://dthb3io2o865h" path="res://Common/UI/currency_display/currency_display.gd" id="1_currency_display"]
 
-[node name="CurrencyDisplay" type="Control"]
+[node name="CurrencyDisplay" type="Control" unique_id=1339874524]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 304.0
 offset_bottom = 58.0
 script = ExtResource("1_currency_display")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=92961863]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,7 +18,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.5)
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=600685259]
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -28,19 +28,19 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 10
 
-[node name="XPLabel" type="Label" parent="HBoxContainer"]
+[node name="XPLabel" type="Label" parent="HBoxContainer" unique_id=578499904]
 layout_mode = 2
 text = "Currency: 10"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ScrapLabel" type="Label" parent="HBoxContainer"]
+[node name="ScrapLabel" type="Label" parent="HBoxContainer" unique_id=1540898741]
 layout_mode = 2
 text = "Currency: 100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="LevelLabel" type="Label" parent="HBoxContainer"]
+[node name="LevelLabel" type="Label" parent="HBoxContainer" unique_id=1804254198]
 layout_mode = 2
 text = "Currency: 100"
 horizontal_alignment = 1

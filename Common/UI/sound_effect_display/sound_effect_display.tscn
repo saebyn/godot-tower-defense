@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://dyxq61p5iqma7"]
+[gd_scene format=3 uid="uid://dyxq61p5iqma7"]
 
-[ext_resource type="Script" path="res://Common/UI/sound_effect_display/sound_effect_display.gd" id="1_sound_effect_display"]
+[ext_resource type="Script" uid="uid://c8x05gvyu8lyh" path="res://Common/UI/sound_effect_display/sound_effect_display.gd" id="1_sound_effect_display"]
 
-[node name="SoundEffectDisplay" type="Control"]
+[node name="SoundEffectDisplay" type="Control" unique_id=1447536561]
 layout_mode = 3
 anchors_preset = 2
 anchor_top = 1.0
@@ -14,7 +14,7 @@ offset_bottom = -10.0
 grow_vertical = 0
 script = ExtResource("1_sound_effect_display")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=670226505]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,7 +23,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.7)
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1189864128]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,18 +35,18 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=289906428]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1325307994]
 layout_mode = 2
 text = "Sound Effects"
 horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer" unique_id=1350362497]
 layout_mode = 2
 
-[node name="EffectsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="EffectsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=162192314]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
