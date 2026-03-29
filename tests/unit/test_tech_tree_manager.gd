@@ -3,7 +3,12 @@ extends GutTest
 ## Unit tests for TechTreeManager autoload
 ## Tests tech tree loading, unlock validation, mutual exclusivity, and branch completion
 
+var _previous_bypass_setting: bool
+
 func before_each():
+  # Capture the existing bypass setting so it can be restored after each test
+  _previous_bypass_setting = ProjectSettings.get_setting("zom_nom_defense/debug/bypass_tech_requirements", false)
+  
   # Reset the TechTreeManager state before each test
   TechTreeManager.reset_tech_tree()
   
@@ -16,8 +21,8 @@ func before_each():
   ProjectSettings.set_setting("zom_nom_defense/debug/bypass_tech_requirements", false)
 
 func after_each():
-  # Always restore bypass to off after each test
-  ProjectSettings.set_setting("zom_nom_defense/debug/bypass_tech_requirements", false)
+  # Restore the bypass setting to whatever it was before the test ran
+  ProjectSettings.set_setting("zom_nom_defense/debug/bypass_tech_requirements", _previous_bypass_setting)
   
   # Restore CurrencyManager to clean state
   CurrencyManager.current_scrap = 100
