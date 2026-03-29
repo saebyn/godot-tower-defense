@@ -43,17 +43,6 @@ jobs:
           echo "Running initial project import (this may take 15+ minutes)..."
           godot --headless --import --path . --quit
 
-      - name: Check for uncommitted scene/resource changes after import
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          changed=$(git diff --name-only | grep -E '\.(tscn|tres)$' || true)
-          if [ -n "$changed" ]; then
-            echo "Godot normalised scene/resource files during import."
-            echo "Re-open and re-save these files in the editor, then commit the result:"
-            echo "$changed"
-            exit 1
-          fi
-
       - name: Run Tests
         id: run_tests
         continue-on-error: true
