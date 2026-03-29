@@ -26,6 +26,7 @@ class_name Resource_TechNode
 
 @export_category("Effects")
 @export var unlocked_building_ids: Array[String] = [] ## Building IDs that become available when this tech is unlocked
+@export var player_attack_effect: Resource_AttackEffect = null ## Attack effects applied to the player when this tech is unlocked
 
 ## Validates that the tech node has required fields
 func is_valid() -> bool:

@@ -41,6 +41,12 @@ func _ready() -> void:
   _building_raycast.collision_mask = 2 # Only detect buildings (layer 2)
   add_child(_building_raycast)
 
+  # Sync tech tree unlocks with attack effects
+  for tech_id in TechTreeManager.list_unlocked_techs():
+    _on_tech_unlocked(tech_id)
+
+  TechTreeManager.tech_unlocked.connect(_on_tech_unlocked)
+
 
 func _input(event: InputEvent) -> void:
   if event is InputEventMouseButton and not building_placement.busy and event.pressed:
@@ -137,3 +143,13 @@ func _on_attack_cooldown_started() -> void:
 
 func _on_attack_cooldown_ended() -> void:
   Input.set_custom_mouse_cursor(null)
+
+
+func _on_tech_unlocked(tech_id: String) -> void:
+  MyLogger.info("PlayerInput", "Tech unlocked: %s - Checking for attack effect" % tech_id)
+  var tech_node = TechTreeManager.get_tech_node(tech_id)
+  if tech_node == null:
+    MyLogger.warning("PlayerInput", "Tech unlocked with unknown tech_id: %s" % tech_id)
+    return
+  if tech_node.player_attack_effect:
+    attack.attack_effect.stack_effect(tech_node.player_attack_effect)

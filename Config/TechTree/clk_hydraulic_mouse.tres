@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="Resource_TechNode" format=3 uid="uid://d2pyanajdk5vo"]
 
+[ext_resource type="Resource" uid="uid://gwhcugyf0k8x" path="res://Config/AttackEffect/tech_hydraulic_mouse.tres" id="1_u4hmj"]
 [ext_resource type="Script" uid="uid://dj1i28ud6uv3t" path="res://Config/TechTree/tech_node_resource.gd" id="1_xxxxx"]
 
 [resource]
@@ -8,4 +9,4 @@ id = "clk_hydraulic_mouse"
 display_name = "Hydraulic Mouse"
 description = "Increases player click damage by 25%."
 branch_name = "Click"
-level_requirement = 2
+player_attack_effect = ExtResource("1_u4hmj")

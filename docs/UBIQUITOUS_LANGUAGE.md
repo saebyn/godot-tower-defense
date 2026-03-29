@@ -76,6 +76,7 @@ When in doubt, consult this document before introducing or reusing a term.
 |---|---|---|---|
 | **Health Component** | `Component_Health` | Hitpoints, damage, death, unit frame display | — |
 | **Attack Component** | `Component_Attack` | Attack cooldown and damage application | — |
+| **AttackEffect Component** | `Component_AttackEffect` | Attack damage multipliers, AoE damage, status effects | "damage type component", "attack modifier" |
 | **DoT Effect** | `Component_DotEffect` | Damage-over-time area | "poison component", "fire component" |
 | **Passive Damage** | `Component_PassiveDamage` | Instant contact damage | — |
 | **Panic Behavior** | `Component_PanicBehavior` | Survivor flee/panic animation | — |
