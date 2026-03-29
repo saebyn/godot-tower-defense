@@ -26,10 +26,13 @@ enum AttackResult {
 
 @export_group("Sound Effects")
 @export var hit_sound: Resource_SoundEffect.SoundEffect = Resource_SoundEffect.SoundEffect.DEFAULT
+@export var crit_sound: Resource_SoundEffect.SoundEffect = Resource_SoundEffect.SoundEffect.PLAYER_ATTACK_CRIT
 @export var audio_player: AudioStreamPlayer3D
 
 
 var is_on_cooldown: bool = false
+
+const CRITICAL_DAMAGE_SOURCE: String = "critical"
 
 func _ready():
   # Register this component in parent's metadata for discovery
@@ -57,9 +60,10 @@ func perform_attack(target: Node) -> AttackResult:
     
     if health and health is Component_Health:
       var did_crit = _roll_crit()
-      health.take_damage(calculate_damage_amount(did_crit), damage_source)
+      var effective_damage_source = CRITICAL_DAMAGE_SOURCE if did_crit else damage_source
+      health.take_damage(calculate_damage_amount(did_crit), effective_damage_source)
       if audio_player:
-        AudioManager.play_sound(audio_player, hit_sound)
+        AudioManager.play_sound(audio_player, crit_sound if did_crit else hit_sound)
       # Apply AoE splash to nearby enemies if radius is configured
       if attack_effect.aoe_radius > 0.0:
         _apply_aoe_splash(target, did_crit)

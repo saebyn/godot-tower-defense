@@ -7,6 +7,7 @@ enum SoundEffect {
 
   # User action sound effects
   PLAYER_ATTACK_HIT = 1,
+  PLAYER_ATTACK_CRIT = 31,  ## When the player lands a critical hit
   SCRAP_PICKUP = 6,
 
   # Combat related sound effects
