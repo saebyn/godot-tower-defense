@@ -45,7 +45,7 @@ func _ready() -> void:
   for tech_id in TechTreeManager.list_unlocked_techs():
     _on_tech_unlocked(tech_id)
 
-  TechTreeManager.connect("tech_unlocked", _on_tech_unlocked)
+  TechTreeManager.tech_unlocked.connect(_on_tech_unlocked)
 
 
 func _input(event: InputEvent) -> void:
