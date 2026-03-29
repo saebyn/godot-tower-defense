@@ -23,7 +23,7 @@ const COLOR_DEFAULT: Color = Color(0.349, 0.431, 0.286, 1.0) # zombie_flesh from
 const NAME_LABEL_LIGHTEN_WEIGHT: float = 0.55
 
 @export_group("Health Settings")
-@export var hitpoints: int = 100
+@export var hitpoints: int = 1000
 @export var max_damage_per_hit: float = INF
 @export var disabled: bool:
   get:

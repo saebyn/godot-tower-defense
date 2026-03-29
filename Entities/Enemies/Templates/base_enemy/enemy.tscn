@@ -173,7 +173,7 @@ hit_sound = 18
 audio_player = NodePath("../AudioStreamPlayer3D")
 
 [node name="Health" parent="." unique_id=734302112 node_paths=PackedStringArray("audio_player") instance=ExtResource("4_iifgy")]
-hitpoints = 2
+hitpoints = 20
 hit_sound = 1
 death_sound = 4
 audio_player = NodePath("../AudioStreamPlayer3D")

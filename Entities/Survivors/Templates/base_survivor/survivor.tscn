@@ -977,7 +977,7 @@ transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 
 script = ExtResource("1_e1yvt")
 
 [node name="Health" parent="." unique_id=850190797 node_paths=PackedStringArray("audio_player") instance=ExtResource("2_5ebp1")]
-hitpoints = 5
+hitpoints = 50
 hit_sound = 19
 death_sound = 5
 audio_player = NodePath("../AudioStreamPlayer3D")

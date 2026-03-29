@@ -23,7 +23,7 @@ metadata/dot_effect_component = Object(Area3D,"unique_name_in_owner":false,"proc
 
 
 [node name="Health" parent="." unique_id=1774050846 node_paths=PackedStringArray("audio_player") instance=ExtResource("2_svflr")]
-hitpoints = 30
+hitpoints = 300
 hit_sound = 16
 death_sound = 17
 audio_player = NodePath("../AudioStreamPlayer3D")
