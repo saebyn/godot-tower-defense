@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Resource_AttackEffect" format=3 uid="uid://cy67mrsfd03lr"]
+
+[ext_resource type="Script" uid="uid://d0xs34vvq4y5v" path="res://Config/AttackEffect/resource_attack_effect.gd" id="1_dduvs"]
+
+[resource]
+script = ExtResource("1_dduvs")
+crit_chance = 0.1
+crit_multiplier = 1.0
+metadata/_custom_type_script = "uid://d0xs34vvq4y5v"
