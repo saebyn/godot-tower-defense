@@ -22,8 +22,9 @@ enum AttackResult {
 @export var damage_amount: float = 10.0 ## Amount of damage per attack
 @export var attack_speed: float = 1.0 ## How many attacks per second
 @export var damage_source: String = "unknown" ## Source identifier for damage tracking
+@export var attack_effect: Resource_AttackEffect = null ## Attack effect resource for additional properties
 
-@export_group("Effects")
+@export_group("Sound Effects")
 @export var hit_sound: Resource_SoundEffect.SoundEffect = Resource_SoundEffect.SoundEffect.DEFAULT
 @export var audio_player: AudioStreamPlayer3D
 
@@ -38,6 +39,9 @@ func _ready():
   if not audio_player:
     MyLogger.warn("Attack", "No AudioStreamPlayer assigned for Attack effect sounds.")
 
+  if not attack_effect:
+    attack_effect = Resource_AttackEffect.new() # Use default values if no resource assigned
+
 
 func perform_attack(target: Node) -> AttackResult:
   if not is_on_cooldown:
@@ -48,7 +52,7 @@ func perform_attack(target: Node) -> AttackResult:
       health = target.get_meta("health_component")
     
     if health and health is Component_Health:
-      health.take_damage(damage_amount, damage_source)
+      health.take_damage(calculate_damage_amount(), damage_source)
       if audio_player:
         AudioManager.play_sound(audio_player, hit_sound)
       # Start cooldown
@@ -71,3 +75,10 @@ func cancel():
 func _on_AttackTimer_timeout():
   is_on_cooldown = false
   cooldown_ended.emit()
+
+func calculate_damage_amount() -> float:
+  assert(attack_effect != null, "Attack effect resource must be assigned to calculate damage.")
+
+  var final_damage = damage_amount
+  final_damage *= attack_effect.damage_multiplier
+  return final_damage

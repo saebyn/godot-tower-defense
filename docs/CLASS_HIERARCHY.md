@@ -62,16 +62,6 @@ Components are reusable, modular pieces of functionality that can be attached to
 - Register themselves in parent's metadata for discovery
 - Focus on single responsibility
 
-**Available Components:**
-
-| Class Name | Base Type | Purpose |
-|------------|-----------|---------|
-| `Component_Health` | `Node` | Manages hitpoints, damage, and death |
-| `Component_Attack` | `Node` | Handles attack logic with cooldown |
-| `Component_DotEffect` | `Area3D` | Damage over time effect area |
-| `Component_PassiveDamage` | `Area3D` | Instant damage on contact |
-| `Component_PanicBehavior` | `Node` | Panic animation controller |
-
 **Usage Example:**
 ```gdscript
 # Add to entity scene tree, not instantiated in code
@@ -104,36 +94,6 @@ UI classes handle player interaction, information display, and menu systems.
 - May be scenes with complex hierarchies
 - Connected to game systems via signals and autoloads
 
-**Available UI Classes:**
-
-**Common UI** (`Common/UI/`):
-| Class Name | Base Type | Purpose |
-|------------|-----------|---------|
-| `UI_Hotbar` | `Control` | Building selection bar (1-9 keys) |
-| `UI_CurrencyDisplay` | `Control` | Shows scrap, XP, and level |
-| `UI_StatsDisplay` | `Control` | Enemy defeats and placements |
-| `UI_SpeedControls` | `Control` | Game speed control (1x/2x/3x) |
-| `UI_Minimap` | `Control` | Top-down game view |
-| `UI_SpawnIndicator` | `Control` | Wave countdown and enemies remaining |
-| `UI_OffscreenIndicator` | `Control` | Direction arrows for offscreen enemies |
-| `UI_FpsOverlay` | `Control` | FPS and performance display |
-| `UI_SettingsMenu` | `Control` | Settings panel |
-| `UI_VideoSettingsConfirmDialog` | `AcceptDialog` | Video settings confirmation |
-| `UI_KeybindButton` | `HBoxContainer` | Keybinding editor button |
-| `UI_AchievementNotification` | `Control` | Achievement popup |
-| `UI_AchievementNotificationManager` | `CanvasLayer` | Manages achievement notifications |
-
-**Menu UI** (`Stages/UI/`):
-| Class Name | Base Type | Purpose |
-|------------|-----------|---------|
-| `UI_MainMenu` | `Control` | Main menu screen |
-| `UI_PauseMenu` | `Control` | In-game pause menu |
-| `UI_ScenarioSelect` | `Control` | Scenario selection screen |
-| `UI_TechTree` | `Control` | Tech tree UI display |
-| `UI_TechNodeCard` | `PanelContainer` | Individual tech node in tree |
-| `UI_AchievementList` | `Control` | Achievement list screen |
-| `UI_AchievementCard` | `Control` | Individual achievement card |
-
 ---
 
 ### Resources (`Resource_*`)
@@ -147,15 +107,6 @@ Resource classes are pure data containers extending Godot's `Resource` class. Th
 - No logic, only data properties
 - Saved as `.tres` files
 - Designer-editable in Godot Inspector
-
-**Available Resources:**
-
-| Class Name | Location | Purpose |
-|------------|----------|---------|
-| `Resource_EnemyType` | `Config/Enemies/` | Enemy configuration data |
-| `Resource_BuildingType` | `Config/Buildings/` | Building/tower configuration |
-| `Resource_Achievement` | `Config/Achievements/` | Achievement definitions |
-| `Resource_TechNode` | `Config/TechTree/` | Tech tree node data |
 
 **Usage Example:**
 ```gdscript
@@ -180,14 +131,6 @@ Entities are game objects with physics bodies and scene hierarchies. They repres
 - Have child nodes (meshes, collision shapes, components)
 - Composed with components for behavior
 
-**Available Entities:**
-
-| Class Name | Base Type | Location | Purpose |
-|------------|-----------|----------|---------|
-| `Entity_PlaceableBuilding` | `StaticBody3D` | `Entities/Buildings/Templates/` | Base building/tower class |
-| `Entity_ShootingBuilding` | `Entity_PlaceableBuilding` | `Entities/Buildings/Templates/` | Shooting tower variant |
-| `Entity_Scrap` | `Node3D` | `Entities/Scrap/` | Collectible scrap item |
-
 **Why Entities Should Be Scenes:**
 
 1. **Visual Editing**: Easier to position child nodes (meshes, lights, particles)
@@ -204,13 +147,6 @@ Entities are game objects with physics bodies and scene hierarchies. They repres
 
 Systems handle high-level game logic and coordination between entities.
 
-**Available Systems:**
-
-| Class Name | Base Type | Purpose |
-|------------|-----------|---------|
-| `System_EnemySpawner` | `Node3D` | Spawns and manages enemy waves |
-| `System_Wave` | `Node3D` | Defines wave timing and composition |
-
 ---
 
 ### Effects (`Effect_*`)
@@ -218,12 +154,6 @@ Systems handle high-level game logic and coordination between entities.
 **Location**: `Common/Effects/`
 
 Effect classes control visual and audio effects.
-
-**Available Effects:**
-
-| Class Name | Base Type | Purpose |
-|------------|-----------|---------|
-| `Effect_Shake` | `Node` | Camera shake effect controller |
 
 ---
 
@@ -233,14 +163,6 @@ Effect classes control visual and audio effects.
 
 Utility classes provide helper functionality and tools.
 
-**Available Utilities:**
-
-| Class Name | Base Type | Purpose |
-|------------|-----------|---------|
-| `Utility_BuildingPlacement` | `Node3D` | Handles building placement logic |
-| `Utility_BuildingPreview` | `Node3D` | Shows placement preview ghost |
-| `Utility_PlacementResult` | *N/A* | Placement validation result data |
-
 ---
 
 ### Stages (`Stage_*`)
@@ -248,12 +170,6 @@ Utility classes provide helper functionality and tools.
 **Location**: `Stages/`
 
 Stage classes represent levels and scenarios.
-
-**Available Stages:**
-
-| Class Name | Base Type | Purpose |
-|------------|-----------|---------|
-| `Stage_Scenario` | `Node3D` | Scenario controller |
 
 ---
 
@@ -310,54 +226,6 @@ Entities/Buildings/Templates/base_building/
 3. **Clarity**: Clear separation between behavior (component) and object (entity)
 4. **Testing**: Components can be unit tested independently
 5. **Maintenance**: Changes to component behavior affect all users automatically
-
----
-
-## Complete Class Reference
-
-### Quick Reference Table
-
-| Class Name | Category | Base Type | Scene? | Location |
-|------------|----------|-----------|--------|----------|
-| `Component_Health` | Component | `Node` | ❌ | `Common/Components/health/` |
-| `Component_Attack` | Component | `Node` | ❌ | `Common/Components/attack/` |
-| `Component_DotEffect` | Component | `Area3D` | ❌ | `Common/Components/dot_effect/` |
-| `Component_PassiveDamage` | Component | `Area3D` | ❌ | `Common/Components/passive_damage/` |
-| `Component_PanicBehavior` | Component | `Node` | ❌ | `Common/Components/panic_behavior/` |
-| `Effect_Shake` | Effect | `Node` | ❌ | `Common/Effects/shake_effect/` |
-| `System_EnemySpawner` | System | `Node3D` | ✅ | `Common/Systems/spawner/` |
-| `System_Wave` | System | `Node3D` | ❌ | `Common/Systems/spawner/` |
-| `UI_Hotbar` | UI | `Control` | ✅ | `Common/UI/hotbar/` |
-| `UI_SettingsMenu` | UI | `Control` | ✅ | `Common/UI/settings_menu/` |
-| `UI_VideoSettingsConfirmDialog` | UI | `AcceptDialog` | ✅ | `Common/UI/settings_menu/` |
-| `UI_KeybindButton` | UI | `HBoxContainer` | ✅ | `Common/UI/settings_menu/` |
-| `UI_OffscreenIndicator` | UI | `Control` | ✅ | `Common/UI/offscreen_indicator/` |
-| `UI_Minimap` | UI | `Control` | ✅ | `Common/UI/minimap/` |
-| `UI_FpsOverlay` | UI | `Control` | ✅ | `Common/UI/fps_overlay/` |
-| `UI_SpawnIndicator` | UI | `Control` | ✅ | `Common/UI/spawn_indicator/` |
-| `UI_StatsDisplay` | UI | `Control` | ✅ | `Common/UI/stats_display/` |
-| `UI_SpeedControls` | UI | `Control` | ✅ | `Common/UI/speed_controls/` |
-| `UI_AchievementNotification` | UI | `Control` | ✅ | `Common/UI/achievement_notification/` |
-| `UI_AchievementNotificationManager` | UI | `CanvasLayer` | ✅ | `Common/UI/achievement_notification/` |
-| `UI_CurrencyDisplay` | UI | `Control` | ✅ | `Common/UI/currency_display/` |
-| `UI_PauseMenu` | UI | `Control` | ✅ | `Stages/UI/pause_menu/` |
-| `UI_ScenarioSelect` | UI | `Control` | ✅ | `Stages/UI/scenario_select/` |
-| `UI_AchievementCard` | UI | `Control` | ✅ | `Stages/UI/achievement_list/` |
-| `UI_AchievementList` | UI | `Control` | ✅ | `Stages/UI/achievement_list/` |
-| `UI_TechTree` | UI | `Control` | ✅ | `Stages/UI/tech_tree/` |
-| `UI_TechNodeCard` | UI | `PanelContainer` | ✅ | `Stages/UI/tech_tree/` |
-| `UI_MainMenu` | UI | `Control` | ✅ | `Stages/UI/main_menu/` |
-| `Entity_PlaceableBuilding` | Entity | `StaticBody3D` | ✅ | `Entities/Buildings/Templates/base_building/` |
-| `Entity_ShootingBuilding` | Entity | `Entity_PlaceableBuilding` | ✅ | `Entities/Buildings/Templates/shooting_building/` |
-| `Entity_Scrap` | Entity | `Node3D` | ✅ | `Entities/Scrap/` |
-| `Resource_EnemyType` | Resource | `Resource` | ❌ | `Config/Enemies/` |
-| `Resource_Achievement` | Resource | `Resource` | ❌ | `Config/Achievements/` |
-| `Resource_BuildingType` | Resource | `Resource` | ❌ | `Config/Buildings/` |
-| `Resource_TechNode` | Resource | `Resource` | ❌ | `Config/TechTree/` |
-| `Utility_BuildingPreview` | Utility | `Node3D` | ❌ | `Utilities/Placement/` |
-| `Utility_PlacementResult` | Utility | *N/A* | ❌ | `Utilities/Placement/building_placement/` |
-| `Utility_BuildingPlacement` | Utility | `Node3D` | ✅ | `Utilities/Placement/building_placement/` |
-| `Stage_Scenario` | Stage | `Node3D` | ✅ | `Stages/Scenarios/` |
 
 ---
 
