@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Resource_EnemyType" load_steps=3 format=3 uid="uid://dl5hvui4vagvg"]
+[gd_resource type="Resource" script_class="Resource_EnemyType" format=3 uid="uid://dl5hvui4vagvg"]
 
 [ext_resource type="PackedScene" uid="uid://ck56onavfxobh" path="res://Entities/Enemies/Concrete/sprinter_zombie.tscn" id="1_2sqgu"]
 [ext_resource type="Script" uid="uid://veme7gd0dvne" path="res://Config/Enemies/enemy_type_resource.gd" id="1_8r2xe"]
@@ -9,13 +9,9 @@ name = "Sprinter Zombie"
 enemy_type = "sprinter_zombie"
 description = "Bypass defenses, reach survivors quickly"
 scene = ExtResource("1_2sqgu")
-scale_multiplier = 1.0
-hitpoints = 50
+hitpoints = 500
 speed = 40.0
-damage_amount = 10
-attack_speed = 1.0
+damage_amount = 100
 scrap_reward = 15
 xp_reward = 50
-target_desired_distance = 4.0
-building_attack_range = 6.0
 metadata/_custom_type_script = "uid://veme7gd0dvne"

@@ -3,13 +3,12 @@
 [ext_resource type="Script" uid="uid://d0xs34vvq4y5v" path="res://Config/AttackEffect/resource_attack_effect.gd" id="1_14erq"]
 
 [sub_resource type="Curve" id="Curve_14erq"]
-_limits = [0.0, 1.0, 0.0, 10.0]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(10, 0), 0.0, 0.0, 0, 0]
-point_count = 2
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.691689, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
 
 [resource]
 script = ExtResource("1_14erq")
 crit_multiplier = 1.0
-aoe_radius = 10.0
+aoe_radius = 3.0
 aoe_falloff = SubResource("Curve_14erq")
 metadata/_custom_type_script = "uid://d0xs34vvq4y5v"

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Resource_EnemyType" load_steps=3 format=3 uid="uid://cbpou633u3f5i"]
+[gd_resource type="Resource" script_class="Resource_EnemyType" format=3 uid="uid://cbpou633u3f5i"]
 
 [ext_resource type="Script" uid="uid://veme7gd0dvne" path="res://Config/Enemies/enemy_type_resource.gd" id="1_6ugdl"]
 [ext_resource type="PackedScene" uid="uid://bwhean8gy2rcd" path="res://Entities/Enemies/Templates/base_enemy/enemy.tscn" id="1_var14"]
@@ -9,13 +9,9 @@ name = "Scout Zombie"
 enemy_type = "scout_zombie"
 description = "Early pressure, overwhelm defenses with numbers"
 scene = ExtResource("1_var14")
-scale_multiplier = 1.0
-hitpoints = 25
+hitpoints = 250
 speed = 30.0
-damage_amount = 5
-attack_speed = 1.0
+damage_amount = 50
 scrap_reward = 8
 xp_reward = 25
-target_desired_distance = 4.0
-building_attack_range = 6.0
 metadata/_custom_type_script = "uid://veme7gd0dvne"
