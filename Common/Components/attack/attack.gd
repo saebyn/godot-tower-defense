@@ -40,7 +40,11 @@ func _ready():
     MyLogger.warn("Attack", "No AudioStreamPlayer assigned for Attack effect sounds.")
 
   if not attack_effect:
-    attack_effect = Resource_AttackEffect.new() # Use default values if no resource assigned
+    # No attack effect assigned; create a fresh instance with default values.
+    attack_effect = Resource_AttackEffect.new()
+  else:
+    # Duplicate inspector-assigned resource so each component has its own mutable instance.
+    attack_effect = attack_effect.duplicate(true)
 
 
 func perform_attack(target: Node) -> AttackResult:
