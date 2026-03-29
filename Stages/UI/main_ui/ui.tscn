@@ -123,6 +123,7 @@ offset_top = 196.0
 offset_right = -30.999756
 offset_bottom = 270.0
 grow_horizontal = 0
+visible = false
 script = ExtResource("15_y1b7e")
 
 [node name="FreeScrap" type="Button" parent="DebugControl" unique_id=848303988]

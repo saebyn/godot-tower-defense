@@ -188,8 +188,9 @@ The `GameManager` singleton manages game states and transitions. It defines an e
 ### ⚠️ Scene/Resource UID Guidance
 
 Godot 4 scene files (`.tscn`) and resource files (`.tres`) contain `uid="uid://..."` values in their `[ext_resource]` headers. These UIDs are Godot's internal resource identifiers stored in the project's UID registry (`.godot/uid_cache.bin`) — they are **not** related to any `.uid` sidecar files on disk.
-
-When Copilot generates or edits `.tscn` or `.tres` files and needs to reference an existing resource, **copy the `uid=` value from the existing file being referenced** rather than inventing one. If no real UID is available, Godot will fall back to path-based resolution, which is safe. The CI pipeline will detect any files that Godot normalises during import and fail if uncommitted changes are found.
+- **Do not modify or remove** the `uid="uid://..."` values in `.tscn` and `.tres` files
+- These UIDs are automatically generated and managed by Godot during asset import and scene/resource creation
+- When you create new scenes or resources, Godot will assign new UIDs to them during the import process, so don't worry about manually managing or creating UIDs for your assets
 
 ### Build and Test Commands
 
