@@ -71,7 +71,7 @@ func can_unlock_tech(tech_id: String) -> bool:
   
   # In debug mode, skip all progression requirements
   if ProjectSettings.get_setting("zom_nom_defense/debug/bypass_tech_requirements", false):
-    MyLogger.debug("TechTreeManager", "Debug mode: bypassing requirements for %s" % tech_id)
+    MyLogger.debug("TechTreeManager", "Bypassing tech requirements via setting zom_nom_defense/debug/bypass_tech_requirements for %s" % tech_id)
     return true
   
   var tech = tech_nodes[tech_id]
