@@ -23,13 +23,15 @@ func _make_attack() -> Component_Attack:
 
 ## Creates a Node3D with a Component_Health child registered in its metadata.
 ## The node is added to the given group and positioned at `pos`.
-func _make_enemy(pos: Vector3, group: String = "enemies") -> Node3D:
+## `hp` sets the starting hitpoints (also used as max_hitpoints via _ready()).
+func _make_enemy(pos: Vector3, group: String = "enemies", hp: int = 100) -> Node3D:
   var parent := Node3D.new()
   parent.position = pos
   if group != "":
     parent.add_to_group(group)
   var health_scene = load("res://Common/Components/health/health.tscn")
   var health: Component_Health = health_scene.instantiate()
+  health.hitpoints = hp
   parent.add_child(health)
   add_child_autofree(parent)
   return parent
@@ -218,7 +220,8 @@ func test_aoe_crit_applies_to_splash_when_flag_true():
   attack.attack_effect.crit_applies_to_splash = true
 
   var primary := _make_enemy(Vector3.ZERO)
-  var nearby := _make_enemy(Vector3(2.0, 0, 0))
+  # Use 1000 HP so the enemy can absorb the full crit splash damage (200) without clamping
+  var nearby := _make_enemy(Vector3(2.0, 0, 0), "enemies", 1000)
 
   await get_tree().process_frame
 
@@ -278,7 +281,8 @@ func test_aoe_splash_respects_stacked_damage_multiplier():
   attack.attack_effect.aoe_falloff = null
 
   var primary := _make_enemy(Vector3.ZERO)
-  var nearby := _make_enemy(Vector3(2.0, 0, 0))
+  # Use 1000 HP so the enemy can absorb the full stacked damage (125) without clamping
+  var nearby := _make_enemy(Vector3(2.0, 0, 0), "enemies", 1000)
 
   await get_tree().process_frame
 
