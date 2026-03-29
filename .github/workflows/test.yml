@@ -46,12 +46,13 @@ jobs:
       - name: Check for uncommitted scene/resource changes after import
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          git diff --exit-code -- '*.tscn' '*.tres' || (
+          changed=$(git diff --name-only | grep -E '\.(tscn|tres)$' || true)
+          if [ -n "$changed" ]; then
             echo "Godot normalised scene/resource files during import."
             echo "Re-open and re-save these files in the editor, then commit the result:"
-            git diff --name-only -- '*.tscn' '*.tres'
+            echo "$changed"
             exit 1
-          )
+          fi
 
       - name: Run Tests
         id: run_tests
