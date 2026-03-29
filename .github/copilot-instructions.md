@@ -185,20 +185,11 @@ The `GameManager` singleton manages game states and transitions. It defines an e
    - Verify singleton scripts are properly accessible with their class names
    - Restart Godot if autoload changes don't take effect
 
-### ⚠️ CRITICAL: Scene/Resource UID Validation
+### ⚠️ Scene/Resource UID Guidance
 
-Godot 4 stores a `.uid` sidecar file alongside every script and resource. When
-Copilot generates or edits `.tscn` or `.tres` files, the `uid="uid://..."` value
-in each `[ext_resource]` header **must exactly match** the content of the
-corresponding `<path>.uid` file. Invented or guessed UIDs look valid in the
-editor but silently resolve to `null` at runtime, causing hard-to-debug errors.
+Godot 4 scene files (`.tscn`) and resource files (`.tres`) contain `uid="uid://..."` values in their `[ext_resource]` headers. These UIDs are Godot's internal resource identifiers stored in the project's UID registry (`.godot/uid_cache.bin`) — they are **not** related to any `.uid` sidecar files on disk.
 
-**After every change to a `.tscn` or `.tres` file, run:**
-```bash
-python3 Utilities/validate_uids.py .
-```
-Fix all `[UID MISMATCH]` errors before committing. `[MISSING RESOURCE]` errors
-inside `addons/twitcher/example/` are expected and can be ignored.
+When Copilot generates or edits `.tscn` or `.tres` files and needs to reference an existing resource, **copy the `uid=` value from the existing file being referenced** rather than inventing one. If no real UID is available, Godot will fall back to path-based resolution, which is safe. The CI pipeline will detect any files that Godot normalises during import and fail if uncommitted changes are found.
 
 ### Build and Test Commands
 
