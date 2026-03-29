@@ -14,14 +14,30 @@ class_name Resource_AttackEffect
 @export var chain_falloff: Curve = null
 
 ## Stacks the effects of another Resource_AttackEffect onto this one.
-## For each property, it adds the values together (for multipliers) or takes
-## the value from the other effect if it's a boolean or a curve. 
 ## For boolean properties, if either effect has it set to true, the combined effect is true.
+## For multiplicative properties, we combine them in a way that makes sense to avoid overpowered results.
+## For chance/probability properties, we can simply add them together.
 ## This allows multiple effects to combine their properties when applied to an attack.
 func stack_effect(other: Resource_AttackEffect):
-  damage_multiplier += other.damage_multiplier
+  # We need to combine the damage multiplier in a way that makes sense.
+  # Here are some example approaches and their results
+  # Approach 1: Additive stacking (damage_multiplier += other.damage_multiplier)
+  #  - Example A:
+  #   - Base: 1.5x damage, other: 1.5x damage -> Combined: 3.0x damage (overpowered)
+  #  - Example B:
+  #   - Base: 1x damage, other: 1.25x damage -> Combined: 2.25x damage (overpowered)
+  # Approach 2: Multiplicative stacking (damage_multiplier *= other.damage_multiplier)
+  #  - Example A:
+  #   - Base: 1.5x damage, other: 1.5x damage -> Combined: 2.25x damage (more reasonable)
+  # Approach 3: Additive stacking of the increase (damage_multiplier += (other.damage_multiplier - 1))
+  #  - Example A:
+  #   - Base: 1.5x damage, other: 1.5x damage -> Combined: 2.0x damage (more reasonable)
+  #  - Example B:
+  #   - Base: 1x damage, other: 1.25x damage -> Combined: 1.25x damage (reasonable)
+  damage_multiplier += (other.damage_multiplier - 1)
+
   crit_chance += other.crit_chance
-  crit_multiplier += other.crit_multiplier
+  crit_multiplier += (other.crit_multiplier - 1)
   crit_applies_to_splash = crit_applies_to_splash or other.crit_applies_to_splash
   crit_applies_to_chain = crit_applies_to_chain or other.crit_applies_to_chain
   aoe_radius += other.aoe_radius
