@@ -4,8 +4,8 @@ extends Node
 ## Loads tech tree structure from Config/TechTree/ resource files
 ## Implements SaveableSystem interface for centralized save management
 
-signal tech_unlocked(tech_id: String)
-signal tech_locked(tech_id: String)
+signal tech_unlocked(tech_id: String) ## Emitted when a tech is successfully unlocked
+signal tech_locked(tech_id: String) ## Emitted when a tech becomes permanently locked due to mutual exclusivity
 
 var unlocked_tech_ids: Array[String] = []
 var locked_tech_ids: Array[String] = []
@@ -161,6 +161,10 @@ func get_techs_in_branch(branch_name: String) -> Array[Resource_TechNode]:
     if tech.branch_name == branch_name:
       branch_techs.append(tech)
   return branch_techs
+
+## List all unlocked tech IDs
+func list_unlocked_techs() -> Array[String]:
+  return unlocked_tech_ids.duplicate()
 
 ## Check if a branch is completed (all non-mutually-exclusive techs unlocked)
 func is_branch_completed(branch_name: String) -> bool:

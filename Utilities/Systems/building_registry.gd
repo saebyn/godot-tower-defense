@@ -18,7 +18,6 @@ func _ready() -> void:
   
   # Connect to TechTreeManager (autoload singleton)
   TechTreeManager.tech_unlocked.connect(_on_tech_unlocked)
-  TechTreeManager.tech_locked.connect(_on_tech_locked)
   MyLogger.info("BuildingRegistry", "Connected to TechTreeManager")
   
   # Connect to SaveManager to update buildings after save data is loaded
@@ -94,12 +93,6 @@ func _is_building_unlocked(building_type: Resource_BuildingType) -> bool:
 ## Called when a tech is unlocked
 func _on_tech_unlocked(tech_id: String) -> void:
   MyLogger.debug("BuildingRegistry", "Tech unlocked: %s - checking for new buildings" % tech_id)
-  _update_available_buildings()
-
-
-## Called when a tech is locked (mutually exclusive)
-func _on_tech_locked(tech_id: String) -> void:
-  MyLogger.debug("BuildingRegistry", "Tech locked: %s - checking for removed buildings" % tech_id)
   _update_available_buildings()
 
 

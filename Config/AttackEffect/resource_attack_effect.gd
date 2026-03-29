@@ -3,7 +3,7 @@ class_name Resource_AttackEffect
 
 @export var damage_multiplier: float = 1.0
 @export var crit_chance: float = 0.0
-@export var crit_multiplier: float = 2.0
+@export var crit_multiplier: float = 1.0
 @export var crit_applies_to_splash: bool = false
 @export var crit_applies_to_chain: bool = false
 @export var aoe_radius: float = 0.0
