@@ -34,6 +34,7 @@ var placement_preview_node: Node3D
 @onready var audio_player: AudioStreamPlayer3D = $AudioStreamPlayer3D
 
 var _saved_collision_layers: int
+var _saved_area_monitoring: Dictionary = {}
 
 func _ready():
   # Find Health component via metadata
@@ -71,6 +72,13 @@ func _enter_placement_mode() -> void:
   _saved_collision_layers = collision_layer
   collision_layer = 0 # Disable collisions in preview mode
 
+  # Disable Area3D monitoring so damage/effect components don't interact
+  # with enemies while the building is only a placement preview.
+  _saved_area_monitoring.clear()
+  for area in find_children("*", "Area3D", true, false):
+    _saved_area_monitoring[area] = area.monitoring
+    area.monitoring = false
+
   if health:
     health.disabled = true
 
@@ -87,6 +95,12 @@ func _exit_placement_mode() -> void:
     mesh_instance.show()
 
   collision_layer = _saved_collision_layers
+
+  # Restore Area3D monitoring to its state before preview mode.
+  for area in _saved_area_monitoring:
+    if is_instance_valid(area) and area.is_inside_tree():
+      area.monitoring = _saved_area_monitoring[area]
+  _saved_area_monitoring.clear()
 
   if health:
     health.disabled = false

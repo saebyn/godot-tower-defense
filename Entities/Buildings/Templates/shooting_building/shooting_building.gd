@@ -49,6 +49,8 @@ func _setup_detection_timer() -> void:
 
 
 func _detect_and_attack_enemies():
+  if is_preview:
+    return
   var result = find_nearest_enemy_in_range()
   current_target = result[0]
   can_attack_current_target = result[1]
