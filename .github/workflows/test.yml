@@ -37,14 +37,21 @@ jobs:
           mkdir -p /github/home/.config/godot
           printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\nfilesystem/import/blender/blender_path = "/usr/bin/blender"\n' > /github/home/.config/godot/editor_settings-4.tres
 
-      - name: Validate scene/resource UIDs
-        run: python3 Utilities/validate_uids.py .
-
       - name: Import project files
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           echo "Running initial project import (this may take 15+ minutes)..."
           godot --headless --import --path . --quit
+
+      - name: Check for uncommitted scene/resource changes after import
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          git diff --exit-code -- '*.tscn' '*.tres' || (
+            echo "Godot normalised scene/resource files during import."
+            echo "Re-open and re-save these files in the editor, then commit the result:"
+            git diff --name-only -- '*.tscn' '*.tres'
+            exit 1
+          )
 
       - name: Run Tests
         id: run_tests
