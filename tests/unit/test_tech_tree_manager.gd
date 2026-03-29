@@ -286,3 +286,38 @@ func test_debug_mode_still_blocks_permanently_locked_tech():
   
   # Assert
   assert_false(can_unlock, "Debug mode should not bypass permanent mutual-exclusivity lock")
+
+## list_unlocked_techs tests
+
+func test_list_unlocked_techs_returns_empty_initially():
+  # Act
+  var unlocked = TechTreeManager.list_unlocked_techs()
+  
+  # Assert
+  assert_eq(unlocked.size(), 0, "Should return empty array when no techs are unlocked")
+
+func test_list_unlocked_techs_returns_unlocked_tech_ids():
+  # Arrange
+  CurrencyManager.current_level = 1
+  TechTreeManager.unlock_tech("tur_scrap_shooter")
+  
+  # Act
+  var unlocked = TechTreeManager.list_unlocked_techs()
+  
+  # Assert
+  assert_has(unlocked, "tur_scrap_shooter", "Should include the unlocked tech ID")
+  assert_eq(unlocked.size(), 1, "Should return exactly one tech ID")
+
+func test_list_unlocked_techs_returns_duplicate_not_internal_array():
+  # Arrange
+  CurrencyManager.current_level = 1
+  TechTreeManager.unlock_tech("tur_scrap_shooter")
+  
+  # Act - mutate the returned array
+  var unlocked = TechTreeManager.list_unlocked_techs()
+  unlocked.clear()
+  
+  # Assert - internal state should be unchanged; call list_unlocked_techs() again to verify
+  var unlocked_again = TechTreeManager.list_unlocked_techs()
+  assert_eq(unlocked_again.size(), 1, "Clearing returned array should not affect internal state")
+  assert_has(unlocked_again, "tur_scrap_shooter", "Internal state should still contain the unlocked tech")

@@ -148,5 +148,8 @@ func _on_attack_cooldown_ended() -> void:
 func _on_tech_unlocked(tech_id: String) -> void:
   MyLogger.info("PlayerInput", "Tech unlocked: %s - Checking for attack effect" % tech_id)
   var tech_node = TechTreeManager.get_tech_node(tech_id)
+  if tech_node == null:
+    MyLogger.warning("PlayerInput", "Tech unlocked with unknown tech_id: %s" % tech_id)
+    return
   if tech_node.player_attack_effect:
     attack.attack_effect.stack_effect(tech_node.player_attack_effect)
