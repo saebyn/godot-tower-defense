@@ -56,9 +56,13 @@ func perform_attack(target: Node) -> AttackResult:
       health = target.get_meta("health_component")
     
     if health and health is Component_Health:
-      health.take_damage(calculate_damage_amount(), damage_source)
+      var did_crit = _roll_crit()
+      health.take_damage(calculate_damage_amount(did_crit), damage_source)
       if audio_player:
         AudioManager.play_sound(audio_player, hit_sound)
+      # Apply AoE splash to nearby enemies if radius is configured
+      if attack_effect.aoe_radius > 0.0:
+        _apply_aoe_splash(target, did_crit)
       # Start cooldown
       is_on_cooldown = true
       # if attack_speed is 10 attacks/second,
@@ -80,9 +84,46 @@ func _on_AttackTimer_timeout():
   is_on_cooldown = false
   cooldown_ended.emit()
 
-func calculate_damage_amount() -> float:
+## Returns true if a critical hit should occur based on attack_effect.crit_chance.
+func _roll_crit() -> bool:
+  if attack_effect == null:
+    return false
+  return randf() < attack_effect.crit_chance
+
+## Applies splash damage to all enemies within aoe_radius of the primary target,
+## excluding the primary target itself. Damage is scaled by the aoe_falloff curve
+## (sampled at normalized distance 0–1) and optionally by the crit multiplier.
+func _apply_aoe_splash(primary_target: Node, is_crit: bool) -> void:
+  if not (primary_target is Node3D):
+    return
+  var target_pos: Vector3 = (primary_target as Node3D).global_position
+  var apply_crit_to_splash := is_crit and attack_effect.crit_applies_to_splash
+  var base_splash_damage := calculate_damage_amount(apply_crit_to_splash)
+
+  for enemy in get_tree().get_nodes_in_group("enemies"):
+    if enemy == primary_target:
+      continue
+    if not (enemy is Node3D):
+      continue
+    var dist: float = (enemy as Node3D).global_position.distance_to(target_pos)
+    if dist > attack_effect.aoe_radius:
+      continue
+    var falloff_mult := 1.0
+    if attack_effect.aoe_falloff:
+      var normalized_dist := dist / attack_effect.aoe_radius
+      falloff_mult = attack_effect.aoe_falloff.sample(normalized_dist)
+    var splash_damage := base_splash_damage * falloff_mult
+    if enemy.has_meta("health_component"):
+      var health = enemy.get_meta("health_component")
+      if health is Component_Health:
+        MyLogger.debug("Attack", "AoE splash hit %s for %.1f damage (falloff=%.2f)" % [enemy, splash_damage, falloff_mult])
+        health.take_damage(splash_damage, damage_source)
+
+func calculate_damage_amount(is_crit: bool = false) -> float:
   assert(attack_effect != null, "Attack effect resource must be assigned to calculate damage.")
 
   var final_damage = damage_amount
   final_damage *= attack_effect.damage_multiplier
+  if is_crit:
+    final_damage *= attack_effect.crit_multiplier
   return final_damage
