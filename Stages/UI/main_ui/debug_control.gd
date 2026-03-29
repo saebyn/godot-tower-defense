@@ -14,3 +14,13 @@ func _on_unlock_all_tech_pressed() -> void:
     var tech := TechTreeManager.get_tech_node(tech_id)
     if tech.mutually_exclusive_with.is_empty() and TechTreeManager.can_unlock_tech(tech_id):
       TechTreeManager.unlock_tech(tech_id, true)
+
+func _on_kill_all_enemies_pressed() -> void:
+  var enemies := get_tree().get_nodes_in_group("enemies")
+  for enemy in enemies:
+    if not is_instance_valid(enemy):
+      continue
+    if "health" in enemy and enemy.health and is_instance_valid(enemy.health):
+      enemy.health.take_damage(INF, "debug")
+    else:
+      enemy.queue_free()

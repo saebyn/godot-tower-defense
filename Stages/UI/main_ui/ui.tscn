@@ -121,7 +121,7 @@ anchor_right = 1.0
 offset_left = -191.0
 offset_top = 196.0
 offset_right = -30.999756
-offset_bottom = 270.0
+offset_bottom = 302.0
 grow_horizontal = 0
 visible = false
 script = ExtResource("15_y1b7e")
@@ -134,6 +134,10 @@ text = "Free Scrap"
 layout_mode = 2
 text = "Unlock All Tech"
 
+[node name="KillAllEnemies" type="Button" parent="DebugControl" unique_id=848303990]
+layout_mode = 2
+text = "Kill All Enemies"
+
 [node name="TechTree" parent="." unique_id=2005854423 instance=ExtResource("3_r1fny")]
 visible = false
 layout_mode = 1
@@ -142,3 +146,4 @@ layout_mode = 1
 [connection signal="pressed" from="UtilityButtons/TechTreeButton" to="." method="_toggle_tech_tree"]
 [connection signal="pressed" from="DebugControl/FreeScrap" to="DebugControl" method="_on_free_scrap_pressed"]
 [connection signal="pressed" from="DebugControl/UnlockAllTech" to="DebugControl" method="_on_unlock_all_tech_pressed"]
+[connection signal="pressed" from="DebugControl/KillAllEnemies" to="DebugControl" method="_on_kill_all_enemies_pressed"]
