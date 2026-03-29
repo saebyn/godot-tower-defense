@@ -14,5 +14,6 @@ func _on_unlock_all_tech_pressed() -> void:
   var tech_ids := TechTreeManager.tech_nodes.keys()
   tech_ids.sort()
   for tech_id in tech_ids:
-    if not TechTreeManager.is_tech_unlocked(tech_id):
+    var tech := TechTreeManager.get_tech_node(tech_id)
+    if tech.mutually_exclusive_with.is_empty() and TechTreeManager.can_unlock_tech(tech_id):
       TechTreeManager.unlock_tech(tech_id, true)
