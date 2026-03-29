@@ -12,12 +12,12 @@ func before_each():
   CurrencyManager.current_xp = 0
   CurrencyManager.current_level = 1
   
-  # Ensure debug mode is off by default
-  SettingsManager.debug_mode = false
+  # Ensure bypass is off by default
+  ProjectSettings.set_setting("zom_nom_defense/debug/bypass_tech_requirements", false)
 
 func after_each():
-  # Always restore debug mode to off after each test
-  SettingsManager.debug_mode = false
+  # Always restore bypass to off after each test
+  ProjectSettings.set_setting("zom_nom_defense/debug/bypass_tech_requirements", false)
   
   # Restore CurrencyManager to clean state
   CurrencyManager.current_scrap = 100
@@ -218,7 +218,7 @@ func test_reset_tech_tree_clears_locked_techs():
 func test_debug_mode_bypasses_level_requirement():
   # Arrange - tech requires level 4, player is level 1
   CurrencyManager.current_level = 1
-  SettingsManager.debug_mode = true
+  ProjectSettings.set_setting("zom_nom_defense/debug/bypass_tech_requirements", true)
   
   # Act
   var can_unlock = TechTreeManager.can_unlock_tech("tur_molotov_mortar")
@@ -229,7 +229,7 @@ func test_debug_mode_bypasses_level_requirement():
 func test_debug_mode_bypasses_prerequisite_requirement():
   # Arrange - tech requires prerequisite tur_scrap_shooter (not unlocked)
   CurrencyManager.current_level = 2
-  SettingsManager.debug_mode = true
+  ProjectSettings.set_setting("zom_nom_defense/debug/bypass_tech_requirements", true)
   
   # Act
   var can_unlock = TechTreeManager.can_unlock_tech("tur_boom_barrel")
@@ -241,7 +241,7 @@ func test_debug_mode_bypasses_scrap_cost():
   # Arrange - no scrap, tech has scrap cost
   CurrencyManager.current_scrap = 0
   CurrencyManager.current_level = 1
-  SettingsManager.debug_mode = true
+  ProjectSettings.set_setting("zom_nom_defense/debug/bypass_tech_requirements", true)
   
   # Act - use a tech that has scrap_cost > 0 if any; otherwise unlock a normal tech
   var can_unlock = TechTreeManager.can_unlock_tech("tur_scrap_shooter")
@@ -253,7 +253,7 @@ func test_debug_mode_does_not_spend_scrap_on_unlock():
   # Arrange
   CurrencyManager.current_scrap = 50
   CurrencyManager.current_level = 1
-  SettingsManager.debug_mode = true
+  ProjectSettings.set_setting("zom_nom_defense/debug/bypass_tech_requirements", true)
   var scrap_before = CurrencyManager.get_scrap()
   
   # Act
@@ -266,7 +266,7 @@ func test_debug_mode_still_blocks_already_unlocked_tech():
   # Arrange
   CurrencyManager.current_level = 1
   TechTreeManager.unlock_tech("tur_scrap_shooter")
-  SettingsManager.debug_mode = true
+  ProjectSettings.set_setting("zom_nom_defense/debug/bypass_tech_requirements", true)
   
   # Act
   var can_unlock = TechTreeManager.can_unlock_tech("tur_scrap_shooter")
@@ -279,7 +279,7 @@ func test_debug_mode_still_blocks_permanently_locked_tech():
   CurrencyManager.current_level = 2
   TechTreeManager.unlock_tech("tur_scrap_shooter")
   TechTreeManager.unlock_tech("tur_boom_barrel")  # locks tur_molotov_mortar
-  SettingsManager.debug_mode = true
+  ProjectSettings.set_setting("zom_nom_defense/debug/bypass_tech_requirements", true)
   
   # Act
   var can_unlock = TechTreeManager.can_unlock_tech("tur_molotov_mortar")

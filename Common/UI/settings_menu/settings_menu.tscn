@@ -330,41 +330,6 @@ apply_group = "twitch"
 live_preview = true
 metadata/_custom_type_script = "uid://c1g3vqaakxkv2"
 
-[node name="Debug" type="MarginContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer" unique_id=38732812]
-visible = false
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-metadata/_tab_index = 4
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Debug" unique_id=1760458055]
-layout_mode = 2
-theme_override_constants/separation = 15
-
-[node name="DebugModeContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Debug/VBoxContainer" unique_id=1473056594]
-layout_mode = 2
-
-[node name="DebugModeLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Debug/VBoxContainer/DebugModeContainer" unique_id=1870169552]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-text = "Debug Mode:"
-vertical_alignment = 1
-
-[node name="DebugModeCheck" type="CheckButton" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Debug/VBoxContainer/DebugModeContainer" unique_id=426405189]
-layout_mode = 2
-
-[node name="DebugModeBinding" type="Node" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Debug/VBoxContainer/DebugModeContainer" unique_id=2032107190]
-script = ExtResource("3_settingbinding")
-setting_key = &"debug_mode"
-control_path = NodePath("../DebugModeCheck")
-control_property = &"button_pressed"
-apply_group = "debug"
-live_preview = true
-revert_on_cancel = false
-metadata/_custom_type_script = "uid://c1g3vqaakxkv2"
-
 [node name="Gameplay" type="MarginContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer" unique_id=901234561]
 visible = false
 layout_mode = 2
