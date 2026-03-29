@@ -1,11 +1,8 @@
 extends Control
 
 func _ready() -> void:
-  _update_visibility(SettingsManager.debug_mode)
-  SettingsManager.debug_mode_changed.connect(_update_visibility)
-
-func _update_visibility(enabled: bool) -> void:
-  visible = enabled and OS.has_feature("debug")
+  visible = ProjectSettings.get_setting("zom_nom_defense/debug/show_debug_panel", false) \
+    and OS.has_feature("debug")
 
 func _on_free_scrap_pressed() -> void:
   CurrencyManager.earn_scrap(9999)

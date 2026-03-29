@@ -36,6 +36,8 @@ var _console_commands: Dictionary = {}
 signal log_message_emitted(level: LogLevel, scope: String, message: String, timestamp: String)
 
 func _ready() -> void:
+  # Register settings with the editor (defines types, hints, defaults)
+  _define_project_settings()
   # Load settings from project settings
   _load_project_settings()
   
@@ -48,13 +50,59 @@ func _ready() -> void:
     ", ".join(enabled_scopes)
   ])
 
+## Register logging settings with ProjectSettings so they appear correctly in the editor
+func _define_project_settings() -> void:
+  if not ProjectSettings.has_setting("zom_nom_defense/logging/log_level"):
+    ProjectSettings.set_setting("zom_nom_defense/logging/log_level", LogLevel.INFO)
+  ProjectSettings.set_initial_value("zom_nom_defense/logging/log_level", LogLevel.INFO)
+  ProjectSettings.add_property_info({
+    "name": "zom_nom_defense/logging/log_level",
+    "type": TYPE_INT,
+    "hint": PROPERTY_HINT_ENUM,
+    "hint_string": "Trace,Debug,Info,Warn,Error"
+  })
+
+  if not ProjectSettings.has_setting("zom_nom_defense/logging/enabled_scopes"):
+    ProjectSettings.set_setting("zom_nom_defense/logging/enabled_scopes", "*")
+  ProjectSettings.set_initial_value("zom_nom_defense/logging/enabled_scopes", "*")
+  ProjectSettings.add_property_info({
+    "name": "zom_nom_defense/logging/enabled_scopes",
+    "type": TYPE_STRING,
+    "hint": PROPERTY_HINT_PLACEHOLDER_TEXT,
+    "hint_string": "*, Combat, Economy.Scrap"
+  })
+
+  if not ProjectSettings.has_setting("zom_nom_defense/debug/show_navigation_paths"):
+    ProjectSettings.set_setting("zom_nom_defense/debug/show_navigation_paths", false)
+  ProjectSettings.set_initial_value("zom_nom_defense/debug/show_navigation_paths", false)
+  ProjectSettings.add_property_info({
+    "name": "zom_nom_defense/debug/show_navigation_paths",
+    "type": TYPE_BOOL
+  })
+
+  if not ProjectSettings.has_setting("zom_nom_defense/debug/show_debug_panel"):
+    ProjectSettings.set_setting("zom_nom_defense/debug/show_debug_panel", false)
+  ProjectSettings.set_initial_value("zom_nom_defense/debug/show_debug_panel", false)
+  ProjectSettings.add_property_info({
+    "name": "zom_nom_defense/debug/show_debug_panel",
+    "type": TYPE_BOOL
+  })
+
+  if not ProjectSettings.has_setting("zom_nom_defense/debug/bypass_tech_requirements"):
+    ProjectSettings.set_setting("zom_nom_defense/debug/bypass_tech_requirements", false)
+  ProjectSettings.set_initial_value("zom_nom_defense/debug/bypass_tech_requirements", false)
+  ProjectSettings.add_property_info({
+    "name": "zom_nom_defense/debug/bypass_tech_requirements",
+    "type": TYPE_BOOL
+  })
+
 ## Load logging configuration from project settings
 func _load_project_settings() -> void:
   # Log level setting
-  current_log_level = ProjectSettings.get_setting("logging/log_level", LogLevel.INFO)
+  current_log_level = ProjectSettings.get_setting("zom_nom_defense/logging/log_level", LogLevel.INFO)
   
   # Scopes setting - comma-separated string
-  var scopes_setting = ProjectSettings.get_setting("logging/enabled_scopes", "*")
+  var scopes_setting = ProjectSettings.get_setting("zom_nom_defense/logging/enabled_scopes", "*")
   if scopes_setting is String:
     enabled_scopes = scopes_setting.split(",")
     # Trim whitespace from each scope

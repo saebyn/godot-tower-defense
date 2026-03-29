@@ -6,7 +6,16 @@ extends GutTest
 var tech_tree_scene = preload("res://Stages/UI/tech_tree/tech_tree.tscn")
 var tech_tree: UI_TechTree
 
+const BYPASS_SETTING = "zom_nom_defense/debug/bypass_tech_requirements"
+var _previous_bypass_setting: bool
+
 func before_each():
+  # Capture the existing bypass setting so it can be restored after each test
+  _previous_bypass_setting = ProjectSettings.get_setting(BYPASS_SETTING, false)
+  
+  # Ensure bypass is off so requirement checks run normally
+  ProjectSettings.set_setting(BYPASS_SETTING, false)
+  
   # Reset the TechTreeManager state before each test
   TechTreeManager.reset_tech_tree()
   
@@ -21,6 +30,10 @@ func before_each():
   
   # Wait for ready to complete
   await wait_process_frames(2)
+
+func after_each():
+  # Restore the bypass setting to whatever it was before the test ran
+  ProjectSettings.set_setting(BYPASS_SETTING, _previous_bypass_setting)
 
 func test_tech_tree_initializes():
   # Assert

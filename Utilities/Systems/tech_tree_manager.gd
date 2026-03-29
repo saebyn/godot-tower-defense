@@ -70,8 +70,8 @@ func can_unlock_tech(tech_id: String) -> bool:
     return false
   
   # In debug mode, skip all progression requirements
-  if SettingsManager.debug_mode:
-    MyLogger.debug("TechTreeManager", "Debug mode: bypassing requirements for %s" % tech_id)
+  if ProjectSettings.get_setting("zom_nom_defense/debug/bypass_tech_requirements", false):
+    MyLogger.debug("TechTreeManager", "Bypassing tech requirements via setting zom_nom_defense/debug/bypass_tech_requirements for %s" % tech_id)
     return true
   
   var tech = tech_nodes[tech_id]
@@ -116,7 +116,7 @@ func unlock_tech(tech_id: String, silent: bool = false) -> bool:
   var tech = tech_nodes[tech_id]
   
   # Deduct scrap cost if any (skipped in debug mode)
-  if tech.scrap_cost > 0 and not SettingsManager.debug_mode:
+  if tech.scrap_cost > 0 and not ProjectSettings.get_setting("zom_nom_defense/debug/bypass_tech_requirements", false):
     if not CurrencyManager.spend_scrap(tech.scrap_cost):
       MyLogger.error("TechTreeManager", "Failed to spend scrap for tech: %s" % tech_id)
       return false
