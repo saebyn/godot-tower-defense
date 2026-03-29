@@ -59,7 +59,7 @@ func _define_project_settings() -> void:
     "name": "zom_nom_defense/logging/log_level",
     "type": TYPE_INT,
     "hint": PROPERTY_HINT_ENUM,
-    "hint_string": "Trace,Debug,Info,Warn,Error,None"
+    "hint_string": "Trace,Debug,Info,Warn,Error"
   })
 
   if not ProjectSettings.has_setting("zom_nom_defense/logging/enabled_scopes"):
