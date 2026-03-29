@@ -132,32 +132,30 @@ animations = [{
 [sub_resource type="BoxShape3D" id="BoxShape3D_10y5i"]
 size = Vector3(2.0137024, 3.1646423, 2.0134277)
 
-[node name="AttackSpeedBeacon" node_paths=PackedStringArray("mesh_instances") instance=ExtResource("1_lsym5")]
-buff_type = 0
+[node name="AttackSpeedBeacon" unique_id=2030738783 node_paths=PackedStringArray("mesh_instances") instance=ExtResource("1_lsym5")]
 buff_amount = 0.25
-buff_interval = 1.0
 mesh_instances = [NodePath("fire_tower/Cube"), NodePath("fire_tower/Meshes_001/Log1"), NodePath("fire_tower/Meshes_001/Log2"), NodePath("fire_tower/Meshes_001/Log3")]
 
-[node name="fire_tower" parent="." index="4" instance=ExtResource("2_xjdhn")]
+[node name="fire_tower" parent="." index="4" unique_id=361718508 instance=ExtResource("2_xjdhn")]
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="fire_tower" index="2"]
+[node name="GPUParticles3D" type="GPUParticles3D" parent="fire_tower" index="2" unique_id=146625226]
 transform = Transform3D(0.324304, 0, 0, 0, 0.324304, 0, 0, 0, 0.324304, 0, 1.0249043, 0)
 lifetime = 6.8
 process_material = SubResource("ParticleProcessMaterial_ianvi")
 draw_pass_1 = SubResource("QuadMesh_0yn62")
 
-[node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="fire_tower" index="3"]
+[node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="fire_tower" index="3" unique_id=1716107233]
 transform = Transform3D(0.217301, 0, 0, 0, 0.480251, 0, 0, 0, 1, 0, 1.0249043, 0)
 billboard = 2
 sprite_frames = SubResource("SpriteFrames_ltj3s")
 autoplay = "default"
 frame_progress = 0.24577485
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="5"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="5" unique_id=289212499]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0034637451, 1.6103668, -0.00061035156)
 shape = SubResource("BoxShape3D_10y5i")
 
-[node name="BuffLineEffect" type="Node3D" parent="." index="6"]
+[node name="BuffLineEffect" type="Node3D" parent="." index="6" unique_id=52239612]
 script = ExtResource("1_buff_line")
 
 [editable path="fire_tower"]

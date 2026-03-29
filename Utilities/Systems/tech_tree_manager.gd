@@ -69,6 +69,11 @@ func can_unlock_tech(tech_id: String) -> bool:
     MyLogger.debug("TechTreeManager", "Tech is permanently locked: %s" % tech_id)
     return false
   
+  # In debug mode, skip all progression requirements
+  if SettingsManager.debug_mode:
+    MyLogger.debug("TechTreeManager", "Debug mode: bypassing requirements for %s" % tech_id)
+    return true
+  
   var tech = tech_nodes[tech_id]
   
   # Check player level requirement
@@ -102,15 +107,16 @@ func can_unlock_tech(tech_id: String) -> bool:
   return true
 
 ## Unlock a tech node
-func unlock_tech(tech_id: String) -> bool:
+## Pass silent=true to suppress the unlock SFX (e.g., during bulk unlock operations)
+func unlock_tech(tech_id: String, silent: bool = false) -> bool:
   if not can_unlock_tech(tech_id):
     MyLogger.warn("TechTreeManager", "Cannot unlock tech: %s" % tech_id)
     return false
   
   var tech = tech_nodes[tech_id]
   
-  # Deduct scrap cost if any
-  if tech.scrap_cost > 0:
+  # Deduct scrap cost if any (skipped in debug mode)
+  if tech.scrap_cost > 0 and not SettingsManager.debug_mode:
     if not CurrencyManager.spend_scrap(tech.scrap_cost):
       MyLogger.error("TechTreeManager", "Failed to spend scrap for tech: %s" % tech_id)
       return false
@@ -119,8 +125,9 @@ func unlock_tech(tech_id: String) -> bool:
   unlocked_tech_ids.append(tech_id)
   MyLogger.info("TechTreeManager", "Unlocked tech: %s (%s)" % [tech_id, tech.display_name])
   
-  # Play tech unlock sound
-  AudioManager.play_sound_2d(Resource_SoundEffect.SoundEffect.TECH_UNLOCKED)
+  # Play tech unlock sound (suppressed in silent mode)
+  if not silent:
+    AudioManager.play_sound_2d(Resource_SoundEffect.SoundEffect.TECH_UNLOCKED)
   
   # Lock mutually exclusive techs
   for exclusive_id in tech.mutually_exclusive_with:

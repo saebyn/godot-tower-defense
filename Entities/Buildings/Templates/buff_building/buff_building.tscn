@@ -3,6 +3,8 @@
 [ext_resource type="PackedScene" uid="uid://cj8x0adt0k2cd" path="res://Entities/Buildings/Templates/ranged_building/ranged_building.tscn" id="1_15fnt"]
 [ext_resource type="Script" uid="uid://kwd7lup807u6" path="res://Entities/Buildings/Templates/buff_building/buff_building.gd" id="2_occd2"]
 
-[node name="BuffBuilding" instance=ExtResource("1_15fnt")]
+[node name="BuffBuilding" unique_id=1892125211 instance=ExtResource("1_15fnt")]
 script = ExtResource("2_occd2")
-effect_range = 15.0
+buff_type = 0
+buff_amount = 0.1
+buff_interval = 1.0

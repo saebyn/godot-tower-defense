@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://cn0m5y7tgw2pe"]
+[gd_scene format=3 uid="uid://cn0m5y7tgw2pe"]
 
 [ext_resource type="Script" uid="uid://bwyqi7snw2s70" path="res://Common/UI/speed_controls/speed_controls.gd" id="1_speed_controls"]
 
@@ -8,12 +8,12 @@ action = &"toggle_pause"
 [sub_resource type="Shortcut" id="Shortcut_g5d3r"]
 events = [SubResource("InputEventAction_ws7bk")]
 
-[node name="SpeedControls" type="Control"]
+[node name="SpeedControls" type="Control" unique_id=82871149]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_speed_controls")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1454527217]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,28 +21,28 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PauseButton" type="Button" parent="HBoxContainer"]
+[node name="PauseButton" type="Button" parent="HBoxContainer" unique_id=1768705106]
 layout_mode = 2
 focus_mode = 0
 shortcut = SubResource("Shortcut_g5d3r")
 text = "⏸️"
 
-[node name="VSeparator" type="VSeparator" parent="HBoxContainer"]
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer" unique_id=365282864]
 layout_mode = 2
 
-[node name="Speed1xButton" type="Button" parent="HBoxContainer"]
+[node name="Speed1xButton" type="Button" parent="HBoxContainer" unique_id=1590667520]
 layout_mode = 2
 focus_mode = 0
 toggle_mode = true
 text = "1x"
 
-[node name="Speed2xButton" type="Button" parent="HBoxContainer"]
+[node name="Speed2xButton" type="Button" parent="HBoxContainer" unique_id=1469825419]
 layout_mode = 2
 focus_mode = 0
 toggle_mode = true
 text = "2x"
 
-[node name="Speed4xButton" type="Button" parent="HBoxContainer"]
+[node name="Speed4xButton" type="Button" parent="HBoxContainer" unique_id=1444342276]
 layout_mode = 2
 focus_mode = 0
 toggle_mode = true

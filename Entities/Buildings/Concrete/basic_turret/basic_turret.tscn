@@ -73,11 +73,9 @@ rotation_speed = 360.0
 idle_animation = "idle"
 aim_margin = 0.1
 attack_particle_system = NodePath("turret/TurretYaw/Top/Barrel/GPUParticles3D")
-enemy_group = "enemies"
-detection_interval = 0.5
 mesh_instances = [NodePath("turret/TurretBase/Leg_000"), NodePath("turret/TurretBase/Leg_001"), NodePath("turret/TurretBase/Leg_002"), NodePath("turret/TurretBase/Screw"), NodePath("turret/TurretBase/ScrewBase"), NodePath("turret/TurretBase/Table"), NodePath("turret/TurretYaw/Top/Barrel"), NodePath("turret/TurretYaw/Top/BarrelStraps")]
 
-[node name="Attack" parent="." index="1"]
+[node name="Attack" parent="." index="1" unique_id=663227314]
 damage_amount = 3.0
 attack_speed = 0.75
 damage_source = "turret"
@@ -138,7 +136,7 @@ min_idle_interval = 10.0
 max_idle_interval = 30.0
 metadata/_custom_type_script = "uid://c7bdetuss8stb"
 
-[node name="AudioStreamPlayer3D" parent="." index="8"]
+[node name="AudioStreamPlayer3D" parent="." index="8" unique_id=1513947477]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0017229319, 2.0537462, 0)
 
 [connection signal="cooldown_started" from="Attack" to="." method="_on_attack"]

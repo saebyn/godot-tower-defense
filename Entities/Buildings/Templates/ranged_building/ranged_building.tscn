@@ -14,18 +14,18 @@ shader_parameter/albedo_color = Color(0.697, 0.521, 0, 1)
 shader_parameter/transparency = 0.1670000079325
 shader_parameter/dither_scale = 1.00000004424012
 
-[node name="RangedBuilding" instance=ExtResource("1_shooting")]
+[node name="RangedBuilding" unique_id=1622361502 instance=ExtResource("1_shooting")]
 script = ExtResource("2_shooting")
 effect_range = 15.0
 
-[node name="Attack" parent="." index="1" node_paths=PackedStringArray("audio_player") instance=ExtResource("3_shooting")]
+[node name="Attack" parent="." index="1" unique_id=663227314 node_paths=PackedStringArray("audio_player") instance=ExtResource("3_shooting")]
 damage_amount = 15
 attack_speed = 0.5
 audio_player = NodePath("../AudioStreamPlayer3D")
 
-[node name="DetectionTimer" type="Timer" parent="." index="2"]
+[node name="DetectionTimer" type="Timer" parent="." index="2" unique_id=1329069739]
 wait_time = 0.5
 
-[node name="RangePreview" type="MeshInstance3D" parent="." index="3"]
+[node name="RangePreview" type="MeshInstance3D" parent="." index="3" unique_id=332648695]
 mesh = SubResource("CylinderMesh_wmkuw")
 surface_material_override/0 = SubResource("ShaderMaterial_range")

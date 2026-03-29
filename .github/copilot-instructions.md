@@ -185,20 +185,12 @@ The `GameManager` singleton manages game states and transitions. It defines an e
    - Verify singleton scripts are properly accessible with their class names
    - Restart Godot if autoload changes don't take effect
 
-### ⚠️ CRITICAL: Scene/Resource UID Validation
+### ⚠️ Scene/Resource UID Guidance
 
-Godot 4 stores a `.uid` sidecar file alongside every script and resource. When
-Copilot generates or edits `.tscn` or `.tres` files, the `uid="uid://..."` value
-in each `[ext_resource]` header **must exactly match** the content of the
-corresponding `<path>.uid` file. Invented or guessed UIDs look valid in the
-editor but silently resolve to `null` at runtime, causing hard-to-debug errors.
-
-**After every change to a `.tscn` or `.tres` file, run:**
-```bash
-python3 Utilities/validate_uids.py .
-```
-Fix all `[UID MISMATCH]` errors before committing. `[MISSING RESOURCE]` errors
-inside `addons/twitcher/example/` are expected and can be ignored.
+Godot 4 scene files (`.tscn`) and resource files (`.tres`) contain `uid="uid://..."` values in their `[ext_resource]` headers. These UIDs are Godot's internal resource identifiers stored in the project's UID registry (`.godot/uid_cache.bin`) — they are **not** related to any `.uid` sidecar files on disk.
+- **Do not modify or remove** the `uid="uid://..."` values in `.tscn` and `.tres` files
+- These UIDs are automatically generated and managed by Godot during asset import and scene/resource creation
+- When you create new scenes or resources, Godot will assign new UIDs to them during the import process, so don't worry about manually managing or creating UIDs for your assets
 
 ### Build and Test Commands
 

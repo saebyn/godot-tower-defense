@@ -1,11 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://b7pmvbm0x2nvt"]
+[gd_scene format=3 uid="uid://b7pmvbm0x2nvt"]
 
 [ext_resource type="Script" uid="uid://xrsdoiwe0yje" path="res://Common/UI/hotbar/hotbar_button.gd" id="1_jcoy4"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_4cyc4"]
 size = Vector2(64, 64)
 
-[node name="HotbarButton" type="Button"]
+[node name="HotbarButton" type="Button" unique_id=1048183270]
 custom_minimum_size = Vector2(64, 64)
 offset_right = 16.0
 offset_bottom = 12.0
@@ -14,7 +14,7 @@ icon = SubResource("PlaceholderTexture2D_4cyc4")
 expand_icon = true
 script = ExtResource("1_jcoy4")
 
-[node name="SlotLabel" type="Label" parent="."]
+[node name="SlotLabel" type="Label" parent="." unique_id=334936764]
 layout_mode = 1
 offset_left = 3.635
 offset_top = 1.59
@@ -23,7 +23,7 @@ offset_bottom = 21.59
 theme_override_constants/outline_size = 9
 text = "1"
 
-[node name="CostLabel" type="Label" parent="."]
+[node name="CostLabel" type="Label" parent="." unique_id=13601286]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0

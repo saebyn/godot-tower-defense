@@ -11,6 +11,18 @@ func before_each():
   CurrencyManager.current_scrap = 100
   CurrencyManager.current_xp = 0
   CurrencyManager.current_level = 1
+  
+  # Ensure debug mode is off by default
+  SettingsManager.debug_mode = false
+
+func after_each():
+  # Always restore debug mode to off after each test
+  SettingsManager.debug_mode = false
+  
+  # Restore CurrencyManager to clean state
+  CurrencyManager.current_scrap = 100
+  CurrencyManager.current_xp = 0
+  CurrencyManager.current_level = 1
 
 func test_tech_tree_loads_tech_nodes():
   # Assert - verify that tech nodes were loaded from Config/TechTree/
@@ -200,3 +212,77 @@ func test_reset_tech_tree_clears_locked_techs():
   # Assert
   assert_false(TechTreeManager.is_tech_locked("tur_molotov_mortar"), "Tech should not be locked after reset")
   assert_eq(TechTreeManager.locked_tech_ids.size(), 0, "Locked tech list should be empty")
+
+## Debug mode tests
+
+func test_debug_mode_bypasses_level_requirement():
+  # Arrange - tech requires level 4, player is level 1
+  CurrencyManager.current_level = 1
+  SettingsManager.debug_mode = true
+  
+  # Act
+  var can_unlock = TechTreeManager.can_unlock_tech("tur_molotov_mortar")
+  
+  # Assert
+  assert_true(can_unlock, "Debug mode should bypass level requirement")
+
+func test_debug_mode_bypasses_prerequisite_requirement():
+  # Arrange - tech requires prerequisite tur_scrap_shooter (not unlocked)
+  CurrencyManager.current_level = 2
+  SettingsManager.debug_mode = true
+  
+  # Act
+  var can_unlock = TechTreeManager.can_unlock_tech("tur_boom_barrel")
+  
+  # Assert
+  assert_true(can_unlock, "Debug mode should bypass prerequisite requirement")
+
+func test_debug_mode_bypasses_scrap_cost():
+  # Arrange - no scrap, tech has scrap cost
+  CurrencyManager.current_scrap = 0
+  CurrencyManager.current_level = 1
+  SettingsManager.debug_mode = true
+  
+  # Act - use a tech that has scrap_cost > 0 if any; otherwise unlock a normal tech
+  var can_unlock = TechTreeManager.can_unlock_tech("tur_scrap_shooter")
+  
+  # Assert
+  assert_true(can_unlock, "Debug mode should allow unlock regardless of scrap balance")
+
+func test_debug_mode_does_not_spend_scrap_on_unlock():
+  # Arrange
+  CurrencyManager.current_scrap = 50
+  CurrencyManager.current_level = 1
+  SettingsManager.debug_mode = true
+  var scrap_before = CurrencyManager.get_scrap()
+  
+  # Act
+  TechTreeManager.unlock_tech("tur_scrap_shooter")
+  
+  # Assert
+  assert_eq(CurrencyManager.get_scrap(), scrap_before, "Debug mode should not spend scrap on unlock")
+
+func test_debug_mode_still_blocks_already_unlocked_tech():
+  # Arrange
+  CurrencyManager.current_level = 1
+  TechTreeManager.unlock_tech("tur_scrap_shooter")
+  SettingsManager.debug_mode = true
+  
+  # Act
+  var can_unlock = TechTreeManager.can_unlock_tech("tur_scrap_shooter")
+  
+  # Assert
+  assert_false(can_unlock, "Debug mode should not allow re-unlocking an already unlocked tech")
+
+func test_debug_mode_still_blocks_permanently_locked_tech():
+  # Arrange
+  CurrencyManager.current_level = 2
+  TechTreeManager.unlock_tech("tur_scrap_shooter")
+  TechTreeManager.unlock_tech("tur_boom_barrel")  # locks tur_molotov_mortar
+  SettingsManager.debug_mode = true
+  
+  # Act
+  var can_unlock = TechTreeManager.can_unlock_tech("tur_molotov_mortar")
+  
+  # Assert
+  assert_false(can_unlock, "Debug mode should not bypass permanent mutual-exclusivity lock")
