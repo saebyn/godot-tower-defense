@@ -27,6 +27,10 @@ func _ready() -> void:
   # Connect to TechTreeManager signals
   TechTreeManager.tech_unlocked.connect(_on_tech_unlocked)
   TechTreeManager.tech_locked.connect(_on_tech_locked)
+
+  # Connect to CurrencyManager signals so the UI refreshes when scrap or level changes
+  CurrencyManager.scrap_changed.connect(_on_currency_changed)
+  CurrencyManager.level_up.connect(_on_currency_changed)
   
   # Connect UI signals
   close_button.pressed.connect(_on_close_pressed)
@@ -263,6 +267,14 @@ func _on_tech_locked(tech_id: String) -> void:
   _update_tech_node_card(tech_id)
   if selected_tech_id == tech_id:
     _update_detail_panel()
+
+## Handle currency/level changes so unlock button stays in sync
+func _on_currency_changed(_value: int) -> void:
+  # Update all cards because a currency change can shift multiple techs between
+  # LOCKED and AVAILABLE (e.g. several nodes share the same scrap threshold).
+  for tech_id in tech_node_cards:
+    _update_tech_node_card(tech_id)
+  _update_detail_panel()
 
 ## Handle close button
 func _on_close_pressed() -> void:
