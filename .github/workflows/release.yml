@@ -47,6 +47,11 @@ jobs:
           mkdir -v -p ~/.local/share/godot/export_templates/
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
 
+      - name: Apply release settings
+        run: |
+          cd $PROJECT_PATH
+          bash scripts/apply_release_settings.sh project.godot
+
       - name: Build ${{ matrix.platform.name }}
         run: |
           mkdir -v -p build/${{ matrix.platform.directory }}
