@@ -205,6 +205,8 @@ func _get_stat_value(condition_type: Resource_Achievement.ConditionType, target:
       return float(StatsManager.get_clicks_performed())
     Resource_Achievement.ConditionType.HAND_KILLS:
       return float(StatsManager.get_enemies_defeated_by_hand())
+    Resource_Achievement.ConditionType.ENEMY_CLICKS:
+      return float(StatsManager.get_enemy_clicks())
     Resource_Achievement.ConditionType.SCRAP_EARNED:
       return float(StatsManager.get_total_scrap_earned())
     Resource_Achievement.ConditionType.BUILDINGS_PLACED:

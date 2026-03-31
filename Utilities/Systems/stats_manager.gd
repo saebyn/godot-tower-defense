@@ -18,6 +18,7 @@ var enemies_defeated_by_hand: int = 0
 
 # Player action tracking
 var clicks_performed: int = 0
+var enemy_clicks: int = 0 # Clicks that actually hit an enemy
 
 # Building placement tracking
 var buildings_placed_total: int = 0
@@ -100,6 +101,12 @@ func track_click_performed() -> void:
     MyLogger.debug("Stats", "Click performed. Total clicks: %d" % clicks_performed)
   stats_updated.emit()
 
+## Track a click that actually hit an enemy
+func track_enemy_click() -> void:
+  enemy_clicks += 1
+  MyLogger.debug("Stats", "Enemy clicked. Total enemy clicks: %d" % enemy_clicks)
+  stats_updated.emit()
+
 ## Track a building placement
 func track_building_placed(building_type: String) -> void:
   buildings_placed_total += 1
@@ -155,6 +162,9 @@ func get_enemies_defeated_by_hand() -> int:
 func get_clicks_performed() -> int:
   return clicks_performed
 
+func get_enemy_clicks() -> int:
+  return enemy_clicks
+
 func get_buildings_placed_total() -> int:
   return buildings_placed_total
 
@@ -186,6 +196,7 @@ func get_stats_summary() -> Dictionary:
     "enemies_defeated_by_type": enemies_defeated_by_type.duplicate(),
     "enemies_defeated_by_hand": enemies_defeated_by_hand,
     "clicks_performed": clicks_performed,
+    "enemy_clicks": enemy_clicks,
     "buildings_placed_total": buildings_placed_total,
     "buildings_placed_by_type": buildings_placed_by_type.duplicate(),
     "total_scrap_earned": total_scrap_earned,
@@ -200,6 +211,7 @@ func reset_stats() -> void:
   enemies_defeated_by_type.clear()
   enemies_defeated_by_hand = 0
   clicks_performed = 0
+  enemy_clicks = 0
   buildings_placed_total = 0
   buildings_placed_by_type.clear()
   total_scrap_earned = 0
@@ -223,6 +235,7 @@ func get_save_data() -> Dictionary:
     "enemies_defeated_by_type": enemies_defeated_by_type,
     "enemies_defeated_by_hand": enemies_defeated_by_hand,
     "clicks_performed": clicks_performed,
+    "enemy_clicks": enemy_clicks,
     "buildings_placed_total": buildings_placed_total,
     "buildings_placed_by_type": buildings_placed_by_type,
     "total_scrap_earned": total_scrap_earned,
@@ -237,6 +250,7 @@ func load_data(data: Dictionary) -> void:
   enemies_defeated_by_type = data.get("enemies_defeated_by_type", {})
   enemies_defeated_by_hand = data.get("enemies_defeated_by_hand", 0)
   clicks_performed = data.get("clicks_performed", 0)
+  enemy_clicks = data.get("enemy_clicks", 0)
   buildings_placed_total = data.get("buildings_placed_total", 0)
   buildings_placed_by_type = data.get("buildings_placed_by_type", {})
   total_scrap_earned = data.get("total_scrap_earned", 0)
