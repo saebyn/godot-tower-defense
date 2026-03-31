@@ -20,7 +20,15 @@ func _on_kill_all_enemies_pressed() -> void:
   for enemy in enemies:
     if not is_instance_valid(enemy):
       continue
-    if "health" in enemy and enemy.health and is_instance_valid(enemy.health):
-      enemy.health.take_damage(INF, "debug")
-    else:
-      enemy.queue_free()
+    if enemy.has_meta("health_component"):
+      if enemy.get_meta("health_component") is Component_Health:
+        var health_component: Component_Health = enemy.get_meta("health_component")
+        var max_damage := health_component.max_damage_per_hit
+        if max_damage > 0.0:
+          var iterations := 0
+          var max_iterations := 1024
+          while iterations < max_iterations \
+              and not health_component.dead \
+              and is_instance_valid(enemy):
+            health_component.take_damage(max_damage, "debug")
+            iterations += 1
