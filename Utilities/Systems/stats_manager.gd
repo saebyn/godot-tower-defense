@@ -104,7 +104,9 @@ func track_click_performed() -> void:
 ## Track a click that actually hit an enemy
 func track_enemy_click() -> void:
   enemy_clicks += 1
-  MyLogger.debug("Stats", "Enemy clicked. Total enemy clicks: %d" % enemy_clicks)
+  # Throttle logging to avoid excessive debug output on every enemy click
+  if enemy_clicks % 50 == 0:
+    MyLogger.debug("Stats", "Enemy clicked. Total enemy clicks: %d" % enemy_clicks)
   stats_updated.emit()
 
 ## Track a building placement
