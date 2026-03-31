@@ -122,6 +122,44 @@ func test_clicks_performed_resets_on_new_game():
   SaveManager.create_new_game(TEST_SLOT_2)
   assert_eq(StatsManager.get_clicks_performed(), 0, "clicks_performed must be 0 after new game")
 
+## Test: enemy_clicks save/load
+func test_enemy_clicks_save_load():
+  # Create fresh game
+  SaveManager.create_new_game(TEST_SLOT_1)
+
+  # Track some enemy clicks
+  StatsManager.track_enemy_click()
+  StatsManager.track_enemy_click()
+  StatsManager.track_enemy_click()
+  StatsManager.track_enemy_click()
+
+  var expected_enemy_clicks = StatsManager.get_enemy_clicks()
+
+  # Save
+  SaveManager.save_current_slot()
+
+  # Create different save to reset
+  SaveManager.create_new_game(TEST_SLOT_2)
+  assert_eq(StatsManager.get_enemy_clicks(), 0, "enemy_clicks should be reset to 0 on new game")
+
+  # Load original save
+  var success = SaveManager.load_save_slot(TEST_SLOT_1)
+
+  assert_true(success, "Load should succeed")
+  assert_eq(StatsManager.get_enemy_clicks(), expected_enemy_clicks, "enemy_clicks should be restored after load")
+
+## Test: enemy_clicks resets on new game
+func test_enemy_clicks_resets_on_new_game():
+  # Create a game and accumulate some enemy clicks
+  SaveManager.create_new_game(TEST_SLOT_1)
+  StatsManager.track_enemy_click()
+  StatsManager.track_enemy_click()
+  assert_eq(StatsManager.get_enemy_clicks(), 2, "Should have 2 enemy clicks tracked")
+
+  # Starting a new game must reset the counter
+  SaveManager.create_new_game(TEST_SLOT_2)
+  assert_eq(StatsManager.get_enemy_clicks(), 0, "enemy_clicks must be 0 after new game")
+
 ## Test: Level manager save/load
 func test_scenario_manager_save_load():
   # File operations may generate engine errors in headless mode - ignore them
