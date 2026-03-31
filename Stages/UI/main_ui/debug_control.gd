@@ -14,3 +14,21 @@ func _on_unlock_all_tech_pressed() -> void:
     var tech := TechTreeManager.get_tech_node(tech_id)
     if tech.mutually_exclusive_with.is_empty() and TechTreeManager.can_unlock_tech(tech_id):
       TechTreeManager.unlock_tech(tech_id, true)
+
+func _on_kill_all_enemies_pressed() -> void:
+  var enemies := get_tree().get_nodes_in_group("enemies")
+  for enemy in enemies:
+    if not is_instance_valid(enemy):
+      continue
+    if enemy.has_meta("health_component"):
+      if enemy.get_meta("health_component") is Component_Health:
+        var health_component: Component_Health = enemy.get_meta("health_component")
+        var max_damage := health_component.max_damage_per_hit
+        if max_damage > 0.0:
+          var iterations := 0
+          var max_iterations := 1024
+          while iterations < max_iterations \
+              and not health_component.dead \
+              and is_instance_valid(enemy):
+            health_component.take_damage(max_damage, "debug")
+            iterations += 1

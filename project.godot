@@ -354,5 +354,5 @@ logs/Http="info"
 
 [zom_nom_defense]
 
-debug/show_debug_panel=true
+debug/show_debug_panel=false
 debug/bypass_tech_requirements=false
