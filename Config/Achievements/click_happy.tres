@@ -8,9 +8,9 @@
 script = ExtResource("1_click")
 id = "click_happy"
 name = "Click Happy"
-description = "Click 5 times"
+description = "Click on an enemy 5 times"
 use_multiple_conditions = false
-unlock_condition_type = 2
+unlock_condition_type = 9
 threshold = 5
 condition_target = ""
 condition_logic = 0

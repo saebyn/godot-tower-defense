@@ -60,7 +60,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _handle_enemy_click(click_position: Vector2) -> void:
-  # Track every enemy-attack click for achievement purposes
+  # Track every left-click for achievement purposes, regardless of what was hit
   StatsManager.track_click_performed()
 
   # Create a raycast from the camera to detect what was clicked
@@ -78,6 +78,10 @@ func _handle_enemy_click(click_position: Vector2) -> void:
   if _enemy_raycast.is_colliding():
     var collider = _enemy_raycast.get_collider()
     MyLogger.debug("PlayerInput", "Clicked on: %s" % collider.name)
+    # Only count as an enemy click if the collider is actually an enemy,
+    # not other attackable things like scrap pickups
+    if collider.is_in_group("enemies"):
+      StatsManager.track_enemy_click()
     # If the collider is an enemy, perform an attack
     var result = attack.perform_attack(collider)
     if result == Component_Attack.AttackResult.SUCCESS:

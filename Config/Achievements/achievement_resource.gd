@@ -36,6 +36,7 @@ enum ConditionType {
   GAME_SCENARIO_REACHED = 6, ## Track highest game scenario reached
   PLAYER_LEVEL_REACHED = 7, ## Track player XP level reached
   HAND_KILLS = 8, ## Track total enemies defeated by hand (player clicks)
+  ENEMY_CLICKS = 9, ## Track clicks that actually hit an enemy
 }
 
 enum ConditionLogic {
@@ -71,6 +72,8 @@ class AchievementCondition extends Resource:
         desc = "Perform %d clicks" % threshold
       ConditionType.HAND_KILLS:
         desc = "Defeat %d enemies by hand" % threshold
+      ConditionType.ENEMY_CLICKS:
+        desc = "Click on an enemy %d times" % threshold
       ConditionType.SCRAP_EARNED:
         desc = "Earn %d scrap" % threshold
       ConditionType.BUILDINGS_PLACED:
@@ -167,6 +170,8 @@ func get_condition_description() -> String:
         condition_desc = "Perform %d clicks" % threshold
       ConditionType.HAND_KILLS:
         condition_desc = "Defeat %d enemies by hand" % threshold
+      ConditionType.ENEMY_CLICKS:
+        condition_desc = "Click on an enemy %d times" % threshold
       ConditionType.SCRAP_EARNED:
         condition_desc = "Earn %d scrap" % threshold
       ConditionType.BUILDINGS_PLACED:
