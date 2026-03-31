@@ -1,11 +1,13 @@
 extends GutTest
 
 ## Unit tests for System_Wave pause behavior
-## Tests that wave timers respect pause state by verifying both configuration
-## and actual pause behavior using controllable test nodes.
+## Tests that the wave node and its timer respect pause state by verifying both
+## configuration and actual pause behavior using controllable test nodes.
+## Spawning is now driven by _process() with a spawn_rate_curve accumulator;
+## pause behavior is ensured by the node's PROCESS_MODE_PAUSABLE setting.
 
 # Test configuration constants
-const PAUSE_WAIT_FRAMES = 20  # Frames to wait during pause to verify timers don't progress
+const PAUSE_WAIT_FRAMES = 20  # Frames to wait during pause to verify _process doesn't run
 const UNPAUSE_WAIT_FRAMES = 10  # Frames to wait after unpause to verify timers resume
 const SPAWN_TEST_WAIT_FRAMES = 60  # Frames to wait during pause spawn test (~1 sec @ 60fps)
 
@@ -45,14 +47,13 @@ func after_each():
   # Ensure game is not paused after tests
   get_tree().paused = false
 
-## Timer Process Mode Configuration Tests
-## These tests verify that timers are configured to respect pause state
+## Process Mode Configuration Tests
+## These tests verify that the wave node and its timer are configured to respect pause state
 
-func test_spawn_timer_is_pausable():
+func test_wave_node_is_pausable():
   # Assert
-  assert_not_null(wave_instance._spawn_timer, "Spawn timer should exist after _ready")
-  assert_eq(wave_instance._spawn_timer.process_mode, Node.PROCESS_MODE_PAUSABLE, 
-    "Spawn timer should be set to PROCESS_MODE_PAUSABLE")
+  assert_eq(wave_instance.process_mode, Node.PROCESS_MODE_PAUSABLE,
+    "Wave node should be set to PROCESS_MODE_PAUSABLE so _process() stops while paused")
 
 func test_wave_timer_is_pausable():
   # Assert
@@ -60,25 +61,24 @@ func test_wave_timer_is_pausable():
   assert_eq(wave_instance._wave_timer.process_mode, Node.PROCESS_MODE_PAUSABLE,
     "Wave timer should be set to PROCESS_MODE_PAUSABLE")
 
-## Timer and Spawn Behavior Tests
+## Pause Behavior Tests
 ## These tests verify actual pause behavior by checking timer state and spawn activity
 
-func test_timers_pause_when_tree_paused():
+func test_process_pauses_when_tree_paused():
   # Arrange - Create a simple enemy type
   var enemy_type = Resource_EnemyType.new()
   enemy_type.scene = load("res://Entities/Enemies/Templates/base_enemy/enemy.tscn")
   wave_instance.enemy_types = [enemy_type]
   wave_instance.enemy_counts = [5]
   
-  # Start wave and wait for timers to begin
+  # Start wave and wait for _process to begin
   wave_instance.start_wave()
   await wait_frames(2)
   
-  # Record initial timer states
+  # Record initial state
   var initial_wave_time = wave_instance._wave_timer.time_left
-  var initial_spawn_time = wave_instance._spawn_timer.time_left
+  var initial_elapsed = wave_instance._wave_elapsed
   assert_gt(initial_wave_time, 0.0, "Wave timer should be running")
-  assert_gt(initial_spawn_time, 0.0, "Spawn timer should be running")
   
   # Act - Pause the scene tree
   get_tree().paused = true
@@ -86,18 +86,16 @@ func test_timers_pause_when_tree_paused():
   for i in range(PAUSE_WAIT_FRAMES):
     await wait_frames(1)
   
-  # Assert - Timer values should not have changed while paused
-  var paused_wave_time = wave_instance._wave_timer.time_left
-  var paused_spawn_time = wave_instance._spawn_timer.time_left
-  assert_almost_eq(paused_wave_time, initial_wave_time, 0.1,
+  # Assert - wave timer and elapsed time should not have changed while paused
+  assert_almost_eq(wave_instance._wave_timer.time_left, initial_wave_time, 0.1,
     "Wave timer should not progress while paused")
-  assert_almost_eq(paused_spawn_time, initial_spawn_time, 0.1,
-    "Spawn timer should not progress while paused")
+  assert_almost_eq(wave_instance._wave_elapsed, initial_elapsed, 0.1,
+    "Wave elapsed time should not progress while paused")
   
   # Cleanup
   get_tree().paused = false
 
-func test_timers_resume_after_unpause():
+func test_process_resumes_after_unpause():
   # Arrange - Create a simple enemy type
   var enemy_type = Resource_EnemyType.new()
   enemy_type.scene = load("res://Entities/Enemies/Templates/base_enemy/enemy.tscn")
@@ -109,7 +107,6 @@ func test_timers_resume_after_unpause():
   await wait_frames(2)
   
   var initial_wave_time = wave_instance._wave_timer.time_left
-  var initial_spawn_time = wave_instance._spawn_timer.time_left
   
   # Act - Pause then unpause
   get_tree().paused = true
@@ -119,23 +116,23 @@ func test_timers_resume_after_unpause():
   # Use time-based wait for reliable timer progression measurement
   await wait_seconds(0.3)
   
-  # Assert - Timers should have progressed after unpause
+  # Assert - Wave timer should have progressed after unpause
   var final_wave_time = wave_instance._wave_timer.time_left
-  var final_spawn_time = wave_instance._spawn_timer.time_left
-  
   assert_lt(final_wave_time, initial_wave_time,
     "Wave timer should progress after unpause")
-  assert_lt(final_spawn_time, initial_spawn_time,
-    "Spawn timer should progress after unpause")
 
 func test_spawn_callbacks_dont_fire_during_pause():
-  # Arrange - Create enemy type with fast spawning for this test
+  # Arrange - use a fast spawn rate curve to test multiple potential spawns
   var enemy_type = Resource_EnemyType.new()
   enemy_type.scene = load("res://Entities/Enemies/Templates/base_enemy/enemy.tscn")
   wave_instance.enemy_types = [enemy_type]
   wave_instance.enemy_counts = [10]
-  # Need to update timer directly since spawn_interval is already set in _ready()
-  wave_instance._spawn_timer.wait_time = 0.1  # Fast interval to test multiple potential spawns
+  # Replace the curve with a fast spawn rate (10 enemies/sec) to ensure
+  # many spawns would occur if _process() were not paused
+  var fast_curve = Curve.new()
+  fast_curve.add_point(Vector2(0.0, 10.0))
+  fast_curve.add_point(Vector2(1.0, 10.0))
+  wave_instance.spawn_rate_curve = fast_curve
   
   # Start wave
   wave_instance.start_wave()
@@ -146,7 +143,7 @@ func test_spawn_callbacks_dont_fire_during_pause():
   
   # Act - Pause and wait long enough for multiple spawns if not paused
   get_tree().paused = true
-  # Wait multiple frames (would allow many spawns if not paused)
+  # Wait multiple frames (would allow many spawns if _process() were still running)
   for i in range(SPAWN_TEST_WAIT_FRAMES):
     await wait_frames(1)
   

@@ -232,7 +232,6 @@ metadata/_custom_type_script = "uid://du3d1fs80prdm"
 [node name="Wave1" type="Node3D" parent="System_EnemySpawner" unique_id=447764780]
 script = ExtResource("4_c6qy0")
 start_delay = 15.0
-max_enemies = 3
 enemy_types = Array[ExtResource("22_3ckho")]([ExtResource("23_pr8sm")])
 enemy_counts = Array[int]([10])
 spawn_interval = 1.0
@@ -292,7 +291,6 @@ metadata/_custom_type_script = "uid://b7jdk6preu1s4"
 
 [node name="BossWave" type="Node3D" parent="System_EnemySpawner" unique_id=290172123]
 script = ExtResource("4_c6qy0")
-max_enemies = 1
 enemy_types = Array[ExtResource("22_3ckho")]([ExtResource("24_3mp6f")])
 enemy_counts = Array[int]([1])
 spawn_interval = 0.5

@@ -100,7 +100,6 @@ metadata/_custom_type_script = "uid://du3d1fs80prdm"
 [node name="Wave1" type="Node3D" parent="EnemySpawner" index="0" unique_id=1635992808]
 script = ExtResource("5_8cnow")
 duration = 100.0
-max_enemies = 1
 enemy_types = Array[ExtResource("6_54m8n")]([ExtResource("7_5uhn2"), ExtResource("8_q78qy")])
 enemy_counts = Array[int]([1, 1])
 spawn_interval = 1.0
