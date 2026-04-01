@@ -90,6 +90,22 @@ func test_unlock_button_disabled_for_locked_tech():
   # Assert
   assert_true(tech_tree.unlock_button.disabled, "Unlock button should be disabled for locked tech")
 
+func test_unlock_button_updates_when_scrap_threshold_reached():
+  # Arrange - select a tech with insufficient scrap (tur_scrap_shooter costs 75 scrap)
+  CurrencyManager.current_level = 1
+  CurrencyManager.current_scrap = 0
+  tech_tree._on_tech_node_selected("tur_scrap_shooter")
+  assert_true(tech_tree.unlock_button.disabled, "Unlock button should be disabled with insufficient scrap")
+  
+  # Act - simulate earning scrap (outside the tech tree) then reopening the tech tree
+  CurrencyManager.current_scrap = 75
+  tech_tree._on_game_state_changed(GameManager.GameState.IN_TECH_TREE)
+  await wait_process_frames(2)
+  
+  # Assert - unlock button should now reflect that the tech can be unlocked
+  assert_false(tech_tree.unlock_button.disabled, "Unlock button should be enabled when tech tree is reopened after scrap threshold is reached")
+  assert_eq(tech_tree.unlock_button.text, "Unlock", "Button should show 'Unlock'")
+
 func test_tech_node_card_state_updates_on_unlock():
   # Arrange
   CurrencyManager.current_level = 1

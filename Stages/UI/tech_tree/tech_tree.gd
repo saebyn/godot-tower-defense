@@ -45,6 +45,10 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
   match new_state:
     GameManager.GameState.IN_TECH_TREE:
       visible = true
+      # Refresh card states to reflect any scrap/level changes since last open
+      for tech_id in tech_node_cards:
+        _update_tech_node_card(tech_id)
+      _update_detail_panel()
       # Focus the close button for keyboard navigation
       close_button.grab_focus()
     GameManager.GameState.PLAYING:

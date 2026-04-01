@@ -69,8 +69,8 @@ func _update_tooltip_position() -> void:
     pos.x = mouse_pos.x - tooltip_size.x - TOOLTIP_OFFSET.x
   if pos.y + tooltip_size.y > viewport_rect.size.y:
     pos.y = mouse_pos.y - tooltip_size.y - TOOLTIP_OFFSET.y
-  var max_x := max(0.0, viewport_rect.size.x - tooltip_size.x)
-  var max_y := max(0.0, viewport_rect.size.y - tooltip_size.y)
+  var max_x: float = max(0.0, viewport_rect.size.x - tooltip_size.x)
+  var max_y: float = max(0.0, viewport_rect.size.y - tooltip_size.y)
   pos.x = clamp(pos.x, 0.0, max_x)
   pos.y = clamp(pos.y, 0.0, max_y)
   _tooltip_panel.global_position = pos
