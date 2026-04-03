@@ -6,6 +6,7 @@ A visual graph-based editor for authoring and managing the tech tree in Zom Nom 
 
 ### Visual Graph Editor
 - **Interactive Graph**: Drag and drop tech nodes, zoom, and pan
+- **Full Main Screen**: Opens as its own tab ("Tech Tree") next to 2D, 3D, Script, Game, and AssetLib — full editor real estate
 - **Branch Color Coding**: Each branch has a distinct color
   - Offensive: Red (#E74C3C)
   - Defensive: Blue (#3498DB)
@@ -18,11 +19,12 @@ A visual graph-based editor for authoring and managing the tech tree in Zom Nom 
 
 ### Node Inspector
 Edit all properties of a selected tech node:
-- ID (unique identifier)
+- ID (unique identifier, read-only)
 - Display Name
 - Description
 - Branch (dropdown selection)
 - Level Requirement (1-10)
+- Scrap Cost (0-9999, Scrap paid at unlock)
 - Prerequisites (comma-separated tech IDs)
 - Achievements (comma-separated achievement IDs)
 - Mutually Exclusive (comma-separated tech IDs)
@@ -47,7 +49,8 @@ Comprehensive validation checks:
 
 ### Opening the Editor
 1. Enable the plugin in Project Settings → Plugins
-2. The Tech Tree Editor dock will appear in the top-left corner of the editor
+2. A **"Tech Tree"** tab will appear in the main screen toolbar next to 2D, 3D, Script, Game, and AssetLib
+3. Click the **"Tech Tree"** tab to open the editor
 
 ### Creating a New Tech Node
 1. Click the "Add Node" button in the toolbar, or
@@ -101,12 +104,12 @@ Comprehensive validation checks:
 ```
 addons/tech_tree_editor/
 ├── plugin.cfg              # Plugin metadata
-├── plugin.gd               # EditorPlugin entry point
+├── plugin.gd               # EditorPlugin entry point (main-screen plugin)
 ├── ui/
-│   ├── tech_tree_editor_dock.tscn   # Main UI scene
-│   └── tech_tree_editor_dock.gd     # Main UI logic
+│   ├── tech_tree_editor_main.tscn   # Main UI scene
+│   └── tech_tree_editor_main.gd     # Main UI logic
 └── icons/
-    └── plugin_icon.svg     # Plugin icon
+    └── plugin_icon.svg     # Plugin icon (white on transparent, 16×16)
 ```
 
 ## Data Model
@@ -142,9 +145,10 @@ Tech node IDs should follow these prefixes based on branch:
 
 ## Troubleshooting
 
-**Plugin doesn't appear after enabling:**
+**Plugin tab doesn't appear after enabling:**
 - Restart the Godot editor
 - Check the console for error messages
+- Look for the "Tech Tree" button in the main screen toolbar (next to 2D, 3D, Script)
 
 **Changes not saving:**
 - Make sure to click "Save Changes" in the inspector

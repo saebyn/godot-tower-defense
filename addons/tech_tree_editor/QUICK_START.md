@@ -10,7 +10,8 @@
 5. Close the Project Settings window
 
 ### Step 2: Open the Editor
-- The **Tech Tree Editor** dock will appear in the **top-left corner** of the editor
+- A **"Tech Tree"** tab will appear in the main screen toolbar next to 2D, 3D, Script, Game, and AssetLib
+- Click it to switch to the full-screen tech tree editor
 - You should see a graph with existing tech nodes
 
 ### Step 3: Your First Edit

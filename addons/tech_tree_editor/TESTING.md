@@ -13,7 +13,8 @@ Since this is an EditorPlugin, it requires manual testing in the Godot Editor.
 
 #### 1. Plugin Loading
 - [ ] Plugin appears in the enabled plugins list
-- [ ] Dock panel appears in the top-left corner
+- [ ] **"Tech Tree"** tab button appears in the main screen toolbar (next to 2D, 3D, Script, Game, AssetLib)
+- [ ] Clicking "Tech Tree" tab shows the full-screen graph editor
 - [ ] No errors in the Output/Debugger console
 - [ ] Status bar shows "Tech nodes: X | Errors: 0"
 
@@ -51,6 +52,7 @@ For each field, test editing:
 - [ ] Description - multiline text changes
 - [ ] Branch - dropdown selection works
 - [ ] Level Requirement - number spinner (1-10)
+- [ ] Scrap Cost - number spinner (0-9999)
 - [ ] Prerequisites - comma-separated list
 - [ ] Achievements - comma-separated list
 - [ ] Mutually Exclusive - comma-separated list

@@ -1,8 +1,8 @@
 @tool
-extends Control
+extends VBoxContainer
 
-## Tech Tree Editor Dock
-## Main UI container for the tech tree editor
+## Tech Tree Editor Main Screen
+## Main UI for the tech tree editor (main screen plugin)
 
 # Branch color scheme
 const BRANCH_COLORS := {
@@ -27,13 +27,13 @@ const ID_PREFIXES := {
   "Advanced": ["adv_"]
 }
 
-@onready var graph_edit: GraphEdit = $VBoxContainer/GraphEdit
-@onready var toolbar: HBoxContainer = $VBoxContainer/Toolbar
-@onready var status_label: Label = $VBoxContainer/StatusBar/StatusLabel
-@onready var validation_panel: Panel = $VBoxContainer/ValidationPanel
-@onready var validation_list: ItemList = $VBoxContainer/ValidationPanel/VBoxContainer/ValidationList
-@onready var inspector_panel: Panel = $VBoxContainer/InspectorPanel
-@onready var inspector_container: VBoxContainer = $VBoxContainer/InspectorPanel/ScrollContainer/InspectorContainer
+@onready var graph_edit: GraphEdit = $ContentArea/GraphEdit
+@onready var toolbar: HBoxContainer = $Toolbar
+@onready var status_label: Label = $StatusBar/StatusLabel
+@onready var validation_panel: Panel = $ContentArea/ValidationPanel
+@onready var validation_list: ItemList = $ContentArea/ValidationPanel/VBoxContainer/ValidationList
+@onready var inspector_panel: Panel = $ContentArea/InspectorPanel
+@onready var inspector_container: VBoxContainer = $ContentArea/InspectorPanel/ScrollContainer/InspectorContainer
 
 # Data
 var tech_nodes: Dictionary = {} # tech_id -> Resource_TechNode
@@ -126,8 +126,12 @@ func _setup_ui() -> void:
   export_button.tooltip_text = "Export tech tree to Markdown (Ctrl+E)"
   export_button.pressed.connect(_on_export_pressed)
   toolbar.add_child(export_button)
-  
-  # Add search/filter
+
+  var auto_layout_button := Button.new()
+  auto_layout_button.text = "Auto-Layout"
+  auto_layout_button.tooltip_text = "Reset all nodes to the default branch/level grid layout (Ctrl+L)"
+  auto_layout_button.pressed.connect(_auto_layout_graph)
+  toolbar.add_child(auto_layout_button)
   var spacer := Control.new()
   spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
   toolbar.add_child(spacer)
@@ -153,9 +157,9 @@ func _setup_ui() -> void:
   branch_filter.name = "BranchFilter"
   toolbar.add_child(branch_filter)
   
-  # Hide validation and inspector panels by default
+  # Hide validation panel by default; inspector is always visible
   validation_panel.hide()
-  inspector_panel.hide()
+  _show_inspector_placeholder()
 
 func _on_search_changed(search_text: String) -> void:
   # Debounce search to avoid filtering on every keystroke
@@ -238,39 +242,15 @@ func _rebuild_graph() -> void:
   
   graph_nodes.clear()
   
-  # Create graph nodes
-  var position_offset := Vector2(50, 50)
-  var column_width := 300
-  var row_height := 150
-  
-  # Group nodes by branch
-  var branches_dict: Dictionary = {}
+  # Create all graph nodes first (needed for sizing)
   for tech_id in tech_nodes:
     var tech = tech_nodes[tech_id]
-    if tech.branch_name not in branches_dict:
-      branches_dict[tech.branch_name] = []
-    branches_dict[tech.branch_name].append(tech)
+    var graph_node := _create_graph_node(tech)
+    graph_edit.add_child(graph_node)
+    graph_nodes[tech.id] = graph_node
   
-  # Position nodes by branch
-  var branch_index := 0
-  for branch_name in VALID_BRANCHES:
-    if branch_name not in branches_dict:
-      continue
-    
-    var branch_techs: Array = branches_dict[branch_name]
-    for i in range(branch_techs.size()):
-      var tech: Resource_TechNode = branch_techs[i]
-      var graph_node := _create_graph_node(tech)
-      
-      # Position node
-      graph_node.position_offset = position_offset + Vector2(branch_index * column_width, i * row_height)
-      
-      graph_edit.add_child(graph_node)
-      graph_nodes[tech.id] = graph_node
-    
-    branch_index += 1
-  
-  # Draw connections
+  # Apply layout then draw connections
+  _apply_layout()
   _draw_connections()
 
 func _create_graph_node(tech: Resource_TechNode) -> GraphNode:
@@ -300,6 +280,12 @@ func _create_graph_node(tech: Resource_TechNode) -> GraphNode:
   var level_label := Label.new()
   level_label.text = "Level: " + str(tech.level_requirement)
   vbox.add_child(level_label)
+
+  if tech.scrap_cost > 0:
+    var cost_label := Label.new()
+    cost_label.text = "Cost: %d ⚙" % tech.scrap_cost
+    cost_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
+    vbox.add_child(cost_label)
   
   if tech.prerequisite_tech_ids.size() > 0:
     var prereq_label := Label.new()
@@ -452,7 +438,7 @@ func _on_node_selected(node: Node) -> void:
 
 func _on_node_deselected(node: Node) -> void:
   selected_tech_id = ""
-  inspector_panel.hide()
+  _show_inspector_placeholder()
 
 func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
   if nodes.size() == 0:
@@ -541,39 +527,97 @@ func _on_popup_request(position: Vector2) -> void:
   popup.popup()
 
 func _auto_layout_graph() -> void:
-  # Simple hierarchical layout algorithm
-  # Group nodes by branch and level
-  var branches_dict: Dictionary = {}
+  _apply_layout()
+  _set_status("Auto-layout applied")
+
+func _apply_layout() -> void:
+  # Layout: branch = row band (Y), prerequisite depth = column (X)
+  # Connections flow left-to-right: prerequisite -> dependent
+  const NODE_WIDTH := 200
+  const NODE_HEIGHT := 200
+  const COL_GAP := 60 # horizontal gap between depth columns
+  const ROW_GAP := 30 # vertical gap between sibling nodes within a band
+  const BAND_GAP := 50 # vertical gap between branch bands
+  const START := Vector2(50, 50)
+  
+  # --- Step 1: compute topological depth for every node ---
+  # Depth = longest path from any root (node with no prerequisites)
+  var depth: Dictionary = {} # tech_id -> int
+  
+  # Iterative longest-path (handles DAGs correctly)
+  # First pass: initialise all depths to 0
+  for tech_id in tech_nodes:
+    depth[tech_id] = 0
+  
+  # Repeatedly relax until stable (Bellman-Ford style, but on a DAG so converges fast)
+  var changed := true
+  while changed:
+    changed = false
+    for tech_id in tech_nodes:
+      var tech = tech_nodes[tech_id]
+      for prereq_id in tech.prerequisite_tech_ids:
+        if prereq_id in depth:
+          var candidate: int = depth[prereq_id] + 1
+          if candidate > depth[tech_id]:
+            depth[tech_id] = candidate
+            changed = true
+  
+  # --- Step 2: group by branch, then by depth within each branch ---
+  # branches_by_depth[branch][depth] = [tech_id, ...]
+  var branches_by_depth: Dictionary = {}
+  for branch_name in VALID_BRANCHES:
+    branches_by_depth[branch_name] = {}
+  
   for tech_id in tech_nodes:
     var tech = tech_nodes[tech_id]
-    if tech.branch_name not in branches_dict:
-      branches_dict[tech.branch_name] = []
-    branches_dict[tech.branch_name].append(tech)
+    var d: int = depth[tech_id]
+    if d not in branches_by_depth[tech.branch_name]:
+      branches_by_depth[tech.branch_name][d] = []
+    branches_by_depth[tech.branch_name][d].append(tech_id)
   
-  # Layout parameters
-  var column_width := 350
-  var row_height := 180
-  var start_pos := Vector2(50, 50)
-  
-  # Position nodes
-  var branch_index := 0
+  # --- Step 3: calculate the height of each branch band ---
+  # Band height = max siblings at any depth * (NODE_HEIGHT + ROW_GAP)
+  var band_heights: Dictionary = {}
   for branch_name in VALID_BRANCHES:
-    if branch_name not in branches_dict:
+    var max_siblings := 1
+    for d in branches_by_depth[branch_name]:
+      var count: int = branches_by_depth[branch_name][d].size()
+      if count > max_siblings:
+        max_siblings = count
+    band_heights[branch_name] = max_siblings * (NODE_HEIGHT + ROW_GAP)
+  
+  # --- Step 4: find global max depth for column width budget ---
+  var max_depth := 0
+  for tech_id in depth:
+    if depth[tech_id] > max_depth:
+      max_depth = depth[tech_id]
+  
+  var col_step := NODE_WIDTH + COL_GAP
+  
+  # --- Step 5: position each node ---
+  var band_y := START.y
+  for branch_name in VALID_BRANCHES:
+    if branches_by_depth[branch_name].is_empty():
       continue
     
-    var branch_techs: Array = branches_dict[branch_name]
-    # Sort by level
-    branch_techs.sort_custom(func(a, b): return a.level_requirement < b.level_requirement)
+    var band_h: int = band_heights[branch_name]
     
-    for i in range(branch_techs.size()):
-      var tech: Resource_TechNode = branch_techs[i]
-      if tech.id in graph_nodes:
-        var graph_node = graph_nodes[tech.id]
-        graph_node.position_offset = start_pos + Vector2(branch_index * column_width, i * row_height)
+    for d in branches_by_depth[branch_name]:
+      var siblings: Array = branches_by_depth[branch_name][d]
+      # Sort siblings by level_requirement for consistent top-to-bottom ordering
+      siblings.sort_custom(func(a, b): return tech_nodes[a].level_requirement < tech_nodes[b].level_requirement)
+      var total_h := siblings.size() * NODE_HEIGHT + (siblings.size() - 1) * ROW_GAP
+      # Centre the sibling stack within the band
+      var start_y: float = band_y + (band_h - total_h) * 0.5
+      for i in range(siblings.size()):
+        var tech_id: String = siblings[i]
+        if tech_id in graph_nodes:
+          graph_nodes[tech_id].position_offset = Vector2(
+            START.x + d * col_step,
+            start_y + i * (NODE_HEIGHT + ROW_GAP)
+          )
     
-    branch_index += 1
-  
-  _set_status("Auto-layout applied")
+    band_y += band_h + BAND_GAP
 
 func _on_refresh_pressed() -> void:
   _load_tech_tree()
@@ -806,8 +850,22 @@ func _generate_markdown() -> String:
   
   return md
 
+func _show_inspector_placeholder() -> void:
+  for child in inspector_container.get_children():
+    child.queue_free()
+  var label := Label.new()
+  label.text = "Select a tech node to edit it."
+  label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+  label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+  label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+  label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+  label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+  inspector_container.add_child(label)
+  inspector_panel.show()
+
 func _show_inspector(tech_id: String) -> void:
   if tech_id not in tech_nodes:
+    _show_inspector_placeholder()
     return
   
   # Clear inspector
@@ -829,13 +887,16 @@ func _show_inspector(tech_id: String) -> void:
   _add_text_field_readonly("ID", tech.id)
   _add_text_field("Display Name", tech.display_name, "_on_display_name_changed")
   _add_multiline_field("Description", tech.description, "_on_description_changed")
+  _add_texture_field("Icon", tech.icon)
   _add_dropdown_field("Branch", tech.branch_name, VALID_BRANCHES, "_on_branch_changed")
   _add_number_field("Level Requirement", tech.level_requirement, 1, 10, "_on_level_changed")
+  _add_number_field("Scrap Cost", tech.scrap_cost, 0, 9999, "_on_scrap_cost_changed")
   _add_array_field("Prerequisites", "prerequisite_tech_ids", tech.prerequisite_tech_ids, "_on_array_changed")
   _add_array_field("Achievements", "achievement_ids", tech.achievement_ids, "_on_array_changed")
   _add_array_field("Mutually Exclusive", "mutually_exclusive_with", tech.mutually_exclusive_with, "_on_array_changed")
   _add_array_field("Unlocked Buildings", "unlocked_building_ids", tech.unlocked_building_ids, "_on_array_changed")
   _add_array_field("Branch Completion", "requires_branch_completion", tech.requires_branch_completion, "_on_array_changed")
+  _add_resource_field("Attack Effect", tech.player_attack_effect)
 
   # Add save button
   var save_button := Button.new()
@@ -959,6 +1020,102 @@ func _add_array_field(label_text: String, field, values: Array, callback: String
   
   inspector_container.add_child(vbox)
 
+func _add_texture_field(label_text: String, texture: Texture2D) -> void:
+  var vbox := VBoxContainer.new()
+  vbox.set_meta("field_name", label_text)
+
+  var label := Label.new()
+  label.text = label_text + ":"
+  vbox.add_child(label)
+
+  var hbox := HBoxContainer.new()
+  vbox.add_child(hbox)
+
+  var path_label := Label.new()
+  path_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+  path_label.clip_text = true
+  path_label.text = texture.resource_path if texture else "(none)"
+  path_label.set_meta("field_name", label_text)
+  hbox.add_child(path_label)
+
+  var clear_btn := Button.new()
+  clear_btn.text = "X"
+  clear_btn.tooltip_text = "Clear icon"
+  clear_btn.pressed.connect(func():
+    if selected_tech_id in tech_nodes:
+      tech_nodes[selected_tech_id].icon = null
+      path_label.text = "(none)"
+  )
+  hbox.add_child(clear_btn)
+
+  var browse_btn := Button.new()
+  browse_btn.text = "Browse…"
+  browse_btn.pressed.connect(func():
+    var dialog := EditorFileDialog.new()
+    dialog.file_mode = EditorFileDialog.FILE_MODE_OPEN_FILE
+    dialog.add_filter("*.png,*.svg,*.jpg,*.jpeg,*.webp", "Images")
+    dialog.file_selected.connect(func(path: String):
+      var loaded := load(path) as Texture2D
+      if loaded and selected_tech_id in tech_nodes:
+        tech_nodes[selected_tech_id].icon = loaded
+        path_label.text = path
+      dialog.queue_free()
+    )
+    add_child(dialog)
+    dialog.popup_centered_ratio(0.7)
+  )
+  hbox.add_child(browse_btn)
+
+  inspector_container.add_child(vbox)
+
+func _add_resource_field(label_text: String, resource: Resource) -> void:
+  var vbox := VBoxContainer.new()
+  vbox.set_meta("field_name", label_text)
+
+  var label := Label.new()
+  label.text = label_text + ":"
+  vbox.add_child(label)
+
+  var hbox := HBoxContainer.new()
+  vbox.add_child(hbox)
+
+  var path_label := Label.new()
+  path_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+  path_label.clip_text = true
+  path_label.text = resource.resource_path if resource else "(none)"
+  path_label.set_meta("field_name", label_text)
+  hbox.add_child(path_label)
+
+  var clear_btn := Button.new()
+  clear_btn.text = "X"
+  clear_btn.tooltip_text = "Clear resource"
+  clear_btn.pressed.connect(func():
+    if selected_tech_id in tech_nodes:
+      tech_nodes[selected_tech_id].player_attack_effect = null
+      path_label.text = "(none)"
+  )
+  hbox.add_child(clear_btn)
+
+  var browse_btn := Button.new()
+  browse_btn.text = "Browse…"
+  browse_btn.pressed.connect(func():
+    var dialog := EditorFileDialog.new()
+    dialog.file_mode = EditorFileDialog.FILE_MODE_OPEN_FILE
+    dialog.add_filter("*.tres,*.res", "Resources")
+    dialog.file_selected.connect(func(path: String):
+      var loaded := load(path) as Resource_AttackEffect
+      if loaded and selected_tech_id in tech_nodes:
+        tech_nodes[selected_tech_id].player_attack_effect = loaded
+        path_label.text = path
+      dialog.queue_free()
+    )
+    add_child(dialog)
+    dialog.popup_centered_ratio(0.7)
+  )
+  hbox.add_child(browse_btn)
+
+  inspector_container.add_child(vbox)
+
 # Inspector field change handlers
 func _on_display_name_changed(text: String) -> void:
   if selected_tech_id in tech_nodes:
@@ -980,6 +1137,11 @@ func _on_level_changed(value: float) -> void:
     var tech = tech_nodes[selected_tech_id]
     tech.level_requirement = int(value)
 
+func _on_scrap_cost_changed(value: float) -> void:
+  if selected_tech_id in tech_nodes:
+    var tech = tech_nodes[selected_tech_id]
+    tech.scrap_cost = int(value)
+
 func _on_array_changed(field: String, text_edit: TextEdit) -> void:
   if selected_tech_id in tech_nodes:
     var tech = tech_nodes[selected_tech_id]
@@ -999,6 +1161,9 @@ func _on_save_inspector_pressed() -> void:
     return
   
   var tech = tech_nodes[selected_tech_id]
+  # Note: icon and player_attack_effect are updated directly on the resource
+  # by the Browse/Clear callbacks in _add_texture_field / _add_resource_field,
+  # so they are already reflected in `tech` by the time Save is pressed.
   
   # Capture all field values from inspector controls
   for child in inspector_container.get_children():
@@ -1012,6 +1177,8 @@ func _on_save_inspector_pressed() -> void:
           var field_name = c.get_meta("field_name")
           if field_name == "Level Requirement":
             tech.level_requirement = int(c.value)
+          elif field_name == "Scrap Cost":
+            tech.scrap_cost = int(c.value)
         elif c is OptionButton and c.has_meta("field_name"):
           var field_name = c.get_meta("field_name")
           if field_name == "Branch":
@@ -1086,6 +1253,12 @@ func _update_node_display(tech_id: String) -> void:
   var level_label := Label.new()
   level_label.text = "Level: " + str(tech.level_requirement)
   vbox.add_child(level_label)
+
+  if tech.scrap_cost > 0:
+    var cost_label := Label.new()
+    cost_label.text = "Cost: %d ⚙" % tech.scrap_cost
+    cost_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
+    vbox.add_child(cost_label)
   
   if tech.prerequisite_tech_ids.size() > 0:
     var prereq_label := Label.new()

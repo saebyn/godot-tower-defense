@@ -8,11 +8,11 @@ The tree begins with **three starter nodes** (one per main branch) that are imme
 * **Support** – Buff auras, repairs, synergy amplifiers (all require progression)
 * **Click** – Player's manual damage & click perks (all require progression)
 
-**Unlock Model:** Nodes require **Player Level (XP)** and/or **Achievements** (e.g., *Place 3 defenses*, *Survive 3 waves*). Some nodes are **mutually exclusive** with alternatives. **Tech tree unlocking is free** - no scrap cost.
+**Unlock Model:** Nodes require **Player Level (XP)**, a **Scrap cost**, and/or **Achievements** (e.g., *Place 3 defenses*, *Survive 3 waves*). Some nodes are **mutually exclusive** with alternatives. **Scrap costs** are paid from the player's current Scrap balance at the time of unlock.
 
 **Starting State:** Players begin with **zero techs unlocked** in each save slot. The three starter nodes (`tur_scrap_shooter`, `ob_crates`, `eco_scrap_recycler`) have level 1 requirements with no prerequisites, making them **immediately available to unlock** at the start of a new game. This provides an introduction to the tech tree mechanic - players must actively unlock these starter techs before they can place those buildings during gameplay. Tech unlocks are **persistent per save slot** and carry forward across all scenarios within that save.
 
-**Scrap Economy:** Scrap is earned and spent **during gameplay** to place instances of unlocked obstacles/turrets. The tech tree itself never costs scrap to interact with.
+**Scrap Economy:** Unlocking a tech node costs Scrap (defined per node in `scrap_cost`). Scrap is also spent **during gameplay** to place instances of unlocked buildings. Placement costs are defined in `BuildingTypeResource`. Specific `scrap_cost` values for each node are to be balanced in a dedicated pass.
 
 ---
 
@@ -195,6 +195,7 @@ Legend: **T#** = Tier; **[EXC]** = mutually exclusive pair; **⟂** = exclusivit
 Each node defines:
 
 * **`level_requirement`** – Player level threshold (from XP via zombie kills)
+* **`scrap_cost`** – Scrap spent at the moment of unlock (0 = free; values to be balanced in a dedicated pass)
 * **`prerequisites`** – Techs that must be unlocked first
 * **`achievements`** – Optional gating (e.g., `ach_place_3`, `ach_survive_3`, `ach_kill_100`, `ach_click_100`, `ach_click_kills_25`, `ach_lose_5_defenses`)
 * **`branch_name`** – Category/branch identifier (Offensive, Defensive, Economy, Support, Click, Advanced)
@@ -232,6 +233,7 @@ When the player clicks an exclusive node:
   "display_name": "Boom Barrel",
   "description": "One-shot explosive trap that damages all zombies in a small radius.",
   "level_requirement": 2,
+  "scrap_cost": 0,
   "prerequisites": ["tur_scrap_shooter"],
   "achievements": ["ach_place_3"],
   "mutually_exclusive_with": ["tur_molotov_mortar"],
@@ -247,6 +249,7 @@ When the player clicks an exclusive node:
   "display_name": "Double Tap",
   "description": "10% chance for clicks to deal double damage.",
   "level_requirement": 3,
+  "scrap_cost": 0,
   "prerequisites": ["clk_hydraulic_mouse"],
   "achievements": ["ach_click_100"],
   "mutually_exclusive_with": ["clk_shock_click"],
@@ -262,6 +265,7 @@ When the player clicks an exclusive node:
   "display_name": "Harvest Boost",
   "description": "Increases yield from world scrap nodes by 25%.",
   "level_requirement": 3,
+  "scrap_cost": 0,
   "prerequisites": ["eco_scrap_recycler"],
   "achievements": [],
   "mutually_exclusive_with": [],
@@ -279,6 +283,7 @@ When the player clicks an exclusive node:
   "display_name": "Synergy Hub",
   "description": "Combines economic and support systems for ultimate efficiency. Unlocks Power Grid and Resource Amplifier.",
   "level_requirement": 6,
+  "scrap_cost": 0,
   "prerequisites": [],
   "achievements": ["ach_place_50"],
   "mutually_exclusive_with": [],
@@ -290,14 +295,12 @@ When the player clicks an exclusive node:
 
 > **Note:** The Synergy Hub requires completing BOTH the Support and Economy branches. This means all techs in those branches must be unlocked (excluding mutually exclusive alternatives that were not chosen).
 
-> **Reminder:** No `scrap_cost` field exists in tech tree nodes. Unlocking is free and progression-based. Scrap is spent during gameplay to place buildings.
-
 ---
 
 ## 10) Balance Notes & Next Steps
 
 * **Progression Model**: Tech unlocks are **persistent per save slot**. Each new save starts with zero unlocked techs, forcing players to unlock even starter techs. This introduces the tech tree mechanic early and creates a sense of progression across levels within a save.
-* Tech tree unlocking is **free** and progression-based - no scrap costs. This focuses the tech tree on strategic choices rather than resource management.
+* Tech tree unlocking requires **Scrap** (via `scrap_cost`) in addition to level and achievement gates. This makes Scrap a meaningful resource both for placement during gameplay and for long-term progression. Cost values will be balanced in a dedicated pass.
 * Gate high-impact combos behind both **level** and **achievements** (e.g., `ob_electric_fence` requires level 3 + achievement).
 * **Advanced tier nodes** require branch completion, creating natural progression gates for late-game content.
 * Branch completion logic must account for mutually exclusive choices (completing one path counts toward branch completion).
