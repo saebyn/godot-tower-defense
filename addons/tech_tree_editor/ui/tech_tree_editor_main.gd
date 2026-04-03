@@ -887,6 +887,7 @@ func _show_inspector(tech_id: String) -> void:
   _add_text_field_readonly("ID", tech.id)
   _add_text_field("Display Name", tech.display_name, "_on_display_name_changed")
   _add_multiline_field("Description", tech.description, "_on_description_changed")
+  _add_texture_field("Icon", tech.icon)
   _add_dropdown_field("Branch", tech.branch_name, VALID_BRANCHES, "_on_branch_changed")
   _add_number_field("Level Requirement", tech.level_requirement, 1, 10, "_on_level_changed")
   _add_number_field("Scrap Cost", tech.scrap_cost, 0, 9999, "_on_scrap_cost_changed")
@@ -895,6 +896,7 @@ func _show_inspector(tech_id: String) -> void:
   _add_array_field("Mutually Exclusive", "mutually_exclusive_with", tech.mutually_exclusive_with, "_on_array_changed")
   _add_array_field("Unlocked Buildings", "unlocked_building_ids", tech.unlocked_building_ids, "_on_array_changed")
   _add_array_field("Branch Completion", "requires_branch_completion", tech.requires_branch_completion, "_on_array_changed")
+  _add_resource_field("Attack Effect", tech.player_attack_effect)
 
   # Add save button
   var save_button := Button.new()
@@ -1018,6 +1020,102 @@ func _add_array_field(label_text: String, field, values: Array, callback: String
   
   inspector_container.add_child(vbox)
 
+func _add_texture_field(label_text: String, texture: Texture2D) -> void:
+  var vbox := VBoxContainer.new()
+  vbox.set_meta("field_name", label_text)
+
+  var label := Label.new()
+  label.text = label_text + ":"
+  vbox.add_child(label)
+
+  var hbox := HBoxContainer.new()
+  vbox.add_child(hbox)
+
+  var path_label := Label.new()
+  path_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+  path_label.clip_text = true
+  path_label.text = texture.resource_path if texture else "(none)"
+  path_label.set_meta("field_name", label_text)
+  hbox.add_child(path_label)
+
+  var clear_btn := Button.new()
+  clear_btn.text = "X"
+  clear_btn.tooltip_text = "Clear icon"
+  clear_btn.pressed.connect(func():
+    if selected_tech_id in tech_nodes:
+      tech_nodes[selected_tech_id].icon = null
+      path_label.text = "(none)"
+  )
+  hbox.add_child(clear_btn)
+
+  var browse_btn := Button.new()
+  browse_btn.text = "Browse…"
+  browse_btn.pressed.connect(func():
+    var dialog := EditorFileDialog.new()
+    dialog.file_mode = EditorFileDialog.FILE_MODE_OPEN_FILE
+    dialog.add_filter("*.png,*.svg,*.jpg,*.jpeg,*.webp", "Images")
+    dialog.file_selected.connect(func(path: String):
+      var loaded := load(path) as Texture2D
+      if loaded and selected_tech_id in tech_nodes:
+        tech_nodes[selected_tech_id].icon = loaded
+        path_label.text = path
+      dialog.queue_free()
+    )
+    add_child(dialog)
+    dialog.popup_centered_ratio(0.7)
+  )
+  hbox.add_child(browse_btn)
+
+  inspector_container.add_child(vbox)
+
+func _add_resource_field(label_text: String, resource: Resource) -> void:
+  var vbox := VBoxContainer.new()
+  vbox.set_meta("field_name", label_text)
+
+  var label := Label.new()
+  label.text = label_text + ":"
+  vbox.add_child(label)
+
+  var hbox := HBoxContainer.new()
+  vbox.add_child(hbox)
+
+  var path_label := Label.new()
+  path_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+  path_label.clip_text = true
+  path_label.text = resource.resource_path if resource else "(none)"
+  path_label.set_meta("field_name", label_text)
+  hbox.add_child(path_label)
+
+  var clear_btn := Button.new()
+  clear_btn.text = "X"
+  clear_btn.tooltip_text = "Clear resource"
+  clear_btn.pressed.connect(func():
+    if selected_tech_id in tech_nodes:
+      tech_nodes[selected_tech_id].player_attack_effect = null
+      path_label.text = "(none)"
+  )
+  hbox.add_child(clear_btn)
+
+  var browse_btn := Button.new()
+  browse_btn.text = "Browse…"
+  browse_btn.pressed.connect(func():
+    var dialog := EditorFileDialog.new()
+    dialog.file_mode = EditorFileDialog.FILE_MODE_OPEN_FILE
+    dialog.add_filter("*.tres,*.res", "Resources")
+    dialog.file_selected.connect(func(path: String):
+      var loaded := load(path) as Resource_AttackEffect
+      if loaded and selected_tech_id in tech_nodes:
+        tech_nodes[selected_tech_id].player_attack_effect = loaded
+        path_label.text = path
+      dialog.queue_free()
+    )
+    add_child(dialog)
+    dialog.popup_centered_ratio(0.7)
+  )
+  hbox.add_child(browse_btn)
+
+  inspector_container.add_child(vbox)
+
 # Inspector field change handlers
 func _on_display_name_changed(text: String) -> void:
   if selected_tech_id in tech_nodes:
@@ -1063,6 +1161,9 @@ func _on_save_inspector_pressed() -> void:
     return
   
   var tech = tech_nodes[selected_tech_id]
+  # Note: icon and player_attack_effect are updated directly on the resource
+  # by the Browse/Clear callbacks in _add_texture_field / _add_resource_field,
+  # so they are already reflected in `tech` by the time Save is pressed.
   
   # Capture all field values from inspector controls
   for child in inspector_container.get_children():
