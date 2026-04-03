@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_xxxxx")
-id = "sup_attack_speed_beacon"
+id = "sup_cooldown_beacon"
 display_name = "Attack Speed Beacon"
 description = "Deploys a beacon that increases the attack speed of nearby towers."
 branch_name = "Support"
