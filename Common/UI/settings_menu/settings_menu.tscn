@@ -330,6 +330,26 @@ apply_group = "twitch"
 live_preview = true
 metadata/_custom_type_script = "uid://c1g3vqaakxkv2"
 
+[node name="ViewerNamesContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Twitch/VBoxContainer" unique_id=203040506]
+layout_mode = 2
+
+[node name="ViewerNamesLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Twitch/VBoxContainer/ViewerNamesContainer" unique_id=203040507]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+text = "Enable Viewer-Submitted Survivor Names"
+autowrap_mode = 2
+
+[node name="ViewerNamesCheckButton" type="CheckButton" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Twitch/VBoxContainer/ViewerNamesContainer" unique_id=203040508]
+layout_mode = 2
+
+[node name="ViewerNamesBinding" type="Node" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Twitch/VBoxContainer/ViewerNamesContainer" unique_id=203040509]
+script = ExtResource("3_settingbinding")
+setting_key = &"viewer_names_enabled"
+control_path = NodePath("../ViewerNamesCheckButton")
+control_property = &"button_pressed"
+apply_group = "twitch"
+metadata/_custom_type_script = "uid://c1g3vqaakxkv2"
+
 [node name="Gameplay" type="MarginContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer" unique_id=901234561]
 visible = false
 layout_mode = 2

@@ -37,6 +37,23 @@ func test_default_sfx_volume():
   # Assert - SFX volume default is 0.0 dB (100%)
   assert_eq(sfx_volume_db, 0.0, "Default SFX volume should be 0.0 dB")
 
+func test_default_viewer_names_enabled():
+  # Assert - viewer names should be enabled by default
+  assert_true(SettingsManager.viewer_names_enabled, "Viewer-submitted survivor names should be enabled by default")
+
+func test_viewer_names_enabled_can_be_toggled():
+  # Arrange
+  var original: bool = SettingsManager.viewer_names_enabled
+
+  # Act - disable the setting
+  SettingsManager.viewer_names_enabled = false
+
+  # Assert - the value reflects the change
+  assert_false(SettingsManager.viewer_names_enabled, "viewer_names_enabled should be false after setting to false")
+
+  # Restore original value
+  SettingsManager.viewer_names_enabled = original
+
 func test_save_keybinds_writes_key_event_to_config():
   # Arrange - use a test action that exists in InputMap
   var test_action = "camera_move_left"

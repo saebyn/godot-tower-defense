@@ -33,7 +33,9 @@ func _ready() -> void:
       TwitchEventsubConfig.create(TwitchEventsubDefinition.CHANNEL_CHAT_MESSAGE, {"broadcaster_user_id": me.id, "user_id": me.id}),
     )
 
-    if joinqueue_command:
+    if joinqueue_command and SettingsManager.viewer_names_enabled:
+      # Note: this connection is established once at startup; toggling the setting
+      # at runtime requires a scene reload to take effect (same behaviour as twitch_enabled).
       joinqueue_command.command_received.connect(_on_joinqueue_command_received)
   else:
     # Display a message to the user if Twitch setup failed, but don't disable the game
