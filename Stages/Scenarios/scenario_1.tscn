@@ -25,6 +25,11 @@ size = Vector2(10, 100)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pnunk"]
 albedo_color = Color(1, 0, 1, 1)
 
+[sub_resource type="Curve" id="Curve_ebqns"]
+_limits = [0.0, 16.0, 0.0, 1.0]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.49058607, 16), -0.8142095, -0.8142095, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
 [sub_resource type="BoxMesh" id="BoxMesh_ebqns"]
 size = Vector3(300, 0.1, 300)
 
@@ -57,7 +62,6 @@ metadata/_custom_type_script = "uid://du3d1fs80prdm"
 [node name="Wave1" type="Node3D" parent="System_EnemySpawner" unique_id=2131354128]
 script = ExtResource("4_gwcit")
 duration = 60.0
-max_enemies = 1
 enemy_types = Array[ExtResource("6_b7d5n")]([ExtResource("7_b7d5n")])
 enemy_counts = Array[int]([1])
 spawn_interval = 1.0
@@ -78,9 +82,9 @@ surface_material_override/0 = SubResource("StandardMaterial3D_pnunk")
 [node name="Wave2" type="Node3D" parent="System_EnemySpawner" unique_id=602578287]
 script = ExtResource("4_gwcit")
 duration = 60.0
-max_enemies = 4
 enemy_types = Array[ExtResource("6_b7d5n")]([ExtResource("7_b7d5n")])
 enemy_counts = Array[int]([16])
+spawn_rate_curve = SubResource("Curve_ebqns")
 metadata/_custom_type_script = "uid://b7jdk6preu1s4"
 
 [node name="Ground" type="MeshInstance3D" parent="." unique_id=2093188596]

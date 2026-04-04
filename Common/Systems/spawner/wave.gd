@@ -7,13 +7,13 @@ class_name System_Wave
 @export_group("Wave Timing")
 @export var duration: float = 10.0 ## Duration of the wave in seconds
 @export var start_delay: float = 0.0 ## Optional delay before wave starts in seconds
-@export var max_enemies: int = 10 ## Maximum number of enemies allowed at once from this wave
 @export var allow_overlap: bool = false ## If true, allows this wave to overlap with the next wave
 
 @export_group("Enemy Configuration")
 @export var enemy_types: Array[Resource_EnemyType] = [] ## Enemy types to spawn in this wave
 @export var enemy_counts: Array[int] = [] ## Number of each enemy type to spawn
-@export var spawn_interval: float = 2.0 ## Time between individual enemy spawns in seconds
+@export var spawn_interval: float = 2.0 ## Time between individual enemy spawns (used to auto-generate a flat spawn_rate_curve when none is set)
+@export var spawn_rate_curve: Curve ## Enemies per second over wave progress (X: 0→1, Y: enemies/sec). Auto-generated from spawn_interval if null.
 
 ## Configuration
 const WAVE_OVERLAP_RECHECK_TIME: float = 1.0 ## Time to wait before rechecking for overlap completion
@@ -21,8 +21,10 @@ const WAVE_OVERLAP_RECHECK_TIME: float = 1.0 ## Time to wait before rechecking f
 ## Internal state
 var _is_active: bool = false
 var _is_completed: bool = false
+var _is_spawning_active: bool = false ## True while enemies are still being spawned; false once the queue drains or duration ends
 var _enemies_to_spawn: Array[Resource_EnemyType] = [] ## Queue of enemies to spawn
-var _spawn_timer: Timer ## When to spawn the next enemy
+var _spawn_accumulator: float = 0.0 ## Fractional enemy spawn debt
+var _wave_elapsed: float = 0.0 ## Elapsed time since wave started
 var _wave_timer: Timer ## When to end the wave
 
 ## Signals
@@ -31,13 +33,17 @@ signal wave_completed(wave: System_Wave)
 signal enemy_spawned(enemy: Node3D, wave: System_Wave)
 
 func _ready() -> void:
-  # Create and configure timers
-  _spawn_timer = Timer.new()
-  _spawn_timer.wait_time = spawn_interval
-  _spawn_timer.timeout.connect(_spawn_next_enemy)
-  _spawn_timer.process_mode = Node.PROCESS_MODE_PAUSABLE
-  add_child(_spawn_timer)
-  
+  process_mode = Node.PROCESS_MODE_PAUSABLE
+
+  # Auto-generate a flat curve from spawn_interval when no curve is provided
+  if spawn_rate_curve == null:
+    if spawn_interval <= 0.0:
+      push_error("Wave: spawn_interval must be greater than 0; defaulting to 1.0 second")
+      spawn_interval = 1.0
+    spawn_rate_curve = Curve.new()
+    spawn_rate_curve.add_point(Vector2(0.0, 1.0 / spawn_interval))
+    spawn_rate_curve.add_point(Vector2(1.0, 1.0 / spawn_interval))
+
   _wave_timer = Timer.new()
   _wave_timer.one_shot = true
   _wave_timer.timeout.connect(_end_wave)
@@ -56,6 +62,34 @@ func _validate_configuration() -> void:
     push_warning("Wave: No enemy types configured for wave")
     return
 
+func _process(delta: float) -> void:
+  if not _is_active:
+    return
+
+  _wave_elapsed += delta
+
+  if not _is_spawning_active or _enemies_to_spawn.is_empty():
+    return
+
+  var progress: float
+  if duration <= 0.0:
+    progress = 1.0
+  else:
+    progress = clampf(_wave_elapsed / duration, 0.0, 1.0)
+  var rate := maxf(0.0, spawn_rate_curve.sample(progress)) # enemies per second; clamped so negative curve values don't drain the accumulator
+
+  _spawn_accumulator += rate * delta
+
+  while _spawn_accumulator >= 1.0 and not _enemies_to_spawn.is_empty():
+    _spawn_accumulator -= 1.0
+    _do_spawn_one_enemy()
+
+  # All enemies spawned before duration expired — end wave early.
+  # Guard with _is_spawning_active so this only fires once; _end_wave()
+  # sets _is_spawning_active = false, preventing repeated calls every frame.
+  if _enemies_to_spawn.is_empty() and _is_spawning_active:
+    _end_wave()
+
 func start_wave() -> void:
   if _is_active or _is_completed:
     return
@@ -65,18 +99,18 @@ func start_wave() -> void:
     await get_tree().create_timer(start_delay, false).timeout
   
   _is_active = true
-  wave_started.emit(self)
-  
-  # Build spawn queue
+  _is_spawning_active = true
+  _spawn_accumulator = 0.0
+  _wave_elapsed = 0.0
+
+  # Build spawn queue before emitting wave_started so listeners
+  # see the correct get_remaining_enemies() count immediately.
   _build_spawn_queue()
+  wave_started.emit(self )
   
   # Start wave duration timer
   _wave_timer.wait_time = duration
   _wave_timer.start()
-  
-  # Start spawning enemies
-  if not _enemies_to_spawn.is_empty():
-    _spawn_timer.start()
 
 func _build_spawn_queue() -> void:
   _enemies_to_spawn.clear()
@@ -92,32 +126,25 @@ func _build_spawn_queue() -> void:
   # Shuffle the spawn queue for variety (optional)
   _enemies_to_spawn.shuffle()
 
-func _spawn_next_enemy() -> void:
+func _do_spawn_one_enemy() -> void:
   if _enemies_to_spawn.is_empty() or not _is_active:
-    _spawn_timer.stop()
-    # Check if all enemies are spawned and end wave early if needed
-    if _enemies_to_spawn.is_empty() and _is_active:
-      # All enemies spawned before duration expired
-      _end_wave()
-    return
-
-  if get_parent().get_spawned_enemy_count() >= max_enemies:
-    MyLogger.debug("Spawner.Wave", "Max enemies reached, cannot spawn more right now")
     return
 
   var enemy_type := _enemies_to_spawn.pop_front() as Resource_EnemyType
-  
 
   # Let the parent spawner handle the actual instantiation and positioning
-  var spawner = get_parent() as System_EnemySpawner
+  var spawner := get_parent() as System_EnemySpawner
   if spawner:
     var enemy = spawner.spawn_enemy(enemy_type)
     if enemy:
-      enemy_spawned.emit(enemy, self)
+      enemy_spawned.emit(enemy, self )
 
 func _end_wave() -> void:
   if not _is_active:
     return
+
+  # Stop spawning immediately — duration is a hard cutoff regardless of overlap state
+  _is_spawning_active = false
 
   if not allow_overlap and get_parent().get_spawned_enemy_count() > 0:
     MyLogger.debug("Spawner.Wave", "Waiting for all spawned enemies to be cleared before completing wave")
@@ -127,9 +154,8 @@ func _end_wave() -> void:
 
   _is_active = false
   _is_completed = true
-  _spawn_timer.stop()
   
-  wave_completed.emit(self)
+  wave_completed.emit(self )
 
 func is_active() -> bool:
   return _is_active
