@@ -337,16 +337,16 @@ func test_crit_uses_critical_damage_source():
   attack.attack_effect.crit_multiplier = 2.0
   attack.damage_source = "player"
 
-  var primary := _make_enemy(Vector3.ZERO)
+  var primary := _make_enemy(Vector3.ZERO, "enemies", 1000) # High HP so it doesn't die
   await get_tree().process_frame
 
   var primary_health := _get_health(primary)
-  var received_source := ""
-  primary_health.damaged.connect(func(amount, _hp, source): received_source = source)
+  watch_signals(primary_health)
 
   attack.perform_attack(primary)
 
-  assert_eq(received_source, Component_Attack.CRITICAL_DAMAGE_SOURCE,
+  assert_signal_emitted_with_parameters(primary_health, "damaged",
+    [200.0, 800, Component_Attack.CRITICAL_DAMAGE_SOURCE],
     "Crit should pass 'critical' as damage_source to trigger red damage numbers")
 
 
@@ -358,16 +358,16 @@ func test_non_crit_uses_normal_damage_source():
   attack.attack_effect.crit_chance = 0.0 # Never crit
   attack.damage_source = "player"
 
-  var primary := _make_enemy(Vector3.ZERO)
+  var primary := _make_enemy(Vector3.ZERO, "enemies", 1000) # High HP so it doesn't die
   await get_tree().process_frame
 
   var primary_health := _get_health(primary)
-  var received_source := ""
-  primary_health.damaged.connect(func(amount, _hp, source): received_source = source)
+  watch_signals(primary_health)
 
   attack.perform_attack(primary)
 
-  assert_eq(received_source, "player",
+  assert_signal_emitted_with_parameters(primary_health, "damaged",
+    [100.0, 900, "player"],
     "Non-crit should pass the component's damage_source unchanged")
 
 
