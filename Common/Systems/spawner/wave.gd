@@ -76,7 +76,7 @@ func _process(delta: float) -> void:
     progress = 1.0
   else:
     progress = clampf(_wave_elapsed / duration, 0.0, 1.0)
-  var rate := spawn_rate_curve.sample(progress)  # enemies per second
+  var rate := maxf(0.0, spawn_rate_curve.sample(progress)) # enemies per second; clamped so negative curve values don't drain the accumulator
 
   _spawn_accumulator += rate * delta
 
@@ -84,8 +84,10 @@ func _process(delta: float) -> void:
     _spawn_accumulator -= 1.0
     _do_spawn_one_enemy()
 
-  # All enemies spawned before duration expired — end wave early
-  if _enemies_to_spawn.is_empty():
+  # All enemies spawned before duration expired — end wave early.
+  # Guard with _is_spawning_active so this only fires once; _end_wave()
+  # sets _is_spawning_active = false, preventing repeated calls every frame.
+  if _enemies_to_spawn.is_empty() and _is_spawning_active:
     _end_wave()
 
 func start_wave() -> void:
@@ -100,10 +102,11 @@ func start_wave() -> void:
   _is_spawning_active = true
   _spawn_accumulator = 0.0
   _wave_elapsed = 0.0
-  wave_started.emit(self)
-  
-  # Build spawn queue
+
+  # Build spawn queue before emitting wave_started so listeners
+  # see the correct get_remaining_enemies() count immediately.
   _build_spawn_queue()
+  wave_started.emit(self )
   
   # Start wave duration timer
   _wave_timer.wait_time = duration
@@ -134,7 +137,7 @@ func _do_spawn_one_enemy() -> void:
   if spawner:
     var enemy = spawner.spawn_enemy(enemy_type)
     if enemy:
-      enemy_spawned.emit(enemy, self)
+      enemy_spawned.emit(enemy, self )
 
 func _end_wave() -> void:
   if not _is_active:
@@ -152,7 +155,7 @@ func _end_wave() -> void:
   _is_active = false
   _is_completed = true
   
-  wave_completed.emit(self)
+  wave_completed.emit(self )
 
 func is_active() -> bool:
   return _is_active
