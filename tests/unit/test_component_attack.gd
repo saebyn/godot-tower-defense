@@ -189,7 +189,7 @@ func test_aoe_no_falloff_applies_full_base_damage():
   await get_tree().process_frame
 
   attack.attack_effect.aoe_radius = 5.0
-  attack.attack_effect.aoe_falloff = null  # No falloff → full damage
+  attack.attack_effect.aoe_falloff = null # No falloff → full damage
 
   var primary := _make_enemy(Vector3.ZERO)
   var nearby := _make_enemy(Vector3(3.0, 0, 0))
@@ -217,7 +217,7 @@ func test_aoe_crit_applies_to_splash_when_flag_true():
 
   attack.attack_effect.aoe_radius = 5.0
   attack.attack_effect.aoe_falloff = null
-  attack.attack_effect.crit_chance = 1.0      # Always crit
+  attack.attack_effect.crit_chance = 1.0 # Always crit
   attack.attack_effect.crit_multiplier = 2.0
   attack.attack_effect.crit_applies_to_splash = true
 
@@ -233,7 +233,7 @@ func test_aoe_crit_applies_to_splash_when_flag_true():
   attack.perform_attack(primary)
 
   var damage_dealt := hp_before - nearby_health.hitpoints
-  var expected := attack.calculate_damage_amount(true)  # crit_multiplier = 2 → 200
+  var expected := attack.calculate_damage_amount(true) # crit_multiplier = 2 → 200
   assert_almost_eq(damage_dealt, expected, 0.01,
     "Splash should receive crit multiplier when crit_applies_to_splash is true")
 
@@ -245,9 +245,9 @@ func test_aoe_crit_not_applied_to_splash_when_flag_false():
 
   attack.attack_effect.aoe_radius = 5.0
   attack.attack_effect.aoe_falloff = null
-  attack.attack_effect.crit_chance = 1.0      # Always crit
+  attack.attack_effect.crit_chance = 1.0 # Always crit
   attack.attack_effect.crit_multiplier = 2.0
-  attack.attack_effect.crit_applies_to_splash = false  # Do NOT crit splash
+  attack.attack_effect.crit_applies_to_splash = false # Do NOT crit splash
 
   var primary := _make_enemy(Vector3.ZERO)
   var nearby := _make_enemy(Vector3(2.0, 0, 0))
@@ -260,7 +260,7 @@ func test_aoe_crit_not_applied_to_splash_when_flag_false():
   attack.perform_attack(primary)
 
   var damage_dealt := hp_before - nearby_health.hitpoints
-  var base_damage := attack.calculate_damage_amount()  # No crit
+  var base_damage := attack.calculate_damage_amount() # No crit
   assert_almost_eq(damage_dealt, base_damage, 0.01,
     "Splash should NOT receive crit multiplier when crit_applies_to_splash is false")
 
@@ -333,7 +333,7 @@ func test_crit_uses_critical_damage_source():
   add_child_autofree(attack)
   await get_tree().process_frame
 
-  attack.attack_effect.crit_chance = 1.0      # Always crit
+  attack.attack_effect.crit_chance = 1.0 # Always crit
   attack.attack_effect.crit_multiplier = 2.0
   attack.damage_source = "player"
 
@@ -355,7 +355,7 @@ func test_non_crit_uses_normal_damage_source():
   add_child_autofree(attack)
   await get_tree().process_frame
 
-  attack.attack_effect.crit_chance = 0.0      # Never crit
+  attack.attack_effect.crit_chance = 0.0 # Never crit
   attack.damage_source = "player"
 
   var primary := _make_enemy(Vector3.ZERO)
@@ -376,7 +376,7 @@ func test_crit_applies_correct_multiplier():
   add_child_autofree(attack)
   await get_tree().process_frame
 
-  attack.attack_effect.crit_chance = 1.0      # Always crit
+  attack.attack_effect.crit_chance = 1.0 # Always crit
   attack.attack_effect.crit_multiplier = 2.0
   # damage_amount = 100, damage_multiplier = 1.0 → crit damage = 200
 
@@ -407,9 +407,9 @@ func test_crit_stacks_with_hydraulic_mouse_damage_multiplier():
   hydraulic_mouse.damage_multiplier = 1.25
   attack.attack_effect.stack_effect(hydraulic_mouse)
 
-  # Simulate Double Tap stacked (crit_chance += 0.1, crit_multiplier += 1.0 → 2.0)
+  # Simulate Double Tap stacked (crit_chance += 0.1 → 0.1; forced to 1.0 here for determinism, crit_multiplier += 1.0 → 2.0)
   var double_tap := Resource_AttackEffect.new()
-  double_tap.crit_chance = 1.0        # Force crit for deterministic test
+  double_tap.crit_chance = 1.0 # Real Double Tap adds 0.1; overridden to 1.0 to guarantee crit in test
   double_tap.crit_multiplier = 2.0
   attack.attack_effect.stack_effect(double_tap)
 
