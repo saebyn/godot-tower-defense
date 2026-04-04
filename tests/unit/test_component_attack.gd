@@ -345,9 +345,8 @@ func test_crit_uses_critical_damage_source():
 
   attack.perform_attack(primary)
 
-  assert_signal_emitted_with_parameters(primary_health, "damaged",
-    [200.0, 800, Component_Attack.CRITICAL_DAMAGE_SOURCE],
-    "Crit should pass 'critical' as damage_source to trigger red damage numbers")
+  assert_signal_emitted_with_parameters(primary_health.damaged,
+    [200, 800, Component_Attack.CRITICAL_DAMAGE_SOURCE])
 
 
 func test_non_crit_uses_normal_damage_source():
@@ -366,9 +365,8 @@ func test_non_crit_uses_normal_damage_source():
 
   attack.perform_attack(primary)
 
-  assert_signal_emitted_with_parameters(primary_health, "damaged",
-    [100.0, 900, "player"],
-    "Non-crit should pass the component's damage_source unchanged")
+  assert_signal_emitted_with_parameters(primary_health.damaged,
+    [100, 900, "player"])
 
 
 func test_crit_applies_correct_multiplier():
