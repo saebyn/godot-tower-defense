@@ -21,6 +21,7 @@ const WAVE_OVERLAP_RECHECK_TIME: float = 1.0 ## Time to wait before rechecking f
 ## Internal state
 var _is_active: bool = false
 var _is_completed: bool = false
+var _is_spawning_active: bool = false ## True while enemies are still being spawned; false once the queue drains or duration ends
 var _enemies_to_spawn: Array[Resource_EnemyType] = [] ## Queue of enemies to spawn
 var _spawn_accumulator: float = 0.0 ## Fractional enemy spawn debt
 var _wave_elapsed: float = 0.0 ## Elapsed time since wave started
@@ -36,6 +37,9 @@ func _ready() -> void:
 
   # Auto-generate a flat curve from spawn_interval when no curve is provided
   if spawn_rate_curve == null:
+    if spawn_interval <= 0.0:
+      push_error("Wave: spawn_interval must be greater than 0; defaulting to 1.0 second")
+      spawn_interval = 1.0
     spawn_rate_curve = Curve.new()
     spawn_rate_curve.add_point(Vector2(0.0, 1.0 / spawn_interval))
     spawn_rate_curve.add_point(Vector2(1.0, 1.0 / spawn_interval))
@@ -64,10 +68,14 @@ func _process(delta: float) -> void:
 
   _wave_elapsed += delta
 
-  if _enemies_to_spawn.is_empty():
+  if not _is_spawning_active or _enemies_to_spawn.is_empty():
     return
 
-  var progress := clampf(_wave_elapsed / duration, 0.0, 1.0)
+  var progress: float
+  if duration <= 0.0:
+    progress = 1.0
+  else:
+    progress = clampf(_wave_elapsed / duration, 0.0, 1.0)
   var rate := spawn_rate_curve.sample(progress)  # enemies per second
 
   _spawn_accumulator += rate * delta
@@ -89,6 +97,7 @@ func start_wave() -> void:
     await get_tree().create_timer(start_delay, false).timeout
   
   _is_active = true
+  _is_spawning_active = true
   _spawn_accumulator = 0.0
   _wave_elapsed = 0.0
   wave_started.emit(self)
@@ -130,6 +139,9 @@ func _do_spawn_one_enemy() -> void:
 func _end_wave() -> void:
   if not _is_active:
     return
+
+  # Stop spawning immediately — duration is a hard cutoff regardless of overlap state
+  _is_spawning_active = false
 
   if not allow_overlap and get_parent().get_spawned_enemy_count() > 0:
     MyLogger.debug("Spawner.Wave", "Waiting for all spawned enemies to be cleared before completing wave")
