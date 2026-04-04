@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="Resource_TechNode" format=3 uid="uid://c3k7m8n5pqx1u"]
 
+[ext_resource type="Resource" uid="uid://cy67mrsfd03lr" path="res://Config/AttackEffect/tech_double_tap.tres" id="1_dtap"]
 [ext_resource type="Script" uid="uid://dj1i28ud6uv3t" path="res://Config/TechTree/tech_node_resource.gd" id="1_xxxxx"]
 
 [resource]
@@ -12,3 +13,4 @@ level_requirement = 3
 prerequisite_tech_ids = Array[String](["clk_hydraulic_mouse"])
 achievement_ids = Array[String](["ach_click_100"])
 mutually_exclusive_with = Array[String](["clk_shock_click"])
+player_attack_effect = ExtResource("1_dtap")

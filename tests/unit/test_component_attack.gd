@@ -7,6 +7,8 @@ extends GutTest
 ##   - Primary target is not double-hit by splash
 ##   - Crit applies to splash when crit_applies_to_splash = true
 ##   - Damage multiplier stacking (e.g. Hydraulic Mouse) works on splash
+##   - Crit uses "critical" damage_source; non-crit uses component's damage_source
+##   - Crit + Hydraulic Mouse stacking: 1.25 × 2.0 = 2.5×
 
 # ─────────────────────────────────────────────────────────────────────
 # Helpers
@@ -187,7 +189,7 @@ func test_aoe_no_falloff_applies_full_base_damage():
   await get_tree().process_frame
 
   attack.attack_effect.aoe_radius = 5.0
-  attack.attack_effect.aoe_falloff = null  # No falloff → full damage
+  attack.attack_effect.aoe_falloff = null # No falloff → full damage
 
   var primary := _make_enemy(Vector3.ZERO)
   var nearby := _make_enemy(Vector3(3.0, 0, 0))
@@ -215,7 +217,7 @@ func test_aoe_crit_applies_to_splash_when_flag_true():
 
   attack.attack_effect.aoe_radius = 5.0
   attack.attack_effect.aoe_falloff = null
-  attack.attack_effect.crit_chance = 1.0      # Always crit
+  attack.attack_effect.crit_chance = 1.0 # Always crit
   attack.attack_effect.crit_multiplier = 2.0
   attack.attack_effect.crit_applies_to_splash = true
 
@@ -231,7 +233,7 @@ func test_aoe_crit_applies_to_splash_when_flag_true():
   attack.perform_attack(primary)
 
   var damage_dealt := hp_before - nearby_health.hitpoints
-  var expected := attack.calculate_damage_amount(true)  # crit_multiplier = 2 → 200
+  var expected := attack.calculate_damage_amount(true) # crit_multiplier = 2 → 200
   assert_almost_eq(damage_dealt, expected, 0.01,
     "Splash should receive crit multiplier when crit_applies_to_splash is true")
 
@@ -243,9 +245,9 @@ func test_aoe_crit_not_applied_to_splash_when_flag_false():
 
   attack.attack_effect.aoe_radius = 5.0
   attack.attack_effect.aoe_falloff = null
-  attack.attack_effect.crit_chance = 1.0      # Always crit
+  attack.attack_effect.crit_chance = 1.0 # Always crit
   attack.attack_effect.crit_multiplier = 2.0
-  attack.attack_effect.crit_applies_to_splash = false  # Do NOT crit splash
+  attack.attack_effect.crit_applies_to_splash = false # Do NOT crit splash
 
   var primary := _make_enemy(Vector3.ZERO)
   var nearby := _make_enemy(Vector3(2.0, 0, 0))
@@ -258,7 +260,7 @@ func test_aoe_crit_not_applied_to_splash_when_flag_false():
   attack.perform_attack(primary)
 
   var damage_dealt := hp_before - nearby_health.hitpoints
-  var base_damage := attack.calculate_damage_amount()  # No crit
+  var base_damage := attack.calculate_damage_amount() # No crit
   assert_almost_eq(damage_dealt, base_damage, 0.01,
     "Splash should NOT receive crit multiplier when crit_applies_to_splash is false")
 
@@ -320,3 +322,95 @@ func test_no_aoe_when_radius_is_zero():
 
   assert_eq(nearby_health.hitpoints, hp_before,
     "No splash should occur when aoe_radius is 0")
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Crit damage_source — "critical" on crit, normal on non-crit
+# ─────────────────────────────────────────────────────────────────────
+
+func test_crit_uses_critical_damage_source():
+  var attack := _make_attack()
+  add_child_autofree(attack)
+  await get_tree().process_frame
+
+  attack.attack_effect.crit_chance = 1.0 # Always crit
+  attack.attack_effect.crit_multiplier = 2.0
+  attack.damage_source = "player"
+
+  var primary := _make_enemy(Vector3.ZERO, "enemies", 1000) # High HP so it doesn't die
+  await get_tree().process_frame
+
+  var primary_health := _get_health(primary)
+  watch_signals(primary_health)
+
+  attack.perform_attack(primary)
+
+  assert_signal_emitted_with_parameters(primary_health.damaged,
+    [200, 800, Component_Attack.CRITICAL_DAMAGE_SOURCE])
+
+
+func test_non_crit_uses_normal_damage_source():
+  var attack := _make_attack()
+  add_child_autofree(attack)
+  await get_tree().process_frame
+
+  attack.attack_effect.crit_chance = 0.0 # Never crit
+  attack.damage_source = "player"
+
+  var primary := _make_enemy(Vector3.ZERO, "enemies", 1000) # High HP so it doesn't die
+  await get_tree().process_frame
+
+  var primary_health := _get_health(primary)
+  watch_signals(primary_health)
+
+  attack.perform_attack(primary)
+
+  assert_signal_emitted_with_parameters(primary_health.damaged,
+    [100, 900, "player"])
+
+
+func test_crit_applies_correct_multiplier():
+  var attack := _make_attack()
+  add_child_autofree(attack)
+  await get_tree().process_frame
+
+  attack.attack_effect.crit_chance = 1.0 # Always crit
+  attack.attack_effect.crit_multiplier = 2.0
+  # damage_amount = 100, damage_multiplier = 1.0 → crit damage = 200
+
+  var primary := _make_enemy(Vector3.ZERO, "enemies", 1000)
+  await get_tree().process_frame
+
+  var primary_health := _get_health(primary)
+  var hp_before := primary_health.hitpoints
+
+  attack.perform_attack(primary)
+
+  var damage_dealt := hp_before - primary_health.hitpoints
+  assert_almost_eq(damage_dealt, 200.0, 0.01,
+    "Crit should apply crit_multiplier (100 * 2.0 = 200)")
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Stacking: Hydraulic Mouse (1.25×) + Double Tap (crit 2.0×) = 2.5×
+# ─────────────────────────────────────────────────────────────────────
+
+func test_crit_stacks_with_hydraulic_mouse_damage_multiplier():
+  var attack := _make_attack()
+  add_child_autofree(attack)
+  await get_tree().process_frame
+
+  # Simulate Hydraulic Mouse stacked first (damage_multiplier += 0.25 → 1.25)
+  var hydraulic_mouse := Resource_AttackEffect.new()
+  hydraulic_mouse.damage_multiplier = 1.25
+  attack.attack_effect.stack_effect(hydraulic_mouse)
+
+  # Simulate Double Tap stacked (crit_chance += 0.1 → 0.1; forced to 1.0 here for determinism, crit_multiplier += 1.0 → 2.0)
+  var double_tap := Resource_AttackEffect.new()
+  double_tap.crit_chance = 1.0 # Real Double Tap adds 0.1; overridden to 1.0 to guarantee crit in test
+  double_tap.crit_multiplier = 2.0
+  attack.attack_effect.stack_effect(double_tap)
+
+  # Expected: 100 * 1.25 * 2.0 = 250
+  assert_almost_eq(attack.calculate_damage_amount(true), 250.0, 0.01,
+    "Crit + Hydraulic Mouse should multiply: 100 * 1.25 * 2.0 = 250")

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Resource_SoundEffect" format=3 uid="uid://bqv3c8xjn5w0t"]
+
+[ext_resource type="Script" uid="uid://evflivoc8b3v" path="res://Config/SoundEffects/soundeffect_resource.gd" id="1_pd0xw"]
+
+[resource]
+script = ExtResource("1_pd0xw")
+sound_effect = 31
+samples = Array[AudioStream]([])
+category = 4
+pitch_variation_min = 1.1
+pitch_variation_max = 1.4
