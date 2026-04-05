@@ -141,6 +141,7 @@ text = "Kill All Enemies"
 visible = false
 layout_mode = 1
 
+[connection signal="updated_bounding_box" from="." to="Minimap" method="update_world_bounds"]
 [connection signal="building_selected" from="Hotbar" to="." method="request_building_spawn"]
 [connection signal="pressed" from="UtilityButtons/TechTreeButton" to="." method="_toggle_tech_tree"]
 [connection signal="pressed" from="DebugControl/FreeScrap" to="DebugControl" method="_on_free_scrap_pressed"]

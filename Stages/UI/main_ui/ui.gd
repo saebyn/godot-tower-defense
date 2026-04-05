@@ -2,6 +2,7 @@ extends Control
 class_name MainUI
 
 signal building_spawn_requested(building: Resource_BuildingType)
+signal updated_bounding_box(new_bounds: AABB)
 
 @onready var spawn_indicator: Control = $SpawnIndicator
 @onready var hotbar: Control = $Hotbar

@@ -31,7 +31,7 @@ class_name UI_Minimap
 @onready var update_timer := $Timer
 
 # Game world bounds
-var world_bounds: AABB
+var world_bounds: AABB = AABB(Vector3(-200, 0, -200), Vector3(200, 10, 200))
 
 # Cached references (lazily refreshed when null/invalid)
 var _enemy_spawner: System_EnemySpawner = null
@@ -43,13 +43,10 @@ func _ready() -> void:
   # Setup update timer
   update_timer.wait_time = update_interval
   
-  # Calculate world bounds
-  _calculate_world_bounds()
 
-func _calculate_world_bounds() -> void:
-  # For now, use a fixed world bounds. In a real implementation,
-  # you'd calculate this from the navigation mesh or level geometry
-  world_bounds = AABB(Vector3(-100, 0, -100), Vector3(200, 10, 200))
+func update_world_bounds(new_bounds: AABB) -> void:
+  MyLogger.info("Minimap", "Updating world bounds: position=%s, size=%s" % [new_bounds.position, new_bounds.size])
+  world_bounds = new_bounds
 
 func _update_minimap() -> void:
   # Clear previous elements

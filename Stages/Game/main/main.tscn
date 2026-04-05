@@ -83,8 +83,9 @@ permission_level = 31
 user_cooldown = 10.0
 metadata/_custom_type_script = "uid://bmluckfvgm1c2"
 
-[node name="NavigationController" type="Node" parent="." unique_id=300000001 node_paths=PackedStringArray("navigation_region")]
+[node name="NavigationController" type="Node" parent="." unique_id=300000001 node_paths=PackedStringArray("ui", "navigation_region")]
 script = ExtResource("11_nav_ctrl")
+ui = NodePath("../UI")
 navigation_region = NodePath("../NavigationRegion3D")
 
 [node name="TwitchGameBridge" type="Node" parent="." unique_id=300000002]
