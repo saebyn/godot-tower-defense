@@ -209,8 +209,6 @@ func _attack_target():
       return
   else:
     MyLogger.debug("Enemy", "No valid fallback building target currently set.")
-    # Fallback target was destroyed or is invalid, recheck path
-    MyLogger.info("Enemy.Navigation", "Fallback building destroyed, rechecking path to target")
     navigation_agent.set_target_position(current_target.global_position)
     _check_and_set_fallback_target()
 
