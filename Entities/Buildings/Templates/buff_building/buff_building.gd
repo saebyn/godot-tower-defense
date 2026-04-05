@@ -39,6 +39,10 @@ func _apply_buffs():
       continue
     if not is_instance_valid(building):
       continue
+    if building is not Entity_PlaceableBuilding:
+      MyLogger.debug("BuffBuilding", "Node in building group that is not a building: %s" % building.name)
+      continue
+
     var distance := global_position.distance_to(building.global_position)
     if distance <= effect_range:
       _apply_buff_to_building(building)
