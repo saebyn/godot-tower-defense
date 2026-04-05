@@ -871,7 +871,7 @@ func _inspect_selected_tech() -> void:
   _selected_tech_resource.changed.connect(_on_selected_resource_changed)
 
 func _disconnect_resource_changed() -> void:
-  if _selected_tech_resource and _selected_tech_resource.changed.is_connected(_on_selected_resource_changed):
+  if is_instance_valid(_selected_tech_resource) and _selected_tech_resource.changed.is_connected(_on_selected_resource_changed):
     _selected_tech_resource.changed.disconnect(_on_selected_resource_changed)
   _selected_tech_resource = null
 
@@ -884,6 +884,10 @@ func _on_selected_resource_changed() -> void:
 
 func _save_tech_node(tech: Resource_TechNode) -> void:
   _saving = true
+  # Temporarily disconnect changed signal to avoid re-entrant callbacks during save
+  if is_instance_valid(tech) and tech.changed.is_connected(_on_selected_resource_changed):
+    tech.changed.disconnect(_on_selected_resource_changed)
+  
   var file_path := TECH_TREE_PATH + tech.id + ".tres"
   
   # Ensure the resource has the correct path
@@ -895,6 +899,10 @@ func _save_tech_node(tech: Resource_TechNode) -> void:
     _set_status("Failed to save tech node: " + tech.id, true)
   else:
     _set_status("Saved: " + tech.id)
+  
+  # Reconnect if this is still the selected resource
+  if is_instance_valid(tech) and _selected_tech_resource == tech and not tech.changed.is_connected(_on_selected_resource_changed):
+    tech.changed.connect(_on_selected_resource_changed)
   _saving = false
 
 func _update_node_display(tech_id: String) -> void:
