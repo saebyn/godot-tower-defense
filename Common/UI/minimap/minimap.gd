@@ -31,7 +31,9 @@ class_name UI_Minimap
 @onready var update_timer := $Timer
 
 # Game world bounds
-var world_bounds: AABB = AABB(Vector3(-200, 0, -200), Vector3(200, 10, 200))
+# AABB uses (position, size), so this fallback spans X/Z from -200 to 200
+# until Scenario bounds are provided via update_world_bounds().
+var world_bounds: AABB = AABB(Vector3(-200, 0, -200), Vector3(400, 10, 400))
 
 # Cached references (lazily refreshed when null/invalid)
 var _enemy_spawner: System_EnemySpawner = null
