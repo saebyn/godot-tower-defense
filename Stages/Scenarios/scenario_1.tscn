@@ -26,8 +26,7 @@ size = Vector2(10, 100)
 albedo_color = Color(1, 0, 1, 1)
 
 [sub_resource type="Curve" id="Curve_ebqns"]
-_limits = [0.0, 16.0, 0.0, 1.0]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.49058607, 16), -0.8142095, -0.8142095, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.50795317, 0.87709045), -0.06488193, -0.06488193, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="BoxMesh" id="BoxMesh_ebqns"]
