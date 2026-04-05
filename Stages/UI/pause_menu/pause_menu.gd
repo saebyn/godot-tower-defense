@@ -70,6 +70,7 @@ func _on_settings_menu_closed():
 
 func _on_restart_pressed():
   GameManager.resume_game() # Unpause first
+  GameManager.set_game_state(GameManager.GameState.PLAYING) # Reset state before reload
   # Reload the current scene
   get_tree().reload_current_scene()
 
