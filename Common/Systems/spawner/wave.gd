@@ -19,9 +19,13 @@ class_name System_Wave
 const WAVE_OVERLAP_RECHECK_TIME: float = 1.0 ## Time to wait before rechecking for overlap completion
 
 ## Internal state
-var _is_active: bool = false
+var _is_active: bool = false ## True when the wave is active (between start_wave() and wave completion)
 var _is_completed: bool = false
-var _is_spawning_active: bool = false ## True while enemies are still being spawned; false once the queue drains or duration ends
+## True while enemies are still being spawned; false once duration of wave ends
+## This may be false while the wave is active if there are still enemies spawned
+## after the duration has ended. This will prevent new enemies from spawning until
+## the next wave starts when `allow_overlap` is false.
+var _is_spawning_active: bool = false
 var _enemies_to_spawn: Array[Resource_EnemyType] = [] ## Queue of enemies to spawn
 var _spawn_accumulator: float = 0.0 ## Fractional enemy spawn debt
 var _wave_elapsed: float = 0.0 ## Elapsed time since wave started
@@ -84,11 +88,6 @@ func _process(delta: float) -> void:
     _spawn_accumulator -= 1.0
     _do_spawn_one_enemy()
 
-  # All enemies spawned before duration expired — end wave early.
-  # Guard with _is_spawning_active so this only fires once; _end_wave()
-  # sets _is_spawning_active = false, preventing repeated calls every frame.
-  if _enemies_to_spawn.is_empty() and _is_spawning_active:
-    _end_wave()
 
 func start_wave() -> void:
   if _is_active or _is_completed:
@@ -123,7 +122,7 @@ func _build_spawn_queue() -> void:
     for j in range(count):
       _enemies_to_spawn.append(enemy_type)
   
-  # Shuffle the spawn queue for variety (optional)
+  # Shuffle the spawn queue for variety
   _enemies_to_spawn.shuffle()
 
 func _do_spawn_one_enemy() -> void:
