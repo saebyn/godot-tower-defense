@@ -21,10 +21,11 @@ const WAVE_OVERLAP_RECHECK_TIME: float = 1.0 ## Time to wait before rechecking f
 ## Internal state
 var _is_active: bool = false ## True when the wave is active (between start_wave() and wave completion)
 var _is_completed: bool = false
-## True while enemies are still being spawned; false once duration of wave ends
-## This may be false while the wave is active if there are still enemies spawned
-## after the duration has ended. This will prevent new enemies from spawning until
-## the next wave starts when `allow_overlap` is false.
+## True during this wave's spawning window; false once the wave duration ends
+## even if the spawn queue was exhausted earlier. This may be false while the
+## wave is still active if enemies are still alive/on the field after the
+## duration has ended. This prevents new enemies from spawning until the next
+## wave starts when `allow_overlap` is false.
 var _is_spawning_active: bool = false
 var _enemies_to_spawn: Array[Resource_EnemyType] = [] ## Queue of enemies to spawn
 var _spawn_accumulator: float = 0.0 ## Fractional enemy spawn debt
