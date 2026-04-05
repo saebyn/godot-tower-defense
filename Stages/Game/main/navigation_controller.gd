@@ -6,6 +6,7 @@ class_name Main_NavigationController
 ## Manages periodic navigation mesh rebaking for the game world.
 ## Extracts navigation mesh management from main.gd for clarity.
 
+@export var ui: MainUI ## Reference to main UI to send updates on bounding box
 @export var navigation_region: NavigationRegion3D
 @export var navigation_rebake_interval: float = 5.0 ## Seconds between rebakes
 

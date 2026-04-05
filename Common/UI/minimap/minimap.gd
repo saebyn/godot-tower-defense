@@ -1,206 +1,121 @@
 ## Minimap
-## 
-## TODO currently broken because of camera orientation
-## 
+##
 ## A minimap UI component that shows an overhead view of the game area.
-## Displays enemy positions, buildings, and the player's camera view area.
-## 
-## Features:
-## - Top-down view of the entire game area
-## - Real-time enemy position tracking
-## - Camera viewport visualization
-## - Building and survivor display
-## - Configurable size and position
-## - Click-to-move camera functionality
-## 
+## Displays enemy positions, buildings, and survivor positions.
+##
+## Uses CanvasItem _draw() / queue_redraw() for efficient rendering —
+## no child nodes are created per-frame.
+##
 ## Usage:
 ## - Add as child to main UI scene
-## - Automatically finds game components
+## - Automatically finds game components via groups
 ## - Configurable through exported properties
 extends Control
 class_name UI_Minimap
 
-@export var minimap_size: Vector2 = Vector2(150, 150) ## Size of the minimap
-@export var minimap_position: Vector2 = Vector2(10, 10) ## Position from top-left corner
 @export var background_color: Color = Color(0.1, 0.1, 0.1, 0.8) ## Background color
 @export var enemy_color: Color = Color.RED ## Color for enemy dots
 @export var building_color: Color = Color.GRAY ## Color for building markers
 @export var survivor_color: Color = Color.GREEN ## Color for survivor markers
-@export var camera_view_color: Color = Color(1, 1, 1, 0.3) ## Color for camera view area
-@export var enemy_dot_size: float = 3.0 ## Size of enemy dots on minimap
-@export var update_interval: float = 0.2 ## How often to update minimap
+@export var enemy_dot_radius: float = 2.0 ## Radius of enemy dots on minimap
+@export var update_interval: float = 0.2 ## How often to redraw the minimap
+@export var building_half_size: Vector2 = Vector2(2, 2) ## Half-size of building markers
+@export var survivor_half_size: Vector2 = Vector2(3, 3) ## Half-size of survivor markers
 
-# Minimap components
-var background_panel: Panel
-var minimap_canvas: Control
-var update_timer: Timer
+@onready var update_timer := $Timer
 
 # Game world bounds
-var world_bounds: AABB
+# AABB uses (position, size), so this fallback spans X/Z from -200 to 200
+# until Scenario bounds are provided via update_world_bounds().
+var world_bounds: AABB = AABB(Vector3(-200, 0, -200), Vector3(400, 10, 400))
 
 # Cached references (lazily refreshed when null/invalid)
-var _camera: Camera3D = null
 var _enemy_spawner: System_EnemySpawner = null
 
+# Snapshot data built during _on_timer_timeout, consumed in _draw()
+var _enemy_positions: Array[Vector2] = []
+var _building_positions: Array[Vector2] = []
+var _survivor_positions: Array[Vector2] = []
+
+
 func _ready() -> void:
-  # Setup minimap UI
-  _setup_minimap_ui()
-  
-  # Setup update timer
-  update_timer = Timer.new()
   update_timer.wait_time = update_interval
-  update_timer.timeout.connect(_update_minimap)
-  add_child(update_timer)
-  # TODO enable timer once we are ready to use the minimap
-  # update_timer.start()
-  
-  # Calculate world bounds
-  _calculate_world_bounds()
 
-func _setup_minimap_ui() -> void:
-  # Set minimap size and position
-  set_size(minimap_size)
-  position = minimap_position
-  
-  # Create background panel
-  background_panel = Panel.new()
-  background_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-  background_panel.modulate = background_color
-  add_child(background_panel)
-  
-  # Create canvas for drawing minimap elements
-  minimap_canvas = Control.new()
-  minimap_canvas.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-  minimap_canvas.mouse_filter = Control.MOUSE_FILTER_PASS
-  add_child(minimap_canvas)
-  
-  # Connect mouse input for click-to-move
-  minimap_canvas.gui_input.connect(_on_minimap_clicked)
 
-func _calculate_world_bounds() -> void:
-  # For now, use a fixed world bounds. In a real implementation,
-  # you'd calculate this from the navigation mesh or level geometry
-  world_bounds = AABB(Vector3(-100, 0, -100), Vector3(200, 10, 200))
+## Called by the Scenario/Stage to set the visible world area.
+func update_world_bounds(new_bounds: AABB) -> void:
+  MyLogger.info("Minimap", "Updating world bounds: position=%s, size=%s" % [new_bounds.position, new_bounds.size])
+  world_bounds = new_bounds
+  queue_redraw()
 
-func _update_minimap() -> void:
-  # Clear previous elements
-  _clear_minimap_canvas()
-  
-  # Draw camera viewport
-  _draw_camera_viewport()
-  
-  # Draw enemies
-  _draw_enemies()
-  
-  # Draw buildings and survivors (if we can find them)
-  _draw_buildings_and_survivors()
 
-func _clear_minimap_canvas() -> void:
-  # Remove all child nodes from canvas (they'll be recreated)
-  for child in minimap_canvas.get_children():
-    child.queue_free()
+## Timer callback: refresh data snapshot then request a redraw.
+func _on_timer_timeout() -> void:
+  _refresh_snapshot()
+  queue_redraw()
 
-func _draw_camera_viewport() -> void:
-  if not _camera or not is_instance_valid(_camera):
-    _camera = get_tree().get_first_node_in_group("main_camera") as Camera3D
-  if not _camera:
-    return
-  
-  # Get camera position and create a visual representation
-  var camera_pos = _camera.global_position
-  var minimap_pos = _world_to_minimap(camera_pos)
-  
-  # Create a simple rectangle to represent camera view area
-  var camera_indicator = Panel.new()
-  camera_indicator.set_size(Vector2(20, 20))
-  camera_indicator.position = minimap_pos - Vector2(10, 10)
-  camera_indicator.modulate = camera_view_color
-  minimap_canvas.add_child(camera_indicator)
 
-func _draw_enemies() -> void:
+## Collect current world-space positions and project them to minimap space.
+func _refresh_snapshot() -> void:
+  _enemy_positions.clear()
+  _building_positions.clear()
+  _survivor_positions.clear()
+
+  # --- Enemies ---
   if not _enemy_spawner or not is_instance_valid(_enemy_spawner):
     _enemy_spawner = get_tree().get_first_node_in_group("enemy_spawner") as System_EnemySpawner
-  if not _enemy_spawner:
-    return
-  
-  for enemy in _enemy_spawner.current_enemies:
-    if not enemy or not is_instance_valid(enemy):
-      continue
-    
-    var enemy_pos = enemy.global_position
-    var minimap_pos = _world_to_minimap(enemy_pos)
-    
-    # Create enemy dot
-    var enemy_dot = Panel.new()
-    enemy_dot.set_size(Vector2(enemy_dot_size, enemy_dot_size))
-    enemy_dot.position = minimap_pos - Vector2(enemy_dot_size / 2, enemy_dot_size / 2)
-    enemy_dot.modulate = enemy_color
-    minimap_canvas.add_child(enemy_dot)
+  if _enemy_spawner:
+    for enemy in _enemy_spawner.current_enemies:
+      if enemy and is_instance_valid(enemy):
+        _enemy_positions.append(_world_to_minimap(enemy.global_position))
 
-func _draw_buildings_and_survivors() -> void:
-  # Find buildings and survivors in the scene
-  var buildings = get_tree().get_nodes_in_group("buildings")
-  var survivors = get_tree().get_nodes_in_group("survivors")
-  
-  # Draw buildings
-  for building in buildings:
+  # --- Buildings ---
+  for building in get_tree().get_nodes_in_group("buildings"):
     if building is Node3D:
-      var building_pos = building.global_position
-      var minimap_pos = _world_to_minimap(building_pos)
-      
-      var building_marker = Panel.new()
-      building_marker.set_size(Vector2(4, 4))
-      building_marker.position = minimap_pos - Vector2(2, 2)
-      building_marker.modulate = building_color
-      minimap_canvas.add_child(building_marker)
-  
-  # Draw survivors
-  for survivor in survivors:
+      _building_positions.append(_world_to_minimap(building.global_position))
+
+  # --- Survivors ---
+  for survivor in get_tree().get_nodes_in_group("survivors"):
     if survivor is Node3D:
-      var survivor_pos = survivor.global_position
-      var minimap_pos = _world_to_minimap(survivor_pos)
-      
-      var survivor_marker = Panel.new()
-      survivor_marker.set_size(Vector2(6, 6))
-      survivor_marker.position = minimap_pos - Vector2(3, 3)
-      survivor_marker.modulate = survivor_color
-      minimap_canvas.add_child(survivor_marker)
+      _survivor_positions.append(_world_to_minimap(survivor.global_position))
+
+
+## CanvasItem draw callback — all rendering happens here, zero extra nodes.
+func _draw() -> void:
+  var rect := Rect2(Vector2.ZERO, size)
+
+  # Background
+  draw_rect(rect, background_color)
+
+  # Buildings (filled rectangles)
+  for pos in _building_positions:
+    draw_rect(Rect2(pos - building_half_size, building_half_size * 2), building_color)
+
+  # Survivors (filled rectangles)
+  for pos in _survivor_positions:
+    draw_rect(Rect2(pos - survivor_half_size, survivor_half_size * 2), survivor_color)
+
+  # Enemies (filled circles)
+  for pos in _enemy_positions:
+    draw_circle(pos, enemy_dot_radius, enemy_color)
+
 
 func _world_to_minimap(world_pos: Vector3) -> Vector2:
-  # Convert 3D world position to 2D minimap coordinates
-  var normalized_x = (world_pos.x - world_bounds.position.x) / world_bounds.size.x
-  var normalized_z = (world_pos.z - world_bounds.position.z) / world_bounds.size.z
-  
+  # Map X/Z world coordinates to the Control's local 2D space.
+  var normalized_x := (world_pos.x - world_bounds.position.x) / world_bounds.size.x
+  var normalized_z := (world_pos.z - world_bounds.position.z) / world_bounds.size.z
   return Vector2(
-    normalized_x * minimap_size.x,
-    normalized_z * minimap_size.y
+    clampf(normalized_x * size.x, 0.0, size.x),
+    clampf(normalized_z * size.y, 0.0, size.y)
   )
+
 
 func _minimap_to_world(minimap_pos: Vector2) -> Vector3:
-  # Convert 2D minimap coordinates to 3D world position
-  var normalized_x = minimap_pos.x / minimap_size.x
-  var normalized_z = minimap_pos.y / minimap_size.y
-  
+  # Inverse of _world_to_minimap; Y is kept at ground level.
+  var normalized_x := minimap_pos.x / size.x
+  var normalized_z := minimap_pos.y / size.y
   return Vector3(
     world_bounds.position.x + normalized_x * world_bounds.size.x,
-    0, # Keep Y at ground level
+    0.0,
     world_bounds.position.z + normalized_z * world_bounds.size.z
   )
-
-func _on_minimap_clicked(event: InputEvent) -> void:
-  if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-    if not _camera or not is_instance_valid(_camera):
-      _camera = get_tree().get_first_node_in_group("main_camera") as Camera3D
-    if not _camera:
-      return
-    
-    # Get local click position
-    var local_click = minimap_canvas.get_local_mouse_position()
-    
-    # Convert to world position
-    var world_pos = _minimap_to_world(local_click)
-    
-    # Move camera to clicked position
-    _camera.global_position = Vector3(world_pos.x, _camera.global_position.y, world_pos.z)
-    
-    MyLogger.info("Minimap", "Camera moved to: %s" % world_pos)

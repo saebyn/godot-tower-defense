@@ -5,9 +5,16 @@
 [node name="Minimap" type="Control" unique_id=1701889332]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 150.0
-offset_bottom = 150.0
+offset_left = 20.0
+offset_top = 75.0
+offset_right = 170.0
+offset_bottom = 225.0
 script = ExtResource("1_minimap")
 enemy_color = Color(0.8, 0.2, 0.2, 1)
 building_color = Color(0.5, 0.5, 0.5, 1)
 survivor_color = Color(0.2, 0.8, 0.2, 1)
+
+[node name="Timer" type="Timer" parent="." unique_id=965625144]
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
