@@ -95,7 +95,6 @@ layout_mode = 1
 indicator_texture = SubResource("PlaceholderTexture2D_b3t5h")
 
 [node name="Minimap" parent="." unique_id=783446803 instance=ExtResource("10_minimap")]
-visible = false
 layout_mode = 1
 
 [node name="PauseMenu" parent="." unique_id=391853 instance=ExtResource("6_pause_menu")]
@@ -114,6 +113,7 @@ layout_mode = 1
 script = ExtResource("12_achievement_notification")
 
 [node name="DebugControl" type="VBoxContainer" parent="." unique_id=9774053]
+visible = false
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -123,7 +123,6 @@ offset_top = 196.0
 offset_right = -30.999756
 offset_bottom = 302.0
 grow_horizontal = 0
-visible = false
 script = ExtResource("15_y1b7e")
 
 [node name="FreeScrap" type="Button" parent="DebugControl" unique_id=848303988]
