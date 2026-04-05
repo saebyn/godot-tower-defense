@@ -18,18 +18,18 @@ A visual graph-based editor for authoring and managing the tech tree in Zom Nom 
 - **Auto-Layout**: Automatically organize nodes by branch and level
 
 ### Node Inspector
-Edit all properties of a selected tech node:
+Click any node in the graph to open it in Godot's built-in Inspector dock. All properties of the `TechNodeResource` can be edited directly there and are auto-saved when changed:
 - ID (unique identifier, read-only)
 - Display Name
 - Description
 - Branch (dropdown selection)
 - Level Requirement (1-10)
 - Scrap Cost (0-9999, Scrap paid at unlock)
-- Prerequisites (comma-separated tech IDs)
-- Achievements (comma-separated achievement IDs)
-- Mutually Exclusive (comma-separated tech IDs)
-- Unlocked Buildings (comma-separated building IDs)
-- Branch Completion Requirements (comma-separated branch names)
+- Prerequisites (array of tech IDs)
+- Achievements (array of achievement IDs)
+- Mutually Exclusive (array of tech IDs)
+- Unlocked Buildings (array of building IDs)
+- Branch Completion Requirements (array of branch names)
 
 ### Validation Engine
 Comprehensive validation checks:
@@ -60,9 +60,9 @@ Comprehensive validation checks:
 
 ### Editing a Tech Node
 1. Click on a node in the graph to select it
-2. The inspector panel will appear at the bottom
-3. Edit any property
-4. Click "Save Changes" to persist
+2. The resource opens in Godot's **Inspector** dock (right side of the editor)
+3. Edit any property directly in the Inspector
+4. Changes are auto-saved immediately
 
 ### Adding Prerequisites
 1. Click and drag from one node to another in the graph
@@ -72,7 +72,7 @@ Comprehensive validation checks:
 ### Deleting Prerequisites
 1. Right-click a connection line
 2. Select "Disconnect"
-3. Or edit the Prerequisites field in the inspector
+3. Or edit the Prerequisites array in the Inspector dock
 
 ### Deleting a Tech Node
 1. Select one or more nodes
@@ -138,7 +138,7 @@ Tech node IDs should follow these prefixes based on branch:
 ## Tips
 
 - Use the minimap (bottom-right of graph) for navigation in large trees
-- Save frequently - changes are only persisted when you click "Save Changes"
+- Changes made in the Inspector are auto-saved immediately to the `.tres` file
 - Run validation before committing changes
 - Use the export feature to document the tech tree for designers
 - The validation panel can be closed without fixing all errors, but it's recommended to address them
@@ -151,7 +151,7 @@ Tech node IDs should follow these prefixes based on branch:
 - Look for the "Tech Tree" button in the main screen toolbar (next to 2D, 3D, Script)
 
 **Changes not saving:**
-- Make sure to click "Save Changes" in the inspector
+- Check the status bar for error messages
 - Check file permissions on Config/TechTree/
 
 **Validation errors:**

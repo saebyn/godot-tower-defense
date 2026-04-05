@@ -32,8 +32,6 @@ const ID_PREFIXES := {
 @onready var status_label: Label = $StatusBar/StatusLabel
 @onready var validation_panel: Panel = $ContentArea/ValidationPanel
 @onready var validation_list: ItemList = $ContentArea/ValidationPanel/VBoxContainer/ValidationList
-@onready var inspector_panel: Panel = $ContentArea/InspectorPanel
-@onready var inspector_container: VBoxContainer = $ContentArea/InspectorPanel/ScrollContainer/InspectorContainer
 
 # Data
 var tech_nodes: Dictionary = {} # tech_id -> Resource_TechNode
@@ -41,6 +39,8 @@ var graph_nodes: Dictionary = {} # tech_id -> GraphNode
 var selected_tech_id: String = ""
 var validation_errors: Array[String] = []
 var filter_timer: Timer = null # Debounce timer for search/filter
+var _selected_tech_resource: Resource_TechNode = null # currently inspected resource
+var _saving: bool = false # guard against re-entrant saves
 
 const TECH_TREE_PATH := "res://Config/TechTree/"
 const FILTER_DEBOUNCE_TIME := 0.3 # seconds
@@ -157,9 +157,8 @@ func _setup_ui() -> void:
   branch_filter.name = "BranchFilter"
   toolbar.add_child(branch_filter)
   
-  # Hide validation panel by default; inspector is always visible
+  # Hide validation panel by default
   validation_panel.hide()
-  _show_inspector_placeholder()
 
 func _on_search_changed(search_text: String) -> void:
   # Debounce search to avoid filtering on every keystroke
@@ -414,7 +413,7 @@ func _on_connection_request(from_node: StringName, from_port: int, to_node: Stri
       _update_node_display(to_node)
       # Refresh inspector if this node is currently selected
       if selected_tech_id == to_node:
-        _show_inspector(to_node)
+        EditorInterface.inspect_object(tech)
 
 func _on_disconnection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
   # Remove prerequisite connection
@@ -429,16 +428,16 @@ func _on_disconnection_request(from_node: StringName, from_port: int, to_node: S
       _update_node_display(to_node)
       # Refresh inspector if this node is currently selected
       if selected_tech_id == to_node:
-        _show_inspector(to_node)
+        EditorInterface.inspect_object(tech)
 
 func _on_node_selected(node: Node) -> void:
   if node is GraphNode:
     selected_tech_id = node.name
-    _show_inspector(selected_tech_id)
+    _inspect_selected_tech()
 
 func _on_node_deselected(node: Node) -> void:
+  _disconnect_resource_changed()
   selected_tech_id = ""
-  _show_inspector_placeholder()
 
 func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
   if nodes.size() == 0:
@@ -488,6 +487,11 @@ func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
           DirAccess.remove_absolute(file_path)
         
         _set_status("Deleted tech node: " + tech_id)
+    
+    # Clear selection if deleted node was selected
+    if selected_tech_id not in tech_nodes:
+      _disconnect_resource_changed()
+      selected_tech_id = ""
     
     # Rebuild graph
     _rebuild_graph()
@@ -620,9 +624,13 @@ func _apply_layout() -> void:
     band_y += band_h + BAND_GAP
 
 func _on_refresh_pressed() -> void:
+  _disconnect_resource_changed()
   _load_tech_tree()
   _rebuild_graph()
   _update_status()
+  # Re-inspect the selected node with the freshly loaded resource
+  if selected_tech_id and selected_tech_id in tech_nodes:
+    _inspect_selected_tech()
 
 func _on_add_node_pressed() -> void:
   # Create a dialog for adding a new node
@@ -723,6 +731,10 @@ func _on_add_node_pressed() -> void:
     # Rebuild the graph
     _rebuild_graph()
     _set_status("Created new tech node: " + new_id)
+    
+    # Auto-inspect the newly created node
+    selected_tech_id = new_id
+    _inspect_selected_tech()
     
     dialog.queue_free()
   )
@@ -850,363 +862,28 @@ func _generate_markdown() -> String:
   
   return md
 
-func _show_inspector_placeholder() -> void:
-  for child in inspector_container.get_children():
-    child.queue_free()
-  var label := Label.new()
-  label.text = "Select a tech node to edit it."
-  label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
-  label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-  label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-  label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-  label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-  inspector_container.add_child(label)
-  inspector_panel.show()
-
-func _show_inspector(tech_id: String) -> void:
-  if tech_id not in tech_nodes:
-    _show_inspector_placeholder()
-    return
-  
-  # Clear inspector
-  for child in inspector_container.get_children():
-    child.queue_free()
-  
-  var tech = tech_nodes[tech_id]
-  
-  # Add title
-  var title_label := Label.new()
-  title_label.text = "Editing: " + tech.display_name
-  title_label.add_theme_font_size_override("font_size", 14)
-  inspector_container.add_child(title_label)
-  
-  var separator := HSeparator.new()
-  inspector_container.add_child(separator)
-  
-  # Add inspector fields
-  _add_text_field_readonly("ID", tech.id)
-  _add_text_field("Display Name", tech.display_name, "_on_display_name_changed")
-  _add_multiline_field("Description", tech.description, "_on_description_changed")
-  _add_texture_field("Icon", tech.icon)
-  _add_dropdown_field("Branch", tech.branch_name, VALID_BRANCHES, "_on_branch_changed")
-  _add_number_field("Level Requirement", tech.level_requirement, 1, 10, "_on_level_changed")
-  _add_number_field("Scrap Cost", tech.scrap_cost, 0, 9999, "_on_scrap_cost_changed")
-  _add_array_field("Prerequisites", "prerequisite_tech_ids", tech.prerequisite_tech_ids, "_on_array_changed")
-  _add_array_field("Achievements", "achievement_ids", tech.achievement_ids, "_on_array_changed")
-  _add_array_field("Mutually Exclusive", "mutually_exclusive_with", tech.mutually_exclusive_with, "_on_array_changed")
-  _add_array_field("Unlocked Buildings", "unlocked_building_ids", tech.unlocked_building_ids, "_on_array_changed")
-  _add_array_field("Branch Completion", "requires_branch_completion", tech.requires_branch_completion, "_on_array_changed")
-  _add_resource_field("Attack Effect", tech.player_attack_effect)
-
-  # Add save button
-  var save_button := Button.new()
-  save_button.text = "Save Changes"
-  save_button.pressed.connect(_on_save_inspector_pressed)
-  inspector_container.add_child(save_button)
-  
-  inspector_panel.show()
-
-func _add_text_field(label_text: String, value: String, callback: String) -> void:
-  var hbox := HBoxContainer.new()
-  
-  var label := Label.new()
-  label.text = label_text + ":"
-  label.custom_minimum_size = Vector2(120, 0)
-  hbox.add_child(label)
-  
-  var line_edit := LineEdit.new()
-  line_edit.text = value
-  line_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-  line_edit.set_meta("field_name", label_text)
-  # Connect to text_submitted instead of text_changed for better performance
-  if has_method(callback):
-    line_edit.text_submitted.connect(Callable(self , callback))
-  hbox.add_child(line_edit)
-  
-  inspector_container.add_child(hbox)
-
-func _add_text_field_readonly(label_text: String, value: String) -> void:
-  var hbox := HBoxContainer.new()
-  
-  var label := Label.new()
-  label.text = label_text + ":"
-  label.custom_minimum_size = Vector2(120, 0)
-  hbox.add_child(label)
-  
-  var line_edit := LineEdit.new()
-  line_edit.text = value
-  line_edit.editable = false
-  line_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-  hbox.add_child(line_edit)
-  
-  inspector_container.add_child(hbox)
-
-func _add_multiline_field(label_text: String, value: String, callback: String) -> void:
-  var vbox := VBoxContainer.new()
-  
-  var label := Label.new()
-  label.text = label_text + ":"
-  vbox.add_child(label)
-  
-  var text_edit := TextEdit.new()
-  text_edit.text = value
-  text_edit.custom_minimum_size = Vector2(0, 60)
-  text_edit.set_meta("field_name", label_text)
-  # Don't connect text_changed - changes are captured on save button instead
-  # This avoids firing callbacks on every keystroke
-  vbox.add_child(text_edit)
-  
-  inspector_container.add_child(vbox)
-
-func _add_dropdown_field(label_text: String, value: String, options: Array, callback: String) -> void:
-  var hbox := HBoxContainer.new()
-  
-  var label := Label.new()
-  label.text = label_text + ":"
-  label.custom_minimum_size = Vector2(120, 0)
-  hbox.add_child(label)
-  
-  var option_button := OptionButton.new()
-  option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-  option_button.set_meta("field_name", label_text)
-  
-  for i in range(options.size()):
-    option_button.add_item(options[i])
-    if options[i] == value:
-      option_button.selected = i
-  
-  if has_method(callback):
-    option_button.item_selected.connect(Callable(self , callback))
-  hbox.add_child(option_button)
-  
-  inspector_container.add_child(hbox)
-
-func _add_number_field(label_text: String, value: int, min_val: int, max_val: int, callback: String) -> void:
-  var hbox := HBoxContainer.new()
-  
-  var label := Label.new()
-  label.text = label_text + ":"
-  label.custom_minimum_size = Vector2(120, 0)
-  hbox.add_child(label)
-  
-  var spin_box := SpinBox.new()
-  spin_box.min_value = min_val
-  spin_box.max_value = max_val
-  spin_box.value = value
-  spin_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-  spin_box.set_meta("field_name", label_text)
-  if has_method(callback):
-    spin_box.value_changed.connect(Callable(self , callback))
-  hbox.add_child(spin_box)
-  
-  inspector_container.add_child(hbox)
-
-func _add_array_field(label_text: String, field, values: Array, callback: String) -> void:
-  var vbox := VBoxContainer.new()
-  
-  var label := Label.new()
-  label.text = label_text + ":"
-  vbox.add_child(label)
-  
-  var text_edit := TextEdit.new()
-  text_edit.text = ", ".join(values)
-  text_edit.custom_minimum_size = Vector2(0, 40)
-  text_edit.placeholder_text = "Comma-separated values"
-  text_edit.set_meta("field_name", label_text)
-  text_edit.set_meta("field_key", field)
-  # Don't connect text_changed - changes are captured on save button instead
-  # This avoids firing callbacks on every keystroke
-  vbox.add_child(text_edit)
-  
-  inspector_container.add_child(vbox)
-
-func _add_texture_field(label_text: String, texture: Texture2D) -> void:
-  var vbox := VBoxContainer.new()
-  vbox.set_meta("field_name", label_text)
-
-  var label := Label.new()
-  label.text = label_text + ":"
-  vbox.add_child(label)
-
-  var hbox := HBoxContainer.new()
-  vbox.add_child(hbox)
-
-  var path_label := Label.new()
-  path_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-  path_label.clip_text = true
-  path_label.text = texture.resource_path if texture else "(none)"
-  path_label.set_meta("field_name", label_text)
-  hbox.add_child(path_label)
-
-  var clear_btn := Button.new()
-  clear_btn.text = "X"
-  clear_btn.tooltip_text = "Clear icon"
-  clear_btn.pressed.connect(func():
-    if selected_tech_id in tech_nodes:
-      tech_nodes[selected_tech_id].icon = null
-      path_label.text = "(none)"
-  )
-  hbox.add_child(clear_btn)
-
-  var browse_btn := Button.new()
-  browse_btn.text = "Browse…"
-  browse_btn.pressed.connect(func():
-    var dialog := EditorFileDialog.new()
-    dialog.file_mode = EditorFileDialog.FILE_MODE_OPEN_FILE
-    dialog.add_filter("*.png,*.svg,*.jpg,*.jpeg,*.webp", "Images")
-    dialog.file_selected.connect(func(path: String):
-      var loaded := load(path) as Texture2D
-      if loaded and selected_tech_id in tech_nodes:
-        tech_nodes[selected_tech_id].icon = loaded
-        path_label.text = path
-      dialog.queue_free()
-    )
-    add_child(dialog)
-    dialog.popup_centered_ratio(0.7)
-  )
-  hbox.add_child(browse_btn)
-
-  inspector_container.add_child(vbox)
-
-func _add_resource_field(label_text: String, resource: Resource) -> void:
-  var vbox := VBoxContainer.new()
-  vbox.set_meta("field_name", label_text)
-
-  var label := Label.new()
-  label.text = label_text + ":"
-  vbox.add_child(label)
-
-  var hbox := HBoxContainer.new()
-  vbox.add_child(hbox)
-
-  var path_label := Label.new()
-  path_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-  path_label.clip_text = true
-  path_label.text = resource.resource_path if resource else "(none)"
-  path_label.set_meta("field_name", label_text)
-  hbox.add_child(path_label)
-
-  var clear_btn := Button.new()
-  clear_btn.text = "X"
-  clear_btn.tooltip_text = "Clear resource"
-  clear_btn.pressed.connect(func():
-    if selected_tech_id in tech_nodes:
-      tech_nodes[selected_tech_id].player_attack_effect = null
-      path_label.text = "(none)"
-  )
-  hbox.add_child(clear_btn)
-
-  var browse_btn := Button.new()
-  browse_btn.text = "Browse…"
-  browse_btn.pressed.connect(func():
-    var dialog := EditorFileDialog.new()
-    dialog.file_mode = EditorFileDialog.FILE_MODE_OPEN_FILE
-    dialog.add_filter("*.tres,*.res", "Resources")
-    dialog.file_selected.connect(func(path: String):
-      var loaded := load(path) as Resource_AttackEffect
-      if loaded and selected_tech_id in tech_nodes:
-        tech_nodes[selected_tech_id].player_attack_effect = loaded
-        path_label.text = path
-      dialog.queue_free()
-    )
-    add_child(dialog)
-    dialog.popup_centered_ratio(0.7)
-  )
-  hbox.add_child(browse_btn)
-
-  inspector_container.add_child(vbox)
-
-# Inspector field change handlers
-func _on_display_name_changed(text: String) -> void:
-  if selected_tech_id in tech_nodes:
-    var tech = tech_nodes[selected_tech_id]
-    tech.display_name = text
-
-func _on_description_changed(text_edit: TextEdit) -> void:
-  if selected_tech_id in tech_nodes:
-    var tech = tech_nodes[selected_tech_id]
-    tech.description = text_edit.text
-
-func _on_branch_changed(index: int) -> void:
-  if selected_tech_id in tech_nodes:
-    var tech = tech_nodes[selected_tech_id]
-    tech.branch_name = VALID_BRANCHES[index]
-
-func _on_level_changed(value: float) -> void:
-  if selected_tech_id in tech_nodes:
-    var tech = tech_nodes[selected_tech_id]
-    tech.level_requirement = int(value)
-
-func _on_scrap_cost_changed(value: float) -> void:
-  if selected_tech_id in tech_nodes:
-    var tech = tech_nodes[selected_tech_id]
-    tech.scrap_cost = int(value)
-
-func _on_array_changed(field: String, text_edit: TextEdit) -> void:
-  if selected_tech_id in tech_nodes:
-    var tech = tech_nodes[selected_tech_id]
-    var text: String = text_edit.text.strip_edges()
-    var values: Array = []
-    if not text.is_empty():
-      var items := text.split(",")
-      for item in items:
-        var trimmed := item.strip_edges()
-        if not trimmed.is_empty():
-          values.append(trimmed)
-
-    tech[field] = values
-
-func _on_save_inspector_pressed() -> void:
+func _inspect_selected_tech() -> void:
+  _disconnect_resource_changed()
   if selected_tech_id not in tech_nodes:
     return
-  
-  var tech = tech_nodes[selected_tech_id]
-  # Note: icon and player_attack_effect are updated directly on the resource
-  # by the Browse/Clear callbacks in _add_texture_field / _add_resource_field,
-  # so they are already reflected in `tech` by the time Save is pressed.
-  
-  # Capture all field values from inspector controls
-  for child in inspector_container.get_children():
-    if child is HBoxContainer:
-      for c in child.get_children():
-        if c is LineEdit and c.has_meta("field_name"):
-          var field_name = c.get_meta("field_name")
-          if field_name == "Display Name":
-            tech.display_name = c.text
-        elif c is SpinBox and c.has_meta("field_name"):
-          var field_name = c.get_meta("field_name")
-          if field_name == "Level Requirement":
-            tech.level_requirement = int(c.value)
-          elif field_name == "Scrap Cost":
-            tech.scrap_cost = int(c.value)
-        elif c is OptionButton and c.has_meta("field_name"):
-          var field_name = c.get_meta("field_name")
-          if field_name == "Branch":
-            tech.branch_name = VALID_BRANCHES[c.selected]
-    elif child is VBoxContainer:
-      for c in child.get_children():
-        if c is TextEdit and c.has_meta("field_name"):
-          var field_name = c.get_meta("field_name")
-          if field_name == "Description":
-            tech.description = c.text
-          elif c.has_meta("field_key"):
-            # Array field
-            var field_key = c.get_meta("field_key")
-            var text: String = c.text.strip_edges()
-            var values: Array = []
-            if not text.is_empty():
-              var items := text.split(",")
-              for item in items:
-                var trimmed := item.strip_edges()
-                if not trimmed.is_empty():
-                  values.append(trimmed)
-            tech[field_key] = values
-  
-  _save_tech_node(tech)
-  _update_node_display(selected_tech_id)
-  _show_inspector(selected_tech_id) # Refresh inspector
+  _selected_tech_resource = tech_nodes[selected_tech_id]
+  EditorInterface.inspect_object(_selected_tech_resource)
+  _selected_tech_resource.changed.connect(_on_selected_resource_changed)
+
+func _disconnect_resource_changed() -> void:
+  if _selected_tech_resource and _selected_tech_resource.changed.is_connected(_on_selected_resource_changed):
+    _selected_tech_resource.changed.disconnect(_on_selected_resource_changed)
+  _selected_tech_resource = null
+
+func _on_selected_resource_changed() -> void:
+  if _saving:
+    return
+  if selected_tech_id in tech_nodes:
+    _save_tech_node(tech_nodes[selected_tech_id])
+    _update_node_display(selected_tech_id)
 
 func _save_tech_node(tech: Resource_TechNode) -> void:
+  _saving = true
   var file_path := TECH_TREE_PATH + tech.id + ".tres"
   
   # Ensure the resource has the correct path
@@ -1218,6 +895,7 @@ func _save_tech_node(tech: Resource_TechNode) -> void:
     _set_status("Failed to save tech node: " + tech.id, true)
   else:
     _set_status("Saved: " + tech.id)
+  _saving = false
 
 func _update_node_display(tech_id: String) -> void:
   # Update a single node's display without rebuilding entire graph
