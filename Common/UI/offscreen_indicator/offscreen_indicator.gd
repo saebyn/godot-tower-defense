@@ -24,7 +24,9 @@ class_name UI_OffscreenIndicator
 @export var indicator_margin: float = 30.0 ## Distance from screen edge to place indicators
 @export var indicator_size: Vector2 = Vector2(12, 12) ## Size of individual dot indicators
 @export var update_interval: float = 0.1 ## How often to update indicator positions
-@export var indicator_texture: Texture2D ## Texture for the indicator dots
+@export var indicator_texture: Texture2D = preload("res://Assets/Icons/offscreen_dot.svg") ## Texture for the indicator dots
+@export var fallback_indicator_color: Color = Color(1.0, 0.267, 0.267) ## Dot fill color used when no texture is set
+@export var fallback_border_color: Color = Color(1, 1, 1, 0.8) ## Dot border color used when no texture is set
 
 # Indicator pools for reuse
 var indicator_pool: Array[Control] = []
@@ -157,14 +159,33 @@ func _create_new_dot_indicator() -> Control:
   var indicator = Control.new()
   indicator.set_size(indicator_size)
   
-  # Create circular dot panel
-  var panel = TextureRect.new()
-  panel.texture = indicator_texture
-  panel.set_size(indicator_size)
-  panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-  
-  # Make it circular by setting border radius (if supported) or use a simple colored rectangle
-  indicator.add_child(panel)
+  if indicator_texture:
+    # Create a texture-based dot
+    var panel = TextureRect.new()
+    panel.texture = indicator_texture
+    panel.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    panel.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+    panel.set_size(indicator_size)
+    panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    indicator.add_child(panel)
+  else:
+    # Fallback: draw a solid colored circle using a StyleBoxFlat
+    var panel = Panel.new()
+    var style = StyleBoxFlat.new()
+    style.bg_color = fallback_indicator_color
+    var radius = int(min(indicator_size.x, indicator_size.y) * 0.5)
+    style.corner_radius_top_left = radius
+    style.corner_radius_top_right = radius
+    style.corner_radius_bottom_left = radius
+    style.corner_radius_bottom_right = radius
+    style.border_width_top = 1
+    style.border_width_bottom = 1
+    style.border_width_left = 1
+    style.border_width_right = 1
+    style.border_color = fallback_border_color
+    panel.add_theme_stylebox_override("panel", style)
+    panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    indicator.add_child(panel)
   
   add_child(indicator)
   _animate_indicator(indicator)
