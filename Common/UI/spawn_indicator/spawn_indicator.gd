@@ -21,7 +21,7 @@ func _process(_delta: float) -> void:
     _update_wave_display()
 
 ### Show a notification that an enemy has spawned (legacy support)
-func show_spawn_notification(enemy: Node3D) -> void:
+func show_spawn_notification(_enemy: Node3D) -> void:
   if label:
     label.text = "⚠️ Enemy Spawning!"
   
