@@ -13,6 +13,7 @@ enum BuffType {
 
 
 var buff_timer: Timer
+var _logged_non_building_ids: Dictionary = {}
 
 func _ready():
   super._ready()
@@ -40,7 +41,10 @@ func _apply_buffs():
     if not is_instance_valid(building):
       continue
     if building is not Entity_PlaceableBuilding:
-      MyLogger.debug("BuffBuilding", "Node in building group that is not a building: %s" % building.name)
+      var node_id := building.get_instance_id()
+      if not _logged_non_building_ids.has(node_id):
+        _logged_non_building_ids[node_id] = true
+        MyLogger.debug("BuffBuilding", "Node in building group that is not a building: %s" % building.name)
       continue
 
     var distance := global_position.distance_to(building.global_position)
