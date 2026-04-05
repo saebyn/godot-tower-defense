@@ -38,9 +38,6 @@ func rebake_navigation_mesh() -> void:
     navigation_region.bake_navigation_mesh()
     await navigation_region.bake_finished
     MyLogger.info("Navigation", "Navigation mesh rebaked!")
-    ui.updated_bounding_box.emit(
-      navigation_region.get_bounds()
-    )
 
   _rebake_in_progress = false
 

@@ -49,6 +49,18 @@ func _ready() -> void:
   survivor_count = get_tree().get_nodes_in_group("survivors").size()
   MyLogger.info("Scenario", "Scenario started with %d survivors" % survivor_count)
 
+func get_transformed_aabb() -> AABB:
+  # Get the scenario's local AABB and transform it to world space
+  var aabb := AABB(Vector3.ZERO, Vector3.ZERO)
+
+  for node in get_children():
+    if node is MeshInstance3D:
+      var mesh_aabb: AABB = node.get_mesh().get_aabb()
+      var transformed_aabb = AABB(mesh_aabb.position + node.global_transform.origin, mesh_aabb.size)
+      aabb = aabb.merge(transformed_aabb)
+
+  return aabb
+
 func _process(delta: float) -> void:
   # Update timer if it's running and game is not paused
   if is_timing and not _is_paused():

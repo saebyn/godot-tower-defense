@@ -48,6 +48,11 @@ func _load_scenario() -> void:
   # This matches the rotation applied in the editor to the hardcoded scenario
   current_scenario.rotation.y = - PI / 4 # 45 degrees in radians
 
+  # Send the scenario's full world-space AABB to the minimap immediately.
+  # This covers all geometry (terrain + spawn surfaces), unlike the nav mesh
+  # AABB which only covers the walkable area.
+  ui.updated_bounding_box.emit(current_scenario.get_transformed_aabb())
+
   # Configure the scenario with the UI reference
   current_scenario.ui = ui
 
