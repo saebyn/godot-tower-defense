@@ -18,9 +18,6 @@
 [ext_resource type="PackedScene" uid="uid://dyxq61p5iqma7" path="res://Common/UI/sound_effect_display/sound_effect_display.tscn" id="13_sound_effect_display"]
 [ext_resource type="Script" uid="uid://c7e32ra2ikf6f" path="res://Stages/UI/main_ui/debug_control.gd" id="15_y1b7e"]
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_b3t5h"]
-size = Vector2(16, 16)
-
 [node name="UI" type="Control" unique_id=6500553]
 layout_mode = 3
 anchors_preset = 15
@@ -92,7 +89,6 @@ layout_mode = 1
 
 [node name="OffscreenIndicator" parent="." unique_id=1662983560 instance=ExtResource("9_offscreen_indicator")]
 layout_mode = 1
-indicator_texture = SubResource("PlaceholderTexture2D_b3t5h")
 
 [node name="Minimap" parent="." unique_id=783446803 instance=ExtResource("10_minimap")]
 layout_mode = 1
