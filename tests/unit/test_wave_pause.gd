@@ -7,9 +7,9 @@ extends GutTest
 ## pause behavior is ensured by the node's PROCESS_MODE_PAUSABLE setting.
 
 # Test configuration constants
-const PAUSE_WAIT_FRAMES = 20  # Frames to wait during pause to verify _process doesn't run
-const UNPAUSE_WAIT_FRAMES = 10  # Frames to wait after unpause to verify timers resume
-const SPAWN_TEST_WAIT_FRAMES = 60  # Frames to wait during pause spawn test (~1 sec @ 60fps)
+const PAUSE_WAIT_FRAMES = 20 # Frames to wait during pause to verify _process doesn't run
+const UNPAUSE_WAIT_FRAMES = 10 # Frames to wait after unpause to verify timers resume
+const SPAWN_TEST_WAIT_FRAMES = 60 # Frames to wait during pause spawn test (~1 sec @ 60fps)
 
 # Mock spawner that tracks spawn calls
 class MockEnemySpawner extends System_EnemySpawner:
@@ -39,7 +39,7 @@ func before_each():
   # Create a wave instance as child of spawner
   wave_instance = System_Wave.new()
   wave_instance.duration = 10.0
-  wave_instance.spawn_interval = 0.5  # Default interval for most tests
+  wave_instance.spawn_interval = 0.5 # Default interval for most tests
   wave_instance.start_delay = 0.0
   spawner_instance.add_child(wave_instance)
 
@@ -73,7 +73,7 @@ func test_process_pauses_when_tree_paused():
   
   # Start wave and wait for _process to begin
   wave_instance.start_wave()
-  await wait_frames(2)
+  await wait_process_frames(2)
   
   # Record initial state
   var initial_wave_time = wave_instance._wave_timer.time_left
@@ -84,7 +84,7 @@ func test_process_pauses_when_tree_paused():
   get_tree().paused = true
   # Wait several frames with GUT's process continuing (GUT has ignore_pause=true)
   for i in range(PAUSE_WAIT_FRAMES):
-    await wait_frames(1)
+    await wait_process_frames(1)
   
   # Assert - wave timer and elapsed time should not have changed while paused
   assert_almost_eq(wave_instance._wave_timer.time_left, initial_wave_time, 0.1,
@@ -104,14 +104,14 @@ func test_process_resumes_after_unpause():
   
   # Start wave
   wave_instance.start_wave()
-  await wait_frames(2)
+  await wait_process_frames(2)
   
   var initial_wave_time = wave_instance._wave_timer.time_left
   
   # Act - Pause then unpause
   get_tree().paused = true
   for i in range(UNPAUSE_WAIT_FRAMES):
-    await wait_frames(1)
+    await wait_process_frames(1)
   get_tree().paused = false
   # Use time-based wait for reliable timer progression measurement
   await wait_seconds(0.3)
@@ -136,7 +136,7 @@ func test_spawn_callbacks_dont_fire_during_pause():
   
   # Start wave
   wave_instance.start_wave()
-  await wait_frames(2)
+  await wait_process_frames(2)
   
   # Record initial spawn count
   var initial_spawns = spawner_instance.spawn_calls
@@ -145,7 +145,7 @@ func test_spawn_callbacks_dont_fire_during_pause():
   get_tree().paused = true
   # Wait multiple frames (would allow many spawns if _process() were still running)
   for i in range(SPAWN_TEST_WAIT_FRAMES):
-    await wait_frames(1)
+    await wait_process_frames(1)
   
   # Assert - No new spawns should have occurred
   var spawns_during_pause = spawner_instance.spawn_calls

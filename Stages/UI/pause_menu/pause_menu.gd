@@ -69,9 +69,8 @@ func _on_settings_menu_closed():
   MyLogger.debug("PauseMenu", "Settings menu closed")
 
 func _on_restart_pressed():
-  GameManager.resume_game() # Unpause first
-  # Reload the current scene
-  get_tree().reload_current_scene()
+  MyLogger.info("PauseMenu", "Restart button pressed")
+  GameManager.restart_scenario()
 
 func _on_main_menu_pressed():
   GameManager.return_to_main_menu()

@@ -70,6 +70,38 @@ func toggle_in_game_menu():
             pause_game()
             set_game_state(GameState.IN_GAME_MENU)
 
+## Restarts the current scenario from scratch, reloading all save state
+## so that currency, tech tree, and other managed systems are fully reset
+## back to what they were at the start of the session.
+func restart_scenario() -> void:
+  MyLogger.info("GameManager", "Restarting current scenario")
+  resume_game() # Ensure the game is unpaused before reloading
+  set_game_state(GameState.PLAYING)
+
+  # Preserve the scenario the player is currently in
+  var scenario_id = ScenarioManager.get_current_scenario_id()
+
+  # Reload the save slot — this calls reset_data() or load_data() on every
+  # registered SaveableSystem (CurrencyManager, TechTreeManager, etc.) so
+  # the in-memory state is fully restored to what was on disk.
+  if SaveManager.current_save_slot > 0:
+    SaveManager.load_save_slot(SaveManager.current_save_slot)
+  else:
+    # Fallback: manually reset all managed systems
+    for system in SaveManager.managed_systems:
+      system.reset_data()
+
+  # Restore the scenario ID after the slot reload (load_save_slot may
+  # overwrite it with the value stored in metadata).
+  if not scenario_id.is_empty():
+    ScenarioManager.set_current_scenario_id(scenario_id)
+
+  # Reload the game scene so all scene-level nodes are freshly instantiated
+  var game_scene_path = "res://Stages/Game/main/main.tscn"
+  var error = get_tree().change_scene_to_file(game_scene_path)
+  if error != OK:
+    MyLogger.error("GameManager", "Failed to reload game scene: %s (Error: %d)" % [game_scene_path, error])
+
 ## Returns to the main menu from any game state
 func return_to_main_menu():
   MyLogger.info("GameManager", "Returning to main menu")
