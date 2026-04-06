@@ -18,7 +18,7 @@ A visual graph-based editor for authoring and managing the tech tree in Zom Nom 
 - **Auto-Layout**: Automatically organize nodes by branch and level
 
 ### Node Inspector
-Click any node in the graph to open it in Godot's built-in Inspector dock. All properties of the `TechNodeResource` can be edited directly there and are auto-saved when changed:
+Click any node in the graph to open it in Godot's built-in Inspector dock. All properties of the `Resource_TechNode` can be edited directly there and are auto-saved when changed:
 - ID (unique identifier, read-only)
 - Display Name
 - Description

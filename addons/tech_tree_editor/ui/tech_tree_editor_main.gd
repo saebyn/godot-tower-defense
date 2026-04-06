@@ -438,6 +438,7 @@ func _on_node_selected(node: Node) -> void:
 func _on_node_deselected(node: Node) -> void:
   _disconnect_resource_changed()
   selected_tech_id = ""
+  EditorInterface.inspect_object(null)
 
 func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
   if nodes.size() == 0:
@@ -491,7 +492,9 @@ func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
     # Clear selection if deleted node was selected
     if selected_tech_id not in tech_nodes:
       _disconnect_resource_changed()
+      EditorInterface.inspect_object(null)
       selected_tech_id = ""
+      _set_status("Deleted selected tech node. Select another tech node to continue editing.")
     
     # Rebuild graph
     _rebuild_graph()
