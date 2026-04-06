@@ -180,3 +180,22 @@ func test_load_keybinds_skips_missing_keybinds_section():
   # Assert - bindings should be unchanged
   var events_after = InputMap.action_get_events(test_action)
   assert_eq(events_before.size(), events_after.size(), "Bindings should be unchanged when no keybinds section")
+
+func test_default_ui_scale_index_is_100_percent():
+  # The default ui_scale_index should be 1, corresponding to 100%
+  assert_eq(SettingsManager.ui_scale_index, 1, "Default UI scale index should be 1 (100%)")
+
+func test_get_ui_scale_string_returns_correct_labels():
+  assert_eq(SettingsManager.get_ui_scale_string(0), "75%",  "Index 0 should be 75%")
+  assert_eq(SettingsManager.get_ui_scale_string(1), "100%", "Index 1 should be 100%")
+  assert_eq(SettingsManager.get_ui_scale_string(2), "125%", "Index 2 should be 125%")
+  assert_eq(SettingsManager.get_ui_scale_string(3), "150%", "Index 3 should be 150%")
+  assert_eq(SettingsManager.get_ui_scale_string(4), "200%", "Index 4 should be 200%")
+
+func test_get_ui_scale_string_returns_unknown_for_invalid_index():
+  assert_eq(SettingsManager.get_ui_scale_string(-1), "Unknown", "Negative index should return 'Unknown'")
+  assert_eq(SettingsManager.get_ui_scale_string(99), "Unknown", "Out-of-range index should return 'Unknown'")
+
+func test_ui_scales_constant_has_expected_values():
+  assert_eq(SettingsManager.UI_SCALES.size(), 5, "UI_SCALES should have 5 entries")
+  assert_almost_eq(SettingsManager.UI_SCALES[1], 1.0, 0.001, "Index 1 should be 1.0 (100%)")

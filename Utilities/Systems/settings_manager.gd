@@ -13,6 +13,7 @@ const SETTINGS_FILE = "user://settings.cfg"
 var fullscreen: bool = false
 var vsync_enabled: bool = true
 var resolution_index: int = 2 # Default to 1920x1080
+var ui_scale_index: int = 1 # Default to 100%
 
 # Audio settings (in dB, range -80 to 0)
 # Default master volume is -6.02 dB (50% volume)
@@ -38,6 +39,9 @@ const RESOLUTIONS: Array[Vector2i] = [
   Vector2i(3840, 2160)
 ]
 
+# Available UI scale multipliers (index 1 = 100% default)
+const UI_SCALES: Array[float] = [0.75, 1.0, 1.25, 1.5, 2.0]
+
 func _ready() -> void:
   load_settings()
   apply_audio_settings()
@@ -57,6 +61,7 @@ func load_settings() -> void:
   fullscreen = config.get_value("video", "fullscreen", fullscreen)
   vsync_enabled = config.get_value("video", "vsync_enabled", vsync_enabled)
   resolution_index = config.get_value("video", "resolution_index", resolution_index)
+  ui_scale_index = config.get_value("video", "ui_scale_index", ui_scale_index)
   
   # Load audio settings
   master_volume = config.get_value("audio", "master_volume", master_volume)
@@ -85,6 +90,7 @@ func save_settings() -> void:
   config.set_value("video", "fullscreen", fullscreen)
   config.set_value("video", "vsync_enabled", vsync_enabled)
   config.set_value("video", "resolution_index", resolution_index)
+  config.set_value("video", "ui_scale_index", ui_scale_index)
   
   # Save audio settings
   config.set_value("audio", "master_volume", master_volume)
@@ -147,6 +153,13 @@ func apply_video_settings() -> void:
 
     MyLogger.debug("SettingsManager", "Video settings applied")
 
+  # Apply UI scale to the root window's content_scale_factor.
+  # This is done outside the editor-embedded check because UI scale should be
+  # applied in all contexts, whereas window size/position changes are skipped
+  # when running inside the Godot editor's embedded player.
+  if ui_scale_index >= 0 and ui_scale_index < UI_SCALES.size():
+    get_tree().root.content_scale_factor = UI_SCALES[ui_scale_index]
+
   video_settings_changed.emit()
 
 
@@ -185,6 +198,13 @@ func set_resolution(index: int) -> void:
     apply_video_settings()
     save_settings()
 
+## Set UI scale by index
+func set_ui_scale(index: int) -> void:
+  if ui_scale_index != index and index >= 0 and index < UI_SCALES.size():
+    ui_scale_index = index
+    apply_video_settings()
+    save_settings()
+
 ## Set master volume
 func set_master_volume(volume_db: float) -> void:
   master_volume = clamp(volume_db, -80.0, 0.0)
@@ -214,6 +234,12 @@ func get_resolution_string(index: int) -> String:
   if index >= 0 and index < RESOLUTIONS.size():
     var res = RESOLUTIONS[index]
     return "%dx%d" % [res.x, res.y]
+  return "Unknown"
+
+## Get UI scale string for display
+func get_ui_scale_string(index: int) -> String:
+  if index >= 0 and index < UI_SCALES.size():
+    return "%d%%" % [int(UI_SCALES[index] * 100)]
   return "Unknown"
 
 ## Save keybind settings into an existing ConfigFile object
