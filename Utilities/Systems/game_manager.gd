@@ -63,7 +63,6 @@ func toggle_in_game_menu():
     MyLogger.debug("GameManager", "Toggling in-game menu...")
     match current_state:
         GameState.IN_GAME_MENU:
-            resume_game()
             set_game_state(GameState.PLAYING)
         GameState.IN_TECH_TREE:
             set_game_state(GameState.PLAYING)
