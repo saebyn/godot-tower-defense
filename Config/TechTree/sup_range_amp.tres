@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="Resource_TechNode" format=3 uid="uid://dak6m8n4pqyau"]
 
+[ext_resource type="Texture2D" uid="uid://blou5xw6q8pki" path="res://Assets/Icons/radar_dish.png" id="1_0wih6"]
 [ext_resource type="Script" uid="uid://dj1i28ud6uv3t" path="res://Config/TechTree/tech_node_resource.gd" id="1_xxxxx"]
 
 [resource]
@@ -7,6 +8,7 @@ script = ExtResource("1_xxxxx")
 id = "sup_range_amp"
 display_name = "Range Amplifier"
 description = "Aura that extends the attack range of nearby turrets."
+icon = ExtResource("1_0wih6")
 branch_name = "Support"
 level_requirement = 3
 prerequisite_tech_ids = Array[String](["sup_overcharger"])
