@@ -182,8 +182,13 @@ func test_load_keybinds_skips_missing_keybinds_section():
   assert_eq(events_before.size(), events_after.size(), "Bindings should be unchanged when no keybinds section")
 
 func test_default_ui_scale_index_is_100_percent():
-  # The default ui_scale_index should be 1, corresponding to 100%
+  # Save and restore ui_scale_index so a persisted settings.cfg cannot break this test
+  var original_ui_scale_index: int = SettingsManager.ui_scale_index
+  SettingsManager.ui_scale_index = 1
+
   assert_eq(SettingsManager.ui_scale_index, 1, "Default UI scale index should be 1 (100%)")
+
+  SettingsManager.ui_scale_index = original_ui_scale_index
 
 func test_get_ui_scale_string_returns_correct_labels():
   assert_eq(SettingsManager.get_ui_scale_string(0), "75%",  "Index 0 should be 75%")

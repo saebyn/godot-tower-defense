@@ -62,6 +62,10 @@ func load_settings() -> void:
   vsync_enabled = config.get_value("video", "vsync_enabled", vsync_enabled)
   resolution_index = config.get_value("video", "resolution_index", resolution_index)
   ui_scale_index = config.get_value("video", "ui_scale_index", ui_scale_index)
+  if UI_SCALES.is_empty():
+    ui_scale_index = 1
+  else:
+    ui_scale_index = clampi(ui_scale_index, 0, UI_SCALES.size() - 1)
   
   # Load audio settings
   master_volume = config.get_value("audio", "master_volume", master_volume)
