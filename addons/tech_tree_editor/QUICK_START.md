@@ -16,10 +16,10 @@
 
 ### Step 3: Your First Edit
 1. **Click on any node** in the graph to select it
-2. The **Inspector Panel** will appear at the bottom
+2. The resource opens in Godot's **Inspector** dock (right side of the editor)
 3. Try changing the **Display Name** field
-4. Click **Save Changes**
-5. The graph will update automatically
+4. The change is auto-saved immediately
+5. The graph node title updates automatically
 
 ### Step 4: Create a New Node
 1. Click the **Add Node** button in the toolbar (or press **Ctrl+N**)
@@ -81,7 +81,7 @@ Use the **branch dropdown** (next to search) to show only nodes from one branch.
 - 🟣 Purple = Click
 - 🟡 Gold = Advanced
 
-💡 **Save Often** - Changes are only saved when you click "Save Changes" in the inspector
+💡 **Auto-Save** - Changes made in the Inspector are saved automatically to disk
 
 💡 **Validate Before Commit** - Always run validation before committing changes to git
 
@@ -92,8 +92,7 @@ Use the **branch dropdown** (next to search) to show only nodes from one branch.
 - Restart the Godot editor
 
 **Changes not saving?**
-- Did you click "Save Changes" in the inspector?
-- Check the status bar for error messages
+- Check the status bar at the bottom of the Tech Tree editor for error messages
 
 **Graph is messy?**
 - Right-click → Auto-Layout Graph

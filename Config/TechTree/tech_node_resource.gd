@@ -31,3 +31,7 @@ class_name Resource_TechNode
 ## Validates that the tech node has required fields
 func is_valid() -> bool:
   return not id.is_empty() and not display_name.is_empty()
+
+func _validate_property(property: Dictionary) -> void:
+  if property["name"] == "id":
+    property["usage"] |= PROPERTY_USAGE_READ_ONLY
