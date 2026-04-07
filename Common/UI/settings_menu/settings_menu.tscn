@@ -138,6 +138,27 @@ control_property = &"selected"
 apply_group = "video"
 metadata/_custom_type_script = "uid://c1g3vqaakxkv2"
 
+[node name="UiScaleContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Video/VBoxContainer" unique_id=201234571]
+layout_mode = 2
+
+[node name="UiScaleLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Video/VBoxContainer/UiScaleContainer" unique_id=201234572]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "UI Scale:"
+vertical_alignment = 1
+
+[node name="UiScaleOption" type="OptionButton" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Video/VBoxContainer/UiScaleContainer" unique_id=201234573]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="UiScaleBinding" type="Node" parent="Panel/MarginContainer/VBoxContainer/TabContainer/Video/VBoxContainer/UiScaleContainer" unique_id=201234574]
+script = ExtResource("3_settingbinding")
+setting_key = &"ui_scale_index"
+control_path = NodePath("../UiScaleOption")
+control_property = &"selected"
+apply_group = "video"
+metadata/_custom_type_script = "uid://c1g3vqaakxkv2"
+
 [node name="Audio" type="MarginContainer" parent="Panel/MarginContainer/VBoxContainer/TabContainer" unique_id=2103301877]
 visible = false
 layout_mode = 2

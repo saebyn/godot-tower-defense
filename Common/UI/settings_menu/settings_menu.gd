@@ -53,6 +53,9 @@ func _ready() -> void:
   # Setup resolution options via the resolution binding's control
   _setup_resolution_options()
 
+  # Setup UI scale options via the UI scale binding's control
+  _setup_ui_scale_options()
+
   # Setup keybind buttons
   _setup_keybind_buttons()
 
@@ -118,6 +121,18 @@ func _setup_resolution_options() -> void:
   option.clear()
   for i in range(SettingsManager.RESOLUTIONS.size()):
     option.add_item(SettingsManager.get_resolution_string(i), i)
+
+
+func _setup_ui_scale_options() -> void:
+  var ui_scale_binding := _find_binding_for_key(&"ui_scale_index")
+  if not ui_scale_binding:
+    return
+  var option := ui_scale_binding.get_control() as OptionButton
+  if not option:
+    return
+  option.clear()
+  for i in range(SettingsManager.UI_SCALES.size()):
+    option.add_item(SettingsManager.get_ui_scale_string(i), i)
 
 
 func _setup_keybind_buttons() -> void:
