@@ -37,10 +37,10 @@ jobs:
             output: "zom-nom-defense-game.x86_64"
             directory: linux
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           lfs: true
+          submodules: "recursive"
 
       - name: Setup Godot
         run: |
