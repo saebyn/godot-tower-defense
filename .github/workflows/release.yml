@@ -37,15 +37,27 @@ jobs:
             output: "zom-nom-defense-game.x86_64"
             directory: linux
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           lfs: true
+          submodules: "recursive"
 
       - name: Setup Godot
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+
+      - name: Pre-configure Godot Editor Settings
+        run: |
+          # Pre-configure Godot editor settings for Blender path
+          mkdir -p /github/home/.config/godot
+          printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\nfilesystem/import/blender/blender_path = "/usr/bin/blender"\n' > /github/home/.config/godot/editor_settings-4.tres
+
+      - name: Import project files
+        run: |
+          echo "Running initial project import..."
+          cd $PROJECT_PATH
+          godot --headless --verbose --import --path . --quit
 
       - name: Apply release settings
         run: |
