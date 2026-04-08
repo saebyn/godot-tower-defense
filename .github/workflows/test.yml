@@ -17,7 +17,7 @@ jobs:
       image: ghcr.io/saebyn/zom-nom-defense/godot-ci:latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           lfs: true
           submodules: "recursive"
