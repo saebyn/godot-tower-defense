@@ -22,7 +22,6 @@ signal building_placed ## Emitted when a building is successfully placed
 @export var raycast_down: Vector3 = Vector3(0, -20, 0) ## Direction and length to cast downwards
 
 @export_group("Node References")
-@export var navigation_region: NavigationRegion3D
 @export var camera: Camera3D
 
 @onready var raycast: RayCast3D = $RayCast3D
@@ -215,7 +214,7 @@ func _place_building() -> void:
     MyLogger.error("Placement", "Cannot place building: Insufficient funds")
     return
   
-  _preview.place(navigation_region)
+  _preview.place()
 
   rebake_navigation_mesh.emit()
   building_placed.emit()

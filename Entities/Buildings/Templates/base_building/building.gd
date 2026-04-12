@@ -199,7 +199,7 @@ func set_preview_material(material: Material) -> void:
 ## Call this method after the building has been positioned and is ready to be placed in the world.
 ##
 ## @param navigation_region The NavigationRegion3D to which the navigation obstacle will be added.
-func place(navigation_region: NavigationRegion3D) -> void:
+func place() -> void:
   MyLogger.info("Building", "place() called. building_type: %s" % ("null" if not building_type else building_type.name))
   if not is_inside_tree():
     MyLogger.error("Building", "PlaceableBuilding must be added to the scene tree before placing.")
@@ -222,6 +222,7 @@ func place(navigation_region: NavigationRegion3D) -> void:
   var nav_obstacle := NavigationObstacle3D.new()
 
   nav_obstacle.affect_navigation_mesh = true
+  nav_obstacle.avoidance_enabled = false
   nav_obstacle.global_transform = global_transform
 
   # set the vertices based on the mesh size
@@ -239,7 +240,6 @@ func place(navigation_region: NavigationRegion3D) -> void:
     Vector3(-size.x, 0, size.z)
   ])
 
-  navigation_region.add_child(nav_obstacle)
   navigation_obstacle = nav_obstacle
 
   # Ensure the building is in the correct group for navigation

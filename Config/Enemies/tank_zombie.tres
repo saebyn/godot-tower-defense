@@ -11,7 +11,7 @@ point_count = 3
 
 [sub_resource type="Resource" id="Resource_k7oag"]
 script = ExtResource("1_v6710")
-aoe_radius = 5.0
+aoe_radius = 10.0
 aoe_falloff = SubResource("Curve_cri2p")
 aoe_target_groups = Array[String](["buildings", "survivors"])
 metadata/_custom_type_script = "uid://d0xs34vvq4y5v"

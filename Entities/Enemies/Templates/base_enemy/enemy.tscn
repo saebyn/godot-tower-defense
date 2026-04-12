@@ -165,6 +165,7 @@ path_max_distance = 10.01
 path_postprocessing = 2
 simplify_path = true
 simplify_epsilon = 5.0
+path_search_max_polygons = 0
 debug_path_custom_color = Color(1, 0.0392157, 0.0352941, 1)
 
 [node name="Attack" parent="." unique_id=1650386457 node_paths=PackedStringArray("audio_player") instance=ExtResource("3_qi2p4")]
