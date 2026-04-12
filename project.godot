@@ -355,3 +355,8 @@ logs/TwitchAuth="debug"
 logs/TwitchAPI="debug"
 logs/TwitchService="debug"
 logs/Http="info"
+
+[zom_nom_defense]
+
+debug/show_debug_panel=true
+debug/bypass_tech_requirements=true

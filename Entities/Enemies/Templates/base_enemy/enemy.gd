@@ -86,6 +86,10 @@ func load_resource(resource: Resource_EnemyType) -> void:
       attack.damage_amount = resource.damage_amount
       attack.attack_speed = resource.attack_speed
       attack.damage_source = resource.enemy_type
+
+      if resource.attack_effect:
+        attack.attack_effect = resource.attack_effect
+
   , Object.CONNECT_ONE_SHOT)
 
 func _choose_target():

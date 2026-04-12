@@ -8,6 +8,7 @@ class_name Resource_AttackEffect
 @export var crit_applies_to_chain: bool = false
 @export var aoe_radius: float = 0.0
 @export var aoe_falloff: Curve = null
+@export var aoe_target_groups: Array[String] = ["enemies"]
 @export var chain_enabled: bool = false
 @export var chain_radius: float = 0.0
 @export var chain_max_hops: int = 0
