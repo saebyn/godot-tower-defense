@@ -1,6 +1,7 @@
 extends CharacterBody3D
 
 @export var movement_speed: float = 2.0
+@export var rotation_speed: float = 10.0 ## Rotation interpolation speed for smooth turning (higher = faster rotation)
 @export var path_desired_distance: float = 0.5
 @export var target_desired_distance: float = 4.0
 @export var target_attack_range: float = 2.0
@@ -241,18 +242,18 @@ func _process(_delta: float) -> void:
     animation_player.play(idle_animation)
 
 
-func _physics_process(_delta):
+func _physics_process(delta: float):
   # Do not query when the map has never synchronized and is empty.
   if NavigationServer3D.map_get_iteration_id(navigation_agent.get_navigation_map()) == 0:
     MyLogger.debug("Enemy.Navigation", "Navigation map is empty, cannot navigate.")
     return
 
-  _update_navigation()
+  _update_navigation(delta)
 
   move_and_slide()
 
 
-func _update_navigation():
+func _update_navigation(delta: float):
   if navigation_agent.is_navigation_finished():
     # Check if we reached the fallback building or if we need to recheck path
     if fallback_building_target and is_instance_valid(fallback_building_target):
@@ -272,10 +273,10 @@ func _update_navigation():
     var direction: Vector3 = global_position.direction_to(next_path_position)
     velocity = direction * movement_speed
 
-    # if we are moving, face the direction we are moving
+    # if we are moving, smoothly rotate to face the direction we are moving
     if velocity.length() > 0.01:
-      var look_at_position := Vector3(next_path_position.x, global_position.y, next_path_position.z)
-      look_at(look_at_position, Vector3.UP, true)
+      var target_basis := Basis.looking_at(direction, Vector3.UP)
+      basis = basis.slerp(target_basis, clampf(rotation_speed * delta, 0.0, 1.0))
 
 
 func _on_died(damage_source: String = "unknown"):
