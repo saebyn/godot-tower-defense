@@ -1,5 +1,9 @@
 [gd_resource type="Theme" format=3 uid="uid://b8k2vgj8hxk5r"]
 
+[sub_resource type="SystemFont" id="SystemFont_cpw5n"]
+font_names = PackedStringArray("Sans-Serif")
+font_weight = 700
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_disabled"]
 content_margin_left = 8.0
 content_margin_top = 6.0
@@ -82,12 +86,13 @@ corner_radius_bottom_left = 8
 
 [resource]
 default_font_size = 14
-Button/colors/font_color = Color(0.922, 0.851, 0.737, 1)
+Button/colors/font_color = Color(1, 1, 1, 1)
 Button/colors/font_disabled_color = Color(0.922, 0.851, 0.737, 0.5)
 Button/colors/font_focus_color = Color(0.949, 0.655, 0.353, 1)
 Button/colors/font_hover_color = Color(0.922, 0.851, 0.737, 1)
 Button/colors/font_pressed_color = Color(0.949, 0.655, 0.353, 1)
-Button/font_sizes/font_size = 16
+Button/font_sizes/font_size = 24
+Button/fonts/font = SubResource("SystemFont_cpw5n")
 Button/styles/disabled = SubResource("StyleBoxFlat_button_disabled")
 Button/styles/focus = SubResource("StyleBoxFlat_button_hover")
 Button/styles/hover = SubResource("StyleBoxFlat_button_hover")
