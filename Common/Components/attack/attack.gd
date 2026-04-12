@@ -90,40 +90,42 @@ func _on_AttackTimer_timeout():
 
 ## Returns true if a critical hit should occur based on attack_effect.crit_chance.
 func _roll_crit() -> bool:
-  if attack_effect == null:
-    return false
+  assert(attack_effect != null, "Attack effect resource must be assigned to roll for critical hits.")
   return randf() < attack_effect.crit_chance
 
 ## Applies splash damage to all enemies within aoe_radius of the primary target,
 ## excluding the primary target itself. Damage is scaled by the aoe_falloff curve
 ## (sampled at normalized distance 0–1) and optionally by the crit multiplier.
 func _apply_aoe_splash(primary_target: Node, is_crit: bool) -> void:
+  assert(attack_effect != null, "Attack effect resource must be assigned to apply AoE splash damage.")
+
   if primary_target is not Node3D:
     return
   var target_pos: Vector3 = (primary_target as Node3D).global_position
   var apply_crit_to_splash := is_crit and attack_effect.crit_applies_to_splash
   var base_splash_damage := calculate_damage_amount(apply_crit_to_splash)
 
-  for enemy in get_tree().get_nodes_in_group("enemies"):
-    if enemy == primary_target:
-      continue
-    if enemy is not Node3D:
-      continue
-    var dist: float = (enemy as Node3D).global_position.distance_to(target_pos)
-    if dist > attack_effect.aoe_radius:
-      continue
-    var falloff_mult := 1.0
-    if attack_effect.aoe_falloff:
-      var normalized_dist: float = clamp(dist / attack_effect.aoe_radius, 0.0, 1.0)
-      falloff_mult = max(0.0, attack_effect.aoe_falloff.sample(normalized_dist))
-    var splash_damage := base_splash_damage * falloff_mult
-    if splash_damage <= 0.0:
-      continue
-    if enemy.has_meta("health_component"):
-      var health = enemy.get_meta("health_component")
-      if health is Component_Health:
-        MyLogger.debug("Attack", "AoE splash hit %s for %.1f damage (falloff=%.2f)" % [enemy, splash_damage, falloff_mult])
-        health.take_damage(splash_damage, damage_source)
+  for group in attack_effect.aoe_target_groups:
+    for target in get_tree().get_nodes_in_group(group):
+      if target == primary_target:
+        continue
+      if target is not Node3D:
+        continue
+      var dist: float = (target as Node3D).global_position.distance_to(target_pos)
+      if dist > attack_effect.aoe_radius:
+        continue
+      var falloff_mult := 1.0
+      if attack_effect.aoe_falloff:
+        var normalized_dist: float = clamp(dist / attack_effect.aoe_radius, 0.0, 1.0)
+        falloff_mult = max(0.0, attack_effect.aoe_falloff.sample(normalized_dist))
+      var splash_damage := base_splash_damage * falloff_mult
+      if splash_damage <= 0.0:
+        continue
+      if target.has_meta("health_component"):
+        var health = target.get_meta("health_component")
+        if health is Component_Health:
+          MyLogger.debug("Attack", "AoE splash hit %s for %.1f damage (falloff=%.2f)" % [target, splash_damage, falloff_mult])
+          health.take_damage(splash_damage, damage_source)
 
 func calculate_damage_amount(is_crit: bool = false) -> float:
   assert(attack_effect != null, "Attack effect resource must be assigned to calculate damage.")

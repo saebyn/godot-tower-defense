@@ -18,6 +18,7 @@ extends Resource
 @export var target_desired_distance: float = 4.0 ## Desired distance to target when approaching (navigation stopping distance)
 @export var target_attack_range: float = 4.0 ## Range at which the enemy will attack the primary target
 @export var building_attack_range: float = 6.0 ## Range at which the enemy will start attacking buildings instead of the survivor (if they are closer than the survivor)
+@export var attack_effect: Resource_AttackEffect = null ## Attack effect resource for additional properties
 
 @export_category("Visual Properties")
 @export var skin_material: Material ## Material used for the enemy's skin
