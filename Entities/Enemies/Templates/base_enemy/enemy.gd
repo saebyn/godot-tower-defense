@@ -1,5 +1,7 @@
 extends CharacterBody3D
 
+const CMP_EPSILON = 0.001
+
 @export var movement_speed: float = 2.0
 @export var rotation_speed: float = PI / 3.0 # Radians per second, adjust for faster/slower turning. This is independent of movement speed to ensure the enemy can always turn towards the target effectively.
 @export var path_desired_distance: float = 0.5
