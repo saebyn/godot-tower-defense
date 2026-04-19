@@ -90,6 +90,7 @@ In-depth docs live in the [`docs/`](docs/) directory, including:
 - **[Visual Style Guide](docs/visual_style_guide.md)** - Art direction, color palette, and UI theme
 - **[Logging](docs/LOGGING.md)** - `MyLogger` API reference
 - **[Adding Settings](docs/adding_settings.md)** - How-to guide for new settings
+- **[Links](docs/LINKS.md)** - Helpful resources, tools, and reference links collected during development
 
 ---
 
