@@ -1,6 +1,9 @@
 extends CharacterBody3D
 
+const CMP_EPSILON = 0.001
+
 @export var movement_speed: float = 2.0
+@export var rotation_speed: float = PI / 3.0 # Radians per second, adjust for faster/slower turning. This is independent of movement speed to ensure the enemy can always turn towards the target effectively.
 @export var path_desired_distance: float = 0.5
 @export var target_desired_distance: float = 4.0
 @export var target_attack_range: float = 2.0
@@ -241,18 +244,17 @@ func _process(_delta: float) -> void:
     animation_player.play(idle_animation)
 
 
-func _physics_process(_delta):
+func _physics_process(delta: float):
   # Do not query when the map has never synchronized and is empty.
   if NavigationServer3D.map_get_iteration_id(navigation_agent.get_navigation_map()) == 0:
     MyLogger.debug("Enemy.Navigation", "Navigation map is empty, cannot navigate.")
     return
 
-  _update_navigation()
+  _update_navigation(delta)
 
   move_and_slide()
 
-
-func _update_navigation():
+func _update_navigation(delta: float):
   if navigation_agent.is_navigation_finished():
     # Check if we reached the fallback building or if we need to recheck path
     if fallback_building_target and is_instance_valid(fallback_building_target):
@@ -266,18 +268,37 @@ func _update_navigation():
     
     velocity = Vector3.ZERO
   else:
-    var next_path_position: Vector3 = navigation_agent.get_next_path_position()
+    var next_path_position := navigation_agent.get_next_path_position()
+
+    var local_current_look_position := Vector3.MODEL_FRONT
 
     # Move directly without avoidance
-    var direction: Vector3 = global_position.direction_to(next_path_position)
+    var direction := global_position.direction_to(next_path_position)
     velocity = direction * movement_speed
 
-    # if we are moving, face the direction we are moving
-    if velocity.length() > 0.01:
-      var look_at_position := Vector3(next_path_position.x, global_position.y, next_path_position.z)
-      look_at(look_at_position, Vector3.UP, true)
+    var global_target_look_position := Vector3(next_path_position)
+    global_target_look_position.y = global_position.y # Keep the look direction horizontal
+    var local_target_look_position := to_local(global_target_look_position)
 
+    # If the target look vector is effectively zero, we are already aligned for this frame.
+    if local_target_look_position.length_squared() <= CMP_EPSILON * CMP_EPSILON:
+      return
 
+    local_target_look_position = local_target_look_position.normalized()
+
+    var radians_to_target := local_current_look_position.angle_to(local_target_look_position)
+
+    # Avoid division by zero and unnecessary interpolation when already facing the target.
+    if radians_to_target <= CMP_EPSILON:
+      return
+    var elapsed_rotation := rotation_speed * delta
+    var rotation_fraction := clampf(elapsed_rotation / radians_to_target, 0, 1)
+
+    var interpolated_look_position := to_global(local_current_look_position.slerp(local_target_look_position, rotation_fraction))
+
+    look_at(interpolated_look_position, Vector3.UP, true)
+
+    
 func _on_died(damage_source: String = "unknown"):
   MyLogger.info("Enemy", "Enemy (%s) died from %s, removing from scene" % [enemy_type, damage_source])
   
