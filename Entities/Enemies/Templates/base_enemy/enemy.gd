@@ -276,9 +276,19 @@ func _update_navigation(delta: float):
 
     var global_target_look_position := Vector3(next_path_position)
     global_target_look_position.y = global_position.y # Keep the look direction horizontal
-    var local_target_look_position := to_local(global_target_look_position).normalized()
+    var local_target_look_position := to_local(global_target_look_position)
+
+    # If the target look vector is effectively zero, we are already aligned for this frame.
+    if local_target_look_position.length_squared() <= CMP_EPSILON * CMP_EPSILON:
+      return
+
+    local_target_look_position = local_target_look_position.normalized()
 
     var radians_to_target := local_current_look_position.angle_to(local_target_look_position)
+
+    # Avoid division by zero and unnecessary interpolation when already facing the target.
+    if radians_to_target <= CMP_EPSILON:
+      return
     var elapsed_rotation := rotation_speed * delta
     var rotation_fraction := clampf(elapsed_rotation / radians_to_target, 0, 1)
 
