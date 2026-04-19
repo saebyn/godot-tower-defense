@@ -1,7 +1,7 @@
 extends CharacterBody3D
 
 @export var movement_speed: float = 2.0
-@export var rotation_speed: float = 10.0 ## Rotation interpolation speed for smooth turning (higher = faster rotation)
+@export var rotation_speed: float = PI / 3.0 # Radians per second, adjust for faster/slower turning. This is independent of movement speed to ensure the enemy can always turn towards the target effectively.
 @export var path_desired_distance: float = 0.5
 @export var target_desired_distance: float = 4.0
 @export var target_attack_range: float = 2.0
@@ -252,7 +252,6 @@ func _physics_process(delta: float):
 
   move_and_slide()
 
-
 func _update_navigation(delta: float):
   if navigation_agent.is_navigation_finished():
     # Check if we reached the fallback building or if we need to recheck path
@@ -267,18 +266,27 @@ func _update_navigation(delta: float):
     
     velocity = Vector3.ZERO
   else:
-    var next_path_position: Vector3 = navigation_agent.get_next_path_position()
+    var next_path_position := navigation_agent.get_next_path_position()
+
+    var local_current_look_position := Vector3.MODEL_FRONT
 
     # Move directly without avoidance
-    var direction: Vector3 = global_position.direction_to(next_path_position)
+    var direction := global_position.direction_to(next_path_position)
     velocity = direction * movement_speed
 
-    # if we are moving, smoothly rotate to face the direction we are moving
-    if velocity.length() > 0.01:
-      var target_basis := Basis.looking_at(direction, Vector3.UP)
-      basis = basis.slerp(target_basis, clampf(rotation_speed * delta, 0.0, 1.0))
+    var global_target_look_position := Vector3(next_path_position)
+    global_target_look_position.y = global_position.y # Keep the look direction horizontal
+    var local_target_look_position := to_local(global_target_look_position).normalized()
 
+    var radians_to_target := local_current_look_position.angle_to(local_target_look_position)
+    var elapsed_rotation := rotation_speed * delta
+    var rotation_fraction := clampf(elapsed_rotation / radians_to_target, 0, 1)
 
+    var interpolated_look_position := to_global(local_current_look_position.slerp(local_target_look_position, rotation_fraction))
+
+    look_at(interpolated_look_position, Vector3.UP, true)
+
+    
 func _on_died(damage_source: String = "unknown"):
   MyLogger.info("Enemy", "Enemy (%s) died from %s, removing from scene" % [enemy_type, damage_source])
   
