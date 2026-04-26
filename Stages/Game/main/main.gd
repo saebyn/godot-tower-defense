@@ -3,6 +3,7 @@ extends Node3D
 signal enemy_attacked ## Emitted when the player clicks to attack an enemy; re-emitted from PlayerInputController
 signal enemy_appeared ## Emitted when an enemy is visible to the player for the first time
 signal building_placed ## Emitted when a building is successfully placed in the world; re-emitted from BuildingPlacement
+signal wave_cleared ## Emitted when a wave is fully cleared; proxied from ScenarioManager.wave_changed
 
 @onready var camera: Camera3D = $Camera3D
 @onready var ui: MainUI = $UI
@@ -26,6 +27,9 @@ func _ready() -> void:
 
   # Re-emit building_placed from BuildingPlacement so scenarios can connect to it on main
   building_placement.building_placed.connect(func(): building_placed.emit())
+
+  # Proxy wave_changed from ScenarioManager as wave_cleared
+  ScenarioManager.wave_changed.connect(func(_wave): wave_cleared.emit())
 
   # Load the appropriate scenario dynamically
   _load_scenario()
