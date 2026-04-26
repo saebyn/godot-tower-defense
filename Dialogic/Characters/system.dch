@@ -2,7 +2,7 @@
 "@path": "res://addons/dialogic/Resources/character.gd",
 "@subpath": NodePath(""),
 &"_translation_id": "",
-&"color": Color(0.972549, 0.83137256, 0, 1),
+&"color": Color(1, 1, 1, 1),
 &"custom_info": {
 "prefix": "",
 "sound_mood_default": "",
@@ -21,21 +21,22 @@
 "style": "Style",
 "suffix": ""
 },
-&"default_portrait": "Portrait 2",
-&"description": "A survivor who guides the player through Scenario 1",
-&"display_name": "Survivor",
+&"default_portrait": "New portrait",
+&"description": "",
+&"display_name": "System",
 &"mirror": false,
 &"nicknames": [""],
 &"offset": Vector2(0, 0),
 &"portraits": {
-"Portrait 2": {
+"New portrait": {
 "export_overrides": {
 "image": "\"res://Assets/Textures/bot_sprite.png\""
 },
 "mirror": false,
 "offset": Vector2(0, 0),
 "scale": 1,
-"scene": "res://addons/dialogic/Modules/HighlightPortrait/simple_highlight_portrait.tscn"
+"scene": "res://addons/dialogic/Modules/HighlightPortrait/simple_highlight_portrait.tscn",
+"sound_mood": "Mood 1"
 }
 },
 &"scale": 1.0

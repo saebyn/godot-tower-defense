@@ -46,14 +46,10 @@ Dialogic="*uid://ds2q0uclmolvu"
 [dialogic]
 
 directories/dch_directory={
-"survivor": "res://Dialogic/Characters/survivor.dch"
+"survivor": "res://Dialogic/Characters/survivor.dch",
+"system": "res://Dialogic/Characters/system.dch"
 }
 directories/dtl_directory={
-"scenario_1_intro": "res://Dialogic/Timelines/scenario_1_intro.dtl",
-"scenario_1_tut_attack": "res://Dialogic/Timelines/scenario_1_tut_attack.dtl",
-"scenario_1_tut_building": "res://Dialogic/Timelines/scenario_1_tut_building.dtl",
-"scenario_1_tut_read_ui": "res://Dialogic/Timelines/scenario_1_tut_read_ui.dtl",
-"scenario_1_tut_tech_tree": "res://Dialogic/Timelines/scenario_1_tut_tech_tree.dtl",
 "scenario_1_tut_welcome": "res://Dialogic/Timelines/scenario_1_tut_welcome.dtl"
 }
 layout/style_directory={
@@ -95,8 +91,11 @@ audio/channel_defaults={
 }
 layout/style_list=["res://Dialogic/Style.tres"]
 layout/default_style="res://Dialogic/Style.tres"
-variables={}
+variables={
+"show_tutorial": true
+}
 glossary/default_case_sensitive=true
+portraits/default_portrait="res://addons/dialogic/Modules/Character/default_portrait.tscn"
 
 [editor_plugins]
 

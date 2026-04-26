@@ -1,5 +1,56 @@
-Survivor: "Hey! You look new around here. Want me to walk you through the basics real quick?"
-- Yes, show me the ropes!
-	[signal arg="tutorial_accepted"]
-- No thanks, I've got this.
-	[signal arg="tutorial_skipped"]
+do GameManager.pause_game()
+survivor: Another day, another horde of the undead...
+survivor: They just keep coming. First a few stragglers, then entire waves.
+survivor: I can't hold them off alone. Whatever you do — keep them away from me.
+if {SettingsManager.tutorial_enabled} == true:
+	survivor: Hey! You look new around here. Want me to walk you through the basics real quick?
+	- Yes, show me the ropes!
+		do GameManager.pause_game()
+		survivor: Good! Let me point out a few things on the screen.
+		survivor: Top-left is your [b]Scrap[/b] counter — that's your currency for building. Defeat zombies to earn more!
+		survivor: Your [b]XP and Level[/b] are shown there too. Level up to unlock stronger gear.
+		survivor: And the [b]wave counter[/b] up top tells you how many waves are left. Stay sharp!
+		do GameManager.resume_game()
+		do GameManager.hide_dialog()
+		do GameManager.wait_for_enemy_appeared()
+		[wait time="1.0"]
+		do GameManager.pause_game()
+		do GameManager.show_dialog()
+		survivor: See that zombie? [b]Left-click[/b] on that walking corpse to hit it!
+		survivor: Go on, give it a try. I'll wait right here.
+		do GameManager.resume_game()
+		do GameManager.hide_dialog()
+		do GameManager.wait_for_enemy_attacked()
+		do GameManager.pause_game()
+		do GameManager.show_dialog()
+		survivor: Good job! Lot's more where that one came from though...
+		do GameManager.resume_game()
+		do GameManager.hide_dialog()
+		# Wait for the player to defeat the first wave here before moving on
+		do GameManager.wait_for_wave_cleared()
+		do GameManager.pause_game()
+		do GameManager.show_dialog()
+		survivor: Excellent! But your fingers are going to get tired at this rate.
+		survivor: Let's set up some defenses to help out. You'll need to build some structures to keep the zombies at bay.
+		survivor: Press [b]Y[/b] to open the [b]Tech Tree[/b] or click the [b]Tech Tree button[/b] in the bottom-right corner of the screen.
+		survivor: From there, you can research new buildings and upgrades to help you survive. Check out the [b]Scrap Shooter[/b] — it's a great starting point for your defenses!
+		system: Unlock the Scrap Shooter in the Tech Tree to continue the tutorial.
+		do GameManager.resume_game()
+		do GameManager.hide_dialog()
+		do GameManager.wait_for_tech_unlocked("tur_scrap_shooter")
+		do GameManager.pause_game()
+		do GameManager.show_dialog()
+		survivor: Very good, next let's place one of those Scrap Shooters on the field to start defending ourselves.
+		survivor: [b]Select a building[/b] from the hotbar at the bottom of the screen.
+		survivor: Then [b]left-click on the ground[/b] to place it. Give it a try!
+		do GameManager.resume_game()
+		do GameManager.hide_dialog()
+		do GameManager.wait_for_building_placed()
+		do GameManager.pause_game()
+		do GameManager.show_dialog()
+		survivor: Alright, that's most of the important stuff. Now get out there and defend me!
+		system: Unpause the game to start confronting the horde. Good luck!
+	- No thanks, I've got this.
+		set {SettingsManager.tutorial_enabled} = false
+		do SettingsManager.save_settings()
+		[end_timeline]
