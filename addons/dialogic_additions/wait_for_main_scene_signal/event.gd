@@ -1,6 +1,6 @@
 @tool
 class_name ZomNomWaitForMainSceneSignalEvent
-extends DialogicEvent
+extends ZomNomWaitEvent
 
 ## Pauses timeline execution until a named signal fires on the main scene.
 ## The main scene must declare the signal (see main.gd).
@@ -17,15 +17,7 @@ const MAIN_SCENE_SIGNALS := ["enemy_appeared", "enemy_attacked", "building_place
 
 #region EXECUTE
 ################################################################################
-
-func _execute() -> void:
-  dialogic.Text.hide_textbox()
-  await _wait_for_signal()
-  dialogic.Text.show_textbox()
-  finish()
-
-
-func _wait_for_signal() -> void:
+func _wait() -> void:
   var main_scene := dialogic.get_tree().current_scene
   if main_scene == null or not main_scene.has_signal(signal_name):
     push_error("[ZomNom] WaitForMainSceneSignal: main scene does not have signal '%s'" % signal_name)

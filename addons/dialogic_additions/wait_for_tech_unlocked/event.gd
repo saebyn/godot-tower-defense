@@ -1,6 +1,6 @@
 @tool
 class_name ZomNomWaitForTechUnlockedEvent
-extends DialogicEvent
+extends ZomNomWaitEvent
 
 ## Pauses timeline execution until a specific tech node is unlocked.
 ## If the tech is already unlocked, continues immediately.
@@ -14,15 +14,7 @@ var tech_id: String = ""
 
 #region EXECUTE
 ################################################################################
-
-func _execute() -> void:
-  dialogic.Text.hide_textbox()
-  await _wait_for_tech()
-  dialogic.Text.show_textbox()
-  finish()
-
-
-func _wait_for_tech() -> void:
+func _wait() -> void:
   if tech_id.is_empty():
     push_error("[ZomNom] WaitForTechUnlocked: tech_id is empty.")
     return
