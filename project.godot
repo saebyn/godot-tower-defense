@@ -91,9 +91,6 @@ audio/channel_defaults={
 }
 layout/style_list=["res://Dialogic/Style.tres"]
 layout/default_style="res://Dialogic/Style.tres"
-variables={
-"show_tutorial": true
-}
 glossary/default_case_sensitive=true
 portraits/default_portrait="res://addons/dialogic/Modules/Character/default_portrait.tscn"
 

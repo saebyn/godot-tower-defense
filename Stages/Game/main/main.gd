@@ -29,7 +29,7 @@ func _ready() -> void:
   building_placement.building_placed.connect(func(): building_placed.emit())
 
   # Proxy wave_changed from ScenarioManager as wave_cleared
-  ScenarioManager.wave_changed.connect(func(_wave): wave_cleared.emit())
+  ScenarioManager.wave_changed.connect(func(_scenario_id, _wave): wave_cleared.emit())
 
   # Load the appropriate scenario dynamically
   _load_scenario()

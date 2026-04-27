@@ -19,7 +19,7 @@ if {SettingsManager.tutorial_enabled} == true:
 		do GameManager.resume_game()
 		[zomnom_wait_main_signal signal="enemy_attacked"]
 		do GameManager.pause_game()
-		survivor: Good job! Lot's more where that one came from though...
+		survivor: Good job! Lots more where that one came from though...
 		do GameManager.resume_game()
 		# Wait for the player to defeat the first wave here before moving on
 		[zomnom_wait_main_signal signal="wave_cleared"]
@@ -43,4 +43,5 @@ if {SettingsManager.tutorial_enabled} == true:
 	- No thanks, I've got this.
 		set {SettingsManager.tutorial_enabled} = false
 		do SettingsManager.save_settings()
+		do GameManager.resume_game()
 		[end_timeline]

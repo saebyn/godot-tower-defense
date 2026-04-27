@@ -11,15 +11,15 @@ extends DialogicEvent
 ################################################################################
 
 func _execute() -> void:
-	dialogic.Text.hide_textbox()
-	await _wait()
-	dialogic.Text.show_textbox()
-	finish()
+  dialogic.Text.hide_textbox()
+  await _wait()
+  dialogic.Text.show_textbox()
+  finish()
 
 
 ## Override in subclasses to implement the actual wait condition.
 ## This method should contain an await expression.
 func _wait() -> void:
-	pass
+  pass
 
 #endregion

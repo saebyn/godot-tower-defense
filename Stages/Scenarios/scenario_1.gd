@@ -21,8 +21,6 @@ func _start_intro_dialog() -> void:
     MyLogger.warn("Scenario1", "Dialogic autoload not found — skipping dialog")
     return
 
-  Dialogic.VAR.show_tutorial = SettingsManager.tutorial_enabled
-  
   Dialogic.process_mode = Node.PROCESS_MODE_ALWAYS
   var layout: Node = Dialogic.start(TIMELINE)
   if layout:
