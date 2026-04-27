@@ -78,14 +78,15 @@ func _handle_enemy_click(click_position: Vector2) -> void:
   if _enemy_raycast.is_colliding():
     var collider = _enemy_raycast.get_collider()
     MyLogger.debug("PlayerInput", "Clicked on: %s" % collider.name)
+
+    var result = attack.perform_attack(collider)
     # Only count as an enemy click if the collider is actually an enemy,
-    # not other attackable things like scrap pickups
+    # not other attackable things like scrap pickups.
+    # We check the collider's group instead of class to allow for more flexible enemy implementations.
     if collider.is_in_group("enemies"):
       StatsManager.track_enemy_click()
-    # If the collider is an enemy, perform an attack
-    var result = attack.perform_attack(collider)
-    if result == Component_Attack.AttackResult.SUCCESS:
-      enemy_attacked.emit()
+      if result == Component_Attack.AttackResult.SUCCESS:
+        enemy_attacked.emit()
 
   # Disable the enemy raycast after use
   _enemy_raycast.enabled = false
