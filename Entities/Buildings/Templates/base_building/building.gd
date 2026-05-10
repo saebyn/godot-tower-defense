@@ -197,8 +197,6 @@ func set_preview_material(material: Material) -> void:
 ## 4. **Adds to navigation group**: Adds this building to the group specified by `navigation_obstacle_group` for navigation mesh updates.
 ##
 ## Call this method after the building has been positioned and is ready to be placed in the world.
-##
-## @param navigation_region The NavigationRegion3D to which the navigation obstacle will be added.
 func place() -> void:
   MyLogger.info("Building", "place() called. building_type: %s" % ("null" if not building_type else building_type.name))
   if not is_inside_tree():

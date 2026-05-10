@@ -31,9 +31,9 @@ func _ready():
     _setup_detection_timer()
 
 
-func place(navigation_region: NavigationRegion3D) -> void:
+func place() -> void:
   var was_preview := is_preview
-  super.place(navigation_region)
+  super.place()
   if was_preview and not is_preview and is_inside_tree():
     _setup_detection_timer()
 
