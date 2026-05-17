@@ -14,16 +14,6 @@
 [ext_resource type="Script" uid="uid://n3ujk5q2bgka" path="res://Stages/Game/main/hover_controller.gd" id="13_hover_ctrl"]
 [ext_resource type="Script" uid="uid://bar612768j6wn" path="res://Stages/Game/main/player_input_controller.gd" id="14_player_input"]
 
-[sub_resource type="NavigationMesh" id="NavigationMesh_pcgyj"]
-geometry_parsed_geometry_type = 1
-geometry_collision_mask = 48
-geometry_source_geometry_mode = 1
-cell_size = 1.0
-agent_height = 5.0
-agent_radius = 1.0
-agent_max_climb = 1.0
-agent_max_slope = 59.58
-
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_i0vvu"]
 
 [sub_resource type="Compositor" id="Compositor_hjeu7"]
@@ -58,16 +48,12 @@ camera_max_size = 300.0
 script = ExtResource("8_audio_listener")
 camera = NodePath("../Camera3D")
 
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=609461712]
-navigation_mesh = SubResource("NavigationMesh_pcgyj")
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=148050919]
 camera_attributes = SubResource("CameraAttributesPractical_i0vvu")
 compositor = SubResource("Compositor_hjeu7")
 
-[node name="BuildingPlacement" parent="." unique_id=977494137 node_paths=PackedStringArray("audio_player", "navigation_region", "camera") instance=ExtResource("7_kek77")]
+[node name="BuildingPlacement" parent="." unique_id=977494137 node_paths=PackedStringArray("audio_player", "camera") instance=ExtResource("7_kek77")]
 audio_player = NodePath("../AudioStreamPlayer")
-navigation_region = NodePath("../NavigationRegion3D")
 camera = NodePath("../Camera3D")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=704157109]
@@ -83,10 +69,8 @@ permission_level = 31
 user_cooldown = 10.0
 metadata/_custom_type_script = "uid://bmluckfvgm1c2"
 
-[node name="NavigationController" type="Node" parent="." unique_id=300000001 node_paths=PackedStringArray("ui", "navigation_region")]
+[node name="NavigationController" type="Node" parent="." unique_id=300000001]
 script = ExtResource("11_nav_ctrl")
-ui = NodePath("../UI")
-navigation_region = NodePath("../NavigationRegion3D")
 
 [node name="TwitchGameBridge" type="Node" parent="." unique_id=300000002]
 script = ExtResource("12_twitch_bridge")
