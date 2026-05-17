@@ -336,6 +336,10 @@ dialogic_default_action={
 3d_physics/layer_5="Ground"
 3d_physics/layer_6="Buildings"
 
+[navigation]
+
+3d/default_edge_connection_margin=10.0
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
@@ -356,3 +360,5 @@ logs/Http="info"
 
 debug/show_debug_panel=true
 debug/bypass_tech_requirements=true
+logging/log_level=1
+debug/show_navigation_paths=true

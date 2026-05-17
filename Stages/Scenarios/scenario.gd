@@ -24,6 +24,12 @@ var timer_started: bool = false # Whether timer has been started at all
 
 var survivor_count: int = 1
 
+## List of navigation regions in the scene, used for rebaking when buildings are placed/destroyed
+var navigation_regions: Array[NavigationRegion3D] = []
+## Tracks whether a rebake coroutine is already in progress to prevent overlapping bakes.
+var _rebake_in_progress: bool = false
+
+
 
 func _enter_tree() -> void:
   # Reset profile assignment index before any survivor nodes' _ready() runs.
@@ -48,6 +54,12 @@ func _ready() -> void:
   # Count the number of survivors at start
   survivor_count = get_tree().get_nodes_in_group("survivors").size()
   MyLogger.info("Scenario", "Scenario started with %d survivors" % survivor_count)
+
+  # Find the navigation regions in the scene and store references to them
+  navigation_regions.assign(find_children("*", "NavigationRegion3D", false))
+
+  GameManager.navigation_mesh_bake.connect(_rebake_navigation_mesh)
+
 
 func get_transformed_aabb() -> AABB:
   # Get the scenario's local AABB and transform it to world space
@@ -237,9 +249,55 @@ func _reclaim_all_buildings() -> Dictionary:
 func _apply_environment() -> void:
   # Look for WorldEnvironment in the scene tree root
   var world_env = get_tree().root.get_node_or_null("Main/WorldEnvironment")
-  
+ 
   if world_env and world_env is WorldEnvironment:
     world_env.environment = scenario_environment
     MyLogger.info("Scenario", "Applied custom environment to WorldEnvironment")
   else:
     MyLogger.warn("Scenario", "No WorldEnvironment found at 'Main/WorldEnvironment' - cannot apply scenario environment")
+
+
+## We are going to have a queue of navigation regions to rebake
+## The items on the queue represent regions that we have not started rebaking yet
+## So, if the region is already in the queue, then we don't need to add it again
+var rebake_queue: Array[NavigationRegion3D] = []
+
+func process_next_regions() -> void:
+  # Wait for any previous calls to finish
+  while _rebake_in_progress:
+    await get_tree().process_frame
+
+  _rebake_in_progress = true
+  var working_items: Array[NavigationRegion3D] = []
+  # take items from the queue that are not baking
+  for region in rebake_queue:
+    if not region.is_baking():
+      working_items.append(region)
+      rebake_queue.erase(region)
+
+  # listen for the signals for all the working items
+  # and then start the baking
+  for region in working_items:
+    region.bake_finished.connect(func (): working_items.erase(region)
+      ,
+      ConnectFlags.CONNECT_ONE_SHOT
+    )
+    region.bake_navigation_mesh()
+
+  # wait for all items to finish baking
+  while working_items.size() > 0:
+    await get_tree().process_frame
+
+  _rebake_in_progress = false
+
+## Private method to request a rebake of the navigation mesh for all regions
+##
+## This method will add all navigation regions to the rebake queue if they
+## are not already in it, and then start processing the queue.
+func _rebake_navigation_mesh() -> void:
+  for region in navigation_regions:
+    if not rebake_queue.has(region):
+      rebake_queue.append(region)
+
+  process_next_regions()
+
