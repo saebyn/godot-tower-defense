@@ -20,7 +20,6 @@ orientation = 1
 [sub_resource type="NavigationMesh" id="NavigationMesh_7i27l"]
 vertices = PackedVector3Array(-499.5, 0.5, -166, -499.5, 0.5, 166, 499.5, 0.5, 166, 499.5, 0.5, -166)
 polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
-geometry_parsed_geometry_type = 1
 geometry_collision_mask = 4278190128
 border_size = 1.0
 edge_max_error = 0.1
@@ -39,7 +38,6 @@ data = PackedVector3Array(-500, 0.049999997, 166.5, 500, 0.049999997, 166.5, -50
 [sub_resource type="NavigationMesh" id="NavigationMesh_tooj4"]
 vertices = PackedVector3Array(-499.5, 0.5, -166, -499.5, 0.5, 166.25, 499.5, 0.5, 166.25, 499.5, 0.5, -166)
 polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
-geometry_parsed_geometry_type = 1
 geometry_collision_mask = 4278190128
 border_size = 1.0
 edge_max_error = 0.1
@@ -55,7 +53,6 @@ size = Vector3(1000, 0.1, 333)
 [sub_resource type="NavigationMesh" id="NavigationMesh_68ope"]
 vertices = PackedVector3Array(-499.5, 0.5, -166, -499.5, 0.5, 166, 499.5, 0.5, 166, 499.5, 0.5, -166)
 polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
-geometry_parsed_geometry_type = 1
 geometry_collision_mask = 4278190128
 edge_max_error = 0.1
 filter_baking_aabb = AABB(-505, 0, -171, 1010, 50, 343)

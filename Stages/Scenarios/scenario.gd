@@ -301,3 +301,32 @@ func _rebake_navigation_mesh() -> void:
 
   process_next_regions()
 
+
+func place_building(building: Entity_PlaceableBuilding) -> void:
+  var original_transform = building.global_transform
+  if building.get_parent() != null:
+    building.get_parent().remove_child(building)
+  add_child(building)
+  building.global_transform = original_transform # Preserve world position/rotation after reparenting
+
+  var building_aabb = building.transform * building.get_aabb()
+  MyLogger.debug("Scenario", "Placing building '%s' with AABB %s at position %s" % [building.name, building_aabb, building.transform.origin])
+  # Find navigation region that contains the building
+  var target_region: NavigationRegion3D = null
+  for region in navigation_regions:
+    var region_bounds = region.transform * region.navigation_mesh.filter_baking_aabb
+    MyLogger.debug("Scenario", "Checking building placement against region '%s' with bounds %s" % [region.name, region_bounds])
+    if region_bounds.intersects(building_aabb):
+      target_region = region
+      break
+
+  if target_region == null:
+    MyLogger.error("Scenario", "No navigation region found for building placement at %s" % building.transform.origin)
+    return
+
+  MyLogger.debug("Scenario", "Building '%s' intersects with navigation region '%s', placing building and rebaking navigation mesh" % [building.name, target_region.name])
+  remove_child(building) # Remove from scenario root
+  target_region.add_child(building) # Add to navigation region for proper rebaking
+  building.global_transform = original_transform # Preserve world position/rotation after reparenting
+  building.place()
+  _rebake_navigation_mesh()

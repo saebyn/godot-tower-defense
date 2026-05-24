@@ -138,7 +138,7 @@ func _log(level: LogLevel, scope: String, message: String) -> void:
   # Format the log message
   var level_name = _log_level_names[level]
   var color_tag = _log_level_colors[level]
-  var formatted_message = "%s[%s] [%s] %s: %s[/color]" % [
+  var formatted_message = "%s[%s] [%s] [%s]: %s[/color]" % [
     color_tag, timestamp, level_name, scope, message
   ]
   

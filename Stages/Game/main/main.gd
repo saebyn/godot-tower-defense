@@ -26,7 +26,7 @@ func _ready() -> void:
   player_input_controller.enemy_attacked.connect(func(): enemy_attacked.emit())
 
   # Re-emit building_placed from BuildingPlacement so scenarios can connect to it on main
-  building_placement.building_placed.connect(func(): building_placed.emit())
+  building_placement.building_placed.connect(_on_building_placed)
 
   # Proxy wave_changed from ScenarioManager as wave_cleared
   ScenarioManager.wave_changed.connect(func(_scenario_id, _wave): wave_cleared.emit())
@@ -47,6 +47,15 @@ func _process(_delta: float) -> void:
         has_seen_enemy = true
         enemy_appeared.emit()
         break
+
+
+func _on_building_placed(building: Entity_PlaceableBuilding) -> void:
+  assert(building != null, "Building cannot be null when placed")
+  assert(current_scenario != null, "Current scenario must be loaded before placing buildings")
+
+  MyLogger.info("Main", "Building placed: %s" % building.name)
+  current_scenario.place_building(building)
+  building_placed.emit()
 
 
 func _load_scenario() -> void:
