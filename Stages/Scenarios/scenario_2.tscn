@@ -169,6 +169,8 @@ vertex_color_use_as_albedo = true
 albedo_color = Color(0.173887, 0.202016, 0.0856823, 1)
 normal_enabled = true
 
+[sub_resource type="NavigationMesh" id="NavigationMesh_3mp6f"]
+
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_wwkb3"]
 data = PackedVector3Array(-50, 0.05, 50, 50, 0.05, 50, -50, -0.05, 50, 50, 0.05, 50, 50, -0.05, 50, -50, -0.05, 50, 50, 0.05, -50, -50, 0.05, -50, 50, -0.05, -50, -50, 0.05, -50, -50, -0.05, -50, 50, -0.05, -50, 50, 0.05, 50, 50, 0.05, -50, 50, -0.05, 50, 50, 0.05, -50, 50, -0.05, -50, 50, -0.05, 50, -50, 0.05, -50, -50, 0.05, 50, -50, -0.05, -50, -50, 0.05, 50, -50, -0.05, 50, -50, -0.05, -50, 50, 0.05, 50, -50, 0.05, 50, 50, 0.05, -50, -50, 0.05, 50, -50, 0.05, -50, 50, 0.05, -50, -50, -0.05, 50, 50, -0.05, 50, -50, -0.05, -50, 50, -0.05, 50, 50, -0.05, -50, -50, -0.05, -50)
 
@@ -300,14 +302,6 @@ metadata/_custom_type_script = "uid://b7jdk6preu1s4"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
 mesh = SubResource("BoxMesh_o7r5u")
 surface_material_override/0 = SubResource("StandardMaterial3D_0dvov")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=2053376560 groups=["navigation_mesh_source_group"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
-collision_layer = 17
-collision_mask = 0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=155931055]
-shape = SubResource("ConcavePolygonShape3D_wwkb3")
 
 [node name="Survivor1" parent="." unique_id=1650114792 instance=ExtResource("5_o7r5u")]
 transform = Transform3D(0.685158, 0, -0.728396, 0, 1, 0, 0.728396, 0, 0.685158, 3.86399, 0, -3.75701)
@@ -461,5 +455,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.4055, 0, 35.7571)
 
 [node name="rock_019" parent="rock_collection" index="19"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.3652, 0, -13.8245)
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=982023613]
+navigation_mesh = SubResource("NavigationMesh_3mp6f")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D" unique_id=2053376560 groups=["navigation_mesh_source_group"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+collision_layer = 17
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/StaticBody3D" unique_id=155931055]
+shape = SubResource("ConcavePolygonShape3D_wwkb3")
 
 [editable path="rock_collection"]

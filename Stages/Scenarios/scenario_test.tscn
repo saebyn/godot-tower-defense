@@ -13,16 +13,49 @@
 [ext_resource type="PackedScene" uid="uid://b1yehhqyw2nfo" path="res://Entities/Survivors/Templates/base_survivor/survivor.tscn" id="25_jmqwo"]
 [ext_resource type="Material" uid="uid://b80m8n51hna4r" path="res://Assets/Textures/survivorFemaleA.material" id="26_3p75d"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_o7r5u"]
-size = Vector3(1000, 0.1, 1000)
+[sub_resource type="QuadMesh" id="QuadMesh_7i27l"]
+size = Vector2(100, 100)
+orientation = 1
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0dvov"]
-vertex_color_use_as_albedo = true
-albedo_color = Color(0.173887, 0.202016, 0.0856823, 1)
-normal_enabled = true
+[sub_resource type="NavigationMesh" id="NavigationMesh_7i27l"]
+vertices = PackedVector3Array(-499.5, 0.5, -166, -499.5, 0.5, 166, 499.5, 0.5, 166, 499.5, 0.5, -166)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+geometry_collision_mask = 4278190128
+border_size = 1.0
+edge_max_error = 0.1
+filter_baking_aabb = AABB(-505, 0, -171, 1010, 50, 343)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7i27l"]
+albedo_color = Color(0.00049574673, 0.16371828, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_o7r5u"]
+material = SubResource("StandardMaterial3D_7i27l")
+size = Vector3(1000, 0.1, 333)
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_7i27l"]
-data = PackedVector3Array(-500, 0.05, 500, 500, 0.05, 500, -500, -0.05, 500, 500, 0.05, 500, 500, -0.05, 500, -500, -0.05, 500, 500, 0.05, -500, -500, 0.05, -500, 500, -0.05, -500, -500, 0.05, -500, -500, -0.05, -500, 500, -0.05, -500, 500, 0.05, 500, 500, 0.05, -500, 500, -0.05, 500, 500, 0.05, -500, 500, -0.05, -500, 500, -0.05, 500, -500, 0.05, -500, -500, 0.05, 500, -500, -0.05, -500, -500, 0.05, 500, -500, -0.05, 500, -500, -0.05, -500, 500, 0.05, 500, -500, 0.05, 500, 500, 0.05, -500, -500, 0.05, 500, -500, 0.05, -500, 500, 0.05, -500, -500, -0.05, 500, 500, -0.05, 500, -500, -0.05, -500, 500, -0.05, 500, 500, -0.05, -500, -500, -0.05, -500)
+data = PackedVector3Array(-500, 0.049999997, 166.5, 500, 0.049999997, 166.5, -500, -0.049999997, 166.5, 500, 0.049999997, 166.5, 500, -0.049999997, 166.5, -500, -0.049999997, 166.5, 500, 0.049999997, -166.5, -500, 0.049999997, -166.5, 500, -0.049999997, -166.5, -500, 0.049999997, -166.5, -500, -0.049999997, -166.5, 500, -0.049999997, -166.5, 500, 0.049999997, 166.5, 500, 0.049999997, -166.5, 500, -0.049999997, 166.5, 500, 0.049999997, -166.5, 500, -0.049999997, -166.5, 500, -0.049999997, 166.5, -500, 0.049999997, -166.5, -500, 0.049999997, 166.5, -500, -0.049999997, -166.5, -500, 0.049999997, 166.5, -500, -0.049999997, 166.5, -500, -0.049999997, -166.5, 500, 0.049999997, 166.5, -500, 0.049999997, 166.5, 500, 0.049999997, -166.5, -500, 0.049999997, 166.5, -500, 0.049999997, -166.5, 500, 0.049999997, -166.5, -500, -0.049999997, 166.5, 500, -0.049999997, 166.5, -500, -0.049999997, -166.5, 500, -0.049999997, 166.5, 500, -0.049999997, -166.5, -500, -0.049999997, -166.5)
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_tooj4"]
+vertices = PackedVector3Array(-499.5, 0.5, -166, -499.5, 0.5, 166.25, 499.5, 0.5, 166.25, 499.5, 0.5, -166)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+geometry_collision_mask = 4278190128
+border_size = 1.0
+edge_max_error = 0.1
+filter_baking_aabb = AABB(-505, 0, -171, 1010, 50, 343)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tooj4"]
+albedo_color = Color(0.27814478, 0.6038053, 3.85046e-07, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_68ope"]
+material = SubResource("StandardMaterial3D_tooj4")
+size = Vector3(1000, 0.1, 333)
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_68ope"]
+vertices = PackedVector3Array(-499.5, 0.5, -166, -499.5, 0.5, 166, 499.5, 0.5, 166, 499.5, 0.5, -166)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+geometry_collision_mask = 4278190128
+edge_max_error = 0.1
+filter_baking_aabb = AABB(-505, 0, -171, 1010, 50, 343)
 
 [node name="scenario_test" type="Node3D" unique_id=1876264623 node_paths=PackedStringArray("enemy_spawner")]
 script = ExtResource("1_rircw")
@@ -43,31 +76,70 @@ directional_shadow_max_distance = 1.0
 
 [node name="System_EnemySpawner" type="Node3D" parent="." unique_id=929204365 node_paths=PackedStringArray("spawn_areas")]
 script = ExtResource("20_5kf32")
-spawn_areas = [NodePath("../Ground")]
+spawn_areas = [NodePath("SpawnArea")]
 metadata/_custom_type_script = "uid://du3d1fs80prdm"
 
 [node name="Wave1" type="Node3D" parent="System_EnemySpawner" unique_id=1860943654]
 script = ExtResource("21_0jh14")
 enemy_types = Array[ExtResource("22_tjpxm")]([ExtResource("23_bofla"), ExtResource("7_tooj4"), ExtResource("8_68ope"), ExtResource("9_4lqb4"), ExtResource("24_yl2xx")])
-enemy_counts = Array[int]([0, 0, 1, 0, 0])
+enemy_counts = Array[int]([1, 0, 0, 0, 0])
 spawn_interval = 0.1
 metadata/_custom_type_script = "uid://b7jdk6preu1s4"
 
-[node name="Ground" type="MeshInstance3D" parent="." unique_id=621594175]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
-mesh = SubResource("BoxMesh_o7r5u")
-surface_material_override/0 = SubResource("StandardMaterial3D_0dvov")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=846321490 groups=["navigation_mesh_source_group"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
-collision_layer = 17
-collision_mask = 0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=537508032]
-shape = SubResource("ConcavePolygonShape3D_7i27l")
+[node name="SpawnArea" type="MeshInstance3D" parent="System_EnemySpawner" unique_id=1162305619]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 345.95264, 0.20286942, -351.96674)
+mesh = SubResource("QuadMesh_7i27l")
+skeleton = NodePath("../..")
 
 [node name="Survivor1" parent="." unique_id=959172171 instance=ExtResource("25_jmqwo")]
-transform = Transform3D(0.685158, 0, -0.728396, 0, 1, 0, 0.728396, 0, 0.685158, 3.86399, 0, -3.75701)
+transform = Transform3D(0.685158, 0, -0.728396, 0, 1, 0, 0.728396, 0, 0.685158, 3.86399, -0.10163331, -3.75701)
 skin_material = ExtResource("26_3p75d")
 hitpoints_override = 100000000000
 voice_pitch = 1.255
+
+[node name="NavigationRegion3D_1" type="NavigationRegion3D" parent="." unique_id=1352270254]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, -333)
+navigation_mesh = SubResource("NavigationMesh_7i27l")
+travel_cost = 10.0
+
+[node name="Ground" type="MeshInstance3D" parent="NavigationRegion3D_1" unique_id=621594175]
+mesh = SubResource("BoxMesh_o7r5u")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D_1/Ground" unique_id=1454049476]
+collision_layer = 17
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D_1/Ground/StaticBody3D" unique_id=1647694662]
+shape = SubResource("ConcavePolygonShape3D_7i27l")
+
+[node name="NavigationRegion3D_2" type="NavigationRegion3D" parent="." unique_id=1280179119]
+navigation_mesh = SubResource("NavigationMesh_tooj4")
+
+[node name="Ground2" type="MeshInstance3D" parent="NavigationRegion3D_2" unique_id=754304218]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.00014444653)
+mesh = SubResource("BoxMesh_68ope")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D_2/Ground2" unique_id=369610538]
+collision_layer = 17
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D_2/Ground2/StaticBody3D" unique_id=1781425872]
+shape = SubResource("ConcavePolygonShape3D_7i27l")
+
+[node name="NavigationRegion3D_3" type="NavigationRegion3D" parent="." unique_id=743570665]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 333)
+navigation_mesh = SubResource("NavigationMesh_68ope")
+travel_cost = 10.0
+
+[node name="Ground3" type="MeshInstance3D" parent="NavigationRegion3D_3" unique_id=913807989]
+mesh = SubResource("BoxMesh_o7r5u")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D_3/Ground3" unique_id=1819568572]
+collision_layer = 17
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D_3/Ground3/StaticBody3D" unique_id=284461483]
+shape = SubResource("ConcavePolygonShape3D_7i27l")

@@ -15,6 +15,8 @@ var current_speed_multiplier: float = 1.0
 
 signal game_state_changed(new_state: GameState)
 signal speed_changed(new_speed: float)
+## Signal emitted when the navigation mesh needs to be rebaked (e.g., after building placement)
+signal navigation_mesh_bake
 
 func set_game_state(new_state: GameState):
     if current_state != new_state:

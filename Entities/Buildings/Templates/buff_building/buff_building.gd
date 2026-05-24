@@ -27,9 +27,9 @@ func _ready():
   buff_timer.timeout.connect(_apply_buffs)
   add_child(buff_timer)
 
-func place(navigation_region: NavigationRegion3D) -> void:
+func place() -> void:
   var was_preview := is_preview
-  super.place(navigation_region)
+  super.place()
   if buff_timer and was_preview and not is_preview:
     buff_timer.start()
 

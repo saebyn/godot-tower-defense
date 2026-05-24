@@ -191,59 +191,17 @@ func set_preview_material(material: Material) -> void:
 ##    - **Requires**: The building must have both a parent and grandparent node in the scene tree.
 ##    - **Errors**: If the scene tree structure is invalid, placement will fail and log an error.
 ## 2. **Exits placement mode**: Enables collisions and the health component, and hides the placement preview.
-## 3. **Creates a NavigationObstacle3D**: Instantiates and configures a NavigationObstacle3D to affect the navigation mesh.
-##    - The obstacle's shape is determined by the combined AABB of its mesh instances.
-##    - The NavigationObstacle3D is added as a child of the provided `navigation_region`.
-## 4. **Adds to navigation group**: Adds this building to the group specified by `navigation_obstacle_group` for navigation mesh updates.
 ##
 ## Call this method after the building has been positioned and is ready to be placed in the world.
-##
-## @param navigation_region The NavigationRegion3D to which the navigation obstacle will be added.
-func place(navigation_region: NavigationRegion3D) -> void:
+func place() -> void:
   MyLogger.info("Building", "place() called. building_type: %s" % ("null" if not building_type else building_type.name))
   if not is_inside_tree():
     MyLogger.error("Building", "PlaceableBuilding must be added to the scene tree before placing.")
     return
 
-  # Reparent to the right place in the scene tree
-  var parent_node = get_parent()
-  var grandparent_node = parent_node.get_parent() if parent_node else null
-  if not grandparent_node:
-    MyLogger.error("Building", "Failed to reparent building: parent or grandparent node missing. Scene tree structure may be invalid.")
-    return
-
   is_preview = false
-  parent_node.remove_child(self )
-  grandparent_node.add_child(self )
 
   _exit_placement_mode()
-
-  # Create NavigationObstacle3D to affect navigation mesh
-  var nav_obstacle := NavigationObstacle3D.new()
-
-  nav_obstacle.affect_navigation_mesh = true
-  nav_obstacle.global_transform = global_transform
-
-  # set the vertices based on the mesh size
-  var size: Vector3 = Vector3.ONE
-  for mesh_instance in mesh_instances:
-    var aabb = mesh_instance.get_aabb()
-    size.x = max(size.x, aabb.size.x * 0.5)
-    size.y = max(size.y, aabb.size.y * 0.5)
-    size.z = max(size.z, aabb.size.z * 0.5)
-
-  nav_obstacle.vertices.append_array([
-    Vector3(-size.x, 0, -size.z),
-    Vector3(size.x, 0, -size.z),
-    Vector3(size.x, 0, size.z),
-    Vector3(-size.x, 0, size.z)
-  ])
-
-  navigation_region.add_child(nav_obstacle)
-  navigation_obstacle = nav_obstacle
-
-  # Ensure the building is in the correct group for navigation
-  add_to_group(navigation_obstacle_group)
 
 
 ## Dictionary to track active buffs on this building.

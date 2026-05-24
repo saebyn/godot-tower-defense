@@ -37,8 +37,12 @@ vertex_color_use_as_albedo = true
 albedo_color = Color(0.54055595, 0.39825687, 0.19080138, 1)
 normal_enabled = true
 
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_8lne4"]
-data = PackedVector3Array(-50, 0.05, 50, 50, 0.05, 50, -50, -0.05, 50, 50, 0.05, 50, 50, -0.05, 50, -50, -0.05, 50, 50, 0.05, -50, -50, 0.05, -50, 50, -0.05, -50, -50, 0.05, -50, -50, -0.05, -50, 50, -0.05, -50, 50, 0.05, 50, 50, 0.05, -50, 50, -0.05, 50, 50, 0.05, -50, 50, -0.05, -50, 50, -0.05, 50, -50, 0.05, -50, -50, 0.05, 50, -50, -0.05, -50, -50, 0.05, 50, -50, -0.05, 50, -50, -0.05, -50, 50, 0.05, 50, -50, 0.05, 50, 50, 0.05, -50, -50, 0.05, 50, -50, 0.05, -50, 50, 0.05, -50, -50, -0.05, 50, 50, -0.05, 50, -50, -0.05, -50, 50, -0.05, 50, 50, -0.05, -50, -50, -0.05, -50)
+[sub_resource type="NavigationMesh" id="NavigationMesh_ebqns"]
+vertices = PackedVector3Array(-149.5, 0.4, -149.5, -149.5, 0.4, 149.5, 149.5, 0.4, 149.5, 149.5, 0.4, -149.5)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_m8tvj"]
+data = PackedVector3Array(-150, 0.049999997, 150, 150, 0.049999997, 150, -150, -0.049999997, 150, 150, 0.049999997, 150, 150, -0.049999997, 150, -150, -0.049999997, 150, 150, 0.049999997, -150, -150, 0.049999997, -150, 150, -0.049999997, -150, -150, 0.049999997, -150, -150, -0.049999997, -150, 150, -0.049999997, -150, 150, 0.049999997, 150, 150, 0.049999997, -150, 150, -0.049999997, 150, 150, 0.049999997, -150, 150, -0.049999997, -150, 150, -0.049999997, 150, -150, 0.049999997, -150, -150, 0.049999997, 150, -150, -0.049999997, -150, -150, 0.049999997, 150, -150, -0.049999997, 150, -150, -0.049999997, -150, 150, 0.049999997, 150, -150, 0.049999997, 150, 150, 0.049999997, -150, -150, 0.049999997, 150, -150, 0.049999997, -150, 150, 0.049999997, -150, -150, -0.049999997, 150, 150, -0.049999997, 150, -150, -0.049999997, -150, 150, -0.049999997, 150, 150, -0.049999997, -150, -150, -0.049999997, -150)
 
 [node name="Stage_Scenario" type="Node3D" unique_id=673340366 node_paths=PackedStringArray("enemy_spawner")]
 script = ExtResource("1_ffud3")
@@ -89,14 +93,6 @@ metadata/_custom_type_script = "uid://b7jdk6preu1s4"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
 mesh = SubResource("BoxMesh_ebqns")
 surface_material_override/0 = SubResource("StandardMaterial3D_m8tvj")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=277694067 groups=["navigation_mesh_source_group"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
-collision_layer = 17
-collision_mask = 0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1866206734]
-shape = SubResource("ConcavePolygonShape3D_8lne4")
 
 [node name="Survivor1" parent="." unique_id=49640128 instance=ExtResource("2_xxlxc")]
 transform = Transform3D(0.8162794, 0, -0.5776592, 0, 1, 0, 0.5776592, 0, 0.8162794, -9.937922, 3.2032154, -9.683429)
@@ -227,6 +223,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.2382793, 0.008174896, -14.
 
 [node name="Scrap2" parent="." unique_id=687780763 instance=ExtResource("12_ebqns")]
 transform = Transform3D(0.79272604, 0, 0.609578, 0, 1, 0, -0.609578, 0, 0.79272604, -7.5853558, 0.008174896, -15.2588)
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=894144721]
+navigation_mesh = SubResource("NavigationMesh_ebqns")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D" unique_id=1572120785]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/StaticBody3D" unique_id=1309351992]
+shape = SubResource("ConcavePolygonShape3D_m8tvj")
 
 [connection signal="died" from="MuscleCar/Health" to="." method="car_destroyed"]
 

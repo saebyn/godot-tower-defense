@@ -4,7 +4,7 @@ class_name Utility_BuildingPlacement
 signal rebake_navigation_mesh
 signal placement_mode_entered ## Emitted when entering building placement mode
 signal placement_mode_exited ## Emitted when exiting building placement mode
-signal building_placed ## Emitted when a building is successfully placed
+signal building_placed(building: Entity_PlaceableBuilding) ## Emitted when a building is successfully placed
 
 @export_group("Placement Settings")
 @export var placement_clearance: float = 3.0 ## Minimum distance from other buildings
@@ -22,7 +22,6 @@ signal building_placed ## Emitted when a building is successfully placed
 @export var raycast_down: Vector3 = Vector3(0, -20, 0) ## Direction and length to cast downwards
 
 @export_group("Node References")
-@export var navigation_region: NavigationRegion3D
 @export var camera: Camera3D
 
 @onready var raycast: RayCast3D = $RayCast3D
@@ -109,7 +108,6 @@ func _validate_placement(target_position: Vector3) -> Utility_PlacementResult:
 
 func _is_placement_valid(target_position: Vector3) -> bool:
   var result = _validate_placement(target_position)
-  # TODO enhance feedback to user
   if not result.is_valid:
     MyLogger.debug("Placement", "Invalid placement: %s" % result.error_message)
     # Debug information about why placement failed
@@ -215,10 +213,7 @@ func _place_building() -> void:
     MyLogger.error("Placement", "Cannot place building: Insufficient funds")
     return
   
-  _preview.place(navigation_region)
-
-  rebake_navigation_mesh.emit()
-  building_placed.emit()
+  building_placed.emit(_preview)
   
   # Track building placement in stats system
   if StatsManager and _place_building_type:
