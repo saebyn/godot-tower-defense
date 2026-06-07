@@ -26,7 +26,7 @@ shape = SubResource("ConvexPolygonShape3D_e7k62")
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, 1.8329607, 0)
 shape = SubResource("ConvexPolygonShape3D_iosu8")
 
-[node name="range_amplifier" parent="." index="8" unique_id=191299429 instance=ExtResource("3_e7k62")]
+[node name="range_amplifier" parent="." index="8" unique_id=1269476132 instance=ExtResource("3_e7k62")]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, 0, 0)
 
 [editable path="range_amplifier"]

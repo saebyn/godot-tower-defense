@@ -1,13 +1,13 @@
 [gd_resource type="Resource" script_class="Resource_TechNode" format=3 uid="uid://b8px5najdk3vp"]
 
-[ext_resource type="Texture2D" uid="uid://dnpu1be5n2dqu" path="res://Assets/Icons/tower.png" id="1_eto2y"]
+[ext_resource type="Texture2D" uid="uid://vc6qrrydujmc" path="res://Assets/Icons/attack_speed_icon.png" id="1_eto2y"]
 [ext_resource type="Script" uid="uid://dj1i28ud6uv3t" path="res://Config/TechTree/tech_node_resource.gd" id="1_xxxxx"]
 
 [resource]
 script = ExtResource("1_xxxxx")
 id = "sup_cooldown_beacon"
 display_name = "Attack Speed Beacon"
-description = "Deploys a beacon that increases the attack speed of nearby towers."
+description = "Deploys a beacon that increases the attack speed of nearby buildings."
 icon = ExtResource("1_eto2y")
 branch_name = "Support"
 level_requirement = 3
