@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="Resource_TechNode" format=3 uid="uid://drfpygvup2ojl"]
 
+[ext_resource type="Texture2D" uid="uid://mhntcd82di12" path="res://Assets/Icons/scrap_shooter_icon.png" id="1_c5tpp"]
 [ext_resource type="Script" uid="uid://dj1i28ud6uv3t" path="res://Config/TechTree/tech_node_resource.gd" id="1_xxxxx"]
 
 [resource]
@@ -7,6 +8,7 @@ script = ExtResource("1_xxxxx")
 id = "tur_scrap_shooter"
 display_name = "Scrap Shooter"
 description = "A turret that does a small amount of damage to passing enemies. Starter tech available immediately."
+icon = ExtResource("1_c5tpp")
 branch_name = "Offensive"
 scrap_cost = 75
 unlocked_building_ids = Array[String](["turret"])

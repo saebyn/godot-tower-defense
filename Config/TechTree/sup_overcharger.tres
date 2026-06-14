@@ -1,13 +1,13 @@
 [gd_resource type="Resource" script_class="Resource_TechNode" format=3 uid="uid://dpx3k5naqxl7w"]
 
-[ext_resource type="Texture2D" uid="uid://6dypjsu80qtt" path="res://Assets/Icons/fire_tower.png" id="1_gbovo"]
+[ext_resource type="Texture2D" uid="uid://bda0rm6s80jqf" path="res://Assets/Icons/overcharger.png" id="1_gbovo"]
 [ext_resource type="Script" uid="uid://dj1i28ud6uv3t" path="res://Config/TechTree/tech_node_resource.gd" id="1_xxxxx"]
 
 [resource]
 script = ExtResource("1_xxxxx")
 id = "sup_overcharger"
 display_name = "Overcharger"
-description = "Aura that increases fire rate of nearby turrets."
+description = "Aura that increases damage delt of nearby buildings."
 icon = ExtResource("1_gbovo")
 branch_name = "Support"
 level_requirement = 2
