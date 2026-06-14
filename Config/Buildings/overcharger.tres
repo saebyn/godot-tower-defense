@@ -1,15 +1,15 @@
 [gd_resource type="Resource" script_class="Resource_BuildingType" format=3 uid="uid://cwh5p6svelnwl"]
 
+[ext_resource type="Texture2D" uid="uid://bda0rm6s80jqf" path="res://Assets/Icons/overcharger.png" id="1_62sk5"]
 [ext_resource type="Script" uid="uid://vy1lf2kd14dr" path="res://Config/Buildings/building_type_resource.gd" id="1_bhnkn"]
 [ext_resource type="PackedScene" uid="uid://giv7ooe62qw1" path="res://Entities/Buildings/Concrete/overcharger.tscn" id="1_t0qul"]
-[ext_resource type="Texture2D" uid="uid://dnpu1be5n2dqu" path="res://Assets/Icons/tower.png" id="1_u0y1t"]
 
 [resource]
 script = ExtResource("1_bhnkn")
 id = "sup_overcharger"
 name = "Overcharger"
 description = "Increases attack damage of nearby turrets and other things"
-icon = ExtResource("1_u0y1t")
+icon = ExtResource("1_62sk5")
 color = Color(0, 0.3764706, 0.78431374, 1)
 cost = 10
 scene = ExtResource("1_t0qul")

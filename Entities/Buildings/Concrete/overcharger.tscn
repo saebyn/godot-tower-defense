@@ -2,23 +2,44 @@
 
 [ext_resource type="PackedScene" uid="uid://bjlvdmndqn0hw" path="res://Entities/Buildings/Templates/buff_building/buff_building.tscn" id="1_a8xu0"]
 [ext_resource type="Script" uid="uid://dxpmn7q530akc" path="res://Common/Effects/buff_line_effect/buff_line_effect.gd" id="1_buff_line"]
-[ext_resource type="PackedScene" uid="uid://bib1ebyms1opq" path="res://Assets/Models/tower.blend" id="2_nhd11"]
+[ext_resource type="PackedScene" uid="uid://bbcgf8oer6iog" path="res://Assets/Models/overcharger.glb" id="3_rfeoa"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_10y5i"]
-size = Vector3(2.0137024, 3.1646423, 2.0134277)
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_j4x72"]
+points = PackedVector3Array(-0.67283964, 0.007586498, -0.70823133, -0.67283964, 0.007586498, 0.69626725, -0.67283964, 0.12620868, -0.70823133, 0.73165894, 0.007586498, -0.70823133, -0.67283964, 0.12620868, 0.69626725, 0.73165894, 0.007586498, 0.69626725, -0.45051226, 0.94049186, -0.48590395, 0.73165894, 0.12620868, -0.70823133, -0.45051226, 0.94049186, 0.4739399, 0.73165894, 0.12620868, 0.69626725, 0.5093316, 0.94049186, -0.48590395, 0.5093316, 0.94049186, 0.4739399)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_radig"]
+points = PackedVector3Array(-0.37381542, 0.8720087, 0, -0.34542066, 0.8720087, -0.14307147, -0.20000738, -1, 0, -0.34542066, 0.8720087, 0.14299828, -0.37381542, 1.0443015, 0, -0.26433465, 0.8720087, -0.2643346, -0.14146152, -1, -0.14146146, -0.18478546, -1, -0.076548725, -0.34542066, 1.0443015, -0.14307147, -0.18478546, -1, 0.07647553, -0.14146152, -1, 0.14138824, -0.26433465, 0.8720087, 0.26426136, -0.34542066, 1.0443015, 0.14299828, -0.14307153, 0.8720087, -0.3454206, -0.26433465, 1.0443015, -0.2643346, -0.076548785, -1, -0.1847854, -0.076548785, -1, 0.18471217, -0.14307153, 0.8720087, 0.3453474, -0.26433465, 1.0443015, 0.26426136, -5.9604645e-08, 0.8720087, -0.37381536, -5.9604645e-08, -1, -0.20000732, -0.14307153, 1.0443015, -0.3454206, -5.9604645e-08, -1, 0.19993412, -5.9604645e-08, 0.8720087, 0.37381536, -0.14307153, 1.0443015, 0.3453474, 0.14299822, 0.8720087, -0.3454206, -5.9604645e-08, 1.0443015, -0.37381536, 0.07647547, -1, -0.1847854, 0.07647547, -1, 0.18471217, 0.14299822, 0.8720087, 0.3453474, -5.9604645e-08, 1.0443015, 0.37381536, 0.2642613, 0.8720087, -0.2643346, 0.14138818, -1, -0.14146146, 0.14299822, 1.0443015, -0.3454206, 0.14138818, -1, 0.14138824, 0.2642613, 0.8720087, 0.26426136, 0.14299822, 1.0443015, 0.3453474, 0.34534734, 0.8720087, -0.14307147, 0.2642613, 1.0443015, -0.2643346, 0.18471211, -1, -0.076548725, 0.18471211, -1, 0.07647553, 0.34534734, 0.8720087, 0.14299828, 0.2642613, 1.0443015, 0.26426136, 0.3738153, 0.8720087, 0, 0.34534734, 1.0443015, -0.14307147, 0.19993407, -1, 0, 0.34534734, 1.0443015, 0.14299828, 0.3738153, 1.0443015, 0)
 
 [node name="Overcharger" unique_id=1733578486 node_paths=PackedStringArray("mesh_instances") instance=ExtResource("1_a8xu0")]
 buff_type = 1
 buff_amount = 0.3999999999999999
-mesh_instances = [NodePath("tower/Cube_001")]
+mesh_instances = [NodePath("Overcharger/Base_Overcharger"), NodePath("Overcharger/LanternPost"), NodePath("Overcharger/LanternEnclosure"), NodePath("Overcharger/LanternCap")]
 
-[node name="tower" parent="." index="4" unique_id=1240654154 instance=ExtResource("2_nhd11")]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="5" unique_id=19116976]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0034637451, 1.6103668, -0.00061035156)
-shape = SubResource("BoxShape3D_10y5i")
-
-[node name="BuffLineEffect" type="Node3D" parent="." index="6" unique_id=613513737]
+[node name="BuffLineEffect" type="Node3D" parent="." index="4" unique_id=613513737]
 script = ExtResource("1_buff_line")
 
-[editable path="tower"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="6" unique_id=937869572]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -0.008748665, 0.0019408464, 0.0340179)
+shape = SubResource("ConvexPolygonShape3D_j4x72")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." index="7" unique_id=601945726]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0.02004017, 1.9356619, -0.120084964)
+shape = SubResource("ConvexPolygonShape3D_radig")
+
+[node name="Overcharger" parent="." index="8" unique_id=1009877928 instance=ExtResource("3_rfeoa")]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, 1.9769435, 0)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." index="9" unique_id=1610162620]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1110864, -0.102586925)
+light_color = Color(0.839216, 0.415686, 0.0392157, 1)
+light_size = 0.432
+light_specular = 2.213
+shadow_enabled = true
+shadow_opacity = 0.55
+shadow_blur = 0.973
+distance_fade_begin = 9.9
+distance_fade_shadow = 1.0
+omni_range = 15.398
+omni_attenuation = -0.803
+
+[editable path="Overcharger"]

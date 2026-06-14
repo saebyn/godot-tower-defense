@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Resource_TechNode" format=3 uid="uid://dpx3k5naqxl7w"]
 
-[ext_resource type="Texture2D" uid="uid://dnpu1be5n2dqu" path="res://Assets/Icons/tower.png" id="1_gbovo"]
+[ext_resource type="Texture2D" uid="uid://bda0rm6s80jqf" path="res://Assets/Icons/overcharger.png" id="1_gbovo"]
 [ext_resource type="Script" uid="uid://dj1i28ud6uv3t" path="res://Config/TechTree/tech_node_resource.gd" id="1_xxxxx"]
 
 [resource]

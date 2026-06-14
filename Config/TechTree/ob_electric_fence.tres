@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="Resource_TechNode" format=3 uid="uid://c8px4najdk2vl"]
 
+[ext_resource type="Texture2D" uid="uid://dl8cknondu3hd" path="res://Assets/Icons/electric_fence.png" id="1_tibvh"]
 [ext_resource type="Script" uid="uid://dj1i28ud6uv3t" path="res://Config/TechTree/tech_node_resource.gd" id="1_xxxxx"]
 
 [resource]
@@ -7,6 +8,7 @@ script = ExtResource("1_xxxxx")
 id = "ob_electric_fence"
 display_name = "Electric Fence"
 description = "DoT fence that continuously damages enemies. Requires Zed Zapper tech."
+icon = ExtResource("1_tibvh")
 branch_name = "Defensive"
 level_requirement = 3
 prerequisite_tech_ids = Array[String](["ob_spike_barricade", "tur_zed_zapper"])
