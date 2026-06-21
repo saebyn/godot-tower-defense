@@ -2,14 +2,14 @@
 
 [ext_resource type="Script" uid="uid://vy1lf2kd14dr" path="res://Config/Buildings/building_type_resource.gd" id="1_bhnkn"]
 [ext_resource type="PackedScene" uid="uid://bwp5kbgy8vea1" path="res://Entities/Buildings/Concrete/range_amplifier.tscn" id="1_ejrsb"]
-[ext_resource type="Texture2D" uid="uid://blou5xw6q8pki" path="res://Assets/Icons/radar_dish.png" id="1_gi3ak"]
+[ext_resource type="Texture2D" uid="uid://ftkvgaw03s20" path="res://Assets/Icons/range_amplifier.png" id="1_u0xfx"]
 
 [resource]
 script = ExtResource("1_bhnkn")
 id = "sup_range_amp"
 name = "Range Amplifier"
 description = "Increases attack range of nearby turrets and other things"
-icon = ExtResource("1_gi3ak")
+icon = ExtResource("1_u0xfx")
 color = Color(0, 0.3764706, 0.78431374, 1)
 cost = 10
 scene = ExtResource("1_ejrsb")

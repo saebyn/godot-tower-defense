@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dnpu1be5n2dqu"
-path="res://.godot/imported/tower.png-4f4f91c76cda8026cdae3292660c0a26.ctex"
+uid="uid://8bfq1plsa8he"
+path="res://.godot/imported/stack_of_crates.png-2cfdd67602341d009e2ae2fce2b12227.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Icons/tower.png"
-dest_files=["res://.godot/imported/tower.png-4f4f91c76cda8026cdae3292660c0a26.ctex"]
+source_file="res://Assets/Icons/stack_of_crates.png"
+dest_files=["res://.godot/imported/stack_of_crates.png-2cfdd67602341d009e2ae2fce2b12227.ctex"]
 
 [params]
 

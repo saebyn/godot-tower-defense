@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Resource_TechNode" format=3 uid="uid://dak6m8n4pqyau"]
 
-[ext_resource type="Texture2D" uid="uid://blou5xw6q8pki" path="res://Assets/Icons/radar_dish.png" id="1_0wih6"]
+[ext_resource type="Texture2D" uid="uid://ftkvgaw03s20" path="res://Assets/Icons/range_amplifier.png" id="1_0wih6"]
 [ext_resource type="Script" uid="uid://dj1i28ud6uv3t" path="res://Config/TechTree/tech_node_resource.gd" id="1_xxxxx"]
 
 [resource]
