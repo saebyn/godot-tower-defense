@@ -24,7 +24,7 @@ jobs:
 
       - name: Cache Godot import files
         id: cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: .godot/
           key: godot-import-v1-${{ hashFiles('**/*.tscn', '**/*.tres', '**/*.blend', '**/*.gd', 'project.godot') }}
