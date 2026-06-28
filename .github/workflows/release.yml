@@ -37,7 +37,7 @@ jobs:
             output: "zom-nom-defense-game.x86_64"
             directory: linux
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           lfs: true
           submodules: "recursive"
