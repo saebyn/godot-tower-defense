@@ -325,3 +325,4 @@ logs/Http="info"
 debug/show_debug_panel=true
 debug/bypass_tech_requirements=true
 debug/enable_tools=true
+debug/unlock_all_scenarios=true
