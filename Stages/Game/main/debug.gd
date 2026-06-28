@@ -27,10 +27,8 @@ func _input(event: InputEvent) -> void:
         var scenario_node = get_parent().current_scenario
 
         var enemy = enemy_type.scene.instantiate()
+        enemy.load_resource(enemy_type)
         scenario_node.add_child(enemy)
-
-        # TODO need to do further things to set up the zombies properly.
-
         enemy.global_position = placement_position
 
 
