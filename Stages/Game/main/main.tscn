@@ -13,6 +13,8 @@
 [ext_resource type="Script" uid="uid://h0qo6ac65db2" path="res://Stages/Game/main/twitch_game_bridge.gd" id="12_twitch_bridge"]
 [ext_resource type="Script" uid="uid://n3ujk5q2bgka" path="res://Stages/Game/main/hover_controller.gd" id="13_hover_ctrl"]
 [ext_resource type="Script" uid="uid://bar612768j6wn" path="res://Stages/Game/main/player_input_controller.gd" id="14_player_input"]
+[ext_resource type="Script" uid="uid://bmn387qe5x7ti" path="res://Stages/Game/main/debug.gd" id="14_qyy2v"]
+[ext_resource type="Resource" uid="uid://conw8uteeyyuk" path="res://Config/Enemies/basic_zombie.tres" id="15_qm00m"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_pcgyj"]
 geometry_parsed_geometry_type = 1
@@ -108,6 +110,11 @@ hover_controller = NodePath("../HoverController")
 navigation_controller = NodePath("../NavigationController")
 ui = NodePath("../UI")
 attack_waiting_cursor_image = ExtResource("2_wy7n0")
+
+[node name="Debug" type="Node" parent="." unique_id=92549688 node_paths=PackedStringArray("camera")]
+script = ExtResource("14_qyy2v")
+enemy_type = ExtResource("15_qm00m")
+camera = NodePath("../Camera3D")
 
 [connection signal="cooldown_ended" from="Attack" to="PlayerInputController" method="_on_attack_cooldown_ended"]
 [connection signal="cooldown_started" from="Attack" to="PlayerInputController" method="_on_attack_cooldown_started"]

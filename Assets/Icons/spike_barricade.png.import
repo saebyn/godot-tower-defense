@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://blou5xw6q8pki"
-path="res://.godot/imported/radar_dish.png-e2823ab00bc3f2bb72c5b4e5e03174fd.ctex"
+uid="uid://bhgrtvhldk8kg"
+path="res://.godot/imported/spike_barricade.png-3df406918efecb26ccadcf40d26be059.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Icons/radar_dish.png"
-dest_files=["res://.godot/imported/radar_dish.png-e2823ab00bc3f2bb72c5b4e5e03174fd.ctex"]
+source_file="res://Assets/Icons/spike_barricade.png"
+dest_files=["res://.godot/imported/spike_barricade.png-3df406918efecb26ccadcf40d26be059.ctex"]
 
 [params]
 
