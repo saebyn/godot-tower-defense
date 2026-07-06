@@ -1,4 +1,3 @@
-@tool
 extends Node3D
 class_name Component_Health
 
@@ -98,11 +97,7 @@ func take_damage(amount: float, damage_source: String = "unknown"):
 
 
 func _ready():
-  if Engine.is_editor_hint():
-    visible = false
-    return
-  else:
-    visible = true
+  visible = true
 
   # Store the initial hitpoints as max_hitpoints
   max_hitpoints = hitpoints
