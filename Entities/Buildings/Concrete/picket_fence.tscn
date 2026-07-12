@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://gqxp74x4y5rt"]
+
+[ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://Entities/Buildings/Templates/base_building/building.tscn" id="1_ofj6h"]
+[ext_resource type="PackedScene" uid="uid://bqcm17hrrin84" path="res://Assets/Models/picket_fence.glb" id="2_ak3gx"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ak3gx"]
+size = Vector3(7.8624268, 2.3493652, 0.49523926)
+
+[node name="Building" unique_id=1513266757 instance=ExtResource("1_ofj6h")]
+
+[node name="Health" parent="." index="0" unique_id=1834854437]
+visible = false
+hitpoints = 100
+
+[node name="AudioStreamPlayer3D" parent="." index="1" unique_id=1513947477]
+visible = false
+
+[node name="Fence" parent="." index="2" unique_id=1358142795 instance=ExtResource("2_ak3gx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2535326, 0.985415, 0.193609)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="3" unique_id=1195782500]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.04449463, 1.2525635, 0.25238037)
+shape = SubResource("BoxShape3D_ak3gx")
