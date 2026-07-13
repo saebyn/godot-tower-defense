@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bvjcfug6l2g2w"]
 
-[ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://Entities/Buildings/Templates/base_building/building.tscn" id="1_8e1by"]
+[ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://Entities/Buildings/Templates/placeable_building/building.tscn" id="1_8e1by"]
 [ext_resource type="PackedScene" uid="uid://cnggbul5btmo2" path="res://Assets/Models/picket_fence_gate.glb" id="2_8e1by"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ak3gx"]

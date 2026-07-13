@@ -3,6 +3,7 @@
 This document describes the class hierarchy, naming conventions, and organizational structure for nodes and scripts in Zom Nom Defense.
 
 ## Table of Contents
+
 - [Overview](#overview)
 - [Naming Conventions](#naming-conventions)
 - [Class Organization](#class-organization)
@@ -56,6 +57,7 @@ class_name <Prefix>_<DescriptiveName>
 Components are reusable, modular pieces of functionality that can be attached to entities as child nodes. They provide specific behaviors like health management, attack logic, or status effects.
 
 **Key Characteristics:**
+
 - ✅ **Should be classes only** (`.gd` files)
 - ❌ **Should NOT be scenes** (`.tscn` files)
 - Extend from base Godot nodes (`Node`, `Area3D`, etc.)
@@ -63,6 +65,7 @@ Components are reusable, modular pieces of functionality that can be attached to
 - Focus on single responsibility
 
 **Usage Example:**
+
 ```gdscript
 # Add to entity scene tree, not instantiated in code
 # Component registers itself automatically in _ready()
@@ -90,6 +93,7 @@ func _ready():
 UI classes handle player interaction, information display, and menu systems.
 
 **Key Characteristics:**
+
 - Extend from Control nodes or UI-specific base classes
 - May be scenes with complex hierarchies
 - Connected to game systems via signals and autoloads
@@ -103,12 +107,14 @@ UI classes handle player interaction, information display, and menu systems.
 Resource classes are pure data containers extending Godot's `Resource` class. They store configuration for enemies, buildings, achievements, etc.
 
 **Key Characteristics:**
+
 - Extend from `Resource`
 - No logic, only data properties
 - Saved as `.tres` files
 - Designer-editable in Godot Inspector
 
 **Usage Example:**
+
 ```gdscript
 # Defined in resource file
 @export var enemy_types: Array[Resource_EnemyType] = []
@@ -126,6 +132,7 @@ var enemy_config = load("res://Config/Enemies/grunt_config.tres") as Resource_En
 Entities are game objects with physics bodies and scene hierarchies. They represent placeable objects in the game world.
 
 **Key Characteristics:**
+
 - ✅ **Should be scenes** (`.tscn` files with attached scripts)
 - Extend from physics nodes (`StaticBody3D`, `CharacterBody3D`, etc.)
 - Have child nodes (meshes, collision shapes, components)
@@ -180,11 +187,13 @@ This is a critical architectural distinction in Zom Nom Defense:
 ### Components = Classes (Scripts Only)
 
 **What they are:**
+
 - Pure behavior modules
 - Lightweight and reusable
 - No visual structure
 
 **File structure:**
+
 ```
 Common/Components/health/
 ├── health.gd          ✅ (class_name Component_Health)
@@ -192,6 +201,7 @@ Common/Components/health/
 ```
 
 **How to use:**
+
 ```gdscript
 # In entity scene: Add Component_Health as child node
 # Script automatically registers in parent metadata
@@ -206,13 +216,15 @@ func _ready():
 ### Entities = Scenes (with Scripts)
 
 **What they are:**
+
 - Complete game objects
 - Have physics bodies and visual representations
 - Composed of multiple child nodes
 
 **File structure:**
+
 ```
-Entities/Buildings/Templates/base_building/
+Entities/Buildings/Templates/placeable_building/
 ├── building.gd        ✅ (class_name Entity_PlaceableBuilding)
 ├── building.tscn      ✅ (scene file)
 ├── building.gd.uid
@@ -242,6 +254,7 @@ Entities/Buildings/Templates/base_building/
 ### Component Guidelines
 
 ✅ **DO:**
+
 - Create components as single `.gd` files
 - Extend from appropriate Godot base node
 - Register in parent metadata in `_ready()`
@@ -249,6 +262,7 @@ Entities/Buildings/Templates/base_building/
 - Use `@export` for designer-configurable properties
 
 ❌ **DON'T:**
+
 - Create `.tscn` files for components (use scripts only)
 - Put game logic in components (they're behavior, not brains)
 - Hard-code references to specific entities
@@ -257,12 +271,14 @@ Entities/Buildings/Templates/base_building/
 ### Entity Guidelines
 
 ✅ **DO:**
+
 - Create entities as `.tscn` scenes with attached scripts
 - Compose behavior using component children
 - Keep entity scripts as "glue" between components
 - Use scenes for anything with visual representation
 
 ❌ **DON'T:**
+
 - Instantiate entities directly from scripts (load scene instead)
 - Duplicate component logic in entity scripts
 - Create complex inheritance hierarchies
@@ -276,6 +292,7 @@ Entities/Buildings/Templates/base_building/
 Currently, `Component_Health` and `Component_Attack` have both `.gd` and `.tscn` files. This is legacy structure that should eventually be refactored:
 
 **Current state:**
+
 ```
 Common/Components/health/
 ├── health.gd          ✅
@@ -284,6 +301,7 @@ Common/Components/health/
 ```
 
 **Future state:**
+
 ```
 Common/Components/health/
 ├── health.gd          ✅
@@ -291,6 +309,7 @@ Common/Components/health/
 ```
 
 **Migration plan:**
+
 1. Update all entity scenes to use script directly instead of scene
 2. Test that component registration still works correctly
 3. Remove `.tscn` files and update references
