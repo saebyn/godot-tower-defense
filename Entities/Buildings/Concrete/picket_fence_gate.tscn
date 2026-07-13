@@ -1,21 +1,35 @@
 [gd_scene format=3 uid="uid://bvjcfug6l2g2w"]
 
-[ext_resource type="PackedScene" uid="uid://b27ylmcumxx2r" path="res://Entities/Buildings/Templates/placeable_building/building.tscn" id="1_8e1by"]
+[ext_resource type="Script" uid="uid://cgtng2d2viqh" path="res://Entities/Buildings/Templates/building.gd" id="1_xbvdu"]
+[ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="2_5u5g2"]
 [ext_resource type="PackedScene" uid="uid://cnggbul5btmo2" path="res://Assets/Models/picket_fence_gate.glb" id="2_8e1by"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_sl1jc"]
+friction = 0.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ak3gx"]
 size = Vector3(0.37666512, 3.225586, 2.1903229)
 
-[node name="Building" unique_id=1513266757 instance=ExtResource("1_8e1by")]
+[node name="Building" type="StaticBody3D" unique_id=1773443623 groups=["buildings"]]
+collision_layer = 34
+collision_mask = 0
+physics_material_override = SubResource("PhysicsMaterial_sl1jc")
+script = ExtResource("1_xbvdu")
+metadata/_custom_type_script = "uid://cgtng2d2viqh"
 
-[node name="Health" parent="." index="0" unique_id=1834854437]
+[node name="Health" parent="." unique_id=1834854437 node_paths=PackedStringArray("audio_player") instance=ExtResource("2_5u5g2")]
 visible = false
 hitpoints = 100
+hit_sound = 16
+death_sound = 17
+audio_player = NodePath("../AudioStreamPlayer3D")
 
-[node name="AudioStreamPlayer3D" parent="." index="1" unique_id=1513947477]
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1513947477]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0017229319, 1.1539124, 0)
 visible = false
+bus = &"Sound Effects"
 
-[node name="Fence_Gate" parent="." index="2" unique_id=1154072786 instance=ExtResource("2_8e1by")]
+[node name="Fence_Gate" parent="." unique_id=1154072786 instance=ExtResource("2_8e1by")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2145386, 0)
 
 [node name="Crosspiece_001" parent="Fence_Gate" index="1" unique_id=211174659]
@@ -24,7 +38,7 @@ transform = Transform3D(0.08498598, 0, -0.8228138, 0, 0.8271912, 0, 0.8228138, 0
 [node name="Picket_001" parent="Fence_Gate" index="2" unique_id=1537871102]
 transform = Transform3D(0.044074178, 0, -0.4267156, 0, 0.42898571, 0, 0.4267156, 0, 0.044074178, -0.50273603, -0.019074678, -0.0009613037)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="3" unique_id=1195782500]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1195782500]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.61480427, 1.6906738, 0.8978348)
 shape = SubResource("BoxShape3D_ak3gx")
 
