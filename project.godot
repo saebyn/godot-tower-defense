@@ -304,6 +304,10 @@ dialogic_default_action={
 3d_physics/layer_5="Ground"
 3d_physics/layer_6="Buildings"
 
+[navigation]
+
+3d/default_cell_size=0.2
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

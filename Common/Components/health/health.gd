@@ -25,7 +25,7 @@ const NAME_LABEL_LIGHTEN_WEIGHT: float = 0.55
 @export_group("Health Settings")
 @export var hitpoints: int = 1000
 @export var max_damage_per_hit: float = INF
-@export var disabled: bool:
+@export var disabled: bool:  ## Prevents the entity from taking damage or dying. When true, the unit frame is hidden and hitpoints are not tracked.
   get:
     return disabled
   set(value):

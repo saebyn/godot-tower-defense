@@ -273,7 +273,7 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -31.
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -31.21652, 0.0712893, 32.257355)
 
 [node name="Building6" parent="MainHouseArea/Fence" unique_id=1177387365 instance=ExtResource("11_5e4fb")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -31.21652, 0.0712893, 24.71273)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -31.21652, 0.0712893, 26.200838)
 
 [node name="Building7" parent="MainHouseArea/Fence" unique_id=1382408053 instance=ExtResource("11_5e4fb")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -31.21652, 0.0712893, 14.822987)
@@ -301,6 +301,7 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -31.
 
 [node name="Building16" parent="MainHouseArea/Fence" unique_id=1951160516 instance=ExtResource("11_5e4fb")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -31.085093, 0.0712893, -41.718098)
+right_enabled = false
 
 [node name="Building17" parent="MainHouseArea/Fence" unique_id=827906267 instance=ExtResource("11_5e4fb")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -23.526056, 0.0712893, -41.718098)
@@ -378,10 +379,12 @@ transform = Transform3D(1, 0, -1.7484555e-07, 0, 1, 0, 1.7484555e-07, 0, 1, -20.
 transform = Transform3D(1, 0, -1.7484555e-07, 0, 1, 0, 1.7484555e-07, 0, 1, -27.690834, 0.0712893, 70.02879)
 
 [node name="Building25" parent="MainHouseArea/Fence" unique_id=499977918 instance=ExtResource("11_5e4fb")]
-transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, 40.113045, 0.0712893, -41.612103)
+transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, 40.113045, 0.0712893, -42.925854)
+right_enabled = false
 
 [node name="Building28" parent="MainHouseArea/Fence" unique_id=273737978 instance=ExtResource("11_5e4fb")]
 transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, 40.113045, 0.0712893, -31.819656)
+left_enabled = false
 
 [node name="Building14" parent="MainHouseArea/Fence" unique_id=1850647492 instance=ExtResource("12_33d01")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -31.241302, -0.039186716, 19.512272)
@@ -390,7 +393,7 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -31.
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 40.078083, 0.2565881, -36.449608)
 
 [node name="Building43" parent="MainHouseArea/Fence" unique_id=1317743508 instance=ExtResource("11_5e4fb")]
-transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, 62.523125, 0.0712893, 42.949482)
+transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, 62.523125, 0.0712893, 41.404484)
 
 [node name="Building49" parent="MainHouseArea/Fence" unique_id=607724902 instance=ExtResource("11_5e4fb")]
 transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, 62.523125, 0.0712893, 35.3736)
@@ -477,8 +480,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 191.16318, 1.1088214, -66.954
 size = Vector3(124.7177, 1.8688946, 0.5118294)
 
 [node name="fence18" type="CSGBox3D" parent="NeighborhoodArea" unique_id=951939791]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -147.03854, 1.1088214, -66.95462)
-size = Vector3(189.6412, 1.8688946, 0.5118294)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -150.23541, 1.1088214, -66.95462)
+size = Vector3(183.24748, 1.8688946, 0.5118294)
 
 [node name="fence15" type="CSGBox3D" parent="NeighborhoodArea" unique_id=1439416329]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 127.74538, 2.075664, -37.71235)
@@ -502,8 +505,8 @@ size = Vector3(20.307, 0.1, 1000)
 material = ExtResource("14_6mlwk")
 
 [node name="road2" type="CSGBox3D" parent="." unique_id=530051023]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -43.98709, 0.01, 0)
-size = Vector3(12.527, 0.1, 1000)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.27697, 0.01, 0)
+size = Vector3(19.106762, 0.1, 1000)
 material = ExtResource("14_6mlwk")
 
 [node name="fence13" type="CSGBox3D" parent="." unique_id=77081508]
