@@ -13,3 +13,6 @@
 godot
 Godot_v*.zip
 Godot_v*.zip*
+
+# Ignore godot project settings overrides
+override.cfg
