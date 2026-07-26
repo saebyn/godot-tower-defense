@@ -8,7 +8,7 @@
 friction = 0.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ak3gx"]
-size = Vector3(0.37666512, 3.225586, 2.1903229)
+size = Vector3(0.37666512, 3.225586, 2.9757013)
 
 [node name="Building" type="StaticBody3D" unique_id=1773443623 groups=["buildings"]]
 collision_layer = 34
@@ -17,7 +17,7 @@ physics_material_override = SubResource("PhysicsMaterial_sl1jc")
 script = ExtResource("1_xbvdu")
 metadata/_custom_type_script = "uid://cgtng2d2viqh"
 
-[node name="Health" parent="." unique_id=1834854437 node_paths=PackedStringArray("audio_player") instance=ExtResource("2_5u5g2")]
+[node name="Health" parent="." unique_id=1834854437 node_paths=PackedStringArray("audio_player") groups=["navigation_mesh_source_group"] instance=ExtResource("2_5u5g2")]
 visible = false
 hitpoints = 100
 hit_sound = 16
@@ -30,7 +30,10 @@ visible = false
 bus = &"Sound Effects"
 
 [node name="Fence_Gate" parent="." unique_id=1154072786 instance=ExtResource("2_8e1by")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2145386, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.5267477, 0, 1.2145386, 0)
+
+[node name="Post_001" parent="Fence_Gate" index="0" unique_id=517304964]
+transform = Transform3D(1.8609923, 0, 0, 0, 3.4605489, 0, 0, 0, 1.8609923, 2.8007047, 0.019074678, 0.00096321106)
 
 [node name="Crosspiece_001" parent="Fence_Gate" index="1" unique_id=211174659]
 transform = Transform3D(0.08498598, 0, -0.8228138, 0, 0.8271912, 0, 0.8228138, 0, 0.08498598, -0.50273603, -0.019074678, -0.0009613037)
@@ -39,7 +42,7 @@ transform = Transform3D(0.08498598, 0, -0.8228138, 0, 0.8271912, 0, 0.8228138, 0
 transform = Transform3D(0.044074178, 0, -0.4267156, 0, 0.42898571, 0, 0.4267156, 0, 0.044074178, -0.50273603, -0.019074678, -0.0009613037)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1195782500]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.61480427, 1.6906738, 0.8978348)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.61480427, 1.6906738, 1.5848204)
 shape = SubResource("BoxShape3D_ak3gx")
 
 [editable path="Fence_Gate"]

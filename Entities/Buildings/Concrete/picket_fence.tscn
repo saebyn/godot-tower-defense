@@ -10,7 +10,7 @@ friction = 0.0
 [sub_resource type="BoxShape3D" id="BoxShape3D_ak3gx"]
 size = Vector3(3.9364333, 2.4621582, 0.5444946)
 
-[node name="PicketFence" type="StaticBody3D" unique_id=1281991184 groups=["buildings"]]
+[node name="PicketFence" type="StaticBody3D" unique_id=1281991184 groups=["buildings", "navigation_mesh_source_group"]]
 collision_layer = 34
 collision_mask = 0
 physics_material_override = SubResource("PhysicsMaterial_sl1jc")
