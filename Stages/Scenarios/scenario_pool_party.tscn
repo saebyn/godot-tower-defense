@@ -110,7 +110,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.112, 0.05, 0.254)
 shape = SubResource("ConcavePolygonShape3D_1rvch")
 
 [node name="Survivor1" parent="." unique_id=1795138384 instance=ExtResource("7_536ra")]
-transform = Transform3D(0.007888377, 0, -0.99997, 0, 1, 0, 0.99997, 0, 0.007888377, 2.0271902, 1.3207464, 2.7123528)
+transform = Transform3D(0.007888377, 0, -0.99997, 0, 1, 0, 0.99997, 0, 0.007888377, 2.0271902, 0.16178703, 2.7123528)
 skin_material = ExtResource("8_1rvch")
 hitpoints_override = 1000000000
 
@@ -201,7 +201,7 @@ material = SubResource("StandardMaterial3D_8hvwh")
 
 [node name="PoolSteps" type="CSGCombiner3D" parent="MainHouseArea" unique_id=1100585271 groups=["navigation_mesh_source_group"]]
 use_collision = true
-collision_layer = 33
+collision_layer = 32
 collision_mask = 0
 
 [node name="step1" type="CSGBox3D" parent="MainHouseArea/PoolSteps" unique_id=475960708]
@@ -301,7 +301,6 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -31.
 
 [node name="Building16" parent="MainHouseArea/Fence" unique_id=1951160516 instance=ExtResource("11_5e4fb")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -31.085093, 0.0712893, -41.718098)
-right_enabled = false
 
 [node name="Building17" parent="MainHouseArea/Fence" unique_id=827906267 instance=ExtResource("11_5e4fb")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -23.526056, 0.0712893, -41.718098)
@@ -380,11 +379,9 @@ transform = Transform3D(1, 0, -1.7484555e-07, 0, 1, 0, 1.7484555e-07, 0, 1, -27.
 
 [node name="Building25" parent="MainHouseArea/Fence" unique_id=499977918 instance=ExtResource("11_5e4fb")]
 transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, 40.113045, 0.0712893, -42.925854)
-right_enabled = false
 
 [node name="Building28" parent="MainHouseArea/Fence" unique_id=273737978 instance=ExtResource("11_5e4fb")]
 transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, 40.113045, 0.0712893, -31.819656)
-left_enabled = false
 
 [node name="Building14" parent="MainHouseArea/Fence" unique_id=1850647492 instance=ExtResource("12_33d01")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -31.241302, -0.039186716, 19.512272)

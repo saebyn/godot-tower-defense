@@ -106,7 +106,7 @@ func _choose_target():
   else:
     # TODO : Implement logic to choose a target based on some criteria.
     current_target = targets.pick_random()
-    MyLogger.debug("Enemy", "Chose new target: %s" % current_target.name)
+    MyLogger.info("Enemy", "Chose new target: %s" % current_target.name)
     navigation_agent.set_target_position(current_target.global_position)
 
 
