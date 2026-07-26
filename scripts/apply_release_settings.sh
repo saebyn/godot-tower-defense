@@ -12,32 +12,36 @@ set -euo pipefail
 PROJECT_FILE="${1:-project.godot}"
 
 if [[ ! -f "$PROJECT_FILE" ]]; then
-  echo "ERROR: project file not found: $PROJECT_FILE" >&2
-  exit 1
+	echo "ERROR: project file not found: $PROJECT_FILE" >&2
+	exit 1
 fi
 
 echo "Applying release settings to $PROJECT_FILE ..."
 
 # ── [zom_nom_defense] debug flags ────────────────────────────────────────────
 sed -i \
-  's|^debug/show_debug_panel=.*|debug/show_debug_panel=false|' \
-  "$PROJECT_FILE"
+	's|^debug/show_debug_panel=.*|debug/show_debug_panel=false|' \
+	"$PROJECT_FILE"
 
 sed -i \
-  's|^debug/bypass_tech_requirements=.*|debug/bypass_tech_requirements=false|' \
-  "$PROJECT_FILE"
+	's|^debug/bypass_tech_requirements=.*|debug/bypass_tech_requirements=false|' \
+	"$PROJECT_FILE"
+
+sed -i \
+	's|^debug/unlock_all_scenarios=.*|debug/unlock_all_scenarios=false|' \
+	"$PROJECT_FILE"
 
 # ── [twitcher] log levels ─────────────────────────────────────────────────────
 # Lower all twitcher log channels from "debug" to "warn" for release.
 for key in TwitchAuth TwitchAPI TwitchService; do
-  sed -i \
-    "s|^logs/${key}=\"debug\"|logs/${key}=\"warn\"|" \
-    "$PROJECT_FILE"
+	sed -i \
+		"s|^logs/${key}=\"debug\"|logs/${key}=\"warn\"|" \
+		"$PROJECT_FILE"
 done
 
 # Http log level: "info" → "warn"
 sed -i \
-  's|^logs/Http="info"|logs/Http="warn"|' \
-  "$PROJECT_FILE"
+	's|^logs/Http="info"|logs/Http="warn"|' \
+	"$PROJECT_FILE"
 
 echo "Done. Release settings applied."

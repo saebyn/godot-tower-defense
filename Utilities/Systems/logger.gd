@@ -104,6 +104,14 @@ func _define_project_settings() -> void:
     "type": TYPE_BOOL
   })
 
+  if not ProjectSettings.has_setting("zom_nom_defense/debug/unlock_all_scenarios"):
+    ProjectSettings.set_setting("zom_nom_defense/debug/unlock_all_scenarios", false)
+  ProjectSettings.set_initial_value("zom_nom_defense/debug/unlock_all_scenarios", false)
+  ProjectSettings.add_property_info({
+    "name": "zom_nom_defense/debug/unlock_all_scenarios",
+    "type": TYPE_BOOL
+  })
+
 ## Load logging configuration from project settings
 func _load_project_settings() -> void:
   # Log level setting

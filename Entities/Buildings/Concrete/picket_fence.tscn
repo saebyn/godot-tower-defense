@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://gqxp74x4y5rt"]
+
+[ext_resource type="Script" uid="uid://dyi6nxhx25bmj" path="res://Entities/Buildings/Concrete/picket_fence.gd" id="1_iiq51"]
+[ext_resource type="PackedScene" uid="uid://bqcm17hrrin84" path="res://Assets/Models/picket_fence.glb" id="2_ak3gx"]
+[ext_resource type="PackedScene" uid="uid://cxtvhj0yxxp2n" path="res://Common/Components/health/health.tscn" id="2_wo3sg"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_sl1jc"]
+friction = 0.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ak3gx"]
+size = Vector3(3.9364333, 2.4621582, 0.5444946)
+
+[node name="PicketFence" type="StaticBody3D" unique_id=1281991184 groups=["buildings", "navigation_mesh_source_group"]]
+collision_layer = 34
+collision_mask = 0
+physics_material_override = SubResource("PhysicsMaterial_sl1jc")
+script = ExtResource("1_iiq51")
+left_enabled = true
+right_enabled = true
+post_enabled = true
+metadata/_custom_type_script = "uid://cgtng2d2viqh"
+
+[node name="Health" parent="." unique_id=1834854437 node_paths=PackedStringArray("audio_player") instance=ExtResource("2_wo3sg")]
+visible = false
+hitpoints = 100
+hit_sound = 16
+death_sound = 17
+audio_player = NodePath("../AudioStreamPlayer3D")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1513947477]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0017229319, 1.1539124, 0)
+visible = false
+bus = &"Sound Effects"
+
+[node name="Fence" parent="." unique_id=1358142795 instance=ExtResource("2_ak3gx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2535326, 0.985415, 0.193609)
+
+[node name="CollisionShape3D_Left" type="CollisionShape3D" parent="." unique_id=1195782500]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6775544, 1.2713623, 0.06296277)
+shape = SubResource("BoxShape3D_ak3gx")
+
+[node name="CollisionShape3D_Right" type="CollisionShape3D" parent="." unique_id=1283052197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0825777, 1.2398529, 0.07575345)
+shape = SubResource("BoxShape3D_ak3gx")
+
+[editable path="Fence"]

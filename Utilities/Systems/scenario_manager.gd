@@ -32,7 +32,6 @@ var scenario_metadata: Dictionary = {
     "description": "Defend a person on top of a car.",
     "thumbnail": "", # Optional icon path
   },
-  # Scenario 2-4 placeholders for future content
   "scenario_2": {
     "name": "Campfire Survivors",
     "scene_path": "res://Stages/Scenarios/scenario_2.tscn",
@@ -47,7 +46,7 @@ var scenario_metadata: Dictionary = {
   },
   "scenario_4": {
     "name": "Pool Party",
-    "scene_path": "", # To be created
+    "scene_path": "res://Stages/Scenarios/scenario_pool_party.tscn",
     "description": "Defend survivors in an inflatable pool.",
     "thumbnail": "",
   },
@@ -166,6 +165,9 @@ func mark_scenario_complete(scenario_id: String, time: float = 0.0, score: int =
 
 ## Check if a scenario is unlocked
 func is_scenario_unlocked(scenario_id: String) -> bool:
+  if ProjectSettings.get_setting("zom_nom_defense/debug/unlock_all_scenarios"):
+    return true
+
   # Scenario 1 always unlocked
   if scenario_id == "scenario_1":
     return true

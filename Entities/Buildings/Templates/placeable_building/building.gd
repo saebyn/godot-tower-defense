@@ -9,13 +9,8 @@
 ##  - Create a NavigationObstacle3D to affect navigation mesh
 ##  - Handle removal logic, refunding currency based on remaining health
 
-extends StaticBody3D
+extends Entity_Building
 class_name Entity_PlaceableBuilding
-
-## Group name for all placeable buildings
-## This group is automatically applied by the base scene,
-## but is defined here for use in other scripts to find buildings.
-const BUILDING_GROUP: String = "buildings"
 
 ## Group to indicate the building should affect navigation
 ## We add buildings to this group upon placement for navigation mesh updates.
@@ -27,7 +22,6 @@ const BUILDING_GROUP: String = "buildings"
     update_configuration_warnings()
 
 var is_preview: bool = false
-var health: Component_Health
 var building_type: Resource_BuildingType
 var navigation_obstacle: NavigationObstacle3D
 var placement_preview_node: Node3D
@@ -37,14 +31,7 @@ var _saved_collision_layers: int
 var _saved_area_monitoring: Dictionary = {}
 
 func _ready():
-  # Find Health component via metadata
-  if has_meta("health_component"):
-    health = get_meta("health_component")
-  
-  # Connect health signals
-  if health:
-    health.died.connect(_on_died)
-    health.damaged.connect(_on_health_damaged)
+  super._ready()
 
   _enter_placement_mode()
 
@@ -104,14 +91,6 @@ func _exit_placement_mode() -> void:
 
   if health:
     health.disabled = false
-
-func _on_died(damage_source: String = "unknown") -> void:
-  MyLogger.info("Building", "Building destroyed by: %s" % damage_source)
-  queue_free()
-
-func _on_health_damaged(amount: int, hitpoints: int, _source: String) -> void:
-  MyLogger.debug("Building.Combat", "Building took %d damage. Remaining HP: %d" % [amount, hitpoints])
-
 
 ## Remove this building and return currency based on remaining health
 func remove() -> int:

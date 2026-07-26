@@ -15,6 +15,9 @@ buff_type = 2
 buff_amount = 0.3
 mesh_instances = [NodePath("range_amplifier/Base"), NodePath("range_amplifier/Tower"), NodePath("range_amplifier/Megaphone"), NodePath("range_amplifier/Dish")]
 
+[node name="Health" parent="." index="0" unique_id=1834854437]
+visible = false
+
 [node name="BuffLineEffect" type="Node3D" parent="." index="4" unique_id=2046727381]
 script = ExtResource("1_buff_line")
 
@@ -27,6 +30,6 @@ transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70
 shape = SubResource("ConvexPolygonShape3D_iosu8")
 
 [node name="range_amplifier" parent="." index="8" unique_id=1269476132 instance=ExtResource("3_e7k62")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, 0, 0)
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, 1.9096817, 0.06850362)
 
 [editable path="range_amplifier"]

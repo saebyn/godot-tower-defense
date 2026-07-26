@@ -1,0 +1,20 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://gwt7frpeiq8n"]
+
+[ext_resource type="Shader" uid="uid://dlvgfqpxy3ig" path="res://Assets/Shaders/grass.gdshader" id="1_eddc0"]
+
+[sub_resource type="Gradient" id="Gradient_eddc0"]
+colors = PackedColorArray(0.28967994, 0.48, 0.1872, 1, 0.30620995, 0.59, 0.15339999, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vnw6o"]
+seed = 1913
+frequency = 0.2837
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_18mdp"]
+noise = SubResource("FastNoiseLite_vnw6o")
+color_ramp = SubResource("Gradient_eddc0")
+seamless = true
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_eddc0")
+shader_parameter/Texture2DParameter = SubResource("NoiseTexture2D_18mdp")

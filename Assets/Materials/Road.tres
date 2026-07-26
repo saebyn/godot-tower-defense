@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://c5c5m4jh77v7l"]
+
+[ext_resource type="Shader" uid="uid://bpy48a3vk4mm1" path="res://Assets/Shaders/Road.gdshader" id="1_hnyvr"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_hnyvr")
+shader_parameter/base_color = Color(0.1, 0.1, 0.1, 1)
+shader_parameter/inner_line_color = Color(0.92, 0.7268001, 0.09200002, 1)
+shader_parameter/outer_line_color = Color(0.78039217, 0.78039217, 0.78039217, 1)
