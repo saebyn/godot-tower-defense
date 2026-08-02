@@ -31,6 +31,10 @@ func _ready() -> void:
   # Proxy wave_changed from ScenarioManager as wave_cleared
   ScenarioManager.wave_changed.connect(func(_scenario_id, _wave): wave_cleared.emit())
 
+  # When scenarios end, make sure to stop any current dialog.
+  # This is here because there's no existing dialog/dialogic manager for this.
+  ScenarioManager.scenario_ended.connect(func(_scenario_id): _stop_dialog())
+
   # Load the appropriate scenario dynamically
   _load_scenario()
 
@@ -133,3 +137,8 @@ func _on_placement_mode_exited() -> void:
   for building in shooting_buildings:
     if building is Entity_RangedBuilding:
       building.hide_range_indicator(true) # Force hide even if hovered
+
+
+func _stop_dialog() -> void:
+  if Dialogic:
+    Dialogic.clear()
