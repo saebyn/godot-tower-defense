@@ -10,42 +10,48 @@ class_name Entity_PicketFence
 @onready var collision_left: CollisionShape3D = $CollisionShape3D_Left
 @onready var collision_right: CollisionShape3D = $CollisionShape3D_Right
 
+var _left_enabled: bool = true
+var _right_enabled: bool = true
+var _post_enabled: bool = true
+
 @export var left_enabled: bool:
   set(value):
-    if Engine.is_editor_hint():
-      crosspiece_left.visible = value
-      picket_left.visible = value
-      collision_left.disabled = not value
-    else:
-      ready.connect(func lambda():
-        crosspiece_left.visible = value
-        picket_left.visible = value
-        collision_left.disabled = not value
-      )
+    _left_enabled = value
+    _sync_states()
   get:
-    return not collision_left.disabled
+    return _left_enabled
 @export var right_enabled: bool:
   set(value):
-    if Engine.is_editor_hint():
-      crosspiece_right.visible = value
-      picket_right.visible = value
-      collision_right.disabled = not value
-    else:
-      ready.connect(func lambda():
-        crosspiece_right.visible = value
-        picket_right.visible = value
-        collision_right.disabled = not value
-      )
+    _right_enabled = value
+    _sync_states()
   get:
-    return not collision_right.disabled
+    return _right_enabled
 @export var post_enabled: bool:
   set(value):
-    if Engine.is_editor_hint():
-      post.visible = value
-    else:
-      ready.connect(func lambda():
-        post.visible = value
-      )
+    _post_enabled = value
+    _sync_states()
   get:
-    return post.visible
+    return _post_enabled
 
+
+func _ready() -> void:
+  _sync_states()
+
+
+func _sync_states() -> void:
+  if crosspiece_left:
+    crosspiece_left.visible = _left_enabled
+  if picket_left:
+    picket_left.visible = _left_enabled
+  if collision_left:
+    collision_left.disabled = not _left_enabled
+
+  if crosspiece_right:
+    crosspiece_right.visible = _right_enabled
+  if picket_right:
+    picket_right.visible = _right_enabled
+  if collision_right:
+    collision_right.disabled = not _right_enabled
+
+  if post:
+    post.visible = _post_enabled
