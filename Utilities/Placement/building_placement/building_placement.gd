@@ -12,6 +12,8 @@ signal building_placed ## Emitted when a building is successfully placed
 @export var world_max_x: float = 200.0 # Maximum X boundary
 @export var world_min_z: float = -200.0 # Minimum Z boundary
 @export var world_max_z: float = 200.0 # Maximum Z boundary
+@export var valid_placement_material: StandardMaterial3D
+@export var invalid_placement_material: StandardMaterial3D
 
 @export_group("Sound Effects")
 @export var audio_player: AudioStreamPlayer
@@ -25,8 +27,8 @@ signal building_placed ## Emitted when a building is successfully placed
 @export var navigation_region: NavigationRegion3D
 @export var camera: Camera3D
 
-@onready var raycast: RayCast3D = $RayCast3D
-@onready var building_detection_raycast: RayCast3D = RayCast3D.new()
+@onready var raycast: RayCast3D = $GroundDetectionRayCast3D
+@onready var building_detection_raycast: RayCast3D = $BuildingDetectionRayCast3D2
 
 var busy: bool:
   get:
@@ -34,25 +36,7 @@ var busy: bool:
 
 var _place_building_type: Resource_BuildingType = null
 var _preview: Entity_PlaceableBuilding = null
-var _valid_material: StandardMaterial3D
-var _invalid_material: StandardMaterial3D
 
-func _ready():
-  # Set up materials for visual feedback
-  _valid_material = StandardMaterial3D.new()
-  _valid_material.albedo_color = Color.GREEN
-  _valid_material.flags_transparent = true
-  _valid_material.albedo_color.a = 0.8
-  
-  _invalid_material = StandardMaterial3D.new()
-  _invalid_material.albedo_color = Color.RED
-  _invalid_material.flags_transparent = true
-  _invalid_material.albedo_color.a = 0.8
-  
-  # Set up building detection raycast
-  add_child(building_detection_raycast)
-  building_detection_raycast.enabled = false
-  building_detection_raycast.collision_mask = 2 # Check for buildings (layer 2)
 
 func _process(_delta: float) -> void:
   if _preview:
@@ -86,7 +70,7 @@ func _input(event: InputEvent) -> void:
     _project_placed_building(event.position)
 
 
-func _validate_placement(target_position: Vector3) -> Utility_PlacementResult:
+func validate_placement(target_position: Vector3) -> Utility_PlacementResult:
   if not _preview:
     return Utility_PlacementResult.new(false, Utility_PlacementResult.ValidationError.NO_PLACEABLE_BUILDING, "No building selected for placement")
 
@@ -108,7 +92,7 @@ func _validate_placement(target_position: Vector3) -> Utility_PlacementResult:
   return Utility_PlacementResult.new(true)
 
 func _is_placement_valid(target_position: Vector3) -> bool:
-  var result = _validate_placement(target_position)
+  var result = validate_placement(target_position)
   # TODO enhance feedback to user
   if not result.is_valid:
     MyLogger.debug("Placement", "Invalid placement: %s" % result.error_message)
@@ -247,11 +231,11 @@ func _update_visual_feedback(target_position: Vector3) -> void:
     return
 
   # Only update if we have valid materials
-  if not _valid_material or not _invalid_material:
+  if not valid_placement_material or not invalid_placement_material:
     return
 
   var is_valid = _is_placement_valid(target_position)
-  var material = _valid_material if is_valid else _invalid_material
+  var material = valid_placement_material if is_valid else invalid_placement_material
   
   _preview.set_preview_material(material)
 

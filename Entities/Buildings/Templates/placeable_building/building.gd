@@ -15,6 +15,8 @@ class_name Entity_PlaceableBuilding
 ## Group to indicate the building should affect navigation
 ## We add buildings to this group upon placement for navigation mesh updates.
 @export var navigation_obstacle_group: String = "navigation_mesh_source_group"
+## Group for all buildings in the game world. Used for enemies to find buildings.
+@export var buildings_group: String = "buildings"
 
 @export var mesh_instances: Array[MeshInstance3D] = []:
   set(values):
@@ -223,6 +225,8 @@ func place(navigation_region: NavigationRegion3D) -> void:
 
   # Ensure the building is in the correct group for navigation
   add_to_group(navigation_obstacle_group)
+  # Then add the building to the buildings group so that enemies can find it
+  add_to_group(buildings_group)
 
 
 ## Dictionary to track active buffs on this building.
