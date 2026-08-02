@@ -2,9 +2,21 @@
 
 [ext_resource type="Script" uid="uid://mx50xvayo6d8" path="res://Utilities/Placement/building_placement/building_placement.gd" id="1_6wyqd"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5wxem"]
+albedo_color = Color(0.2901961, 1, 0.2901961, 0.8)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xlv7u"]
+albedo_color = Color(0.79, 0, 0.23700015, 0.8)
+
 [node name="BuildingPlacement" type="Node3D" unique_id=1705459850]
 script = ExtResource("1_6wyqd")
+valid_placement_material = SubResource("StandardMaterial3D_5wxem")
+invalid_placement_material = SubResource("StandardMaterial3D_xlv7u")
 
-[node name="RayCast3D" type="RayCast3D" parent="." unique_id=1800606212]
+[node name="GroundDetectionRayCast3D" type="RayCast3D" parent="." unique_id=1800606212]
 enabled = false
 collision_mask = 16
+
+[node name="BuildingDetectionRayCast3D2" type="RayCast3D" parent="." unique_id=252844906]
+enabled = false
+collision_mask = 2

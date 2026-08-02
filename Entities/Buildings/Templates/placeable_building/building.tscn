@@ -6,7 +6,7 @@
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_sl1jc"]
 friction = 0.0
 
-[node name="Building" type="StaticBody3D" unique_id=1513266757 groups=["buildings"]]
+[node name="Building" type="StaticBody3D" unique_id=1513266757]
 collision_layer = 34
 collision_mask = 0
 physics_material_override = SubResource("PhysicsMaterial_sl1jc")
