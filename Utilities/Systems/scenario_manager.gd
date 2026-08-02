@@ -31,24 +31,21 @@ var scenario_metadata: Dictionary = {
     "scene_path": "res://Stages/Scenarios/scenario_1.tscn",
     "description": "Defend a person on top of a car.",
     "thumbnail": "", # Optional icon path
+    "prerequisite": null, # No prerequisite for the first scenario
   },
   "scenario_2": {
     "name": "Campfire Survivors",
     "scene_path": "res://Stages/Scenarios/scenario_2.tscn",
     "description": "Protect two survivors next to a campfire.",
     "thumbnail": "",
-  },
-  "scenario_3": {
-    "name": "Hammock Defense",
-    "scene_path": "", # To be created
-    "description": "Guard a survivor in a hammock between two poles.",
-    "thumbnail": "",
+    "prerequisite": "scenario_1" # Must complete scenario_1 to unlock
   },
   "scenario_4": {
     "name": "Pool Party",
     "scene_path": "res://Stages/Scenarios/scenario_pool_party.tscn",
     "description": "Defend survivors in an inflatable pool.",
     "thumbnail": "",
+    "prerequisite": "scenario_2",
   },
 
   "scenario_test": {
@@ -56,6 +53,7 @@ var scenario_metadata: Dictionary = {
     "scene_path": "res://Stages/Scenarios/scenario_test.tscn",
     "description": "A test scenario for debugging purposes.",
     "thumbnail": "",
+    "prerequisite": null # No prerequisite
   },
 }
 
@@ -168,18 +166,13 @@ func is_scenario_unlocked(scenario_id: String) -> bool:
   if ProjectSettings.get_setting("zom_nom_defense/debug/unlock_all_scenarios"):
     return true
 
-  # Scenario 1 always unlocked
-  if scenario_id == "scenario_1":
+  var prerequisite_id := get_unlock_requirement(scenario_id)
+
+  if prerequisite_id == "":
     return true
-  
-  # Extract scenario number
-  var scenario_num = int(scenario_id.replace("scenario_", ""))
-  if scenario_num <= 1:
-    return true
-  
-  # Check if previous scenario is completed
-  var prev_scenario = "scenario_%d" % (scenario_num - 1)
-  return completed_scenarios.has(prev_scenario)
+
+  return completed_scenarios.has(prerequisite_id)
+
 
 ## Check if a scenario is completed
 func is_scenario_completed(scenario_id: String) -> bool:
@@ -207,18 +200,20 @@ func get_all_scenario_ids() -> Array[String]:
 
 ## Get the previous scenario requirement for unlocking
 func get_unlock_requirement(scenario_id: String) -> String:
-  var scenario_num = int(scenario_id.replace("scenario_", ""))
-  if scenario_num <= 1:
-    return "" # No requirement
-  return "scenario_%d" % (scenario_num - 1)
+  var scenario := get_scenario_metadata(scenario_id)
+  return scenario.get("prerequisite") or ""
+
 
 ## Helper to get next scenario ID
 func _get_next_scenario_id(scenario_id: String) -> String:
-  var scenario_num = int(scenario_id.replace("scenario_", ""))
-  var next_scenario = "scenario_%d" % (scenario_num + 1)
-  if next_scenario in scenario_metadata:
-    return next_scenario
-  return ""
+  # XXX note: This will assume that there is only one next scenario in sequence.
+  # If we have branching scenarios in the future, this will need to be updated.
+  for candidate_scenario_key in scenario_metadata.keys():
+    var prereq = scenario_metadata[candidate_scenario_key].get("prerequisite")
+    if prereq == scenario_id:
+      return candidate_scenario_key
+
+  return "" # No next scenario found
 
 ## SaveableSystem Interface Implementation
 
