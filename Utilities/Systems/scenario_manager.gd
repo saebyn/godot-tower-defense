@@ -201,7 +201,11 @@ func get_all_scenario_ids() -> Array[String]:
 ## Get the previous scenario requirement for unlocking
 func get_unlock_requirement(scenario_id: String) -> String:
   var scenario := get_scenario_metadata(scenario_id)
-  return scenario.get("prerequisite") or ""
+  var prerequisite_id = scenario.get("prerequisite")
+  if prerequisite_id == null:
+    return ""
+  else:
+    return prerequisite_id
 
 
 ## Helper to get next scenario ID
