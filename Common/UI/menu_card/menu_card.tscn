@@ -1,0 +1,189 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Common/UI/menu_card/menu_card.gd" id="1_script"]
+[ext_resource type="Theme" path="res://Config/ztd_menu_theme.tres" id="2_theme"]
+
+[node name="MenuCard" type="Button"]
+custom_minimum_size = Vector2(360, 328)
+focus_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("2_theme")
+theme_type_variation = &"MenuCard"
+text = ""
+script = ExtResource("1_script")
+
+[node name="ContentMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="Content" type="VBoxContainer" parent="ContentMargin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="ArtworkFrame" type="PanelContainer" parent="ContentMargin/Content"]
+custom_minimum_size = Vector2(0, 132)
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"MenuArtworkFrame"
+
+[node name="ArtworkPlaceholder" type="CenterContainer" parent="ContentMargin/Content/ArtworkFrame"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="ContentMargin/Content/ArtworkFrame/ArtworkPlaceholder"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"MenuMeta"
+text = "LOW-POLY DIORAMA\nARTWORK SLOT"
+horizontal_alignment = 1
+
+[node name="Artwork" type="TextureRect" parent="ContentMargin/Content/ArtworkFrame"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="ArtworkDim" type="ColorRect" parent="ContentMargin/Content/ArtworkFrame"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.239, 0.184, 0.251, 0.72)
+
+[node name="LockOverlay" type="CenterContainer" parent="ContentMargin/Content/ArtworkFrame"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+
+[node name="LockPanel" type="PanelContainer" parent="ContentMargin/Content/ArtworkFrame/LockOverlay"]
+custom_minimum_size = Vector2(252, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"MenuLockPanel"
+
+[node name="Margin" type="MarginContainer" parent="ContentMargin/Content/ArtworkFrame/LockOverlay/LockPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="ContentMargin/Content/ArtworkFrame/LockOverlay/LockPanel/Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="LockedLabel" type="Label" parent="ContentMargin/Content/ArtworkFrame/LockOverlay/LockPanel/Margin/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"MenuStatus"
+text = "LOCKED"
+horizontal_alignment = 1
+
+[node name="LockReason" type="Label" parent="ContentMargin/Content/ArtworkFrame/LockOverlay/LockPanel/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"MenuSmall"
+text = "COMPLETE THE PREVIOUS SCENARIO"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="TitleRow" type="HBoxContainer" parent="ContentMargin/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Number" type="Label" parent="ContentMargin/Content/TitleRow"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"MenuCardNumber"
+text = "01"
+
+[node name="Title" type="Label" parent="ContentMargin/Content/TitleRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_type_variation = &"MenuCardTitle"
+text = "MENU CARD"
+text_overrun_behavior = 3
+
+[node name="CompletionBadge" type="PanelContainer" parent="ContentMargin/Content/TitleRow"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"MenuCompletionBadge"
+
+[node name="BadgeMargin" type="MarginContainer" parent="ContentMargin/Content/TitleRow/CompletionBadge"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 4
+
+[node name="BadgeLabel" type="Label" parent="ContentMargin/Content/TitleRow/CompletionBadge/BadgeMargin"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"MenuMeta"
+text = "✓"
+
+[node name="Description" type="Label" parent="ContentMargin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_type_variation = &"MenuBody"
+text = "A representative menu card."
+autowrap_mode = 2
+
+[node name="Status" type="Label" parent="ContentMargin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"MenuStatus"
+text = "AVAILABLE"
+
+[node name="SelectionMarker" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+z_index = 4
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -132.0
+offset_top = 12.0
+offset_right = -4.0
+offset_bottom = 48.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_type_variation = &"MenuSelectionMarker"
+
+[node name="Margin" type="MarginContainer" parent="SelectionMarker"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 4
+
+[node name="Label" type="Label" parent="SelectionMarker/Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"MenuMeta"
+text = "★ SELECTED"
+horizontal_alignment = 1

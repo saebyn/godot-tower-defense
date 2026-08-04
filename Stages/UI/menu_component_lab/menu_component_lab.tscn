@@ -1,0 +1,298 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://Stages/UI/menu_component_lab/menu_component_lab.gd" id="1_script"]
+[ext_resource type="Theme" path="res://Config/ztd_menu_theme.tres" id="2_theme"]
+[ext_resource type="PackedScene" path="res://Common/UI/menu_card/menu_card.tscn" id="3_card"]
+
+[node name="MenuComponentLab" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.306, 0.314, 0.192, 1)
+
+[node name="BackgroundWash" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.239, 0.184, 0.251, 0.72)
+
+[node name="SafeArea" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 64
+theme_override_constants/margin_top = 48
+theme_override_constants/margin_right = 64
+theme_override_constants/margin_bottom = 48
+
+[node name="Layout" type="VBoxContainer" parent="SafeArea"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Header" type="HBoxContainer" parent="SafeArea/Layout"]
+custom_minimum_size = Vector2(0, 104)
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="TitleGroup" type="VBoxContainer" parent="SafeArea/Layout/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="SafeArea/Layout/Header/TitleGroup"]
+layout_mode = 2
+theme_type_variation = &"MenuScreenTitle"
+text = "MENU COMPONENT LAB"
+
+[node name="Subtitle" type="Label" parent="SafeArea/Layout/Header/TitleGroup"]
+layout_mode = 2
+theme_type_variation = &"MenuBody"
+text = "Iteration 1 — use Tab or arrow keys to test navigation without changing selection"
+
+[node name="ButtonSamples" type="HBoxContainer" parent="SafeArea/Layout/Header"]
+layout_mode = 2
+alignment = 2
+theme_override_constants/separation = 16
+
+[node name="BackButton" type="Button" parent="SafeArea/Layout/Header/ButtonSamples"]
+custom_minimum_size = Vector2(120, 56)
+layout_mode = 2
+theme_type_variation = &"MenuBackButton"
+text = "BACK"
+
+[node name="SecondaryButton" type="Button" parent="SafeArea/Layout/Header/ButtonSamples"]
+custom_minimum_size = Vector2(168, 56)
+layout_mode = 2
+theme_type_variation = &"MenuActionButton"
+text = "SECONDARY"
+
+[node name="PrimaryButton" type="Button" parent="SafeArea/Layout/Header/ButtonSamples"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(168, 72)
+layout_mode = 2
+theme_type_variation = &"MenuPrimaryButton"
+text = "PRIMARY"
+
+[node name="DisabledButton" type="Button" parent="SafeArea/Layout/Header/ButtonSamples"]
+custom_minimum_size = Vector2(144, 56)
+layout_mode = 2
+theme_type_variation = &"MenuActionButton"
+disabled = true
+text = "DISABLED"
+
+[node name="FeedbackPanel" type="PanelContainer" parent="SafeArea/Layout"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_type_variation = &"MenuPanel"
+
+[node name="FeedbackMargin" type="MarginContainer" parent="SafeArea/Layout/FeedbackPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 8
+
+[node name="FeedbackLabel" type="Label" parent="SafeArea/Layout/FeedbackPanel/FeedbackMargin"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MenuMeta"
+text = "READY: cyan means focus; the green SELECTED marker persists independently"
+
+[node name="StateScroll" type="ScrollContainer" parent="SafeArea/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="StateContent" type="VBoxContainer" parent="SafeArea/Layout/StateScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 16
+
+[node name="SectionHeader" type="HBoxContainer" parent="SafeArea/Layout/StateScroll/StateContent"]
+layout_mode = 2
+
+[node name="Heading" type="Label" parent="SafeArea/Layout/StateScroll/StateContent/SectionHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"MenuAction"
+text = "CAMPAIGN CARD STATE MATRIX"
+
+[node name="Legend" type="Label" parent="SafeArea/Layout/StateScroll/StateContent/SectionHeader"]
+layout_mode = 2
+theme_type_variation = &"MenuSmall"
+text = "Navigation × Choice × Availability × Progression"
+horizontal_alignment = 2
+
+[node name="CardsGrid" type="GridContainer" parent="SafeArea/Layout/StateScroll/StateContent"]
+layout_mode = 2
+columns = 4
+theme_override_constants/h_separation = 24
+theme_override_constants/v_separation = 24
+
+[node name="DefaultExample" type="VBoxContainer" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="StateLabel" type="Label" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid/DefaultExample"]
+layout_mode = 2
+theme_type_variation = &"MenuMeta"
+text = "DEFAULT"
+
+[node name="DefaultCard" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid/DefaultExample" instance=ExtResource("3_card")]
+unique_name_in_owner = true
+layout_mode = 2
+card_id = &"default"
+card_number = "02"
+title_text = "Campfire"
+description_text = "Protect noncombatant Survivors with constructed defenses."
+
+[node name="HoverExample" type="VBoxContainer" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="StateLabel" type="Label" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid/HoverExample"]
+layout_mode = 2
+theme_type_variation = &"MenuMeta"
+text = "HOVER"
+
+[node name="HoverCard" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid/HoverExample" instance=ExtResource("3_card")]
+unique_name_in_owner = true
+layout_mode = 2
+card_id = &"hover"
+card_number = "02"
+title_text = "Campfire"
+description_text = "Warm edge and brighter surface; never a selection marker."
+
+[node name="FocusExample" type="VBoxContainer" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="StateLabel" type="Label" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid/FocusExample"]
+layout_mode = 2
+theme_type_variation = &"MenuMeta"
+text = "KEYBOARD / GAMEPAD FOCUS"
+
+[node name="FocusCard" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid/FocusExample" instance=ExtResource("3_card")]
+unique_name_in_owner = true
+layout_mode = 2
+card_id = &"focus"
+card_number = "02"
+title_text = "Campfire"
+description_text = "Cyan ring means the next confirm input applies here."
+
+[node name="SelectedExample" type="VBoxContainer" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="StateLabel" type="Label" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid/SelectedExample"]
+layout_mode = 2
+theme_type_variation = &"MenuMeta"
+text = "SELECTED"
+
+[node name="SelectedCard" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid/SelectedExample" instance=ExtResource("3_card")]
+unique_name_in_owner = true
+layout_mode = 2
+card_id = &"selected"
+card_number = "02"
+title_text = "Campfire"
+description_text = "The green marker persists after navigation moves elsewhere."
+selected = true
+
+[node name="SelectedFocusExample" type="VBoxContainer" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="StateLabel" type="Label" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid/SelectedFocusExample"]
+layout_mode = 2
+theme_type_variation = &"MenuMeta"
+text = "SELECTED + FOCUS"
+
+[node name="SelectedFocusCard" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid/SelectedFocusExample" instance=ExtResource("3_card")]
+unique_name_in_owner = true
+layout_mode = 2
+card_id = &"selected_focus"
+card_number = "02"
+title_text = "Campfire"
+description_text = "Persistent choice and current navigation remain composable."
+selected = true
+
+[node name="LockedFocusExample" type="VBoxContainer" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="StateLabel" type="Label" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid/LockedFocusExample"]
+layout_mode = 2
+theme_type_variation = &"MenuMeta"
+text = "LOCKED + FOCUS"
+
+[node name="LockedFocusCard" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid/LockedFocusExample" instance=ExtResource("3_card")]
+unique_name_in_owner = true
+layout_mode = 2
+card_id = &"locked_focus"
+card_number = "03"
+title_text = "Pool Party"
+description_text = "Locked content stays focusable so its requirement can be read."
+locked = true
+lock_reason = "Complete Campfire Survivors"
+
+[node name="DisabledExample" type="VBoxContainer" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="StateLabel" type="Label" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid/DisabledExample"]
+layout_mode = 2
+theme_type_variation = &"MenuMeta"
+text = "DISABLED"
+
+[node name="DisabledCard" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid/DisabledExample" instance=ExtResource("3_card")]
+unique_name_in_owner = true
+layout_mode = 2
+card_id = &"disabled"
+card_number = "--"
+title_text = "Challenge"
+description_text = "Unavailable for a temporary reason; no progression padlock."
+temporarily_disabled = true
+disabled_reason = "Coming later"
+
+[node name="CompletedExample" type="VBoxContainer" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="StateLabel" type="Label" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid/CompletedExample"]
+layout_mode = 2
+theme_type_variation = &"MenuMeta"
+text = "COMPLETED"
+
+[node name="CompletedCard" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid/CompletedExample" instance=ExtResource("3_card")]
+unique_name_in_owner = true
+layout_mode = 2
+card_id = &"completed"
+card_number = "01"
+title_text = "Car Defense"
+description_text = "Progress status composes with navigation and selection."
+completed = true
+
+[connection signal="pressed" from="SafeArea/Layout/Header/ButtonSamples/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="SafeArea/Layout/Header/ButtonSamples/SecondaryButton" to="." method="_on_secondary_button_pressed"]
+[connection signal="pressed" from="SafeArea/Layout/Header/ButtonSamples/PrimaryButton" to="." method="_on_primary_button_pressed"]
