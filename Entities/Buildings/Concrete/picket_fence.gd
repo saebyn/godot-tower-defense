@@ -35,6 +35,7 @@ var _post_enabled: bool = true
 
 
 func _ready() -> void:
+  super._ready()
   _sync_states()
 
 
