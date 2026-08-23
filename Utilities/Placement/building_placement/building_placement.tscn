@@ -10,6 +10,7 @@ albedo_color = Color(0.79, 0, 0.23700015, 0.8)
 
 [node name="BuildingPlacement" type="Node3D" unique_id=1705459850]
 script = ExtResource("1_6wyqd")
+placement_clearance = 0.1
 valid_placement_material = SubResource("StandardMaterial3D_5wxem")
 invalid_placement_material = SubResource("StandardMaterial3D_xlv7u")
 
