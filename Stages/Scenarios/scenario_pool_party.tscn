@@ -112,27 +112,22 @@ shape = SubResource("ConcavePolygonShape3D_1rvch")
 [node name="Survivor1" parent="." unique_id=1795138384 instance=ExtResource("7_536ra")]
 transform = Transform3D(0.007888377, 0, -0.99997, 0, 1, 0, 0.99997, 0, 0.007888377, 2.0271902, 0.16178703, 2.7123528)
 skin_material = ExtResource("8_1rvch")
-hitpoints_override = 1000000000
 
 [node name="Survivor2" parent="." unique_id=698279495 instance=ExtResource("7_536ra")]
 transform = Transform3D(0.68021035, 0, 0.7330185, 0, 1, 0, -0.7330185, 0, 0.68021035, -12.313481, 0, -23.940422)
 skin_material = ExtResource("8_1rvch")
-hitpoints_override = 1000000000
 
 [node name="Survivor3" parent="." unique_id=392344241 instance=ExtResource("7_536ra")]
 transform = Transform3D(0.601105, 0, 0.7991715, 0, 1, 0, -0.7991715, 0, 0.601105, 13.230227, 0, -30.66111)
 skin_material = ExtResource("8_1rvch")
-hitpoints_override = 1000000000
 
 [node name="Survivor4" parent="." unique_id=23150587 instance=ExtResource("7_536ra")]
 transform = Transform3D(-0.50375986, 0, -0.863845, 0, 1, 0, 0.863845, 0, -0.50375986, 23.913876, 0, -16.184517)
 skin_material = ExtResource("9_536ra")
-hitpoints_override = 1000000000
 
 [node name="Survivor5" parent="." unique_id=447314646 instance=ExtResource("7_536ra")]
 transform = Transform3D(-0.18539289, 0, -0.98266566, 0, 1, 0, 0.98266566, 0, -0.18539289, 17.709484, 0, 42.45176)
 skin_material = ExtResource("8_1rvch")
-hitpoints_override = 1000000000
 
 [node name="MainHouseArea" type="Node3D" parent="." unique_id=439554143]
 
