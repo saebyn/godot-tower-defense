@@ -629,6 +629,7 @@ libraries/zombie_library = ExtResource("8_4dxql")
 
 [node name="Component_Targeting" type="Node3D" parent="." unique_id=908674145 node_paths=PackedStringArray("attack", "navigation_agent")]
 script = ExtResource("10_egwok")
+target_preferences = Array[int]([1, 0])
 attack = NodePath("../Attack")
 navigation_agent = NodePath("../NavigationAgent3D")
 metadata/_custom_type_script = "uid://dd6iai4hse0g5"

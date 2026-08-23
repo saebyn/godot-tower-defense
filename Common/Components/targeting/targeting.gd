@@ -1,7 +1,12 @@
 extends Node3D
 class_name Component_Targeting
 
+enum TargetPreference {
+  RANDOM_SURVIVOR,
+  NEAREST_THREAT,
+}
 
+@export var target_preferences: Array[TargetPreference] = [TargetPreference.RANDOM_SURVIVOR]
 @export var survivor_group: String = "survivors"
 @export var building_group: String = "buildings"
 @export var attack: Component_Attack
@@ -48,20 +53,49 @@ func _physics_process(_delta: float):
         _check_and_set_fallback_target()
 
 
+func _find_next_target() -> Node3D:
+  for target_preference in target_preferences:
+    match target_preference:
+      TargetPreference.RANDOM_SURVIVOR:
+        var targets := get_tree().get_nodes_in_group(survivor_group)
+        if targets.size() > 0:
+          return targets.pick_random()
+      TargetPreference.NEAREST_THREAT:
+        var targets: Array[Node3D] = []
+        # Find all buildings with an attack component
+        for node in get_tree().get_nodes_in_group(building_group):
+          if node.has_method("can_hit_target") and node.can_hit_target(self):
+            targets.append(node)
+
+        if targets.size() > 0:
+          # Sort by distance to this agent
+          targets.sort_custom(_sort_by_distance_to_self)
+
+          return targets[0]
+
+  return null
+
+
 func _choose_target():
-  var targets := get_tree().get_nodes_in_group(survivor_group)
-  if targets.size() == 0:
-    current_target = null
+  current_target = _find_next_target()
+
+  if current_target:
+    MyLogger.info("Component_Targeting", "Chose new target: %s" % current_target.name)
+    navigation_agent.set_target_position(current_target.global_position)
+  else:
+    MyLogger.trace("Component_Targeting", "No targets available.")
     attack.cancel()
     # No targets available, stop the agent.
     navigation_agent.set_target_position(global_position)
-    MyLogger.trace("Component_Targeting", "No targets available.")
-  else:
-    # TODO : Implement logic to choose a target based on some criteria.
-    current_target = targets.pick_random()
-    MyLogger.info("Component_Targeting", "Chose new target: %s" % current_target.name)
-    navigation_agent.set_target_position(current_target.global_position)
 
+
+func _sort_by_distance_to_self(a: Node3D, b: Node3D) -> bool:
+  var dist_a := global_position.distance_to(a.global_position)
+  var dist_b := global_position.distance_to(b.global_position)
+  if dist_a < dist_b:
+    return true
+  else:
+    return false
 
 func _find_nearest_building_in_range() -> Node3D:
   var buildings := get_tree().get_nodes_in_group(building_group)
@@ -134,12 +168,19 @@ func _check_and_set_fallback_target() -> void:
 func _attack_target():
   MyLogger.debug("Component_Targeting", "Attempting to attack target. Current target: %s, Fallback building: %s" % [current_target, fallback_building_target])
 
+  # TODO think about how we can change target to match
+  # the targetting preferences, even if the current tartget is still valid.
+  # For example, if the current target is a survivor, but a building is closer,
+  # we might want to switch to the building.
+
+  # TODO move the checks for an existing current_target into _choose_target().
   if not current_target:
     MyLogger.trace("Component_Targeting", "No current target to attack.")
     _choose_target()
     if not current_target:
       return
   
+  # TODO move the checks for an existing current_target into _choose_target().
   if not current_target.is_in_group(survivor_group):
     MyLogger.warn("Component_Targeting", "Current target is not in the survivor group.")
     _choose_target()
