@@ -4,6 +4,13 @@ class_name Component_Targeting
 enum TargetPreference {
   RANDOM_SURVIVOR,
   NEAREST_THREAT,
+  NEAREST_SURVIVOR,
+  LOWEST_HEALTH_SURVIVOR,
+  NEAREST_BUILDING,
+  RECENT_ATTACKER,
+  LOWEST_HEALTH_THREAT,
+  # Future home for fallback blocker targeting when the preferred target is unreachable.
+  BLOCKING_BUILDING,
 }
 
 @export var target_preferences: Array[TargetPreference] = [TargetPreference.RANDOM_SURVIVOR]
@@ -65,26 +72,91 @@ func _physics_process(_delta: float):
 
 
 func _refresh_target() -> void:
-  for target_preference in target_preferences:
-    if _current_target_matches_preference(target_preference) and _is_target_reachable(current_target):
-      _set_current_target(current_target)
-      return
+  if _try_refresh_target(true):
+    return
 
-    var next_target := _find_reachable_target_for_preference(target_preference)
-    if next_target:
-      _set_current_target(next_target)
-      return
-
-  for target_preference in target_preferences:
-    if _current_target_matches_preference(target_preference):
-      return
-
-    var fallback_target := _find_target_for_preference(target_preference)
-    if fallback_target:
-      _set_current_target(fallback_target)
-      return
+  if _try_refresh_target(false):
+    return
 
   _clear_current_target()
+
+
+func _try_refresh_target(require_reachable: bool) -> bool:
+  for target_preference in target_preferences:
+    if _current_target_matches_preference(target_preference):
+      if not require_reachable or _is_target_reachable(current_target):
+        _set_current_target(current_target)
+        return true
+
+    var next_target := _find_best_target_for_preference(target_preference, require_reachable)
+    if next_target:
+      _set_current_target(next_target)
+      return true
+
+  return false
+
+
+func _find_best_target_for_preference(target_preference: TargetPreference, require_reachable: bool) -> Node3D:
+  var candidates := _get_candidates_for_preference(target_preference)
+
+  if require_reachable:
+    candidates = _filter_reachable(candidates)
+
+  if candidates.is_empty():
+    return null
+
+  _rank_candidates_for_preference(candidates, target_preference)
+  return candidates[0]
+
+
+func _get_candidates_for_preference(target_preference: TargetPreference) -> Array[Node3D]:
+  match target_preference:
+    TargetPreference.RANDOM_SURVIVOR:
+      return _get_survivors()
+    TargetPreference.NEAREST_THREAT:
+      return _get_threats()
+
+  return []
+
+
+func _filter_reachable(candidates: Array[Node3D]) -> Array[Node3D]:
+  var reachable_candidates: Array[Node3D] = []
+
+  for candidate in candidates:
+    if _is_target_reachable(candidate):
+      reachable_candidates.append(candidate)
+
+  return reachable_candidates
+
+
+func _rank_candidates_for_preference(candidates: Array[Node3D], target_preference: TargetPreference) -> void:
+  match target_preference:
+    TargetPreference.RANDOM_SURVIVOR:
+      candidates.shuffle()
+    TargetPreference.NEAREST_THREAT:
+      candidates.sort_custom(_sort_by_distance_to_self)
+
+
+func _get_survivors() -> Array[Node3D]:
+  var targets: Array[Node3D] = []
+
+  for node in get_tree().get_nodes_in_group(survivor_group):
+    var target_node := node as Node3D
+    if target_node != null and is_instance_valid(target_node):
+      targets.append(target_node)
+
+  return targets
+
+
+func _get_threats() -> Array[Node3D]:
+  var targets: Array[Node3D] = []
+
+  for node in get_tree().get_nodes_in_group(building_group):
+    var target_node := node as Node3D
+    if target_node != null and _target_matches_preference(target_node, TargetPreference.NEAREST_THREAT):
+      targets.append(target_node)
+
+  return targets
 
 
 func _current_target_matches_preference(target_preference: TargetPreference) -> bool:
@@ -108,84 +180,6 @@ func _target_matches_preference(target: Node3D, target_preference: TargetPrefere
         and target.can_hit_target(actor)
 
   return false
-
-
-func _find_reachable_target_for_preference(target_preference: TargetPreference) -> Node3D:
-  match target_preference:
-    TargetPreference.RANDOM_SURVIVOR:
-      return _find_reachable_random_survivor()
-    TargetPreference.NEAREST_THREAT:
-      return _find_reachable_nearest_threat()
-
-  return null
-
-
-func _find_target_for_preference(target_preference: TargetPreference) -> Node3D:
-  match target_preference:
-    TargetPreference.RANDOM_SURVIVOR:
-      return _find_random_survivor()
-    TargetPreference.NEAREST_THREAT:
-      return _find_nearest_threat()
-
-  return null
-
-
-func _find_random_survivor() -> Node3D:
-  var targets := get_tree().get_nodes_in_group(survivor_group)
-  var valid_targets: Array[Node3D] = []
-
-  for target in targets:
-    var target_node := target as Node3D
-    if target_node != null and is_instance_valid(target_node):
-      valid_targets.append(target_node)
-
-  if valid_targets.is_empty():
-    return null
-
-  return valid_targets.pick_random()
-
-
-func _find_reachable_random_survivor() -> Node3D:
-  var targets := get_tree().get_nodes_in_group(survivor_group)
-  targets.shuffle()
-
-  for target in targets:
-    var target_node := target as Node3D
-    if target_node != null and _is_target_reachable(target_node):
-      return target_node
-
-  return null
-
-
-func _find_nearest_threat() -> Node3D:
-  var targets := _find_threats()
-  if targets.is_empty():
-    return null
-
-  targets.sort_custom(_sort_by_distance_to_self)
-  return targets[0]
-
-
-func _find_reachable_nearest_threat() -> Node3D:
-  var targets := _find_threats()
-  targets.sort_custom(_sort_by_distance_to_self)
-
-  for target in targets:
-    if _is_target_reachable(target):
-      return target
-
-  return null
-
-
-func _find_threats() -> Array[Node3D]:
-  var targets: Array[Node3D] = []
-
-  for node in get_tree().get_nodes_in_group(building_group):
-    var target_node := node as Node3D
-    if target_node != null and _target_matches_preference(target_node, TargetPreference.NEAREST_THREAT):
-      targets.append(target_node)
-
-  return targets
 
 
 func _is_target_reachable(target: Node3D) -> bool:
