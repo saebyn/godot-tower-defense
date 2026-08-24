@@ -163,6 +163,9 @@ func mark_scenario_complete(scenario_id: String, time: float = 0.0, score: int =
 
 ## Check if a scenario is unlocked
 func is_scenario_unlocked(scenario_id: String) -> bool:
+  if not scenario_metadata.has(scenario_id):
+    return false
+
   if ProjectSettings.get_setting("zom_nom_defense/debug/unlock_all_scenarios"):
     return true
 

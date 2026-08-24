@@ -140,7 +140,7 @@ func test_get_unlock_requirement_returns_previous_scenario():
   # Act & Assert
   assert_eq(ScenarioManager.get_unlock_requirement("scenario_1"), "", "Scenario 1 has no requirement")
   assert_eq(ScenarioManager.get_unlock_requirement("scenario_2"), "scenario_1", "Scenario 2 requires scenario 1")
-  assert_eq(ScenarioManager.get_unlock_requirement("scenario_3"), "scenario_2", "Scenario 3 requires scenario 2")
+  assert_eq(ScenarioManager.get_unlock_requirement("scenario_4"), "scenario_2", "Scenario 4 requires scenario 2")
 
 func test_completing_same_level_twice_doesnt_duplicate():
   # Act
@@ -158,19 +158,13 @@ func test_unlock_progression_chain():
   # Start with all scenarios locked except scenario 1
   assert_true(ScenarioManager.is_scenario_unlocked("scenario_1"), "Scenario 1 should be unlocked")
   assert_false(ScenarioManager.is_scenario_unlocked("scenario_2"), "Scenario 2 should be locked")
-  assert_false(ScenarioManager.is_scenario_unlocked("scenario_3"), "Scenario 3 should be locked")
   assert_false(ScenarioManager.is_scenario_unlocked("scenario_4"), "Scenario 4 should be locked")
   
   # Complete scenario 1 - should unlock scenario 2
   ScenarioManager.mark_scenario_complete("scenario_1")
   assert_true(ScenarioManager.is_scenario_unlocked("scenario_2"), "Scenario 2 should be unlocked")
-  assert_false(ScenarioManager.is_scenario_unlocked("scenario_3"), "Scenario 3 should still be locked")
-  
-  # Complete scenario 2 - should unlock level 3
-  ScenarioManager.mark_scenario_complete("scenario_2")
-  assert_true(ScenarioManager.is_scenario_unlocked("scenario_3"), "Scenario 3 should be unlocked")
   assert_false(ScenarioManager.is_scenario_unlocked("scenario_4"), "Scenario 4 should still be locked")
   
-  # Complete level 3 - should unlock level 4
-  ScenarioManager.mark_scenario_complete("scenario_3")
+  # Complete scenario 2 - should unlock scenario 4
+  ScenarioManager.mark_scenario_complete("scenario_2")
   assert_true(ScenarioManager.is_scenario_unlocked("scenario_4"), "Scenario 4 should be unlocked")

@@ -124,7 +124,7 @@ func test_sequential_scenario_unlocking():
   # Initially only scenario 1 should be unlocked
   assert_true(ScenarioManager.is_scenario_unlocked("scenario_1"), "Scenario 1 should be unlocked")
   assert_false(ScenarioManager.is_scenario_unlocked("scenario_2"), "Scenario 2 should be locked")
-  assert_false(ScenarioManager.is_scenario_unlocked("scenario_3"), "Scenario 3 should be locked")
+  assert_false(ScenarioManager.is_scenario_unlocked("scenario_4"), "Scenario 4 should be locked")
   
   # Complete scenario 1
   ScenarioManager.set_current_scenario_id("scenario_1")
@@ -132,14 +132,14 @@ func test_sequential_scenario_unlocking():
   
   # Now scenario 2 should be unlocked
   assert_true(ScenarioManager.is_scenario_unlocked("scenario_2"), "Scenario 2 should be unlocked after completing scenario 1")
-  assert_false(ScenarioManager.is_scenario_unlocked("scenario_3"), "Scenario 3 should still be locked")
+  assert_false(ScenarioManager.is_scenario_unlocked("scenario_4"), "Scenario 4 should still be locked")
   
   # Complete scenario 2
   ScenarioManager.set_current_scenario_id("scenario_2")
   ScenarioManager.mark_scenario_complete("scenario_2")
   
-  # Now scenario 3 should be unlocked
-  assert_true(ScenarioManager.is_scenario_unlocked("scenario_3"), "Scenario 3 should be unlocked after completing scenario 2")
+  # Now scenario 4 should be unlocked
+  assert_true(ScenarioManager.is_scenario_unlocked("scenario_4"), "Scenario 4 should be unlocked after completing scenario 2")
 
 func test_game_manager_returns_empty_string_when_no_scenario_set():
   # Arrange - no scenario ID set
