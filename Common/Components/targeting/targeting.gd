@@ -11,9 +11,12 @@ enum TargetPreference {
 @export var building_group: String = "buildings"
 @export var attack: Component_Attack
 @export var navigation_agent: NavigationAgent3D
+@export var retarget_interval: float = 0.5
+@export var reachable_distance_tolerance: float = 1.0
 
 var current_target: Node3D = null
 var fallback_building_target: Node3D = null # Used when direct path to target is blocked
+var retarget_timer: Timer
 
 var building_attack_range: float:
   get:
@@ -24,6 +27,12 @@ var target_attack_range: float:
     return get_parent().target_attack_range if get_parent() else 0.0
 
 func _ready() -> void:
+  retarget_timer = Timer.new()
+  retarget_timer.name = "RetargetTimer"
+  retarget_timer.wait_time = retarget_interval
+  retarget_timer.timeout.connect(_refresh_target)
+  add_child(retarget_timer)
+
   # Make sure to not await during _ready.
   _actor_setup.call_deferred()
 
@@ -32,10 +41,12 @@ func _actor_setup():
   await get_tree().physics_frame
 
   # Now that the navigation map is no longer empty, set the movement target.
-  _choose_target()
-  
+  _refresh_target()
+
   # Check if we need fallback pathfinding
   _check_and_set_fallback_target()
+
+  retarget_timer.start()
 
 func _process(_delta: float) -> void:
   _attack_target()
@@ -48,45 +59,177 @@ func _physics_process(_delta: float):
       MyLogger.trace("Component_Targeting", "Reached fallback building target.")
     else:
       # Check if we can now reach the main target
-      if current_target:
+      if current_target and is_instance_valid(current_target):
         navigation_agent.set_target_position(current_target.global_position)
         _check_and_set_fallback_target()
 
 
-func _find_next_target() -> Node3D:
+func _refresh_target() -> void:
   for target_preference in target_preferences:
-    match target_preference:
-      TargetPreference.RANDOM_SURVIVOR:
-        var targets := get_tree().get_nodes_in_group(survivor_group)
-        if targets.size() > 0:
-          return targets.pick_random()
-      TargetPreference.NEAREST_THREAT:
-        var targets: Array[Node3D] = []
-        # Find all buildings with an attack component
-        for node in get_tree().get_nodes_in_group(building_group):
-          if node.has_method("can_hit_target") and node.can_hit_target(self):
-            targets.append(node)
+    if _current_target_matches_preference(target_preference) and _is_target_reachable(current_target):
+      _set_current_target(current_target)
+      return
 
-        if targets.size() > 0:
-          # Sort by distance to this agent
-          targets.sort_custom(_sort_by_distance_to_self)
+    var next_target := _find_reachable_target_for_preference(target_preference)
+    if next_target:
+      _set_current_target(next_target)
+      return
 
-          return targets[0]
+  for target_preference in target_preferences:
+    if _current_target_matches_preference(target_preference):
+      return
+
+    var fallback_target := _find_target_for_preference(target_preference)
+    if fallback_target:
+      _set_current_target(fallback_target)
+      return
+
+  _clear_current_target()
+
+
+func _current_target_matches_preference(target_preference: TargetPreference) -> bool:
+  return current_target \
+    and is_instance_valid(current_target) \
+    and _target_matches_preference(current_target, target_preference)
+
+
+func _target_matches_preference(target: Node3D, target_preference: TargetPreference) -> bool:
+  if not target or not is_instance_valid(target):
+    return false
+
+  match target_preference:
+    TargetPreference.RANDOM_SURVIVOR:
+      return target.is_in_group(survivor_group)
+    TargetPreference.NEAREST_THREAT:
+      var actor := get_parent() as Node3D
+      return target.is_in_group(building_group) \
+        and actor != null \
+        and target.has_method("can_hit_target") \
+        and target.can_hit_target(actor)
+
+  return false
+
+
+func _find_reachable_target_for_preference(target_preference: TargetPreference) -> Node3D:
+  match target_preference:
+    TargetPreference.RANDOM_SURVIVOR:
+      return _find_reachable_random_survivor()
+    TargetPreference.NEAREST_THREAT:
+      return _find_reachable_nearest_threat()
 
   return null
 
 
-func _choose_target():
-  current_target = _find_next_target()
+func _find_target_for_preference(target_preference: TargetPreference) -> Node3D:
+  match target_preference:
+    TargetPreference.RANDOM_SURVIVOR:
+      return _find_random_survivor()
+    TargetPreference.NEAREST_THREAT:
+      return _find_nearest_threat()
 
-  if current_target:
+  return null
+
+
+func _find_random_survivor() -> Node3D:
+  var targets := get_tree().get_nodes_in_group(survivor_group)
+  var valid_targets: Array[Node3D] = []
+
+  for target in targets:
+    var target_node := target as Node3D
+    if target_node != null and is_instance_valid(target_node):
+      valid_targets.append(target_node)
+
+  if valid_targets.is_empty():
+    return null
+
+  return valid_targets.pick_random()
+
+
+func _find_reachable_random_survivor() -> Node3D:
+  var targets := get_tree().get_nodes_in_group(survivor_group)
+  targets.shuffle()
+
+  for target in targets:
+    var target_node := target as Node3D
+    if target_node != null and _is_target_reachable(target_node):
+      return target_node
+
+  return null
+
+
+func _find_nearest_threat() -> Node3D:
+  var targets := _find_threats()
+  if targets.is_empty():
+    return null
+
+  targets.sort_custom(_sort_by_distance_to_self)
+  return targets[0]
+
+
+func _find_reachable_nearest_threat() -> Node3D:
+  var targets := _find_threats()
+  targets.sort_custom(_sort_by_distance_to_self)
+
+  for target in targets:
+    if _is_target_reachable(target):
+      return target
+
+  return null
+
+
+func _find_threats() -> Array[Node3D]:
+  var targets: Array[Node3D] = []
+
+  for node in get_tree().get_nodes_in_group(building_group):
+    var target_node := node as Node3D
+    if target_node != null and _target_matches_preference(target_node, TargetPreference.NEAREST_THREAT):
+      targets.append(target_node)
+
+  return targets
+
+
+func _is_target_reachable(target: Node3D) -> bool:
+  if not target or not is_instance_valid(target):
+    return false
+
+  var map := navigation_agent.get_navigation_map()
+  if NavigationServer3D.map_get_iteration_id(map) == 0:
+    return false
+
+  var path := NavigationServer3D.map_get_path(map, global_position, target.global_position, true)
+  if path.is_empty():
+    return false
+
+  var final_path_position: Vector3 = path[path.size() - 1]
+  return final_path_position.distance_to(target.global_position) <= navigation_agent.target_desired_distance + reachable_distance_tolerance
+
+
+func _set_current_target(target: Node3D) -> void:
+  var changed := current_target != target
+  current_target = target
+  fallback_building_target = null
+  navigation_agent.set_target_position(current_target.global_position)
+
+  if changed:
     MyLogger.info("Component_Targeting", "Chose new target: %s" % current_target.name)
-    navigation_agent.set_target_position(current_target.global_position)
-  else:
+
+
+func _clear_current_target() -> void:
+  if current_target:
     MyLogger.trace("Component_Targeting", "No targets available.")
-    attack.cancel()
-    # No targets available, stop the agent.
-    navigation_agent.set_target_position(global_position)
+
+  current_target = null
+  fallback_building_target = null
+  attack.cancel()
+  # No targets available, stop the agent.
+  navigation_agent.set_target_position(global_position)
+
+
+func _get_attack_range_for_target(target: Node3D) -> float:
+  if target and is_instance_valid(target) and target.is_in_group(building_group):
+    return building_attack_range
+
+  return target_attack_range
 
 
 func _sort_by_distance_to_self(a: Node3D, b: Node3D) -> bool:
@@ -141,7 +284,7 @@ func _find_building_closest_to_target() -> Node3D:
 
 func _check_and_set_fallback_target() -> void:
   """Check if the enemy can reach the target. If not, find a building to attack."""
-  if not current_target:
+  if not current_target or not is_instance_valid(current_target):
     return
   
   # Wait for navigation to calculate path
@@ -168,16 +311,10 @@ func _check_and_set_fallback_target() -> void:
 func _attack_target():
   MyLogger.debug("Component_Targeting", "Attempting to attack target. Current target: %s, Fallback building: %s" % [current_target, fallback_building_target])
 
-  # TODO think about how we can change target to match
-  # the targetting preferences, even if the current tartget is still valid.
-  # For example, if the current target is a survivor, but a building is closer,
-  # we might want to switch to the building.
-
-  # TODO move the checks for an existing current_target into _choose_target().
-  if not current_target:
+  if not current_target or not is_instance_valid(current_target):
     MyLogger.trace("Component_Targeting", "No current target to attack.")
-    _choose_target()
-    if not current_target:
+    _refresh_target()
+    if not current_target or not is_instance_valid(current_target):
       return
   
   # If we have a fallback building target, prioritize it
@@ -197,8 +334,9 @@ func _attack_target():
 
   # Attack primary target if in range (higher priority)
   var distance_to_target: float = global_position.distance_to(current_target.global_position)
-  MyLogger.debug("Component_Targeting", "Distance to primary target: %f. Minimum attack range: %f" % [distance_to_target, target_attack_range])
-  if distance_to_target <= target_attack_range:
+  var current_target_attack_range := _get_attack_range_for_target(current_target)
+  MyLogger.debug("Component_Targeting", "Distance to primary target: %f. Minimum attack range: %f" % [distance_to_target, current_target_attack_range])
+  if distance_to_target <= current_target_attack_range:
       attack.perform_attack(current_target)
       return
 
@@ -208,4 +346,3 @@ func _attack_target():
     MyLogger.trace("Component_Targeting", "Attacking nearby building at distance: %f" % global_position.distance_to(nearby_building.global_position))
     attack.perform_attack(nearby_building)
     return
-
