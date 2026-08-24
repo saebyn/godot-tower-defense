@@ -31,6 +31,16 @@ func _ready():
     _setup_detection_timer()
 
 
+func can_hit_target(target: Node3D, max_distance: float = INF) -> bool:
+  if not target or not is_instance_valid(target):
+    return false
+  var distance := global_position.distance_to(target.global_position)
+
+  if distance > max_distance:
+    return false
+
+  return distance <= effect_range
+
 func place(navigation_region: NavigationRegion3D) -> void:
   var was_preview := is_preview
   super.place(navigation_region)
@@ -51,29 +61,24 @@ func _setup_detection_timer() -> void:
 func _detect_and_attack_enemies():
   if is_preview:
     return
-  var result = find_nearest_enemy_in_range()
+  var result = _find_nearest_enemy_in_range()
   current_target = result[0]
   can_attack_current_target = result[1]
   if current_target and can_attack_current_target and ready_to_attack:
     MyLogger.debug("ShootingBuilding", "Attacking enemy at distance: %f" % global_position.distance_to(current_target.global_position))
     attack.perform_attack(current_target)
 
-func find_nearest_enemy_in_range() -> Array:
+func _find_nearest_enemy_in_range() -> Array:
   var enemies := get_tree().get_nodes_in_group(enemy_group)
   var nearest_enemy: Node3D = null
   var nearest_distance: float = INF
   var can_attack := false
   
   for enemy in enemies:
-    if not enemy or not is_instance_valid(enemy):
-      continue
-      
-    var distance := global_position.distance_to(enemy.global_position)
-    if distance < nearest_distance:
-      nearest_distance = distance
+    if can_hit_target(enemy, nearest_distance):
+      nearest_distance = global_position.distance_to(enemy.global_position)
       nearest_enemy = enemy
-      if distance <= effect_range:
-        can_attack = true
+      can_attack = true
   
   return [nearest_enemy, can_attack]
 
