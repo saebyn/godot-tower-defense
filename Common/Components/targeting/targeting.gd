@@ -180,13 +180,6 @@ func _attack_target():
     if not current_target:
       return
   
-  # TODO move the checks for an existing current_target into _choose_target().
-  if not current_target.is_in_group(survivor_group):
-    MyLogger.warn("Component_Targeting", "Current target is not in the survivor group.")
-    _choose_target()
-    if not current_target:
-      return
-
   # If we have a fallback building target, prioritize it
   if fallback_building_target and is_instance_valid(fallback_building_target):
     MyLogger.debug("Component_Targeting", "Fallback building target is valid, checking distance to attack.")
