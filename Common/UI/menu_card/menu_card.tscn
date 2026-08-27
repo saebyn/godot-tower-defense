@@ -1,16 +1,40 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://Common/UI/menu_card/menu_card.gd" id="1_script"]
 [ext_resource type="Theme" path="res://Config/ztd_menu_theme.tres" id="2_theme"]
+[ext_resource type="Texture2D" uid="uid://b4v5s5em52b4q" path="res://Assets/Textures/UI/canvas-panel.png" id="3_canvas_panel"]
+[ext_resource type="Texture2D" uid="uid://dpc8rjpymam8l" path="res://Assets/Textures/UI/steel-card-frame.png" id="4_card_frame"]
+[ext_resource type="Texture2D" uid="uid://darl8rrqs10qu" path="res://Assets/Textures/UI/amber-steel-frame.png" id="5_hover_frame"]
+[ext_resource type="Texture2D" uid="uid://uwrkrns1hxcu" path="res://Assets/Textures/UI/cyan-frame.png" id="6_focus_frame"]
+[ext_resource type="Texture2D" uid="uid://b50njo6nxv18x" path="res://Assets/Textures/UI/star-ribbon.png" id="7_selected_ribbon"]
+[ext_resource type="Texture2D" uid="uid://dbttq8rhnokdh" path="res://Assets/Textures/UI/padlock.png" id="8_lock_icon"]
+[ext_resource type="Texture2D" uid="uid://caeifv84msba2" path="res://Assets/Textures/UI/metal-checkmark.png" id="9_completed_check"]
+[ext_resource type="Texture2D" uid="uid://b1ya0flfwshdg" path="res://Assets/Textures/UI/olive-steel-plate.png" id="10_status_plate"]
 
 [node name="MenuCard" type="Button"]
-custom_minimum_size = Vector2(360, 328)
+custom_minimum_size = Vector2(360, 720)
 focus_mode = 2
 mouse_default_cursor_shape = 2
+texture_filter = 2
 theme = ExtResource("2_theme")
 theme_type_variation = &"MenuCard"
 text = ""
 script = ExtResource("1_script")
+
+[node name="BaseSurface" type="NinePatchRect" parent="."]
+z_index = -2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_canvas_panel")
+patch_margin_left = 64
+patch_margin_top = 64
+patch_margin_right = 64
+patch_margin_bottom = 64
 
 [node name="ContentMargin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -21,58 +45,58 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 24
+theme_override_constants/margin_top = 36
 theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 24
+theme_override_constants/margin_bottom = 32
 
-[node name="Content" type="VBoxContainer" parent="ContentMargin"]
+[node name="CardBody" type="VBoxContainer" parent="ContentMargin"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 12
 
-[node name="ArtworkFrame" type="PanelContainer" parent="ContentMargin/Content"]
-custom_minimum_size = Vector2(0, 132)
+[node name="ArtworkFrame" type="PanelContainer" parent="ContentMargin/CardBody"]
+custom_minimum_size = Vector2(0, 364)
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"MenuArtworkFrame"
 
-[node name="ArtworkPlaceholder" type="CenterContainer" parent="ContentMargin/Content/ArtworkFrame"]
+[node name="ArtworkPlaceholder" type="CenterContainer" parent="ContentMargin/CardBody/ArtworkFrame"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Label" type="Label" parent="ContentMargin/Content/ArtworkFrame/ArtworkPlaceholder"]
+[node name="Label" type="Label" parent="ContentMargin/CardBody/ArtworkFrame/ArtworkPlaceholder"]
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"MenuMeta"
 text = "LOW-POLY DIORAMA\nARTWORK SLOT"
 horizontal_alignment = 1
 
-[node name="Artwork" type="TextureRect" parent="ContentMargin/Content/ArtworkFrame"]
+[node name="Artwork" type="TextureRect" parent="ContentMargin/CardBody/ArtworkFrame"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
 
-[node name="ArtworkDim" type="ColorRect" parent="ContentMargin/Content/ArtworkFrame"]
+[node name="ArtworkDim" type="ColorRect" parent="ContentMargin/CardBody/ArtworkFrame"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 color = Color(0.239, 0.184, 0.251, 0.72)
 
-[node name="LockOverlay" type="CenterContainer" parent="ContentMargin/Content/ArtworkFrame"]
+[node name="LockOverlay" type="CenterContainer" parent="ContentMargin/CardBody/ArtworkFrame"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 
-[node name="LockPanel" type="PanelContainer" parent="ContentMargin/Content/ArtworkFrame/LockOverlay"]
+[node name="LockPanel" type="PanelContainer" parent="ContentMargin/CardBody/ArtworkFrame/LockOverlay"]
 custom_minimum_size = Vector2(252, 0)
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"MenuLockPanel"
 
-[node name="Margin" type="MarginContainer" parent="ContentMargin/Content/ArtworkFrame/LockOverlay/LockPanel"]
+[node name="Margin" type="MarginContainer" parent="ContentMargin/CardBody/ArtworkFrame/LockOverlay/LockPanel"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 12
@@ -80,19 +104,27 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 8
 
-[node name="VBox" type="VBoxContainer" parent="ContentMargin/Content/ArtworkFrame/LockOverlay/LockPanel/Margin"]
+[node name="VBox" type="VBoxContainer" parent="ContentMargin/CardBody/ArtworkFrame/LockOverlay/LockPanel/Margin"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 4
 
-[node name="LockedLabel" type="Label" parent="ContentMargin/Content/ArtworkFrame/LockOverlay/LockPanel/Margin/VBox"]
+[node name="LockIcon" type="TextureRect" parent="ContentMargin/CardBody/ArtworkFrame/LockOverlay/LockPanel/Margin/VBox"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("8_lock_icon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LockedLabel" type="Label" parent="ContentMargin/CardBody/ArtworkFrame/LockOverlay/LockPanel/Margin/VBox"]
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"MenuStatus"
 text = "LOCKED"
 horizontal_alignment = 1
 
-[node name="LockReason" type="Label" parent="ContentMargin/Content/ArtworkFrame/LockOverlay/LockPanel/Margin/VBox"]
+[node name="LockReason" type="Label" parent="ContentMargin/CardBody/ArtworkFrame/LockOverlay/LockPanel/Margin/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
@@ -101,89 +133,189 @@ text = "COMPLETE THE PREVIOUS SCENARIO"
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="TitleRow" type="HBoxContainer" parent="ContentMargin/Content"]
+[node name="InfoArea" type="VBoxContainer" parent="ContentMargin/CardBody"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="TitleStack" type="VBoxContainer" parent="ContentMargin/CardBody/InfoArea"]
+unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 2
 
-[node name="Number" type="Label" parent="ContentMargin/Content/TitleRow"]
+[node name="Number" type="Label" parent="ContentMargin/CardBody/InfoArea/TitleStack"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"MenuCardNumber"
 text = "01"
+horizontal_alignment = 1
 
-[node name="Title" type="Label" parent="ContentMargin/Content/TitleRow"]
+[node name="Title" type="Label" parent="ContentMargin/CardBody/InfoArea/TitleStack"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 92)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 theme_type_variation = &"MenuCardTitle"
 text = "MENU CARD"
-text_overrun_behavior = 3
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+text_overrun_behavior = 2
 
-[node name="CompletionBadge" type="PanelContainer" parent="ContentMargin/Content/TitleRow"]
+[node name="Description" type="Label" parent="ContentMargin/CardBody/InfoArea"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
-mouse_filter = 2
-theme_type_variation = &"MenuCompletionBadge"
-
-[node name="BadgeMargin" type="MarginContainer" parent="ContentMargin/Content/TitleRow/CompletionBadge"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 4
-
-[node name="BadgeLabel" type="Label" parent="ContentMargin/Content/TitleRow/CompletionBadge/BadgeMargin"]
-layout_mode = 2
-mouse_filter = 2
-theme_type_variation = &"MenuMeta"
-text = "✓"
-
-[node name="Description" type="Label" parent="ContentMargin/Content"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
 mouse_filter = 2
 theme_type_variation = &"MenuBody"
 text = "A representative menu card."
+horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Status" type="Label" parent="ContentMargin/Content"]
+[node name="Status" type="Label" parent="ContentMargin/CardBody/InfoArea"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"MenuStatus"
 text = "AVAILABLE"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
 
-[node name="SelectionMarker" type="PanelContainer" parent="."]
+[node name="StatusPlate" type="NinePatchRect" parent="ContentMargin/CardBody/InfoArea/Status"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("10_status_plate")
+patch_margin_left = 80
+patch_margin_top = 40
+patch_margin_right = 80
+patch_margin_bottom = 40
+
+[node name="CompletionBadge" type="Control" parent="ContentMargin/CardBody/InfoArea/Status"]
 unique_name_in_owner = true
-z_index = 4
+visible = false
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -48.0
+offset_top = -16.0
+offset_right = -16.0
+offset_bottom = 16.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CompletedCheck" type="TextureRect" parent="ContentMargin/CardBody/InfoArea/Status/CompletionBadge"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("9_completed_check")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CardFrame" type="NinePatchRect" parent="."]
+z_index = 3
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_card_frame")
+draw_center = false
+patch_margin_left = 72
+patch_margin_top = 72
+patch_margin_right = 72
+patch_margin_bottom = 72
+
+[node name="HoverFrame" type="NinePatchRect" parent="."]
+unique_name_in_owner = true
+visible = false
+z_index = 5
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_hover_frame")
+draw_center = false
+patch_margin_left = 72
+patch_margin_top = 72
+patch_margin_right = 72
+patch_margin_bottom = 72
+
+[node name="SelectionMarker" type="TextureRect" parent="."]
+unique_name_in_owner = true
+z_index = 6
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -132.0
-offset_top = 12.0
-offset_right = -4.0
-offset_bottom = 48.0
+offset_left = -92.0
+offset_top = -18.0
+offset_right = 12.0
+offset_bottom = 148.0
 grow_horizontal = 0
 mouse_filter = 2
-theme_type_variation = &"MenuSelectionMarker"
+texture = ExtResource("7_selected_ribbon")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Margin" type="MarginContainer" parent="SelectionMarker"]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 4
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 36
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 64
 
 [node name="Label" type="Label" parent="SelectionMarker/Margin"]
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"MenuMeta"
-text = "★ SELECTED"
+text = "SELECTED"
 horizontal_alignment = 1
+
+[node name="FocusFrame" type="NinePatchRect" parent="."]
+unique_name_in_owner = true
+visible = false
+z_index = 7
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("6_focus_frame")
+draw_center = false
+patch_margin_left = 72
+patch_margin_top = 72
+patch_margin_right = 72
+patch_margin_bottom = 72

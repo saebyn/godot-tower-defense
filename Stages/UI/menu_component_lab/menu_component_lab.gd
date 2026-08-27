@@ -2,17 +2,28 @@ extends Control
 
 ## Interactive reference scene for the first menu visual-language iteration.
 
+const MAX_CARD_COLUMNS := 4
+const MIN_CARD_COLUMNS := 2
+const CARD_MIN_WIDTH := 360.0
+const CARD_GAP := 20.0
+const SAFE_AREA_HORIZONTAL_MARGIN := 96.0
+const SCROLLBAR_GUTTER := 16.0
+
 @onready var _feedback_label: Label = %FeedbackLabel
-@onready var _primary_button: Button = %PrimaryButton
 @onready var _hover_card: Button = %HoverCard
+@onready var _hover_focus_card: Button = %HoverFocusCard
+@onready var _cards_grid: GridContainer = %CardsGrid
+@onready var _playground_first_card: Button = %PlaygroundCardA
 @onready var _preview_focus_cards: Array[Button] = [
   %FocusCard,
+  %HoverFocusCard,
   %SelectedFocusCard,
   %LockedFocusCard,
 ]
-@onready var _cards: Array[Button] = [
+@onready var _state_cards: Array[Button] = [
   %DefaultCard,
   %HoverCard,
+  %HoverFocusCard,
   %FocusCard,
   %SelectedCard,
   %SelectedFocusCard,
@@ -20,34 +31,56 @@ extends Control
   %DisabledCard,
   %CompletedCard,
 ]
+@onready var _playground_cards: Array[Button] = [
+  %PlaygroundCardA,
+  %PlaygroundCardB,
+  %PlaygroundCardC,
+]
+@onready var _focusable_controls: Array[Control] = [
+  %BackButton,
+  %SecondaryButton,
+  %PrimaryButton,
+  %PlaygroundCardA,
+  %PlaygroundCardB,
+  %PlaygroundCardC,
+]
 
 func _ready() -> void:
+  resized.connect(_update_responsive_layout)
+  _update_responsive_layout()
   _apply_static_state_previews()
   _connect_card_feedback()
-  _primary_button.call_deferred("grab_focus")
+  _playground_first_card.call_deferred("grab_focus")
+
+func _update_responsive_layout() -> void:
+  if not is_node_ready():
+    return
+
+  _cards_grid.columns = _get_card_columns(get_viewport_rect().size.x)
+
+func _get_card_columns(viewport_width: float) -> int:
+  var available_width := viewport_width - SAFE_AREA_HORIZONTAL_MARGIN - SCROLLBAR_GUTTER
+  var columns := floori((available_width + CARD_GAP) / (CARD_MIN_WIDTH + CARD_GAP))
+  return clampi(columns, MIN_CARD_COLUMNS, MAX_CARD_COLUMNS)
 
 func _apply_static_state_previews() -> void:
-  # The gallery keeps its labelled states visible even while actual focus moves.
-  _hover_card.add_theme_stylebox_override(
-    "normal",
-    _hover_card.get_theme_stylebox("hover")
-  )
+  # Static matrix cards are visual specimens; live focus is demonstrated below.
+  for card in _state_cards:
+    card.focus_mode = Control.FOCUS_NONE
+    card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+  _hover_card.get_node("HoverFrame").visible = true
+  _hover_focus_card.get_node("HoverFrame").visible = true
   for card in _preview_focus_cards:
     _add_focus_preview(card)
 
 func _add_focus_preview(card: Button) -> void:
-  var preview := Panel.new()
-  preview.name = "StatePreviewFocusRing"
-  preview.z_index = 10
-  preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
-  preview.add_theme_stylebox_override("panel", card.get_theme_stylebox("focus"))
-  card.add_child(preview)
-  preview.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+  card.get_node("FocusFrame").visible = true
 
 func _connect_card_feedback() -> void:
-  for card in _cards:
+  for card in _playground_cards:
     card.connect("selection_requested", _on_selection_requested)
     card.connect("locked_inspected", _on_locked_inspected)
+  for card in _focusable_controls:
     card.focus_entered.connect(_on_card_focused.bind(card))
 
 func _on_selection_requested(card_id: StringName) -> void:
