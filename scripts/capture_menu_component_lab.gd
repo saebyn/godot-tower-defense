@@ -4,6 +4,11 @@ const LAB_SCENE := "res://Stages/UI/menu_component_lab/menu_component_lab.tscn"
 const CARD_SCENE := "res://Common/UI/menu_card/menu_card.tscn"
 const MENU_THEME := "res://Config/ztd_menu_theme.tres"
 const OUTPUT_DIR := "res://artifacts/visual/menu_component_lab"
+const MATRIX_VIEWPORT_SIZE := Vector2i(1280, 2048)
+const MATRIX_GUTTER := 48
+const MATRIX_CARD_SCALE := 0.58
+const MATRIX_CARD_SOURCE_SIZE := Vector2(360, 720)
+const MATRIX_CARD_SLOT_SIZE := Vector2(232, 450)
 
 const CARD_STATES := [
   {"label": "DEFAULT", "file": "default", "id": &"default"},
@@ -47,32 +52,36 @@ func _capture_lab_viewports() -> void:
 
 func _capture_card_state_matrix() -> void:
   await _clear_root()
-  root.size = Vector2i(1680, 3880)
 
   var theme: Theme = load(MENU_THEME)
   var card_scene: PackedScene = load(CARD_SCENE)
+  var viewport := SubViewport.new()
+  viewport.size = MATRIX_VIEWPORT_SIZE
+  viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+  root.add_child(viewport)
+
   var page := Control.new()
-  page.set_anchors_preset(Control.PRESET_FULL_RECT)
+  page.size = Vector2(viewport.size)
   page.theme = theme
-  root.add_child(page)
+  viewport.add_child(page)
 
   var background := ColorRect.new()
-  background.set_anchors_preset(Control.PRESET_FULL_RECT)
+  background.size = Vector2(viewport.size)
   background.color = Color(0.075, 0.082, 0.068, 1.0)
   page.add_child(background)
 
   var margin := MarginContainer.new()
-  margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-  margin.add_theme_constant_override("margin_left", 40)
-  margin.add_theme_constant_override("margin_top", 40)
-  margin.add_theme_constant_override("margin_right", 40)
-  margin.add_theme_constant_override("margin_bottom", 40)
+  margin.size = Vector2(viewport.size)
+  margin.add_theme_constant_override("margin_left", MATRIX_GUTTER)
+  margin.add_theme_constant_override("margin_top", MATRIX_GUTTER)
+  margin.add_theme_constant_override("margin_right", MATRIX_GUTTER)
+  margin.add_theme_constant_override("margin_bottom", MATRIX_GUTTER)
   page.add_child(margin)
 
   var grid := GridContainer.new()
   grid.columns = 4
-  grid.add_theme_constant_override("h_separation", 24)
-  grid.add_theme_constant_override("v_separation", 24)
+  grid.add_theme_constant_override("h_separation", 48)
+  grid.add_theme_constant_override("v_separation", 28)
   margin.add_child(grid)
 
   for state in CARD_STATES:
@@ -85,19 +94,26 @@ func _capture_card_state_matrix() -> void:
     label.text = state.label
     column.add_child(label)
 
-    var card: Node = card_scene.instantiate()
+    var slot := Control.new()
+    slot.custom_minimum_size = MATRIX_CARD_SLOT_SIZE
+    column.add_child(slot)
+
+    var card: Control = card_scene.instantiate()
+    card.position = Vector2((MATRIX_CARD_SLOT_SIZE.x - MATRIX_CARD_SOURCE_SIZE.x * MATRIX_CARD_SCALE) / 2.0, 0)
+    card.size = MATRIX_CARD_SOURCE_SIZE
+    card.scale = Vector2(MATRIX_CARD_SCALE, MATRIX_CARD_SCALE)
     _configure_card(card, state)
-    column.add_child(card)
+    slot.add_child(card)
 
   await _settle()
 
   for column in grid.get_children():
-    var card: Control = column.get_child(1)
+    var card: Control = column.get_child(1).get_child(0)
     var state = CARD_STATES[column.get_index()]
     _apply_navigation_preview(card, state)
 
   await _settle()
-  _save_root_image("card_states.png")
+  _save_viewport_image(viewport, "card_states.png")
 
 func _capture_individual_card_states() -> void:
   for state in CARD_STATES:
