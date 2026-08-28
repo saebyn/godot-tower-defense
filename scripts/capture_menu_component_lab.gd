@@ -146,6 +146,7 @@ func _apply_frame_preview(card: Control, state: Dictionary) -> void:
   var is_temporarily_disabled: bool = state.get("temporarily_disabled", false)
   var shows_focus: bool = state.get("focus", false) and not is_temporarily_disabled
   var shows_hover: bool = state.get("hover", false) and not shows_focus and not is_temporarily_disabled
+  card.get_node("BaseSurface").visible = not shows_focus and not shows_hover
   card.get_node("CardFrame").visible = not shows_focus and not shows_hover
   card.get_node("HoverFrame").visible = shows_hover
   card.get_node("FocusFrame").visible = shows_focus

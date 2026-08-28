@@ -65,6 +65,7 @@ signal locked_inspected(card_id: StringName)
 @onready var _title_label: Label = %Title
 @onready var _description_label: Label = %Description
 @onready var _status_label: Label = %Status
+@onready var _artwork_frame: PanelContainer = %ArtworkFrame
 @onready var _artwork_rect: TextureRect = %Artwork
 @onready var _artwork_placeholder: Control = %ArtworkPlaceholder
 @onready var _artwork_dim: ColorRect = %ArtworkDim
@@ -72,6 +73,7 @@ signal locked_inspected(card_id: StringName)
 @onready var _lock_reason_label: Label = %LockReason
 @onready var _selection_marker: Control = %SelectionMarker
 @onready var _completion_badge: Control = %CompletionBadge
+@onready var _base_surface: Control = %BaseSurface
 @onready var _card_frame: Control = %CardFrame
 @onready var _hover_frame: Control = %HoverFrame
 @onready var _focus_frame: Control = %FocusFrame
@@ -110,6 +112,7 @@ func _refresh() -> void:
   _completion_badge.visible = completed
   _lock_overlay.visible = locked and not temporarily_disabled
   _lock_reason_label.text = ""
+  _refresh_artwork_frame()
 
   disabled = temporarily_disabled
   focus_mode = Control.FOCUS_NONE if temporarily_disabled else Control.FOCUS_ALL
@@ -185,6 +188,7 @@ func _refresh_navigation_frames() -> void:
   var shows_hover := _hovered and not shows_focus and not temporarily_disabled
 
   _card_frame.visible = not shows_focus and not shows_hover
+  _base_surface.visible = _card_frame.visible
   _hover_frame.visible = shows_hover
   _focus_frame.visible = shows_focus
 
@@ -194,6 +198,12 @@ func _refresh_content_dimming() -> void:
   _artwork_rect.modulate = dimmed_color
   _title_stack.modulate = dimmed_color
   _description_label.modulate = dimmed_color
+
+func _refresh_artwork_frame() -> void:
+  if locked:
+    _artwork_frame.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+  else:
+    _artwork_frame.remove_theme_stylebox_override("panel")
 
 func _ignore_mouse_on_children(node: Node) -> void:
   for child in node.get_children():
