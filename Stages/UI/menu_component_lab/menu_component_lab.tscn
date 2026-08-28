@@ -208,7 +208,7 @@ layout_mode = 2
 card_id = &"hover_focus"
 card_number = "02"
 title_text = "Campfire Survivors"
-description_text = "Amber hover and cyan navigation focus can stack without changing selection."
+description_text = "When hover and navigation focus meet, focus wins the visible frame."
 
 [node name="FocusExample" type="VBoxContainer" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid" unique_id=1155697809]
 layout_mode = 2

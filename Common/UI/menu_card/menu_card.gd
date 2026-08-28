@@ -72,6 +72,7 @@ signal locked_inspected(card_id: StringName)
 @onready var _lock_reason_label: Label = %LockReason
 @onready var _selection_marker: Control = %SelectionMarker
 @onready var _completion_badge: Control = %CompletionBadge
+@onready var _card_frame: Control = %CardFrame
 @onready var _hover_frame: Control = %HoverFrame
 @onready var _focus_frame: Control = %FocusFrame
 @onready var _title_stack: Control = %TitleStack
@@ -97,8 +98,8 @@ func _refresh() -> void:
     return
 
   _number_label.text = card_number
-  _title_label.text = title_text.to_upper()
-  _description_label.text = description_text
+  _title_label.text = _format_title_text(title_text.to_upper())
+  _description_label.text = _format_description_text(description_text)
 
   _artwork_rect.texture = artwork
   _artwork_rect.visible = artwork != null
@@ -108,7 +109,7 @@ func _refresh() -> void:
   _selection_marker.visible = selected
   _completion_badge.visible = completed
   _lock_overlay.visible = locked and not temporarily_disabled
-  _lock_reason_label.text = lock_reason.to_upper()
+  _lock_reason_label.text = ""
 
   disabled = temporarily_disabled
   focus_mode = Control.FOCUS_NONE if temporarily_disabled else Control.FOCUS_ALL
@@ -120,12 +121,45 @@ func _get_status_text() -> String:
   if temporarily_disabled:
     return "TEMPORARILY UNAVAILABLE"
   if locked:
-    return lock_reason.to_upper()
+    return "LOCKED"
   if selected:
     return "SELECTED"
   if completed:
     return "COMPLETED"
   return action_label.to_upper()
+
+func _format_title_text(text: String) -> String:
+  if text.length() <= 14 or not text.contains(" "):
+    return text
+
+  return _break_at_middle_space(text)
+
+func _format_description_text(text: String) -> String:
+  if text.length() <= 34 or not text.contains(" "):
+    return text
+
+  return _break_at_middle_space(text)
+
+func _break_at_middle_space(text: String) -> String:
+  if not text.contains(" "):
+    return text
+
+  var target_index := text.length() / 2.0
+  var best_space_index := -1
+  var best_distance := INF
+  for index in range(text.length()):
+    if text[index] != " ":
+      continue
+
+    var distance: float = abs(index - target_index)
+    if distance < best_distance:
+      best_distance = distance
+      best_space_index = index
+
+  if best_space_index == -1:
+    return text
+
+  return "%s\n%s" % [text.substr(0, best_space_index), text.substr(best_space_index + 1)]
 
 func _on_pressed() -> void:
   if temporarily_disabled:
@@ -147,8 +181,12 @@ func _on_focus_changed() -> void:
   _refresh_navigation_frames()
 
 func _refresh_navigation_frames() -> void:
-  _hover_frame.visible = _hovered and not temporarily_disabled
-  _focus_frame.visible = has_focus() and not temporarily_disabled
+  var shows_focus := has_focus() and not temporarily_disabled
+  var shows_hover := _hovered and not shows_focus and not temporarily_disabled
+
+  _card_frame.visible = not shows_focus and not shows_hover
+  _hover_frame.visible = shows_hover
+  _focus_frame.visible = shows_focus
 
 func _refresh_content_dimming() -> void:
   var dimmed_color := Color(0.62, 0.62, 0.62, 0.82) if locked or temporarily_disabled else Color.WHITE

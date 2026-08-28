@@ -90,7 +90,17 @@ func test_selected_focus_keeps_ribbon_and_outline():
 
   assert_true(menu_card.get_node("SelectionMarker").visible)
   assert_true(menu_card.get_node("FocusFrame").visible)
-  assert_gt(menu_card.get_node("FocusFrame").z_index, menu_card.get_node("SelectionMarker").z_index)
+  assert_gt(menu_card.get_node("SelectionMarker").z_index, menu_card.get_node("FocusFrame").z_index)
+
+func test_focus_takes_visual_priority_over_hover_frame():
+  menu_card._on_mouse_entered()
+  assert_true(menu_card.get_node("HoverFrame").visible)
+
+  menu_card.grab_focus()
+  await wait_process_frames(1)
+
+  assert_false(menu_card.get_node("HoverFrame").visible)
+  assert_true(menu_card.get_node("FocusFrame").visible)
 
 func test_locked_focus_keeps_dimming_requirement_icon_and_outline():
   menu_card.locked = true
@@ -101,8 +111,8 @@ func test_locked_focus_keeps_dimming_requirement_icon_and_outline():
   assert_true(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/ArtworkDim").visible)
   assert_true(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/LockOverlay").visible)
   assert_true(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/LockOverlay/LockPanel/Margin/VBox/LockIcon").visible)
-  assert_eq(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/LockOverlay/LockPanel/Margin/VBox/LockReason").text, "COMPLETE CAMPFIRE SURVIVORS")
-  assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status").text, "COMPLETE CAMPFIRE SURVIVORS")
+  assert_eq(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/LockOverlay/LockPanel/Margin/VBox/LockReason").text, "")
+  assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status").text, "LOCKED")
   assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status/StatusPlate").texture.resource_path, "res://Assets/Textures/UI/olive-steel-plate.png")
   assert_true(menu_card.get_node("FocusFrame").visible)
   assert_gt(menu_card.get_node("FocusFrame").z_index, menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/ArtworkDim").z_index)
