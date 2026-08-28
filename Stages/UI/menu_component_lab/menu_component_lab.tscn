@@ -280,7 +280,6 @@ card_number = "03"
 title_text = "Pool Party Perimeter"
 description_text = "Locked content stays focusable so its requirement can be read."
 locked = true
-lock_reason = "Complete Campfire Survivors"
 
 [node name="DisabledExample" type="VBoxContainer" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid" unique_id=2033638559]
 layout_mode = 2
@@ -363,7 +362,6 @@ card_number = "04"
 title_text = "Garage Holdout"
 description_text = "Locked cards still accept focus for requirement inspection."
 locked = true
-lock_reason = "Complete Pool Party Perimeter"
 
 [connection signal="pressed" from="SafeArea/Layout/Header/ButtonSamples/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="SafeArea/Layout/Header/ButtonSamples/SecondaryButton" to="." method="_on_secondary_button_pressed"]

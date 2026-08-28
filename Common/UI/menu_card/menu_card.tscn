@@ -142,17 +142,6 @@ theme_type_variation = &"MenuStatus"
 text = "LOCKED"
 horizontal_alignment = 1
 
-[node name="LockReason" type="Label" parent="ContentMargin/CardBody/ArtworkFrame/LockOverlay/LockPanel/Margin/VBox"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-mouse_filter = 2
-theme_type_variation = &"MenuSmall"
-text = ""
-horizontal_alignment = 1
-clip_text = true
-autowrap_mode = 2
-
 [node name="InfoArea" type="VBoxContainer" parent="ContentMargin/CardBody"]
 z_index = 8
 layout_mode = 2

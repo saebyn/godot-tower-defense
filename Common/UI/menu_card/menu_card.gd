@@ -42,10 +42,6 @@ signal locked_inspected(card_id: StringName)
   set(value):
     locked = value
     _refresh()
-@export var lock_reason := "Complete the previous Scenario":
-  set(value):
-    lock_reason = value
-    _refresh()
 @export var temporarily_disabled := false:
   set(value):
     temporarily_disabled = value
@@ -70,7 +66,6 @@ signal locked_inspected(card_id: StringName)
 @onready var _artwork_placeholder: Control = %ArtworkPlaceholder
 @onready var _artwork_dim: ColorRect = %ArtworkDim
 @onready var _lock_overlay: Control = %LockOverlay
-@onready var _lock_reason_label: Label = %LockReason
 @onready var _selection_marker: Control = %SelectionMarker
 @onready var _completion_badge: Control = %CompletionBadge
 @onready var _base_surface: Control = %BaseSurface
@@ -114,7 +109,6 @@ func _refresh() -> void:
   _selection_marker.visible = selected
   _completion_badge.visible = completed
   _lock_overlay.visible = locked and not temporarily_disabled
-  _lock_reason_label.text = ""
   _refresh_artwork_frame()
 
   disabled = temporarily_disabled

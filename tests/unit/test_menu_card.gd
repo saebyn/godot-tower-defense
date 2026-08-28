@@ -24,7 +24,6 @@ func test_selection_is_persistent_component_state():
 func test_locked_card_remains_focusable_and_emits_inspection():
   menu_card.card_id = &"pool_party"
   menu_card.locked = true
-  menu_card.lock_reason = "Complete Campfire Survivors"
   watch_signals(menu_card)
 
   menu_card.emit_signal("pressed")
@@ -103,14 +102,12 @@ func test_focus_takes_visual_priority_over_hover_frame():
 
 func test_locked_focus_keeps_dimming_requirement_icon_and_outline():
   menu_card.locked = true
-  menu_card.lock_reason = "Complete Campfire Survivors"
   menu_card.grab_focus()
   await wait_process_frames(1)
 
   assert_true(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/ArtworkDim").visible)
   assert_true(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/LockOverlay").visible)
   assert_true(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/LockOverlay/LockPanel/Margin/VBox/LockIcon").visible)
-  assert_eq(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/LockOverlay/LockPanel/Margin/VBox/LockReason").text, "")
   assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status").text, "LOCKED")
   assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status/StatusPlate").texture.resource_path, "res://Assets/Textures/UI/olive-steel-plate.png")
   assert_true(menu_card.get_node("FocusFrame").visible)
