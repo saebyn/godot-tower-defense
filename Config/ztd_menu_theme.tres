@@ -36,27 +36,23 @@ expand_margin_bottom = 2.0
 draw_center = false
 
 [sub_resource type="StyleBoxTexture" id="StyleBox_button_hover"]
-content_margin_left = 16.0
-content_margin_top = 12.0
-content_margin_right = 16.0
-content_margin_bottom = 12.0
 texture = ExtResource("1_amber_frame")
-texture_margin_left = 72.0
-texture_margin_top = 72.0
-texture_margin_right = 72.0
+texture_margin_left = 83.19903
+texture_margin_top = 76.10676
+texture_margin_right = 66.17758
 texture_margin_bottom = 72.0
 draw_center = false
 
 [sub_resource type="StyleBoxTexture" id="StyleBox_button_normal"]
-content_margin_left = 16.0
-content_margin_top = 12.0
-content_margin_right = 16.0
-content_margin_bottom = 12.0
+content_margin_left = 0.0
+content_margin_top = 10.0
+content_margin_right = 0.0
+content_margin_bottom = 10.0
 texture = ExtResource("2_olive_plate")
-texture_margin_left = 80.0
-texture_margin_top = 40.0
-texture_margin_right = 80.0
-texture_margin_bottom = 40.0
+texture_margin_left = 55.66419
+texture_margin_top = 55.968536
+texture_margin_right = 53.133896
+texture_margin_bottom = 52.460796
 
 [sub_resource type="StyleBoxTexture" id="StyleBox_button_pressed"]
 content_margin_left = 16.0
@@ -117,15 +113,12 @@ texture_margin_right = 64.0
 texture_margin_bottom = 64.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBox_primary_button"]
-content_margin_left = 16.0
-content_margin_top = 12.0
-content_margin_right = 16.0
-content_margin_bottom = 12.0
 texture = ExtResource("6_turquoise_panel")
-texture_margin_left = 96.0
-texture_margin_top = 48.0
-texture_margin_right = 96.0
-texture_margin_bottom = 48.0
+texture_margin_left = 80.82439
+texture_margin_top = 66.05169
+texture_margin_right = 74.17157
+texture_margin_bottom = 67.808716
+region_rect = Rect2(0, 0, 768, 192)
 
 [sub_resource type="StyleBoxTexture" id="StyleBox_selection"]
 content_margin_left = 8.0

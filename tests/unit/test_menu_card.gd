@@ -24,15 +24,25 @@ func test_selection_is_persistent_component_state():
 func test_locked_card_remains_focusable_and_emits_inspection():
   menu_card.card_id = &"pool_party"
   menu_card.locked = true
+  menu_card.lock_reason = "Complete Campfire Survivors"
   watch_signals(menu_card)
 
   menu_card.emit_signal("pressed")
 
   assert_false(menu_card.disabled)
   assert_eq(menu_card.focus_mode, Control.FOCUS_ALL)
+  assert_eq(menu_card.tooltip_text, "Complete Campfire Survivors")
   assert_true(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/LockOverlay").visible)
   assert_signal_emitted_with_parameters(menu_card, "locked_inspected", [&"pool_party"])
   assert_signal_not_emitted(menu_card, "selection_requested")
+
+func test_lock_reason_is_tooltip_not_card_text():
+  menu_card.locked = true
+  menu_card.lock_reason = "Complete Campfire Survivors"
+
+  assert_eq(menu_card.tooltip_text, "Complete Campfire Survivors")
+  assert_eq(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/LockOverlay/LockPanel/Margin/VBox/LockedLabel").text, "LOCKED")
+  assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status").text, "LOCKED")
 
 func test_disabled_card_is_removed_from_focus_navigation():
   menu_card.card_id = &"challenge"
@@ -44,6 +54,7 @@ func test_disabled_card_is_removed_from_focus_navigation():
 
   assert_true(menu_card.disabled)
   assert_eq(menu_card.focus_mode, Control.FOCUS_NONE)
+  assert_eq(menu_card.tooltip_text, "")
   assert_true(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/ArtworkDim").visible)
   assert_false(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/LockOverlay").visible)
   assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status").text, "TEMPORARILY UNAVAILABLE")

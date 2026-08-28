@@ -275,11 +275,13 @@ text = "LOCKED + FOCUS"
 [node name="LockedFocusCard" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid/LockedFocusExample" unique_id=1978232910 instance=ExtResource("3_card")]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Complete Campfire Survivors"
 card_id = &"locked_focus"
 card_number = "03"
 title_text = "Pool Party Perimeter"
 description_text = "Locked content stays focusable so its requirement can be read."
 locked = true
+lock_reason = "Complete Campfire Survivors"
 
 [node name="DisabledExample" type="VBoxContainer" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid" unique_id=2033638559]
 layout_mode = 2
@@ -357,11 +359,13 @@ selected = true
 [node name="PlaygroundCardC" parent="SafeArea/Layout/StateScroll/StateContent/PlaygroundRow" unique_id=536646593 instance=ExtResource("3_card")]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Complete Pool Party Perimeter"
 card_id = &"playground_c"
 card_number = "04"
 title_text = "Garage Holdout"
 description_text = "Locked cards still accept focus for requirement inspection."
 locked = true
+lock_reason = "Complete Pool Party Perimeter"
 
 [connection signal="pressed" from="SafeArea/Layout/Header/ButtonSamples/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="SafeArea/Layout/Header/ButtonSamples/SecondaryButton" to="." method="_on_secondary_button_pressed"]
