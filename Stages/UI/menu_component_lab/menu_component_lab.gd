@@ -5,8 +5,8 @@ extends Control
 const MAX_CARD_COLUMNS := 4
 const MIN_CARD_COLUMNS := 2
 const CARD_MIN_WIDTH := 360.0
-const CARD_GAP := 20.0
-const SAFE_AREA_HORIZONTAL_MARGIN := 96.0
+const CARD_GAP := 24.0
+const SAFE_AREA_HORIZONTAL_MARGIN := 128.0
 const SCROLLBAR_GUTTER := 16.0
 
 @onready var _feedback_label: Label = %FeedbackLabel

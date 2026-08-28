@@ -23,7 +23,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.306, 0.314, 0.192, 1)
+color = Color(0.075, 0.082, 0.068, 1)
 
 [node name="BackgroundWash" type="ColorRect" parent="." unique_id=1273842550]
 layout_mode = 1
@@ -33,7 +33,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.239, 0.184, 0.251, 0.72)
+color = Color(0.188, 0.216, 0.125, 0.56)
 
 [node name="SafeArea" type="MarginContainer" parent="." unique_id=516462567]
 layout_mode = 1
@@ -42,24 +42,24 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 48
+theme_override_constants/margin_left = 64
 theme_override_constants/margin_top = 48
-theme_override_constants/margin_right = 48
+theme_override_constants/margin_right = 64
 theme_override_constants/margin_bottom = 48
 
 [node name="Layout" type="VBoxContainer" parent="SafeArea" unique_id=1766858459]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 16
 
 [node name="Header" type="VBoxContainer" parent="SafeArea/Layout" unique_id=1131898911]
-custom_minimum_size = Vector2(0, 160)
+custom_minimum_size = Vector2(0, 144)
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 8
 
 [node name="TitleGroup" type="VBoxContainer" parent="SafeArea/Layout/Header" unique_id=1495123229]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 0
+theme_override_constants/separation = 8
 
 [node name="Title" type="Label" parent="SafeArea/Layout/Header/TitleGroup" unique_id=693610289]
 layout_mode = 2
@@ -155,8 +155,8 @@ autowrap_mode = 2
 [node name="CardsGrid" type="GridContainer" parent="SafeArea/Layout/StateScroll/StateContent" unique_id=557432296]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/h_separation = 20
-theme_override_constants/v_separation = 20
+theme_override_constants/h_separation = 24
+theme_override_constants/v_separation = 24
 columns = 3
 
 [node name="DefaultExample" type="VBoxContainer" parent="SafeArea/Layout/StateScroll/StateContent/CardsGrid" unique_id=30504098]
@@ -337,7 +337,7 @@ text = "Use Tab or arrow keys here. Only this section shows live keyboard/gamepa
 
 [node name="PlaygroundRow" type="HBoxContainer" parent="SafeArea/Layout/StateScroll/StateContent" unique_id=1381294252]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 24
 
 [node name="PlaygroundCardA" parent="SafeArea/Layout/StateScroll/StateContent/PlaygroundRow" unique_id=1678546978 instance=ExtResource("3_card")]
 unique_name_in_owner = true

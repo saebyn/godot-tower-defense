@@ -58,7 +58,7 @@ func _capture_card_state_matrix() -> void:
 
   var background := ColorRect.new()
   background.set_anchors_preset(Control.PRESET_FULL_RECT)
-  background.color = Color(0.239, 0.184, 0.251, 1.0)
+  background.color = Color(0.075, 0.082, 0.068, 1.0)
   page.add_child(background)
 
   var margin := MarginContainer.new()
@@ -71,8 +71,8 @@ func _capture_card_state_matrix() -> void:
 
   var grid := GridContainer.new()
   grid.columns = 4
-  grid.add_theme_constant_override("h_separation", 20)
-  grid.add_theme_constant_override("v_separation", 20)
+  grid.add_theme_constant_override("h_separation", 24)
+  grid.add_theme_constant_override("v_separation", 24)
   margin.add_child(grid)
 
   for state in CARD_STATES:
@@ -117,7 +117,7 @@ func _capture_individual_card_states() -> void:
 
     var background := ColorRect.new()
     background.size = Vector2(viewport.size)
-    background.color = Color(0.239, 0.184, 0.251, 1.0)
+    background.color = Color(0.075, 0.082, 0.068, 1.0)
     page.add_child(background)
 
     var card: Control = card_scene.instantiate()
