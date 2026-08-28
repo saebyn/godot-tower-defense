@@ -113,7 +113,7 @@ func _refresh() -> void:
   _selection_marker.visible = selected
   _completion_badge.visible = completed
   _lock_overlay.visible = locked and not temporarily_disabled
-  tooltip_text = lock_reason if locked and not temporarily_disabled else ""
+  tooltip_text = _get_tooltip_text()
   _refresh_artwork_frame()
 
   disabled = temporarily_disabled
@@ -124,14 +124,35 @@ func _refresh() -> void:
 
 func _get_status_text() -> String:
   if temporarily_disabled:
-    return "TEMPORARILY UNAVAILABLE"
+    return "UNAVAILABLE"
   if locked:
-    return "LOCKED"
-  if selected:
-    return "SELECTED"
+    return _get_lock_status_text()
   if completed:
     return "COMPLETED"
+  if selected:
+    return "SELECTED"
   return action_label.to_upper()
+
+func _get_tooltip_text() -> String:
+  if temporarily_disabled:
+    return disabled_reason
+  if locked:
+    return lock_reason
+  return ""
+
+func _get_lock_status_text() -> String:
+  var words := lock_reason.to_upper().split(" ", false)
+  if words.is_empty():
+    return "LOCKED"
+  if words[0] == "COMPLETE":
+    return "COMPLETE\n%s" % _get_short_requirement_target(words)
+  return _format_description_text(lock_reason.to_upper())
+
+func _get_short_requirement_target(words: PackedStringArray) -> String:
+  for word in words:
+    if word not in ["COMPLETE", "THE", "A", "AN"]:
+      return word
+  return "PREVIOUS"
 
 func _format_title_text(text: String) -> String:
   if text.length() <= 14 or not text.contains(" "):
@@ -203,7 +224,9 @@ func _refresh_navigation_frames() -> void:
   _focus_frame.visible = shows_focus
 
 func _refresh_content_dimming() -> void:
-  var dimmed_color := Color(0.62, 0.62, 0.62, 0.82) if locked or temporarily_disabled else Color.WHITE
+  var dimmed_color := Color(0.78, 0.78, 0.72, 0.9) if locked else Color.WHITE
+  if temporarily_disabled:
+    dimmed_color = Color(0.62, 0.62, 0.58, 0.78)
   _artwork_placeholder.modulate = dimmed_color
   _artwork_rect.modulate = dimmed_color
   _title_stack.modulate = dimmed_color

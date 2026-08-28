@@ -42,7 +42,7 @@ func test_lock_reason_is_tooltip_not_card_text():
 
   assert_eq(menu_card.tooltip_text, "Complete Campfire Survivors")
   assert_eq(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/LockOverlay/LockPanel/Margin/VBox/LockedLabel").text, "LOCKED")
-  assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status").text, "LOCKED")
+  assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status").text, "COMPLETE\nCAMPFIRE")
 
 func test_disabled_card_is_removed_from_focus_navigation():
   menu_card.card_id = &"challenge"
@@ -54,10 +54,10 @@ func test_disabled_card_is_removed_from_focus_navigation():
 
   assert_true(menu_card.disabled)
   assert_eq(menu_card.focus_mode, Control.FOCUS_NONE)
-  assert_eq(menu_card.tooltip_text, "")
+  assert_eq(menu_card.tooltip_text, "Coming later")
   assert_true(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/ArtworkDim").visible)
   assert_false(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/LockOverlay").visible)
-  assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status").text, "TEMPORARILY UNAVAILABLE")
+  assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status").text, "UNAVAILABLE")
   assert_signal_not_emitted(menu_card, "selection_requested")
   assert_signal_not_emitted(menu_card, "locked_inspected")
 
@@ -119,7 +119,7 @@ func test_locked_focus_keeps_dimming_requirement_icon_and_outline():
   assert_true(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/ArtworkDim").visible)
   assert_true(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/LockOverlay").visible)
   assert_true(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/LockOverlay/LockPanel/Margin/VBox/LockIcon").visible)
-  assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status").text, "LOCKED")
+  assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status").text, "COMPLETE\nPREVIOUS")
   assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status/StatusPlate").texture.resource_path, "res://Assets/Textures/UI/olive-steel-plate.png")
   assert_true(menu_card.get_node("FocusFrame").visible)
   assert_gt(menu_card.get_node("FocusFrame").z_index, menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/ArtworkDim").z_index)
@@ -132,7 +132,7 @@ func test_disabled_takes_precedence_over_locked_visuals():
   assert_eq(menu_card.focus_mode, Control.FOCUS_NONE)
   assert_true(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/ArtworkDim").visible)
   assert_false(menu_card.get_node("ContentMargin/CardBody/ArtworkFrame/LockOverlay").visible)
-  assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status").text, "TEMPORARILY UNAVAILABLE")
+  assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status").text, "UNAVAILABLE")
 
 func test_completed_can_coexist_with_selected_and_focus():
   menu_card.completed = true
@@ -143,7 +143,7 @@ func test_completed_can_coexist_with_selected_and_focus():
   assert_true(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status/CompletionBadge").visible)
   assert_true(menu_card.get_node("SelectionMarker").visible)
   assert_true(menu_card.get_node("FocusFrame").visible)
-  assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status").text, "SELECTED")
+  assert_eq(menu_card.get_node("ContentMargin/CardBody/InfoArea/Status").text, "COMPLETED")
 
 func test_dimming_leaves_status_and_semantic_icons_legible():
   menu_card.locked = true
