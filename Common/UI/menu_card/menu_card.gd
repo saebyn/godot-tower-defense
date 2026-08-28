@@ -80,6 +80,9 @@ signal locked_inspected(card_id: StringName)
 @onready var _title_stack: Control = %TitleStack
 
 var _hovered := false
+var _uses_preview_navigation_state := false
+var _preview_hovered := false
+var _preview_focused := false
 
 func _ready() -> void:
   if not pressed.is_connected(_on_pressed):
@@ -172,6 +175,12 @@ func _on_pressed() -> void:
     return
   selection_requested.emit(card_id)
 
+func apply_preview_navigation_state(hovered: bool, focused: bool) -> void:
+  _uses_preview_navigation_state = true
+  _preview_hovered = hovered
+  _preview_focused = focused
+  _refresh_navigation_frames()
+
 func _on_mouse_entered() -> void:
   _hovered = true
   _refresh_navigation_frames()
@@ -184,8 +193,10 @@ func _on_focus_changed() -> void:
   _refresh_navigation_frames()
 
 func _refresh_navigation_frames() -> void:
-  var shows_focus := has_focus() and not temporarily_disabled
-  var shows_hover := _hovered and not shows_focus and not temporarily_disabled
+  var is_focused := _preview_focused if _uses_preview_navigation_state else has_focus()
+  var is_hovered := _preview_hovered if _uses_preview_navigation_state else _hovered
+  var shows_focus := is_focused and not temporarily_disabled
+  var shows_hover := is_hovered and not shows_focus and not temporarily_disabled
 
   _card_frame.visible = not shows_focus and not shows_hover
   _base_surface.visible = _card_frame.visible

@@ -68,17 +68,12 @@ func _apply_static_state_previews() -> void:
   for card in _state_cards:
     card.focus_mode = Control.FOCUS_NONE
     card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-  _hover_card.get_node("BaseSurface").visible = false
-  _hover_card.get_node("CardFrame").visible = false
-  _hover_card.get_node("HoverFrame").visible = true
+  _hover_card.apply_preview_navigation_state(true, false)
   for card in _preview_focus_cards:
     _add_focus_preview(card)
 
 func _add_focus_preview(card: Button) -> void:
-  card.get_node("BaseSurface").visible = false
-  card.get_node("CardFrame").visible = false
-  card.get_node("HoverFrame").visible = false
-  card.get_node("FocusFrame").visible = true
+  card.apply_preview_navigation_state(false, true)
 
 func _connect_card_feedback() -> void:
   for card in _playground_cards:

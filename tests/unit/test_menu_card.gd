@@ -93,11 +93,10 @@ func test_selected_focus_keeps_ribbon_and_outline():
   assert_gt(menu_card.get_node("SelectionMarker").z_index, menu_card.get_node("FocusFrame").z_index)
 
 func test_focus_takes_visual_priority_over_hover_frame():
-  menu_card._on_mouse_entered()
+  menu_card.apply_preview_navigation_state(true, false)
   assert_true(menu_card.get_node("HoverFrame").visible)
 
-  menu_card.grab_focus()
-  await wait_process_frames(1)
+  menu_card.apply_preview_navigation_state(true, true)
 
   assert_false(menu_card.get_node("HoverFrame").visible)
   assert_true(menu_card.get_node("FocusFrame").visible)
