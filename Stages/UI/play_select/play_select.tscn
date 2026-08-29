@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cnlg4x54uw56q"]
+[gd_scene load_steps=10 format=3 uid="uid://cnlg4x54uw56q"]
 
 [ext_resource type="Script" uid="uid://dq0gc3hx5p1yb" path="res://Stages/UI/play_select/play_select.gd" id="1_script"]
 [ext_resource type="Theme" uid="uid://bj3nrufr0b4io" path="res://Config/ztd_menu_theme.tres" id="2_theme"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://cna1wb30mxeb2" path="res://Assets/Textures/UI/mode-endless.png" id="6_endless"]
 [ext_resource type="Texture2D" path="res://Assets/Textures/UI/play-banner.png" id="7_play_banner"]
 [ext_resource type="Texture2D" path="res://Assets/Textures/UI/back-to-main-menu-button.png" id="8_back_button"]
+[ext_resource type="Texture2D" uid="uid://cd7mw0k6gxm6d" path="res://Assets/Textures/UI/main-menu-background.png" id="9_background"]
 
 [node name="PlaySelect" type="Control" unique_id=1750305155]
 layout_mode = 3
@@ -19,14 +20,17 @@ grow_vertical = 2
 theme = ExtResource("2_theme")
 script = ExtResource("1_script")
 
-[node name="Background" type="ColorRect" parent="." unique_id=2071217444]
+[node name="Background" type="TextureRect" parent="." unique_id=2071217444]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.075, 0.082, 0.068, 1)
+mouse_filter = 2
+texture = ExtResource("9_background")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="SafeArea" type="MarginContainer" parent="." unique_id=1370262425]
 layout_mode = 1

@@ -95,6 +95,11 @@ func test_play_title_uses_banner_art():
   var play_banner: TextureRect = play_select.get_node("SafeArea/Center/Page/Header/PlayBanner")
   assert_eq(play_banner.texture.resource_path, "res://Assets/Textures/UI/play-banner.png")
 
+func test_screen_uses_main_menu_background_art():
+  var background: TextureRect = play_select.get_node("Background")
+  assert_eq(background.texture.resource_path, "res://Assets/Textures/UI/main-menu-background.png")
+  assert_eq(background.stretch_mode, TextureRect.STRETCH_KEEP_ASPECT_COVERED)
+
 func test_screen_does_not_show_choose_mode_subtitle():
   assert_false(play_select.has_node("SafeArea/Center/Page/Header/SubtitleLabel"))
 
