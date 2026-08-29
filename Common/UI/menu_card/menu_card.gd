@@ -141,18 +141,9 @@ func _get_tooltip_text() -> String:
   return ""
 
 func _get_lock_status_text() -> String:
-  var words := lock_reason.to_upper().split(" ", false)
-  if words.is_empty():
+  if lock_reason.is_empty():
     return "LOCKED"
-  if words[0] == "COMPLETE":
-    return "COMPLETE\n%s" % _get_short_requirement_target(words)
   return _format_description_text(lock_reason.to_upper())
-
-func _get_short_requirement_target(words: PackedStringArray) -> String:
-  for word in words:
-    if word not in ["COMPLETE", "THE", "A", "AN"]:
-      return word
-  return "PREVIOUS"
 
 func _format_title_text(text: String) -> String:
   if text.length() <= 14 or not text.contains(" "):
