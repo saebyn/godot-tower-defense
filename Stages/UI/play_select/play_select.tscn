@@ -48,7 +48,7 @@ theme_override_constants/margin_bottom = 18
 layout_mode = 2
 
 [node name="Page" type="VBoxContainer" parent="SafeArea/Center" unique_id=2024172377]
-custom_minimum_size = Vector2(1216, 684)
+custom_minimum_size = Vector2(1152, 648)
 layout_mode = 2
 theme_override_constants/separation = 10
 
