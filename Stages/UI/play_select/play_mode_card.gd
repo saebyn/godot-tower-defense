@@ -33,6 +33,7 @@ signal selection_requested(card_id: StringName)
 
 @onready var _artwork_rect: TextureRect = %Artwork
 @onready var _artwork_dim: ColorRect = %ArtworkDim
+@onready var _surface: NinePatchRect = %Surface
 @onready var _title_label: Label = %Title
 @onready var _description_label: Label = %Description
 @onready var _status_label: Label = %Status
@@ -104,6 +105,7 @@ func _refresh_navigation_frames() -> void:
   var is_hovered := _preview_hovered if _uses_preview_navigation_state else _hovered
   var shows_focus := is_focused and not temporarily_disabled
   var shows_hover := is_hovered and not shows_focus and not temporarily_disabled
+  _surface.visible = not shows_focus
   _focus_frame.visible = shows_focus
   _hover_frame.visible = shows_hover
 

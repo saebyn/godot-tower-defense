@@ -16,6 +16,26 @@ func test_campaign_is_initial_selection_and_focus_owner():
   assert_true(campaign_card.has_focus())
   assert_eq(campaign_card.focus_mode, Control.FOCUS_ALL)
   assert_false(campaign_card.disabled)
+  assert_false(campaign_card.has_node("SelectedFrame"))
+  assert_eq(campaign_card.get_node("Surface").texture.resource_path, "res://Assets/Textures/UI/canvas-panel.png")
+  assert_false(campaign_card.get_node("Surface").visible)
+  assert_true(campaign_card.get_node("FocusFrame").visible)
+  assert_eq(campaign_card.get_node("FocusFrame").texture.resource_path, "res://Assets/Textures/UI/cyan-frame-small.png")
+  assert_false(campaign_card.get_node("FocusFrame").draw_center)
+  assert_eq(campaign_card.get_node("FocusFrame").patch_margin_left, 18)
+  assert_eq(campaign_card.get_node("FocusFrame").patch_margin_top, 18)
+  assert_eq(campaign_card.get_node("FocusFrame").patch_margin_right, 18)
+  assert_eq(campaign_card.get_node("FocusFrame").patch_margin_bottom, 18)
+
+func test_unselected_mode_cards_use_normal_frame_without_focus_frame():
+  assert_true(_card(&"ChallengeCard").get_node("Surface").visible)
+  assert_eq(_card(&"ChallengeCard").get_node("Surface").texture.resource_path, "res://Assets/Textures/UI/canvas-panel.png")
+  assert_true(_card(&"ChallengeCard").get_node("Surface").draw_center)
+  assert_false(_card(&"ChallengeCard").get_node("FocusFrame").visible)
+  assert_true(_card(&"EndlessCard").get_node("Surface").visible)
+  assert_eq(_card(&"EndlessCard").get_node("Surface").texture.resource_path, "res://Assets/Textures/UI/canvas-panel.png")
+  assert_true(_card(&"EndlessCard").get_node("Surface").draw_center)
+  assert_false(_card(&"EndlessCard").get_node("FocusFrame").visible)
 
 func test_unavailable_modes_are_not_locked_and_skip_focus():
   var challenge_card = play_select.get_node("SafeArea/Center/Page/Cards/ChallengeCard")
