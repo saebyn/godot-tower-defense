@@ -1,11 +1,16 @@
 extends GutTest
 
 var menu_card_scene = preload("res://Common/UI/menu_card/menu_card.tscn")
+var menu_theme = preload("res://Config/ztd_menu_theme.tres")
 var menu_card
 
 func before_each():
+  var fixture := Control.new()
+  fixture.theme = menu_theme
+  add_child_autofree(fixture)
+
   menu_card = menu_card_scene.instantiate()
-  add_child_autofree(menu_card)
+  fixture.add_child(menu_card)
   await wait_process_frames(1)
 
 func test_default_card_is_available_and_focusable():

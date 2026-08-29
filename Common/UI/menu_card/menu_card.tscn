@@ -1,7 +1,6 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://Common/UI/menu_card/menu_card.gd" id="1_script"]
-[ext_resource type="Theme" path="res://Config/ztd_menu_theme.tres" id="2_theme"]
 [ext_resource type="Texture2D" uid="uid://b4v5s5em52b4q" path="res://Assets/Textures/UI/canvas-panel.png" id="3_canvas_panel"]
 [ext_resource type="Texture2D" uid="uid://dpc8rjpymam8l" path="res://Assets/Textures/UI/steel-card-frame.png" id="4_card_frame"]
 [ext_resource type="Texture2D" uid="uid://darl8rrqs10qu" path="res://Assets/Textures/UI/amber-steel-frame.png" id="5_hover_frame"]
@@ -16,7 +15,6 @@ custom_minimum_size = Vector2(360, 720)
 focus_mode = 2
 mouse_default_cursor_shape = 2
 texture_filter = 2
-theme = ExtResource("2_theme")
 theme_type_variation = &"MenuCard"
 text = ""
 script = ExtResource("1_script")
