@@ -34,10 +34,11 @@ func _ready() -> void:
   _set_selected_mode(MODE_CAMPAIGN)
   _campaign_card.call_deferred("grab_focus")
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
   if event.is_action_pressed("ui_accept"):
-    _activate_selected_mode()
-    get_viewport().set_input_as_handled()
+    if _mode_card_has_focus():
+      _activate_selected_mode()
+      get_viewport().set_input_as_handled()
   elif event.is_action_pressed("ui_cancel"):
     _return_to_main_menu()
     get_viewport().set_input_as_handled()
@@ -67,6 +68,13 @@ func _activate_selected_mode() -> void:
   if _selected_mode == MODE_CAMPAIGN:
     mode_activated.emit(_selected_mode)
     _change_scene(SCENARIO_SELECT_SCENE)
+
+func _mode_card_has_focus() -> bool:
+  var focus_owner := get_viewport().gui_get_focus_owner()
+  for card in _mode_cards.values():
+    if focus_owner == card:
+      return true
+  return false
 
 func _return_to_main_menu() -> void:
   _change_scene(MAIN_MENU_SCENE)

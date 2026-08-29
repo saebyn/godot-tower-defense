@@ -119,6 +119,16 @@ func test_campaign_card_press_activates_campaign_mode():
 
   assert_signal_emitted_with_parameters(play_select, "mode_activated", [&"campaign"])
 
+func test_accept_with_back_button_focus_does_not_activate_campaign():
+  var back_button: TextureButton = play_select.get_node("SafeArea/Center/Page/Header/HeaderActions/BackButton")
+  watch_signals(play_select)
+  back_button.grab_focus()
+  await wait_process_frames(1)
+
+  play_select._unhandled_input(_input_action(&"ui_accept"))
+
+  assert_signal_not_emitted(play_select, "mode_activated")
+
 func test_back_button_sits_under_play_title_and_no_bottom_action_row():
   var back_button: TextureButton = play_select.get_node("SafeArea/Center/Page/Header/HeaderActions/BackButton")
   assert_not_null(back_button)
@@ -155,6 +165,12 @@ func _mode_cards() -> Array:
     _card(&"ChallengeCard"),
     _card(&"EndlessCard"),
   ]
+
+func _input_action(action: StringName) -> InputEventAction:
+  var event := InputEventAction.new()
+  event.action = action
+  event.pressed = true
+  return event
 
 func _all_control_descendants(node: Node) -> Array[Control]:
   var controls: Array[Control] = []
