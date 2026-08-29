@@ -34,10 +34,10 @@ func test_state_matrix_cards_are_static_specimens():
     assert_eq(card.focus_mode, Control.FOCUS_NONE)
     assert_eq(card.mouse_filter, Control.MOUSE_FILTER_IGNORE)
 
-func test_hover_focus_specimen_shows_both_frames():
+func test_hover_focus_specimen_gives_focus_visual_priority():
   var card: Control = lab.get_node("SafeArea/Layout/StateScroll/StateContent/CardsGrid").find_child("HoverFocusCard", true, false)
 
-  assert_true(card.get_node("HoverFrame").visible)
+  assert_false(card.get_node("HoverFrame").visible)
   assert_true(card.get_node("FocusFrame").visible)
 
 func test_interactive_playground_owns_live_focus():
