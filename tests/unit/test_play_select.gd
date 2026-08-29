@@ -112,6 +112,13 @@ func test_disabled_card_press_does_not_change_selection():
   assert_eq(play_select.get_selected_mode(), &"campaign")
   assert_false(challenge_card.selected)
 
+func test_campaign_card_press_activates_campaign_mode():
+  watch_signals(play_select)
+
+  _card(&"CampaignCard").emit_signal("pressed")
+
+  assert_signal_emitted_with_parameters(play_select, "mode_activated", [&"campaign"])
+
 func test_back_button_sits_under_play_title_and_no_bottom_action_row():
   var back_button: TextureButton = play_select.get_node("SafeArea/Center/Page/Header/HeaderActions/BackButton")
   assert_not_null(back_button)

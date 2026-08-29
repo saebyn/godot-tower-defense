@@ -2,6 +2,8 @@ extends Control
 
 class_name UI_PlaySelect
 
+signal mode_activated(mode_id: StringName)
+
 const MAIN_MENU_SCENE := "res://Stages/UI/main_menu/main_menu.tscn"
 const SCENARIO_SELECT_SCENE := "res://Stages/UI/scenario_select/scenario_select.tscn"
 const MODE_CAMPAIGN := &"campaign"
@@ -45,6 +47,8 @@ func get_selected_mode() -> StringName:
 
 func _on_mode_selection_requested(mode_id: StringName) -> void:
   _set_selected_mode(mode_id)
+  if _selected_mode == mode_id:
+    _activate_selected_mode()
 
 func _set_selected_mode(mode_id: StringName) -> void:
   if not _mode_cards.has(mode_id):
@@ -61,6 +65,7 @@ func _set_selected_mode(mode_id: StringName) -> void:
 
 func _activate_selected_mode() -> void:
   if _selected_mode == MODE_CAMPAIGN:
+    mode_activated.emit(_selected_mode)
     _change_scene(SCENARIO_SELECT_SCENE)
 
 func _return_to_main_menu() -> void:
