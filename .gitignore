@@ -16,3 +16,9 @@ Godot_v*.zip*
 
 # Ignore godot project settings overrides
 override.cfg
+
+# Generated visual-capture output
+artifacts/
+
+# Generated test reports
+test-results.xml

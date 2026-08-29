@@ -1,0 +1,213 @@
+[gd_resource type="Theme" format=3 uid="uid://bj3nrufr0b4io"]
+
+[ext_resource type="Texture2D" uid="uid://darl8rrqs10qu" path="res://Assets/Textures/UI/amber-steel-frame.png" id="1_amber_frame"]
+[ext_resource type="FontFile" uid="uid://dko6jljdih2ny" path="res://Assets/Fonts/font52.ttf" id="2_display_font"]
+[ext_resource type="Texture2D" uid="uid://b1ya0flfwshdg" path="res://Assets/Textures/UI/olive-steel-plate.png" id="2_olive_plate"]
+[ext_resource type="Texture2D" uid="uid://uwrkrns1hxcu" path="res://Assets/Textures/UI/cyan-frame.png" id="3_cyan_frame"]
+[ext_resource type="Texture2D" uid="uid://b4v5s5em52b4q" path="res://Assets/Textures/UI/canvas-panel.png" id="5_canvas_panel"]
+[ext_resource type="Texture2D" uid="uid://bgdh5vl3cxo13" path="res://Assets/Textures/UI/turquoise-steel-panel.png" id="6_turquoise_panel"]
+
+[sub_resource type="SystemFont" id="SystemFont_ui_bold"]
+font_names = PackedStringArray("Sans-Serif")
+font_weight = 700
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_button_disabled"]
+content_margin_left = 16.0
+content_margin_top = 12.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
+texture = ExtResource("2_olive_plate")
+texture_margin_left = 80.0
+texture_margin_top = 40.0
+texture_margin_right = 80.0
+texture_margin_bottom = 40.0
+modulate_color = Color(0.7, 0.7, 0.7, 0.55)
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_focus"]
+texture = ExtResource("3_cyan_frame")
+texture_margin_left = 72.0
+texture_margin_top = 72.0
+texture_margin_right = 72.0
+texture_margin_bottom = 72.0
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+draw_center = false
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_button_hover"]
+texture = ExtResource("1_amber_frame")
+texture_margin_left = 83.19903
+texture_margin_top = 76.10676
+texture_margin_right = 66.17758
+texture_margin_bottom = 72.0
+draw_center = false
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_button_normal"]
+content_margin_left = 0.0
+content_margin_top = 10.0
+content_margin_right = 0.0
+content_margin_bottom = 10.0
+texture = ExtResource("2_olive_plate")
+texture_margin_left = 55.66419
+texture_margin_top = 55.968536
+texture_margin_right = 53.133896
+texture_margin_bottom = 52.460796
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_button_pressed"]
+content_margin_left = 16.0
+content_margin_top = 12.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
+texture = ExtResource("2_olive_plate")
+texture_margin_left = 80.0
+texture_margin_top = 40.0
+texture_margin_right = 80.0
+texture_margin_bottom = 40.0
+modulate_color = Color(0.8, 0.86, 0.72, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_artwork"]
+texture = ExtResource("5_canvas_panel")
+texture_margin_left = 64.0
+texture_margin_top = 64.0
+texture_margin_right = 64.0
+texture_margin_bottom = 64.0
+
+[sub_resource type="SystemFont" id="SystemFont_ui_regular"]
+font_names = PackedStringArray("Sans-Serif")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBox_card_empty"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_completion"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+texture = ExtResource("2_olive_plate")
+texture_margin_left = 80.0
+texture_margin_top = 40.0
+texture_margin_right = 80.0
+texture_margin_bottom = 40.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_lock"]
+content_margin_left = 16.0
+content_margin_top = 12.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
+texture = ExtResource("2_olive_plate")
+texture_margin_left = 80.0
+texture_margin_top = 40.0
+texture_margin_right = 80.0
+texture_margin_bottom = 40.0
+modulate_color = Color(0.42, 0.38, 0.34, 0.96)
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_panel"]
+texture = ExtResource("5_canvas_panel")
+texture_margin_left = 64.0
+texture_margin_top = 64.0
+texture_margin_right = 64.0
+texture_margin_bottom = 64.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_primary_button"]
+texture = ExtResource("6_turquoise_panel")
+texture_margin_left = 80.82439
+texture_margin_top = 66.05169
+texture_margin_right = 74.17157
+texture_margin_bottom = 67.808716
+region_rect = Rect2(0, 0, 768, 192)
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_selection"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+texture = ExtResource("2_olive_plate")
+texture_margin_left = 80.0
+texture_margin_top = 40.0
+texture_margin_right = 80.0
+texture_margin_bottom = 40.0
+
+[resource]
+MenuAction/base_type = &"Label"
+MenuAction/colors/font_color = Color(0.922, 0.843, 0.702, 1)
+MenuAction/font_sizes/font_size = 24
+MenuAction/fonts/font = SubResource("SystemFont_ui_bold")
+MenuActionButton/base_type = &"Button"
+MenuActionButton/colors/font_color = Color(0.922, 0.843, 0.702, 1)
+MenuActionButton/colors/font_disabled_color = Color(0.922, 0.843, 0.702, 0.45)
+MenuActionButton/colors/font_focus_color = Color(0.922, 0.843, 0.702, 1)
+MenuActionButton/colors/font_hover_color = Color(0.922, 0.843, 0.702, 1)
+MenuActionButton/colors/font_pressed_color = Color(0.922, 0.843, 0.702, 1)
+MenuActionButton/font_sizes/font_size = 24
+MenuActionButton/fonts/font = SubResource("SystemFont_ui_bold")
+MenuActionButton/styles/disabled = SubResource("StyleBox_button_disabled")
+MenuActionButton/styles/focus = SubResource("StyleBox_focus")
+MenuActionButton/styles/hover = SubResource("StyleBox_button_hover")
+MenuActionButton/styles/normal = SubResource("StyleBox_button_normal")
+MenuActionButton/styles/pressed = SubResource("StyleBox_button_pressed")
+MenuArtworkFrame/base_type = &"PanelContainer"
+MenuArtworkFrame/styles/panel = SubResource("StyleBox_artwork")
+MenuBackButton/base_type = &"MenuActionButton"
+MenuBackButton/font_sizes/font_size = 18
+MenuBody/base_type = &"Label"
+MenuBody/colors/font_color = Color(0.922, 0.843, 0.702, 0.88)
+MenuBody/font_sizes/font_size = 15
+MenuBody/fonts/font = SubResource("SystemFont_ui_regular")
+MenuCard/base_type = &"Button"
+MenuCard/colors/font_color = Color(0.922, 0.843, 0.702, 1)
+MenuCard/colors/font_disabled_color = Color(0.922, 0.843, 0.702, 0.5)
+MenuCard/colors/font_focus_color = Color(0.922, 0.843, 0.702, 1)
+MenuCard/colors/font_hover_color = Color(0.922, 0.843, 0.702, 1)
+MenuCard/colors/font_pressed_color = Color(0.922, 0.843, 0.702, 1)
+MenuCard/styles/disabled = SubResource("StyleBox_card_empty")
+MenuCard/styles/focus = SubResource("StyleBox_card_empty")
+MenuCard/styles/hover = SubResource("StyleBox_card_empty")
+MenuCard/styles/normal = SubResource("StyleBox_card_empty")
+MenuCard/styles/pressed = SubResource("StyleBox_card_empty")
+MenuCardNumber/base_type = &"Label"
+MenuCardNumber/colors/font_color = Color(0.922, 0.843, 0.702, 0.72)
+MenuCardNumber/font_sizes/font_size = 28
+MenuCardNumber/fonts/font = ExtResource("2_display_font")
+MenuCardTitle/base_type = &"Label"
+MenuCardTitle/colors/font_color = Color(0.922, 0.843, 0.702, 1)
+MenuCardTitle/font_sizes/font_size = 34
+MenuCardTitle/fonts/font = ExtResource("2_display_font")
+MenuCompletionBadge/base_type = &"PanelContainer"
+MenuCompletionBadge/styles/panel = SubResource("StyleBox_completion")
+MenuLockPanel/base_type = &"PanelContainer"
+MenuLockPanel/styles/panel = SubResource("StyleBox_lock")
+MenuMeta/base_type = &"Label"
+MenuMeta/colors/font_color = Color(0.922, 0.843, 0.702, 1)
+MenuMeta/font_sizes/font_size = 16
+MenuMeta/fonts/font = SubResource("SystemFont_ui_bold")
+MenuPanel/base_type = &"PanelContainer"
+MenuPanel/styles/panel = SubResource("StyleBox_panel")
+MenuPrimaryButton/base_type = &"MenuActionButton"
+MenuPrimaryButton/colors/font_color = Color(0.239, 0.761, 0.757, 1)
+MenuPrimaryButton/colors/font_hover_color = Color(0.239, 0.761, 0.757, 1)
+MenuPrimaryButton/colors/font_pressed_color = Color(0.239, 0.761, 0.757, 1)
+MenuPrimaryButton/font_sizes/font_size = 24
+MenuPrimaryButton/styles/normal = SubResource("StyleBox_primary_button")
+MenuPrimaryButton/styles/pressed = SubResource("StyleBox_primary_button")
+MenuProfileName/base_type = &"Label"
+MenuProfileName/colors/font_color = Color(0.922, 0.843, 0.702, 1)
+MenuProfileName/font_sizes/font_size = 22
+MenuProfileName/fonts/font = SubResource("SystemFont_ui_bold")
+MenuScreenTitle/base_type = &"Label"
+MenuScreenTitle/colors/font_color = Color(0.922, 0.843, 0.702, 1)
+MenuScreenTitle/font_sizes/font_size = 64
+MenuScreenTitle/fonts/font = ExtResource("2_display_font")
+MenuSelectionMarker/base_type = &"PanelContainer"
+MenuSelectionMarker/styles/panel = SubResource("StyleBox_selection")
+MenuSmall/base_type = &"Label"
+MenuSmall/colors/font_color = Color(0.922, 0.843, 0.702, 0.8)
+MenuSmall/font_sizes/font_size = 14
+MenuSmall/fonts/font = SubResource("SystemFont_ui_regular")
+MenuStatus/base_type = &"Label"
+MenuStatus/colors/font_color = Color(0.922, 0.843, 0.702, 1)
+MenuStatus/font_sizes/font_size = 15
+MenuStatus/fonts/font = SubResource("SystemFont_ui_bold")
