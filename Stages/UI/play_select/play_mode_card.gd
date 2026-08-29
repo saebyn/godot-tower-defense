@@ -18,6 +18,10 @@ signal selection_requested(card_id: StringName)
   set(value):
     artwork = value
     _refresh()
+@export var artwork_source_region := Rect2():
+  set(value):
+    artwork_source_region = value
+    _refresh_artwork_texture()
 @export var selected := false:
   set(value):
     selected = value
@@ -64,7 +68,7 @@ func _refresh() -> void:
   if not is_node_ready():
     return
 
-  _artwork_rect.texture = artwork
+  _refresh_artwork_texture()
   _title_label.text = title_text.to_upper()
   _description_label.text = description_text
   _status_label.text = "UNAVAILABLE" if temporarily_disabled else "READY"
@@ -108,6 +112,27 @@ func _refresh_navigation_frames() -> void:
   _surface.visible = not shows_focus
   _focus_frame.visible = shows_focus
   _hover_frame.visible = shows_hover
+
+func _refresh_artwork_texture() -> void:
+  if not is_node_ready():
+    return
+
+  if artwork == null:
+    _artwork_rect.texture = null
+    return
+
+  if artwork_source_region == Rect2():
+    _artwork_rect.texture = artwork
+    return
+
+  var source_region := artwork_source_region
+  if source_region.size == Vector2.ZERO:
+    source_region.size = artwork.get_size()
+
+  var cropped_artwork := AtlasTexture.new()
+  cropped_artwork.atlas = artwork
+  cropped_artwork.region = source_region
+  _artwork_rect.texture = cropped_artwork
 
 func _ignore_mouse_on_children(node: Node) -> void:
   for child in node.get_children():

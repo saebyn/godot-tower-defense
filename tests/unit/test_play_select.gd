@@ -62,6 +62,27 @@ func test_mode_artwork_paths_are_configured():
   assert_eq(_card(&"ChallengeCard").artwork.resource_path, "res://Assets/Textures/UI/mode-challenge.png")
   assert_eq(_card(&"EndlessCard").artwork.resource_path, "res://Assets/Textures/UI/mode-endless.png")
 
+func test_mode_artwork_source_region_can_be_shifted_per_card():
+  var challenge_card = _card(&"ChallengeCard")
+  var artwork_rect: TextureRect = challenge_card.get_node("ArtClip/Artwork")
+
+  assert_eq(challenge_card.artwork_source_region, Rect2())
+  assert_eq(artwork_rect.texture, challenge_card.artwork)
+  assert_eq(artwork_rect.offset_left, 0.0)
+  assert_eq(artwork_rect.offset_top, 0.0)
+  assert_eq(artwork_rect.offset_right, 0.0)
+  assert_eq(artwork_rect.offset_bottom, 0.0)
+
+  challenge_card.artwork_source_region = Rect2(14, 9, 0, 0)
+
+  assert_true(artwork_rect.texture is AtlasTexture)
+  assert_eq(artwork_rect.texture.atlas, challenge_card.artwork)
+  assert_eq(artwork_rect.texture.region, Rect2(Vector2(14, 9), challenge_card.artwork.get_size()))
+
+  challenge_card.artwork_source_region = Rect2(14, 9, 520, 180)
+
+  assert_eq(artwork_rect.texture.region, Rect2(14, 9, 520, 180))
+
 func test_mouse_hover_does_not_change_focus_or_selection():
   var campaign_card = _card(&"CampaignCard")
   var challenge_card = _card(&"ChallengeCard")
