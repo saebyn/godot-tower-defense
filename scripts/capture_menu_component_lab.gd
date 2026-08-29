@@ -11,6 +11,8 @@ const MATRIX_CARD_SCALE := 0.58
 const MATRIX_CARD_SOURCE_SIZE := Vector2(360, 720)
 const MATRIX_CARD_SLOT_SIZE := Vector2(232, 450)
 
+var _capture_error_count := 0
+
 func _initialize() -> void:
   call_deferred("_run")
 
@@ -19,10 +21,13 @@ func _run() -> void:
   await _capture_lab_viewports()
   await _capture_card_state_matrix()
   await _capture_individual_card_states()
-  quit()
+  quit(1 if _capture_error_count > 0 else 0)
 
 func _ensure_output_dir() -> void:
-  DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUTPUT_DIR))
+  var output_path := ProjectSettings.globalize_path(OUTPUT_DIR)
+  var error := DirAccess.make_dir_recursive_absolute(output_path)
+  if error != OK:
+    _record_capture_error("Failed to create output directory %s: %s" % [output_path, error])
 
 func _capture_lab_viewports() -> void:
   await _clear_root()
@@ -145,14 +150,23 @@ func _save_root_image(file_name: String) -> void:
 
 func _save_viewport_image(viewport: Viewport, file_name: String) -> void:
   print("Capturing %s at %sx%s" % [file_name, viewport.size.x, viewport.size.y])
-  var image := viewport.get_texture().get_image()
+  var texture := viewport.get_texture()
+  if texture == null:
+    _record_capture_error("Failed to capture %s: viewport texture is null" % file_name)
+    return
+
+  var image := texture.get_image()
   if image == null:
-    push_error("Failed to capture %s: viewport texture is null" % file_name)
+    _record_capture_error("Failed to capture %s: viewport image is null" % file_name)
     return
 
   var output_path := "%s/%s" % [OUTPUT_DIR, file_name]
   var error := image.save_png(output_path)
   if error != OK:
-    push_error("Failed to save %s: %s" % [output_path, error])
+    _record_capture_error("Failed to save %s: %s" % [output_path, error])
   else:
     print("Saved %s" % output_path)
+
+func _record_capture_error(message: String) -> void:
+  _capture_error_count += 1
+  push_error(message)
