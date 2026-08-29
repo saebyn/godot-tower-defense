@@ -8,29 +8,12 @@ const CARD_MIN_WIDTH := 360.0
 const CARD_GAP := 24.0
 const SAFE_AREA_HORIZONTAL_MARGIN := 128.0
 const SCROLLBAR_GUTTER := 16.0
+const CARD_SCENE := preload("res://Common/UI/menu_card/menu_card.tscn")
+const CARD_STATE_SPECS := preload("res://Common/UI/menu_card/menu_card_state_specs.gd")
 
 @onready var _feedback_label: Label = %FeedbackLabel
-@onready var _hover_card: Button = %HoverCard
-@onready var _hover_focus_card: Button = %HoverFocusCard
 @onready var _cards_grid: GridContainer = %CardsGrid
 @onready var _playground_first_card: Button = %PlaygroundCardA
-@onready var _preview_focus_cards: Array[Button] = [
-  %FocusCard,
-  %HoverFocusCard,
-  %SelectedFocusCard,
-  %LockedFocusCard,
-]
-@onready var _state_cards: Array[Button] = [
-  %DefaultCard,
-  %HoverCard,
-  %HoverFocusCard,
-  %FocusCard,
-  %SelectedCard,
-  %SelectedFocusCard,
-  %LockedFocusCard,
-  %DisabledCard,
-  %CompletedCard,
-]
 @onready var _playground_cards: Array[Button] = [
   %PlaygroundCardA,
   %PlaygroundCardB,
@@ -45,7 +28,11 @@ const SCROLLBAR_GUTTER := 16.0
   %PlaygroundCardC,
 ]
 
+var _state_cards: Array[Button] = []
+var _state_specs: Array = []
+
 func _ready() -> void:
+  _generate_state_grid()
   resized.connect(_update_responsive_layout)
   _update_responsive_layout()
   _apply_static_state_previews()
@@ -63,17 +50,35 @@ func _get_card_columns(viewport_width: float) -> int:
   var columns := floori((available_width + CARD_GAP) / (CARD_MIN_WIDTH + CARD_GAP))
   return clampi(columns, MIN_CARD_COLUMNS, MAX_CARD_COLUMNS)
 
+func _generate_state_grid() -> void:
+  _state_specs = CARD_STATE_SPECS.all()
+  _state_cards.clear()
+
+  for child in _cards_grid.get_children():
+    child.queue_free()
+
+  for state in _state_specs:
+    var column := VBoxContainer.new()
+    column.add_theme_constant_override("separation", 8)
+    _cards_grid.add_child(column)
+
+    var label := Label.new()
+    label.theme_type_variation = &"MenuMeta"
+    label.text = state.label
+    column.add_child(label)
+
+    var card: Button = CARD_SCENE.instantiate()
+    CARD_STATE_SPECS.apply_to_card(card, state)
+    column.add_child(card)
+    _state_cards.append(card)
+
 func _apply_static_state_previews() -> void:
   # Static matrix cards are visual specimens; live focus is demonstrated below.
-  for card in _state_cards:
+  for index in _state_cards.size():
+    var card := _state_cards[index]
     card.focus_mode = Control.FOCUS_NONE
     card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-  _hover_card.apply_preview_navigation_state(true, false)
-  for card in _preview_focus_cards:
-    _add_focus_preview(card)
-
-func _add_focus_preview(card: Button) -> void:
-  card.apply_preview_navigation_state(false, true)
+    CARD_STATE_SPECS.apply_navigation_preview(card, _state_specs[index])
 
 func _connect_card_feedback() -> void:
   for card in _playground_cards:

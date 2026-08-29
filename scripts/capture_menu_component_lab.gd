@@ -4,30 +4,12 @@ const LAB_SCENE := "res://Stages/UI/menu_component_lab/menu_component_lab.tscn"
 const CARD_SCENE := "res://Common/UI/menu_card/menu_card.tscn"
 const MENU_THEME := "res://Config/ztd_menu_theme.tres"
 const OUTPUT_DIR := "res://artifacts/visual/menu_component_lab"
+const CARD_STATE_SPECS := preload("res://Common/UI/menu_card/menu_card_state_specs.gd")
 const MATRIX_VIEWPORT_SIZE := Vector2i(1280, 2048)
 const MATRIX_GUTTER := 48
 const MATRIX_CARD_SCALE := 0.58
 const MATRIX_CARD_SOURCE_SIZE := Vector2(360, 720)
 const MATRIX_CARD_SLOT_SIZE := Vector2(232, 450)
-
-const CARD_STATES := [
-  {"label": "DEFAULT", "file": "default", "id": &"default"},
-  {"label": "HOVER", "file": "hover", "id": &"hover", "hover": true},
-  {"label": "HOVER + FOCUS", "file": "hover_focus", "id": &"hover_focus", "hover": true, "focus": true},
-  {"label": "FOCUS", "file": "focus", "id": &"focus", "focus": true},
-  {"label": "SELECTED", "file": "selected", "id": &"selected", "selected": true},
-  {"label": "SELECTED + FOCUS", "file": "selected_focus", "id": &"selected_focus", "selected": true, "focus": true},
-  {"label": "LOCKED", "file": "locked", "id": &"locked", "locked": true},
-  {"label": "LOCKED + HOVER", "file": "locked_hover", "id": &"locked_hover", "locked": true, "hover": true},
-  {"label": "LOCKED + FOCUS", "file": "locked_focus", "id": &"locked_focus", "locked": true, "focus": true},
-  {"label": "LOCKED + HOVER + FOCUS", "file": "locked_hover_focus", "id": &"locked_hover_focus", "locked": true, "hover": true, "focus": true},
-  {"label": "DISABLED", "file": "disabled", "id": &"disabled", "temporarily_disabled": true},
-  {"label": "COMPLETED", "file": "completed", "id": &"completed", "completed": true},
-  {"label": "COMPLETED + HOVER", "file": "completed_hover", "id": &"completed_hover", "completed": true, "hover": true},
-  {"label": "COMPLETED + FOCUS", "file": "completed_focus", "id": &"completed_focus", "completed": true, "focus": true},
-  {"label": "SELECTED + COMPLETED", "file": "selected_completed", "id": &"selected_completed", "selected": true, "completed": true},
-  {"label": "SELECTED + HOVER + FOCUS", "file": "selected_hover_focus", "id": &"selected_hover_focus", "selected": true, "hover": true, "focus": true},
-]
 
 func _initialize() -> void:
   call_deferred("_run")
@@ -53,6 +35,7 @@ func _capture_lab_viewports() -> void:
 func _capture_card_state_matrix() -> void:
   await _clear_root()
 
+  var states := CARD_STATE_SPECS.all()
   var theme: Theme = load(MENU_THEME)
   var card_scene: PackedScene = load(CARD_SCENE)
   var viewport := SubViewport.new()
@@ -84,7 +67,7 @@ func _capture_card_state_matrix() -> void:
   grid.add_theme_constant_override("v_separation", 28)
   margin.add_child(grid)
 
-  for state in CARD_STATES:
+  for state in states:
     var column := VBoxContainer.new()
     column.add_theme_constant_override("separation", 8)
     grid.add_child(column)
@@ -102,21 +85,21 @@ func _capture_card_state_matrix() -> void:
     card.position = Vector2((MATRIX_CARD_SLOT_SIZE.x - MATRIX_CARD_SOURCE_SIZE.x * MATRIX_CARD_SCALE) / 2.0, 0)
     card.size = MATRIX_CARD_SOURCE_SIZE
     card.scale = Vector2(MATRIX_CARD_SCALE, MATRIX_CARD_SCALE)
-    _configure_card(card, state)
+    CARD_STATE_SPECS.apply_to_card(card, state)
     slot.add_child(card)
 
   await _settle()
 
   for column in grid.get_children():
     var card: Control = column.get_child(1).get_child(0)
-    var state = CARD_STATES[column.get_index()]
-    _apply_navigation_preview(card, state)
+    var state = states[column.get_index()]
+    CARD_STATE_SPECS.apply_navigation_preview(card, state)
 
   await _settle()
   _save_viewport_image(viewport, "card_states.png")
 
 func _capture_individual_card_states() -> void:
-  for state in CARD_STATES:
+  for state in CARD_STATE_SPECS.all():
     await _clear_root()
 
     var theme: Theme = load(MENU_THEME)
@@ -140,26 +123,13 @@ func _capture_individual_card_states() -> void:
     card.position = Vector2(80, 50)
     card.size = Vector2(360, 720)
     page.add_child(card)
-    _configure_card(card, state)
+    CARD_STATE_SPECS.apply_to_card(card, state)
 
     await _settle()
-    _apply_navigation_preview(card, state)
+    CARD_STATE_SPECS.apply_navigation_preview(card, state)
 
     await _settle()
     _save_viewport_image(viewport, "card_state_%s.png" % state.file)
-
-func _configure_card(card: Node, state: Dictionary) -> void:
-  card.card_id = state.id
-  card.card_number = "02"
-  card.title_text = "Campfire Survivors"
-  card.description_text = "Protect Survivors with constructed defenses."
-  card.selected = state.get("selected", false)
-  card.locked = state.get("locked", false)
-  card.temporarily_disabled = state.get("temporarily_disabled", false)
-  card.completed = state.get("completed", false)
-
-func _apply_navigation_preview(card: Control, state: Dictionary) -> void:
-  card.apply_preview_navigation_state(state.get("hover", false), state.get("focus", false))
 
 func _clear_root() -> void:
   for child in root.get_children():
