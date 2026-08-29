@@ -58,7 +58,7 @@ func test_mode_cards_use_dedicated_horizontal_artwork_to_text_split():
     var art_clip: Control = card.get_node("ArtClip")
     var info_panel: Control = card.get_node("InfoPanel")
 
-    assert_eq(art_clip.offset_left, 0.0)
+    assert_eq(art_clip.offset_left, 8.0)
     assert_lt(art_clip.anchor_right, info_panel.anchor_right)
     assert_eq(art_clip.anchor_right, info_panel.anchor_left)
     assert_eq(card.size_flags_vertical, Control.SIZE_EXPAND_FILL)
