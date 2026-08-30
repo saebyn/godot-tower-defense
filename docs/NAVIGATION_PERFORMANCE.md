@@ -4,6 +4,8 @@ Zombie navigation instrumentation is exposed through Godot's built-in **Debugger
 
 The instrumentation is intentionally observational: it records the navigation work the game already performs without changing targeting or pathing behavior.
 
+The custom monitors are registered by the process-lifetime `GameManager` autoload. They remain registered while moving between gameplay, menus, and scenarios, reporting zero-rate values when no navigation work is occurring. Their graph history therefore survives scene changes within a single run. Stopping the game process removes the runtime custom monitors and their session history, as expected for Godot custom performance monitors.
+
 ## Metrics
 
 | Monitor | Meaning |
@@ -44,7 +46,7 @@ When testing an environment change such as placing a building, look for correlat
 
 ## Comparing changes over time
 
-The Godot monitor graphs are session-local; they are not a historical benchmark database. For comparisons between commits, use the same scenario and workload and record a small baseline table in the relevant issue or PR, for example:
+The Godot monitor graphs are run-local; they are not a historical benchmark database. For comparisons between commits, use the same scenario and workload and record a small baseline table in the relevant issue or PR, for example:
 
 | Metric | Baseline | Candidate |
 | --- | ---: | ---: |
