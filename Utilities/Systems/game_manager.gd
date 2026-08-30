@@ -126,7 +126,7 @@ func restart_scenario() -> void:
 
   # Reload the save slot — this calls reset_data() or load_data() on every
   # registered SaveableSystem (CurrencyManager, TechTreeManager, etc.) so
-  # the in-memory state is fully restored to what they were on disk.
+  # the in-memory state is fully restored to what was on disk.
   if SaveManager.current_save_slot > 0:
     SaveManager.load_save_slot(SaveManager.current_save_slot)
   else:
