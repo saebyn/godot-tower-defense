@@ -103,7 +103,7 @@ func get_game_speed() -> float:
 
 
 func toggle_in_game_menu():
-    MyLogger.debug("GameManager", "Toggling in-game menu state...")
+    MyLogger.debug("GameManager", "Toggling in-game menu...")
     match current_state:
         GameState.IN_GAME_MENU:
             set_game_state(GameState.PLAYING)
@@ -126,7 +126,7 @@ func restart_scenario() -> void:
 
   # Reload the save slot — this calls reset_data() or load_data() on every
   # registered SaveableSystem (CurrencyManager, TechTreeManager, etc.) so
-  # the in-memory state is fully restored to what was on disk.
+  # the in-memory state is fully restored to what they were on disk.
   if SaveManager.current_save_slot > 0:
     SaveManager.load_save_slot(SaveManager.current_save_slot)
   else:
