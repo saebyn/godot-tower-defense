@@ -11,7 +11,6 @@ class_name Main_HoverController
 @export var camera: Camera3D
 @export var ui: Control
 
-@export var building_tooltip_scene: PackedScene
 @export var raycast_length: float = 1000.0
 
 ## Currently hovered ranged building for range preview
@@ -36,8 +35,8 @@ func _ready() -> void:
   add_child(_hover_raycast)
 
   # Create building tooltip if scene is assigned
-  if building_tooltip_scene and ui:
-    _building_tooltip = building_tooltip_scene.instantiate()
+  if ui:
+    _building_tooltip = UI_BuildingTooltip.new()
     ui.add_child(_building_tooltip)
     _building_tooltip.visible = false
 
