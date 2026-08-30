@@ -24,6 +24,8 @@ enum TargetPreference {
 var current_target: Node3D = null
 var fallback_building_target: Node3D = null # Used when direct path to target is blocked
 var retarget_timer: Timer
+var _has_requested_navigation_target: bool = false
+var _last_requested_navigation_target: Vector3 = Vector3.ZERO
 
 var building_attack_range: float:
   get:
@@ -67,7 +69,7 @@ func _physics_process(_delta: float):
     else:
       # Check if we can now reach the main target
       if current_target and is_instance_valid(current_target):
-        navigation_agent.set_target_position(current_target.global_position)
+        _set_navigation_target_position(current_target.global_position)
         _check_and_set_fallback_target()
 
 
@@ -190,7 +192,10 @@ func _is_target_reachable(target: Node3D) -> bool:
   if NavigationServer3D.map_get_iteration_id(map) == 0:
     return false
 
+  Utility_NavigationMetrics.record_reachability_check()
+  var path_query_started_usec := Time.get_ticks_usec()
   var path := NavigationServer3D.map_get_path(map, global_position, target.global_position, true)
+  Utility_NavigationMetrics.record_explicit_path_query(Time.get_ticks_usec() - path_query_started_usec)
   if path.is_empty():
     return false
 
@@ -202,7 +207,7 @@ func _set_current_target(target: Node3D) -> void:
   var changed := current_target != target
   current_target = target
   fallback_building_target = null
-  navigation_agent.set_target_position(current_target.global_position)
+  _set_navigation_target_position(current_target.global_position)
 
   if changed:
     MyLogger.info("Component_Targeting", "Chose new target: %s" % current_target.name)
@@ -216,7 +221,16 @@ func _clear_current_target() -> void:
   fallback_building_target = null
   attack.cancel()
   # No targets available, stop the agent.
-  navigation_agent.set_target_position(global_position)
+  _set_navigation_target_position(global_position)
+
+
+func _set_navigation_target_position(target_position: Vector3) -> void:
+  var is_duplicate := _has_requested_navigation_target \
+    and _last_requested_navigation_target.is_equal_approx(target_position)
+  Utility_NavigationMetrics.record_target_set(is_duplicate)
+  _has_requested_navigation_target = true
+  _last_requested_navigation_target = target_position
+  navigation_agent.set_target_position(target_position)
 
 
 func _get_attack_range_for_target(target: Node3D) -> float:
@@ -278,6 +292,7 @@ func _find_building_closest_to_target() -> Node3D:
 
 func _check_and_set_fallback_target() -> void:
   """Check if the enemy can reach the target. If not, find a building to attack."""
+  Utility_NavigationMetrics.record_fallback_check()
   if not current_target or not is_instance_valid(current_target):
     return
   
@@ -285,6 +300,7 @@ func _check_and_set_fallback_target() -> void:
   await get_tree().physics_frame
   
   # Check if the path is valid/reachable
+  Utility_NavigationMetrics.record_reachability_check()
   if navigation_agent.is_target_reachable():
     # Path is fine, clear any fallback
     fallback_building_target = null
@@ -296,7 +312,7 @@ func _check_and_set_fallback_target() -> void:
     
     if blocking_building:
       fallback_building_target = blocking_building
-      navigation_agent.set_target_position(blocking_building.global_position)
+      _set_navigation_target_position(blocking_building.global_position)
       MyLogger.info("Component_Targeting", "Found blocking building, switching to fallback target")
     else:
       MyLogger.warn("Component_Targeting", "No path to target and no buildings found to attack!")
@@ -323,7 +339,7 @@ func _attack_target():
       return
   else:
     MyLogger.debug("Component_Targeting", "No valid fallback building target currently set.")
-    navigation_agent.set_target_position(current_target.global_position)
+    _set_navigation_target_position(current_target.global_position)
     _check_and_set_fallback_target()
 
   # Attack primary target if in range (higher priority)
