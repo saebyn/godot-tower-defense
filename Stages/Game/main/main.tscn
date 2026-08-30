@@ -120,4 +120,5 @@ camera = NodePath("../Camera3D")
 [connection signal="cooldown_ended" from="Attack" to="PlayerInputController" method="_on_attack_cooldown_ended"]
 [connection signal="cooldown_started" from="Attack" to="PlayerInputController" method="_on_attack_cooldown_started"]
 [connection signal="building_spawn_requested" from="UI" to="." method="_on_building_spawn_requested"]
+[connection signal="building_placement_status_changed" from="BuildingPlacement" to="UI" method="building_placement_status"]
 [connection signal="rebake_navigation_mesh" from="BuildingPlacement" to="NavigationController" method="rebake_navigation_mesh"]

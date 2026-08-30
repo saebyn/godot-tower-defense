@@ -1,10 +1,21 @@
 extends Node3D
 class_name Utility_BuildingPlacement
 
+enum BuildingPlacementStatus {
+  NONE,
+  NO_PLACEABLE_BUILDING,
+  OUTSIDE_BORDER,
+  BUILDING_COLLISION,
+  NO_TERRAIN_SUPPORT,
+  INSUFFICIENT_CLEARANCE,
+  INSUFFICIENT_FUNDS,
+}
+
 signal rebake_navigation_mesh
 signal placement_mode_entered ## Emitted when entering building placement mode
 signal placement_mode_exited ## Emitted when exiting building placement mode
 signal building_placed ## Emitted when a building is successfully placed
+signal building_placement_status_changed(status: BuildingPlacementStatus)
 
 @export_group("Placement Settings")
 @export var placement_clearance: float = 3.0 ## Minimum distance from other buildings
@@ -36,6 +47,14 @@ var busy: bool:
 
 var _place_building_type: Resource_BuildingType = null
 var _preview: Entity_PlaceableBuilding = null
+var _internal_placement_status: BuildingPlacementStatus = BuildingPlacementStatus.NONE
+var _last_placement_status: BuildingPlacementStatus:
+  set(value):
+    if _internal_placement_status != value:
+      _internal_placement_status = value
+      building_placement_status_changed.emit(value)
+  get:
+    return _internal_placement_status
 
 
 func _process(_delta: float) -> void:
@@ -70,48 +89,33 @@ func _input(event: InputEvent) -> void:
     _project_placed_building(event.position)
 
 
-func validate_placement(target_position: Vector3) -> Utility_PlacementResult:
+func _validate_placement(target_position: Vector3) -> BuildingPlacementStatus:
   if not _preview:
-    return Utility_PlacementResult.new(false, Utility_PlacementResult.ValidationError.NO_PLACEABLE_BUILDING, "No building selected for placement")
+    MyLogger.debug("Placement", "Invalid placement - No placeable building selected")
+    return BuildingPlacementStatus.NO_PLACEABLE_BUILDING
 
   if not _is_within_border(target_position):
-    return Utility_PlacementResult.new(false, Utility_PlacementResult.ValidationError.OUTSIDE_BORDER, "Outside world boundaries")
+    MyLogger.debug("Placement", " Invalid placement - Outside world boundaries")
+    return BuildingPlacementStatus.OUTSIDE_BORDER
   
   if _has_building_collision(target_position):
-    return Utility_PlacementResult.new(false, Utility_PlacementResult.ValidationError.BUILDING_COLLISION, "Collision with existing building")
+    MyLogger.debug("Placement", "Invalid placement - Collision with existing building")
+    return BuildingPlacementStatus.BUILDING_COLLISION
   
   if not _has_terrain_support(target_position):
-    return Utility_PlacementResult.new(false, Utility_PlacementResult.ValidationError.NO_TERRAIN_SUPPORT, "No valid terrain support")
+    MyLogger.debug("Placement", "Invalid placement - Invalid terrain support")
+    return BuildingPlacementStatus.NO_TERRAIN_SUPPORT
   
   if not _has_sufficient_clearance(target_position):
-    return Utility_PlacementResult.new(false, Utility_PlacementResult.ValidationError.INSUFFICIENT_CLEARANCE, "Insufficient clearance from other buildings")
+    MyLogger.debug("Placement", "Invalid placement - Insufficient clearance")
+    return BuildingPlacementStatus.INSUFFICIENT_CLEARANCE
 
   if CurrencyManager.get_scrap() < _place_building_type.cost:
-    return Utility_PlacementResult.new(false, Utility_PlacementResult.ValidationError.INSUFFICIENT_FUNDS, "Insufficient funds to place building")
+    MyLogger.debug("Placement", "Invalid placement - Insufficient funds")
+    return BuildingPlacementStatus.INSUFFICIENT_FUNDS
   
-  return Utility_PlacementResult.new(true)
+  return BuildingPlacementStatus.NONE
 
-func _is_placement_valid(target_position: Vector3) -> bool:
-  var result = validate_placement(target_position)
-  # TODO enhance feedback to user
-  if not result.is_valid:
-    MyLogger.debug("Placement", "Invalid placement: %s" % result.error_message)
-    # Debug information about why placement failed
-    match result.error:
-      Utility_PlacementResult.ValidationError.NO_PLACEABLE_BUILDING:
-        MyLogger.debug("Placement", "  - No placeable building selected")
-      Utility_PlacementResult.ValidationError.OUTSIDE_BORDER:
-        MyLogger.debug("Placement", "  - Outside world boundaries")
-      Utility_PlacementResult.ValidationError.BUILDING_COLLISION:
-        MyLogger.debug("Placement", "  - Collision with existing building")
-      Utility_PlacementResult.ValidationError.NO_TERRAIN_SUPPORT:
-        MyLogger.debug("Placement", "  - Invalid terrain support")
-      Utility_PlacementResult.ValidationError.INSUFFICIENT_CLEARANCE:
-        MyLogger.debug("Placement", "  - Insufficient clearance")
-      Utility_PlacementResult.ValidationError.INSUFFICIENT_FUNDS:
-        MyLogger.debug("Placement", "  - Insufficient funds")
-
-  return result.is_valid
 
 func _is_within_border(target_position: Vector3) -> bool:
   return target_position.x >= world_min_x and target_position.x <= world_max_x and target_position.z >= world_min_z and target_position.z <= world_max_z
@@ -190,7 +194,7 @@ func _place_building() -> void:
     return
   
   # Check if placement is valid
-  if not _is_placement_valid(_preview.global_position):
+  if _validate_placement(_preview.global_position) != BuildingPlacementStatus.NONE:
     return
 
   # Deduct cost
@@ -225,6 +229,7 @@ func _clear_building_placement() -> void:
   _place_building_type = null
   raycast.enabled = false
   placement_mode_exited.emit()
+  _last_placement_status = BuildingPlacementStatus.NONE
 
 func _update_visual_feedback(target_position: Vector3) -> void:
   if not _preview:
@@ -234,7 +239,8 @@ func _update_visual_feedback(target_position: Vector3) -> void:
   if not valid_placement_material or not invalid_placement_material:
     return
 
-  var is_valid = _is_placement_valid(target_position)
+  _last_placement_status = _validate_placement(target_position)
+  var is_valid = _last_placement_status == BuildingPlacementStatus.NONE
   var material = valid_placement_material if is_valid else invalid_placement_material
   
   _preview.set_preview_material(material)

@@ -9,6 +9,8 @@ signal updated_bounding_box(new_bounds: AABB)
 @onready var stats_display: Control = $StatsDisplay
 @onready var fps_overlay: Control = $FpsOverlay
 @onready var sound_effect_display: Control = $SoundEffectDisplay
+@onready var cursor_tooltip: Control = $CursorTooltip
+@onready var cursor_tooltip_label: Label = $CursorTooltip/TooltipLabel
 
 
 func _process(_delta: float) -> void:
@@ -22,6 +24,11 @@ func _process(_delta: float) -> void:
     _toggle_fps_overlay()
   elif Input.is_action_just_pressed("toggle_sound_effects"):
     _toggle_sound_effect_display()
+
+
+func _input(event: InputEvent) -> void:
+  if event is InputEventMouseMotion:
+    cursor_tooltip.position = event.position
 
 
 func request_building_spawn(building: Resource_BuildingType) -> void:
@@ -89,3 +96,28 @@ func _toggle_sound_effect_display() -> void:
   if sound_effect_display:
     sound_effect_display.toggle_display()
     MyLogger.info("UI", "Sound effect display toggled: %s" % ("visible" if sound_effect_display.visible else "hidden"))
+
+
+## Methods to respond to building placement events,
+## which can be connected to the BuildingPlacement signals
+
+func building_placement_status(status: Utility_BuildingPlacement.BuildingPlacementStatus) -> void:
+  if status == Utility_BuildingPlacement.BuildingPlacementStatus.NONE:
+    cursor_tooltip.visible = false
+  else:
+    cursor_tooltip.visible = true
+
+  match status:
+    Utility_BuildingPlacement.BuildingPlacementStatus.NO_PLACEABLE_BUILDING:
+      cursor_tooltip_label.text = "No placeable building selected."
+    Utility_BuildingPlacement.BuildingPlacementStatus.OUTSIDE_BORDER:
+      cursor_tooltip_label.text = "Cannot place building outside the border."
+    Utility_BuildingPlacement.BuildingPlacementStatus.BUILDING_COLLISION:
+      cursor_tooltip_label.text = "Cannot place building here: Collides with another building."
+    Utility_BuildingPlacement.BuildingPlacementStatus.NO_TERRAIN_SUPPORT:
+      cursor_tooltip_label.text = "Cannot place building here: Invalid terrain support."
+    Utility_BuildingPlacement.BuildingPlacementStatus.INSUFFICIENT_CLEARANCE:
+      cursor_tooltip_label.text = "Cannot place building here: Insufficient clearance."
+    Utility_BuildingPlacement.BuildingPlacementStatus.INSUFFICIENT_FUNDS:
+      cursor_tooltip_label.text = "Cannot place building here: Insufficient funds."
+
