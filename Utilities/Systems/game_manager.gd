@@ -1,5 +1,23 @@
 extends Node
 
+const NAVIGATION_MONITORS := {
+  "Navigation/Active Zombies": Utility_NavigationMetrics.ACTIVE_ZOMBIES,
+  "Navigation/Target Sets per Second": Utility_NavigationMetrics.TARGET_SETS_PER_SECOND,
+  "Navigation/Duplicate Target Sets per Second": Utility_NavigationMetrics.DUPLICATE_TARGET_SETS_PER_SECOND,
+  "Navigation/Duplicate Target Set Percent": Utility_NavigationMetrics.DUPLICATE_TARGET_SET_PERCENT,
+  "Navigation/Explicit Path Queries per Second": Utility_NavigationMetrics.EXPLICIT_PATH_QUERIES_PER_SECOND,
+  "Navigation/Explicit Path Query Time ms per Second": Utility_NavigationMetrics.EXPLICIT_PATH_QUERY_TIME_MSEC_PER_SECOND,
+  "Navigation/Explicit Path Query Max ms": Utility_NavigationMetrics.EXPLICIT_PATH_QUERY_MAX_MSEC,
+  "Navigation/Path Changes per Second": Utility_NavigationMetrics.PATH_CHANGES_PER_SECOND,
+  "Navigation/Agent Path Update Time ms per Second": Utility_NavigationMetrics.AGENT_PATH_UPDATE_TIME_MSEC_PER_SECOND,
+  "Navigation/Agent Path Update Max ms": Utility_NavigationMetrics.AGENT_PATH_UPDATE_MAX_MSEC,
+  "Navigation/Reachability Checks per Second": Utility_NavigationMetrics.REACHABILITY_CHECKS_PER_SECOND,
+  "Navigation/Fallback Checks per Second": Utility_NavigationMetrics.FALLBACK_CHECKS_PER_SECOND,
+  "Navigation/Rebake Requests per Second": Utility_NavigationMetrics.REBAKE_REQUESTS_PER_SECOND,
+  "Navigation/Rebakes Started per Second": Utility_NavigationMetrics.REBAKES_STARTED_PER_SECOND,
+  "Navigation/Last Rebake ms": Utility_NavigationMetrics.LAST_REBAKE_MSEC,
+}
+
 enum GameState {
   MAIN_MENU, ## When the player is in the main menu
   PLAYING, ## When the player is actively playing a scenario
@@ -15,6 +33,31 @@ var current_speed_multiplier: float = 1.0
 
 signal game_state_changed(new_state: GameState)
 signal speed_changed(new_speed: float)
+
+
+func _ready() -> void:
+    Utility_NavigationMetrics.reset()
+    _register_navigation_monitors()
+
+
+func _process(delta: float) -> void:
+    Utility_NavigationMetrics.update(delta)
+
+
+func _register_navigation_monitors() -> void:
+    for monitor_name in NAVIGATION_MONITORS:
+        if Performance.has_custom_monitor(monitor_name):
+            Performance.remove_custom_monitor(monitor_name)
+        Performance.add_custom_monitor(
+            monitor_name,
+            _get_navigation_metric,
+            [NAVIGATION_MONITORS[monitor_name]],
+        )
+
+
+func _get_navigation_metric(metric: StringName) -> float:
+    return Utility_NavigationMetrics.get_metric(metric)
+
 
 func set_game_state(new_state: GameState):
     if current_state != new_state:
@@ -60,7 +103,7 @@ func get_game_speed() -> float:
 
 
 func toggle_in_game_menu():
-    MyLogger.debug("GameManager", "Toggling in-game menu...")
+    MyLogger.debug("GameManager", "Toggling in-game menu state...")
     match current_state:
         GameState.IN_GAME_MENU:
             set_game_state(GameState.PLAYING)
