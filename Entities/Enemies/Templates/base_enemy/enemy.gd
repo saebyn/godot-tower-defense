@@ -26,6 +26,9 @@ var damage_numbers: Component_DamageNumbers
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
 
 func _ready():
+  Utility_NavigationMetrics.register_zombie()
+  navigation_agent.path_changed.connect(_on_navigation_path_changed)
+
   # Find components via metadata
   if has_meta("attack_component"):
     attack = get_meta("attack_component")
@@ -46,6 +49,11 @@ func _ready():
   if health:
     health.died.connect(_on_died)
     health.damaged.connect(_on_health_damaged)
+
+
+func _exit_tree() -> void:
+  Utility_NavigationMetrics.unregister_zombie()
+
 
 # Resource_EnemyType
 func load_resource(resource: Resource_EnemyType) -> void:
@@ -110,7 +118,9 @@ func _update_navigation(delta: float):
   if navigation_agent.is_navigation_finished():
     velocity = Vector3.ZERO
   else:
+    var path_update_started_usec := Time.get_ticks_usec()
     var next_path_position := navigation_agent.get_next_path_position()
+    Utility_NavigationMetrics.record_agent_path_update(Time.get_ticks_usec() - path_update_started_usec)
 
     var local_current_look_position := Vector3.MODEL_FRONT
 
@@ -160,6 +170,10 @@ func _on_died(damage_source: String = "unknown"):
         damage_numbers.show_scrap(scrap_reward)
   
   queue_free()
+
+
+func _on_navigation_path_changed() -> void:
+  Utility_NavigationMetrics.record_path_changed()
 
 
 func _on_health_damaged(amount: int, hitpoints: int, damage_source: String = "unknown") -> void:

@@ -15,11 +15,17 @@ var _rebake_in_progress: bool = false
 ## Tracks whether a rebake was requested while one was already in progress.
 var _rebake_queued: bool = false
 
+
 func _ready() -> void:
   _start_navigation_rebake_timer()
 
 
 func rebake_navigation_mesh() -> void:
+  Utility_NavigationMetrics.record_rebake_requested()
+  _rebake_navigation_mesh()
+
+
+func _rebake_navigation_mesh() -> void:
   if _rebake_in_progress:
     # Queue one additional bake for after the current one finishes
     _rebake_queued = true
@@ -35,15 +41,18 @@ func rebake_navigation_mesh() -> void:
       MyLogger.debug("Navigation", "Navigation mesh is already baking, waiting...")
       await navigation_region.bake_finished
 
+    Utility_NavigationMetrics.record_rebake_started()
+    var rebake_started_usec := Time.get_ticks_usec()
     navigation_region.bake_navigation_mesh()
     await navigation_region.bake_finished
+    Utility_NavigationMetrics.record_rebake_finished(Time.get_ticks_usec() - rebake_started_usec)
     MyLogger.info("Navigation", "Navigation mesh rebaked!")
 
   _rebake_in_progress = false
 
   if _rebake_queued:
     _rebake_queued = false
-    rebake_navigation_mesh()
+    _rebake_navigation_mesh()
 
 
 func _start_navigation_rebake_timer() -> void:
