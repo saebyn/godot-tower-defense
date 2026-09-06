@@ -8,10 +8,11 @@ if {SettingsManager.tutorial_enabled} == true:
 		do GameManager.pause_game()
 		survivor: Good! Let me point out a few things on the screen.
 		survivor: Top-left is your [b]Scrap[/b] counter — that's your currency for building. Defeat zombies to earn more!
-		survivor: Your [b]XP and Level[/b] are shown there too. Level up to unlock stronger gear.
+		survivor: Your [b]XP and Level[/b] are shown there too. Level up to unlock better defenses!
 		survivor: And the [b]wave counter[/b] up top tells you how many waves are left. Stay sharp!
 		do GameManager.resume_game()
-		[zomnom_wait_main_signal]
+		if GameManager.has_enemy_appeared == false:
+			[zomnom_wait_main_signal]
 		[wait time="1.0"]
 		do GameManager.pause_game()
 		survivor: See that zombie? [b]Left-click[/b] on that walking corpse to hit it!
@@ -44,4 +45,5 @@ if {SettingsManager.tutorial_enabled} == true:
 		set {SettingsManager.tutorial_enabled} = false
 		do SettingsManager.save_settings()
 		do GameManager.resume_game()
+		system: Great! If you change your mind, you can turn this tutorial back on in the "Gameplay" tab of the settings and restart the first scenario.
 		[end_timeline]
