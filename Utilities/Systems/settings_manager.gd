@@ -306,3 +306,26 @@ func _load_keybinds(config: ConfigFile) -> void:
       if event != null:
         InputMap.action_add_event(action, event)
   MyLogger.info("SettingsManager", "Keybinds loaded from file")
+
+
+func get_keybind(action: String) -> String:
+  var first_event = InputMap.action_get_events(action)[0]
+
+  if first_event is InputEventKey:
+    var key_event := first_event as InputEventKey
+    var output: String = ""
+
+    if key_event.ctrl_pressed:
+      output += "Ctrl + "
+    elif key_event.alt_pressed:
+      output += "Alt + "
+    elif key_event.shift_pressed:
+      output += "Shift + "
+    elif key_event.meta_pressed:
+      output += "Meta + "
+
+    output += OS.get_keycode_string(key_event.physical_keycode)
+
+    return output
+  else:
+    return first_event.as_text()
