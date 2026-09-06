@@ -1,10 +1,5 @@
 extends Node3D
 
-signal enemy_attacked ## Emitted when the player clicks to attack an enemy; re-emitted from PlayerInputController
-signal enemy_appeared ## Emitted when an enemy is visible to the player for the first time
-signal building_placed ## Emitted when a building is successfully placed in the world; re-emitted from BuildingPlacement
-signal wave_cleared ## Emitted when a wave is fully cleared; proxied from ScenarioManager.wave_changed
-
 @onready var camera: Camera3D = $Camera3D
 @onready var ui: MainUI = $UI
 @onready var building_placement: Utility_BuildingPlacement = $BuildingPlacement
@@ -14,22 +9,19 @@ signal wave_cleared ## Emitted when a wave is fully cleared; proxied from Scenar
 
 var current_scenario: Stage_Scenario = null
 
-var has_seen_enemy = false
-
-
 func _ready() -> void:
   # Connect to building placement signals for showing all shooting building ranges
   building_placement.placement_mode_entered.connect(_on_placement_mode_entered)
   building_placement.placement_mode_exited.connect(_on_placement_mode_exited)
 
   # Re-emit enemy_attacked from PlayerInputController so scenarios can connect to it on main
-  player_input_controller.enemy_attacked.connect(func(): enemy_attacked.emit())
+  player_input_controller.enemy_attacked.connect(func(): GameManager.enemy_attacked.emit())
 
   # Re-emit building_placed from BuildingPlacement so scenarios can connect to it on main
-  building_placement.building_placed.connect(func(): building_placed.emit())
+  building_placement.building_placed.connect(func(): GameManager.building_placed.emit())
 
   # Proxy wave_changed from ScenarioManager as wave_cleared
-  ScenarioManager.wave_changed.connect(func(_scenario_id, _wave): wave_cleared.emit())
+  ScenarioManager.wave_changed.connect(func(_scenario_id, _wave): GameManager.wave_cleared.emit())
 
   # When scenarios end, make sure to stop any current dialog.
   # This is here because there's no existing dialog/dialogic manager for this.
@@ -41,15 +33,14 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
   # Check if any enemies are visible to the player for the first time
-  if not has_seen_enemy:
+  if not GameManager.has_enemy_appeared:
     # check to see if any nodes in the enemies group are within the
     # camera's view frustum instead of just checking if they exist at all
     var enemies = get_tree().get_nodes_in_group("enemies")
     for enemy in enemies:
       if enemy is Node3D and camera.is_position_in_frustum(enemy.global_position):
         MyLogger.info("Main", "Enemy appeared in view: %s" % enemy.name)
-        has_seen_enemy = true
-        enemy_appeared.emit()
+        GameManager.enemy_appeared.emit()
         break
 
 

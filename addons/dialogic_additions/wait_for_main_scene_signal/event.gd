@@ -2,28 +2,26 @@
 class_name ZomNomWaitForMainSceneSignalEvent
 extends ZomNomWaitEvent
 
-## Pauses timeline execution until a named signal fires on the main scene.
-## The main scene must declare the signal (see main.gd).
+## Pauses timeline execution until a named signal fires on the GameManager.
 
 
 ### Settings
 
-## The signal name to wait for on the main scene.
+## The signal name to wait for on the GameManager autoload.
 var signal_name: String = "enemy_appeared"
 
-## All signals that main.gd is expected to expose for tutorial use.
-const MAIN_SCENE_SIGNALS := ["enemy_appeared", "enemy_attacked", "building_placed", "wave_cleared"]
+## All signals that GameManager is expected to expose for tutorial use.
+const GAME_MANAGER_SIGNALS := ["enemy_appeared", "enemy_attacked", "building_placed", "wave_cleared"]
 
 
 #region EXECUTE
 ################################################################################
 func _wait() -> void:
-  var main_scene := dialogic.get_tree().current_scene
-  if main_scene == null or not main_scene.has_signal(signal_name):
-    push_error("[ZomNom] WaitForMainSceneSignal: main scene does not have signal '%s'" % signal_name)
+  if not GameManager.has_signal(signal_name):
+    push_error("[ZomNom] WaitForMainSceneSignal: GameManager does not have signal '%s'" % signal_name)
     return
 
-  var signal_ref = main_scene.get(signal_name)
+  var signal_ref = GameManager.get(signal_name)
   if signal_ref is Signal:
     await signal_ref
     return
@@ -38,7 +36,7 @@ func _wait() -> void:
 
 func _init() -> void:
   event_name = "Wait For Main Scene Signal"
-  event_description = "Pauses the timeline until a named signal fires on the main game scene."
+  event_description = "Pauses the timeline until a named signal fires on the GameManager."
   set_default_color('Color5')
   event_category = "Zom Nom"
   event_sorting_index = 1
@@ -65,7 +63,7 @@ func get_shortcode_parameters() -> Dictionary:
 
 func _build_signal_suggestions() -> Dictionary:
   var suggestions := {}
-  for signal_name_option in MAIN_SCENE_SIGNALS:
+  for signal_name_option in GAME_MANAGER_SIGNALS:
     suggestions[signal_name_option] = {"value": signal_name_option}
   return suggestions
 
@@ -76,9 +74,9 @@ func _build_signal_suggestions() -> Dictionary:
 ################################################################################
 
 func build_event_editor() -> void:
-  add_header_label("Wait for main scene signal:")
+  add_header_label("Wait for GameManager signal:")
   var options: Array[Dictionary] = []
-  for signal_name_option in MAIN_SCENE_SIGNALS:
+  for signal_name_option in GAME_MANAGER_SIGNALS:
     options.append({"label": signal_name_option, "value": signal_name_option})
   add_header_edit("signal_name", ValueType.FIXED_OPTIONS, {
     "left_text": "",

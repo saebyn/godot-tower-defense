@@ -10,11 +10,31 @@ enum GameState {
   ALL_DONE ## Represents the state after the final scenario is completed
 }
 
+# Variables and signals for general game state.
 var current_state: GameState = GameState.MAIN_MENU
 var current_speed_multiplier: float = 1.0
 
 signal game_state_changed(new_state: GameState)
 signal speed_changed(new_speed: float)
+
+# Variables and signals for tutorial and scenario events.
+var was_enemy_attacked: bool = false
+var has_enemy_appeared: bool = false
+var was_building_placed: bool = false
+var has_wave_cleared: bool = false
+
+signal enemy_attacked ## Emitted when the player clicks to attack an enemy; re-emitted from PlayerInputController
+signal enemy_appeared ## Emitted when an enemy is visible to the player for the first time
+signal building_placed ## Emitted when a building is successfully placed in the world; re-emitted from BuildingPlacement
+signal wave_cleared ## Emitted when a wave is fully cleared; proxied from ScenarioManager.wave_changed
+
+
+func _ready():
+  enemy_attacked.connect(func(): was_enemy_attacked = true)
+  enemy_appeared.connect(func(): has_enemy_appeared = true)
+  building_placed.connect(func(): was_building_placed = true)
+  wave_cleared.connect(func(): has_wave_cleared = true)
+
 
 func set_game_state(new_state: GameState):
     if current_state != new_state:
@@ -102,6 +122,8 @@ func restart_scenario() -> void:
   if error != OK:
     MyLogger.error("GameManager", "Failed to reload game scene: %s (Error: %d)" % [game_scene_path, error])
 
+  reset_tutorial_flags()
+
 ## Returns to the main menu from any game state
 func return_to_main_menu():
   MyLogger.info("GameManager", "Returning to main menu")
@@ -110,9 +132,19 @@ func return_to_main_menu():
   
   # Clear the current scenario in ScenarioManager
   ScenarioManager.clear_current_scenario()
+
+  reset_tutorial_flags()
   
   # Load the main menu scene
   var main_menu_path = "res://Stages/UI/main_menu/main_menu.tscn"
   var error = get_tree().change_scene_to_file(main_menu_path)
   if error != OK:
     MyLogger.error("GameManager", "Failed to load main menu scene: %s (Error: %d)" % [main_menu_path, error])
+
+
+# Clear flags for the tutorial and scenario events so they can be re-triggered
+func reset_tutorial_flags():
+  was_enemy_attacked = false
+  was_building_placed = false
+  has_enemy_appeared = false
+  has_wave_cleared = false

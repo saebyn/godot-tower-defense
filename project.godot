@@ -93,6 +93,7 @@ layout/style_list=["res://Dialogic/Style.tres"]
 layout/default_style="res://Dialogic/Style.tres"
 glossary/default_case_sensitive=true
 portraits/default_portrait="res://addons/dialogic/Modules/Character/default_portrait.tscn"
+variables={}
 
 [editor_plugins]
 

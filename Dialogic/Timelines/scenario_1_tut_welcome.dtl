@@ -8,10 +8,11 @@ if {SettingsManager.tutorial_enabled} == true:
 		do GameManager.pause_game()
 		survivor: Good! Let me point out a few things on the screen.
 		survivor: Top-left is your [b]Scrap[/b] counter — that's your currency for building. Defeat zombies to earn more!
-		survivor: Your [b]XP and Level[/b] are shown there too. Level up to unlock stronger gear.
+		survivor: Your [b]XP and Level[/b] are shown there too. Level up to unlock better defenses!
 		survivor: And the [b]wave counter[/b] up top tells you how many waves are left. Stay sharp!
 		do GameManager.resume_game()
-		[zomnom_wait_main_signal]
+		if GameManager.has_enemy_appeared == false:
+			[zomnom_wait_main_signal]
 		[wait time="1.0"]
 		do GameManager.pause_game()
 		survivor: See that zombie? [b]Left-click[/b] on that walking corpse to hit it!
@@ -19,7 +20,7 @@ if {SettingsManager.tutorial_enabled} == true:
 		do GameManager.resume_game()
 		[zomnom_wait_main_signal signal="enemy_attacked"]
 		do GameManager.pause_game()
-		survivor: Good job! Lots more where that one came from though...
+		survivor: Good job! Lots more where that one came from though... [i]Here's a tip\: you can click the zombie fast enough to keep it from moving forward so you can quickly defeat it![/i]
 		do GameManager.resume_game()
 		# Wait for the player to defeat the first wave here before moving on
 		[zomnom_wait_main_signal signal="wave_cleared"]
@@ -38,10 +39,14 @@ if {SettingsManager.tutorial_enabled} == true:
 		do GameManager.resume_game()
 		[zomnom_wait_main_signal signal="building_placed"]
 		do GameManager.pause_game()
+		survivor: Use {SettingsManager.get_keybind('camera_move_left')} and {SettingsManager.get_keybind('camera_move_right')} to move the camera left and right, and {SettingsManager.get_keybind('camera_move_up')}/{SettingsManager.get_keybind('camera_move_down')} for up and down.
+		survivor: Use your scoll wheel or  {SettingsManager.get_keybind('camera_zoom_in_key')}/{SettingsManager.get_keybind('camera_zoom_out_key')} to zoom.
+		survivor: And you can rotate the camera with {SettingsManager.get_keybind('camera_rotate_left')} and {SettingsManager.get_keybind('camera_rotate_right')}.
 		survivor: Alright, that's most of the important stuff. Now get out there and defend me!
-		system: Unpause the game to start confronting the horde. Good luck!
+		survivor: Unpause the game to start confronting the horde. Good luck!
 	- No thanks, I've got this.
 		set {SettingsManager.tutorial_enabled} = false
 		do SettingsManager.save_settings()
 		do GameManager.resume_game()
+		system: Great! If you change your mind, you can turn this tutorial back on in the "Gameplay" tab of the settings and restart the first scenario.
 		[end_timeline]

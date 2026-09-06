@@ -105,6 +105,11 @@ layout_mode = 1
 
 [node name="Minimap" parent="." unique_id=783446803 instance=ExtResource("10_minimap")]
 layout_mode = 1
+offset_left = 30.0
+offset_top = 220.0
+offset_right = 180.0
+offset_bottom = 370.0
+rotation = -1.5707941
 
 [node name="PauseMenu" parent="." unique_id=391853 instance=ExtResource("6_pause_menu")]
 layout_mode = 1
