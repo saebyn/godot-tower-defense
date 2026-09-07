@@ -17,6 +17,7 @@ signal xp_changed(new_amount: int)
 signal xp_earned(amount: int)
 signal level_up(new_level: int)
 signal progression_loaded()
+signal display_pulse_requested(value_name: String, duration: float)
 
 func _ready():
   # Register with SaveManager
@@ -113,6 +114,15 @@ func get_xp() -> int:
 ## Get current player level
 func get_level() -> int:
   return current_level
+
+## Request a HUD pulse for a currency value. This can be called from Dialogic.
+func pulse_display(value_name: String, duration: float = 3.0) -> void:
+  var normalized_name = value_name.to_lower()
+  if normalized_name not in ["scrap", "xp", "level"]:
+    push_warning("Unknown currency display value: %s" % value_name)
+    return
+
+  display_pulse_requested.emit(normalized_name, maxf(duration, 0.1))
 
 ## Convert all remaining scrap to XP and reset scrap to starting amount
 ## Returns a dictionary with conversion details: {scrap_converted, xp_gained, starting_scrap}
