@@ -48,9 +48,41 @@ enum NameLabelColorModes {GLOBAL_COLOR, CHARACTER_COLOR, CUSTOM_COLOR}
 @export var portrait_position: LimitedAlignments = LimitedAlignments.LEFT
 @export var portrait_bg_modulate: Color = Color(0, 0, 0, 0.5137255191803)
 
+@onready var continue_button: Button = $Anchor/Panel/HBox/VBoxContainer/HSplitContainer/Button
+
+var continue_feedback_tween: Tween
+
 
 func _ready() -> void:
   super._ready()
+  if Engine.is_editor_hint():
+    return
+
+  Dialogic.Text.text_started.connect(_on_text_started)
+  Dialogic.Choices.question_shown.connect(_on_question_shown)
+  Dialogic.Inputs.dialogic_action.connect(_on_dialogic_action)
+
+
+func _on_text_started(_info: Dictionary) -> void:
+  continue_button.show()
+
+
+func _on_question_shown(_info: Dictionary) -> void:
+  continue_button.hide()
+
+
+func _on_dialogic_action() -> void:
+  if not continue_button.is_visible_in_tree() or not GameManager.is_playing():
+    return
+
+  if continue_feedback_tween:
+    continue_feedback_tween.kill()
+
+  continue_button.pivot_offset = continue_button.size / 2.0
+  continue_button.scale = Vector2.ONE
+  continue_feedback_tween = create_tween()
+  continue_feedback_tween.tween_property(continue_button, "scale", Vector2(0.96, 0.96), 0.05)
+  continue_feedback_tween.tween_property(continue_button, "scale", Vector2.ONE, 0.08)
 
 
 ## Called by dialogic whenever export overrides might change
