@@ -6,12 +6,16 @@ extends GutTest
 func before_each():
   # Reset GameManager to known state
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
+  if Dialogic.paused:
+    Dialogic.paused = false
   ScenarioManager.clear_current_scenario()
   GameManager.resume_game() # Ensure not paused
 
 func after_each():
   # Restore default state
   GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
+  if Dialogic.paused:
+    Dialogic.paused = false
   ScenarioManager.clear_current_scenario()
   GameManager.resume_game()
 
@@ -145,6 +149,7 @@ func test_toggle_in_game_menu_opens_and_closes():
   
   # Assert - game should be paused and state should be IN_GAME_MENU
   assert_true(GameManager.is_paused(), "Game should be paused after opening menu")
+  assert_true(Dialogic.paused, "Dialogic should be paused while the in-game menu is open")
   assert_eq(GameManager.current_state, GameManager.GameState.IN_GAME_MENU, "State should be IN_GAME_MENU after opening menu")
   
   # Act - close the in-game menu
@@ -153,7 +158,26 @@ func test_toggle_in_game_menu_opens_and_closes():
   # Assert - state returns to PLAYING but the tree remains paused;
   # unpausing is the player's responsibility via the speed/pause controls.
   assert_true(GameManager.is_paused(), "Tree should remain paused after closing menu - unpausing is handled by speed controls")
+  assert_false(Dialogic.paused, "Dialogic should resume when the in-game menu closes")
   assert_eq(GameManager.current_state, GameManager.GameState.PLAYING, "State should be PLAYING after closing menu")
+
+func test_tech_tree_pauses_dialogic_until_closed():
+  GameManager.set_game_state(GameManager.GameState.PLAYING)
+
+  GameManager.set_game_state(GameManager.GameState.IN_TECH_TREE)
+  assert_true(Dialogic.paused, "Dialogic should be paused while the tech tree is open")
+
+  GameManager.set_game_state(GameManager.GameState.PLAYING)
+  assert_false(Dialogic.paused, "Dialogic should resume when the tech tree closes")
+
+func test_game_state_does_not_resume_dialogic_paused_elsewhere():
+  GameManager.set_game_state(GameManager.GameState.PLAYING)
+  Dialogic.paused = true
+
+  GameManager.set_game_state(GameManager.GameState.IN_GAME_MENU)
+  GameManager.set_game_state(GameManager.GameState.PLAYING)
+
+  assert_true(Dialogic.paused, "GameManager should not resume Dialogic when it did not pause it")
 
 func test_restart_from_pause_menu_resets_state():
   # Arrange - simulate the pause menu being open

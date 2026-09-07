@@ -48,82 +48,118 @@ enum NameLabelColorModes {GLOBAL_COLOR, CHARACTER_COLOR, CUSTOM_COLOR}
 @export var portrait_position: LimitedAlignments = LimitedAlignments.LEFT
 @export var portrait_bg_modulate: Color = Color(0, 0, 0, 0.5137255191803)
 
+@onready var continue_button: Button = $Anchor/Panel/HBox/VBoxContainer/HSplitContainer/Button
+
+var continue_feedback_tween: Tween
+
+
+func _ready() -> void:
+  super._ready()
+  if Engine.is_editor_hint():
+    return
+
+  Dialogic.Text.text_started.connect(_on_text_started)
+  Dialogic.Choices.question_shown.connect(_on_question_shown)
+  Dialogic.Inputs.dialogic_action.connect(_on_dialogic_action)
+
+
+func _on_text_started(_info: Dictionary) -> void:
+  continue_button.show()
+
+
+func _on_question_shown(_info: Dictionary) -> void:
+  continue_button.hide()
+
+
+func _on_dialogic_action() -> void:
+  if not continue_button.is_visible_in_tree() or not GameManager.is_playing():
+    return
+
+  if continue_feedback_tween:
+    continue_feedback_tween.kill()
+
+  continue_button.pivot_offset = continue_button.size / 2.0
+  continue_button.scale = Vector2.ONE
+  continue_feedback_tween = create_tween()
+  continue_feedback_tween.tween_property(continue_button, "scale", Vector2(0.96, 0.96), 0.05)
+  continue_feedback_tween.tween_property(continue_button, "scale", Vector2.ONE, 0.08)
+
 
 ## Called by dialogic whenever export overrides might change
 func _apply_export_overrides() -> void:
-	## FONT SETTINGS
-	var dialog_text: DialogicNode_DialogText = %DialogicNode_DialogText
-	dialog_text.alignment = text_alignment as DialogicNode_DialogText.Alignment
+  ## FONT SETTINGS
+  var dialog_text: DialogicNode_DialogText = %DialogicNode_DialogText
+  dialog_text.alignment = text_alignment as DialogicNode_DialogText.Alignment
 
-	var text_size: int = text_custom_size
-	if text_use_global_size:
-		text_size = get_global_setting(&'font_size', text_custom_size)
+  var text_size: int = text_custom_size
+  if text_use_global_size:
+    text_size = get_global_setting(&'font_size', text_custom_size)
 
-	dialog_text.add_theme_font_size_override(&"normal_font_size", text_size)
-	dialog_text.add_theme_font_size_override(&"bold_font_size", text_size)
-	dialog_text.add_theme_font_size_override(&"italics_font_size", text_size)
-	dialog_text.add_theme_font_size_override(&"bold_italics_font_size", text_size)
+  dialog_text.add_theme_font_size_override(&"normal_font_size", text_size)
+  dialog_text.add_theme_font_size_override(&"bold_font_size", text_size)
+  dialog_text.add_theme_font_size_override(&"italics_font_size", text_size)
+  dialog_text.add_theme_font_size_override(&"bold_italics_font_size", text_size)
 
 
-	var text_color: Color = text_custom_color
-	if text_use_global_color:
-		text_color = get_global_setting(&'font_color', text_custom_color)
-	dialog_text.add_theme_color_override(&"default_color", text_color)
+  var text_color: Color = text_custom_color
+  if text_use_global_color:
+    text_color = get_global_setting(&'font_color', text_custom_color)
+  dialog_text.add_theme_color_override(&"default_color", text_color)
 
-	var normal_font: String = custom_normal_font
-	if use_global_fonts and ResourceLoader.exists(get_global_setting(&'font', '') as String):
-		normal_font = get_global_setting(&'font', '')
+  var normal_font: String = custom_normal_font
+  if use_global_fonts and ResourceLoader.exists(get_global_setting(&'font', '') as String):
+    normal_font = get_global_setting(&'font', '')
 
-	if !normal_font.is_empty():
-		dialog_text.add_theme_font_override(&"normal_font", load(normal_font) as Font)
-	if !custom_bold_font.is_empty():
-		dialog_text.add_theme_font_override(&"bold_font", load(custom_bold_font) as Font)
-	if !custom_italic_font.is_empty():
-		dialog_text.add_theme_font_override(&"italics_font", load(custom_italic_font) as Font)
-	if !custom_bold_italic_font.is_empty():
-		dialog_text.add_theme_font_override(&"bold_italics_font", load(custom_bold_italic_font) as Font)
+  if !normal_font.is_empty():
+    dialog_text.add_theme_font_override(&"normal_font", load(normal_font) as Font)
+  if !custom_bold_font.is_empty():
+    dialog_text.add_theme_font_override(&"bold_font", load(custom_bold_font) as Font)
+  if !custom_italic_font.is_empty():
+    dialog_text.add_theme_font_override(&"italics_font", load(custom_italic_font) as Font)
+  if !custom_bold_italic_font.is_empty():
+    dialog_text.add_theme_font_override(&"bold_italics_font", load(custom_bold_italic_font) as Font)
 
-	## BOX SETTINGS
-	var panel: PanelContainer = %Panel
-	var portrait_panel: Panel = %PortraitPanel
-	if box_modulate_global_color:
-		panel.self_modulate = get_global_setting(&'bg_color', box_modulate_custom_color)
-	else:
-		panel.self_modulate = box_modulate_custom_color
-	panel.size = box_size
-	panel.position = Vector2(-box_size.x/2, -box_size.y-box_distance)
-	portrait_panel.size_flags_stretch_ratio = portrait_stretch_factor
+  ## BOX SETTINGS
+  var panel: PanelContainer = %Panel
+  var portrait_panel: Panel = %PortraitPanel
+  if box_modulate_global_color:
+    panel.self_modulate = get_global_setting(&'bg_color', box_modulate_custom_color)
+  else:
+    panel.self_modulate = box_modulate_custom_color
+  panel.size = box_size
+  panel.position = Vector2(-box_size.x/2, -box_size.y-box_distance)
+  portrait_panel.size_flags_stretch_ratio = portrait_stretch_factor
 
-	var stylebox: StyleBox = load(box_panel)
-	panel.add_theme_stylebox_override(&'panel', stylebox)
+  var stylebox: StyleBox = load(box_panel)
+  panel.add_theme_stylebox_override(&'panel', stylebox)
 
-	## PORTRAIT SETTINGS
-	var portrait_background_color: ColorRect = %PortraitBackgroundColor
-	portrait_background_color.color = portrait_bg_modulate
+  ## PORTRAIT SETTINGS
+  var portrait_background_color: ColorRect = %PortraitBackgroundColor
+  portrait_background_color.color = portrait_bg_modulate
 
-	portrait_panel.get_parent().move_child(portrait_panel, portrait_position)
+  portrait_panel.get_parent().move_child(portrait_panel, portrait_position)
 
-	## NAME LABEL SETTINGS
-	var name_label: DialogicNode_NameLabel = %DialogicNode_NameLabel
-	if name_label_use_global_size:
-		name_label.add_theme_font_size_override(&"font_size", get_global_setting(&'font_size', name_label_custom_size) as int)
-	else:
-		name_label.add_theme_font_size_override(&"font_size", name_label_custom_size)
+  ## NAME LABEL SETTINGS
+  var name_label: DialogicNode_NameLabel = %DialogicNode_NameLabel
+  if name_label_use_global_size:
+    name_label.add_theme_font_size_override(&"font_size", get_global_setting(&'font_size', name_label_custom_size) as int)
+  else:
+    name_label.add_theme_font_size_override(&"font_size", name_label_custom_size)
 
-	var name_label_font: String = name_label_customfont
-	if name_label_use_global_font and ResourceLoader.exists(get_global_setting(&'font', '') as String):
-		name_label_font = get_global_setting(&'font', '')
-	if !name_label_font.is_empty():
-		name_label.add_theme_font_override(&'font', load(name_label_font) as Font)
+  var name_label_font: String = name_label_customfont
+  if name_label_use_global_font and ResourceLoader.exists(get_global_setting(&'font', '') as String):
+    name_label_font = get_global_setting(&'font', '')
+  if !name_label_font.is_empty():
+    name_label.add_theme_font_override(&'font', load(name_label_font) as Font)
 
-	name_label.use_character_color = false
-	match name_label_color_mode:
-		NameLabelColorModes.GLOBAL_COLOR:
-			name_label.add_theme_color_override(&"font_color", get_global_setting(&'font_color', name_label_custom_color) as Color)
-		NameLabelColorModes.CUSTOM_COLOR:
-			name_label.add_theme_color_override(&"font_color", name_label_custom_color)
-		NameLabelColorModes.CHARACTER_COLOR:
-			name_label.use_character_color = true
+  name_label.use_character_color = false
+  match name_label_color_mode:
+    NameLabelColorModes.GLOBAL_COLOR:
+      name_label.add_theme_color_override(&"font_color", get_global_setting(&'font_color', name_label_custom_color) as Color)
+    NameLabelColorModes.CUSTOM_COLOR:
+      name_label.add_theme_color_override(&"font_color", name_label_custom_color)
+    NameLabelColorModes.CHARACTER_COLOR:
+      name_label.use_character_color = true
 
-	name_label.horizontal_alignment = name_label_alignment as HorizontalAlignment
-	name_label.hide_when_empty = name_label_hide_when_no_character
+  name_label.horizontal_alignment = name_label_alignment as HorizontalAlignment
+  name_label.hide_when_empty = name_label_hide_when_no_character

@@ -10,9 +10,12 @@ enum GameState {
   ALL_DONE ## Represents the state after the final scenario is completed
 }
 
+const DIALOG_BLOCKING_STATES := [GameState.IN_GAME_MENU, GameState.IN_TECH_TREE]
+
 # Variables and signals for general game state.
 var current_state: GameState = GameState.MAIN_MENU
 var current_speed_multiplier: float = 1.0
+var _dialogic_paused_by_game_state := false
 
 signal game_state_changed(new_state: GameState)
 signal speed_changed(new_speed: float)
@@ -39,8 +42,18 @@ func _ready():
 func set_game_state(new_state: GameState):
     if current_state != new_state:
         current_state = new_state
+        _sync_dialogic_pause(new_state)
         game_state_changed.emit(new_state)
         MyLogger.info("GameManager", "Game state changed to: %s" % GameState.keys()[new_state])
+
+func _sync_dialogic_pause(new_state: GameState) -> void:
+    if new_state in DIALOG_BLOCKING_STATES:
+        if not Dialogic.paused:
+            Dialogic.paused = true
+            _dialogic_paused_by_game_state = true
+    elif _dialogic_paused_by_game_state:
+        Dialogic.paused = false
+        _dialogic_paused_by_game_state = false
 
 func is_playing() -> bool:
     return current_state == GameState.PLAYING
