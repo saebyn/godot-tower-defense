@@ -111,7 +111,10 @@ offset_right = 180.0
 offset_bottom = 370.0
 rotation = -1.5707941
 
-[node name="PauseMenu" parent="." unique_id=391853 instance=ExtResource("6_pause_menu")]
+[node name="PauseMenuLayer" type="CanvasLayer" parent="." unique_id=1910828273]
+layer = 2
+
+[node name="PauseMenu" parent="PauseMenuLayer" unique_id=391853 instance=ExtResource("6_pause_menu")]
 layout_mode = 1
 
 [node name="StatsDisplay" parent="." unique_id=397815851 instance=ExtResource("11_stats_display")]
