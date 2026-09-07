@@ -178,3 +178,17 @@ func test_get_xp_for_next_level():
   CurrencyManager.current_level = 3
   xp_needed = CurrencyManager.get_xp_for_next_level()
   assert_eq(xp_needed, 300, "Level 3 should need 300 XP to reach level 4")
+
+func test_pulse_display_requests_valid_value():
+  watch_signals(CurrencyManager)
+
+  CurrencyManager.pulse_display("XP")
+
+  assert_signal_emitted_with_parameters(CurrencyManager, "display_pulse_requested", ["xp", 3.0])
+
+func test_pulse_display_ignores_unknown_value():
+  watch_signals(CurrencyManager)
+
+  CurrencyManager.pulse_display("coins")
+
+  assert_signal_not_emitted(CurrencyManager, "display_pulse_requested")
